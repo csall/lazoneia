@@ -9,13 +9,13 @@ import { useState, useEffect, useRef } from "react";
 const GoogleMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
-  
+
   // Liste des applications/options du menu
   const menuItems = [
     { name: "Accueil", icon: "/globe.svg", link: "/" },
     { name: "Agents", icon: "/max-bot.svg", link: "/agents" },
     { name: "À propos", icon: "/file.svg", link: "/a-propos" },
-    { name: "Contact", icon: "/window.svg", link: "/contact" }
+    { name: "Contact", icon: "/window.svg", link: "/contact" },
   ];
 
   // Fermer le menu si on clique à l'extérieur
@@ -27,11 +27,11 @@ const GoogleMenu = () => {
     };
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
-    
+
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
 
@@ -61,9 +61,10 @@ const GoogleMenu = () => {
             exit={{ opacity: 0, scale: 0.9, y: -5 }}
             transition={{ type: "spring", bounce: 0.1, duration: 0.4 }}
             className="absolute right-0 mt-2 p-2 w-64 rounded-xl bg-white/10 backdrop-blur-xl border border-white/10 shadow-2xl"
-            style={{ 
-              boxShadow: '0 10px 40px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.2)', 
-              transformOrigin: 'top right'
+            style={{
+              boxShadow:
+                "0 10px 40px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.2)",
+              transformOrigin: "top right",
             }}
           >
             <div className="p-1 grid grid-cols-2 gap-2">
@@ -76,15 +77,17 @@ const GoogleMenu = () => {
                     onClick={() => setIsOpen(false)}
                   >
                     <div className="w-12 h-12 mb-2 bg-white/15 backdrop-blur-md rounded-full flex items-center justify-center">
-                      <Image 
-                        src={item.icon} 
+                      <Image
+                        src={item.icon}
                         alt={item.name}
                         width={24}
                         height={24}
                         className="opacity-90"
                       />
                     </div>
-                    <span className="text-sm font-medium text-white">{item.name}</span>
+                    <span className="text-sm font-medium text-white">
+                      {item.name}
+                    </span>
                   </motion.div>
                 </Link>
               ))}
@@ -97,7 +100,16 @@ const GoogleMenu = () => {
 };
 
 // Composant pour chaque carte d'agent
-const AgentCard = ({ name, description, image, color, link, tagline, isFavorite, onToggleFavorite }) => {
+const AgentCard = ({
+  name,
+  description,
+  image,
+  color,
+  link,
+  tagline,
+  isFavorite,
+  onToggleFavorite,
+}) => {
   const cardStyles = {
     charm: {
       bg: "bg-gradient-to-br from-pink-900/60 to-rose-900/60",
@@ -106,25 +118,27 @@ const AgentCard = ({ name, description, image, color, link, tagline, isFavorite,
       button: "from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700",
       hover: "group-hover:text-pink-200",
       accent: "bg-pink-500",
-      mesh: "from-pink-500/40 via-rose-600/30 to-pink-500/40"
+      mesh: "from-pink-500/40 via-rose-600/30 to-pink-500/40",
     },
     punchy: {
       bg: "bg-gradient-to-br from-indigo-900/60 to-violet-900/60",
       border: "border-violet-500/20",
       glow: "from-violet-500 to-indigo-600",
-      button: "from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700",
+      button:
+        "from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700",
       hover: "group-hover:text-indigo-200",
       accent: "bg-indigo-500",
-      mesh: "from-violet-500/40 via-indigo-600/30 to-violet-500/40"
+      mesh: "from-violet-500/40 via-indigo-600/30 to-violet-500/40",
     },
     pitchy: {
       bg: "bg-gradient-to-br from-emerald-900/60 to-green-900/60",
       border: "border-emerald-500/20",
       glow: "from-emerald-500 to-green-600",
-      button: "from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700",
+      button:
+        "from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700",
       hover: "group-hover:text-emerald-200",
       accent: "bg-emerald-500",
-      mesh: "from-emerald-500/40 via-green-600/30 to-emerald-500/40"
+      mesh: "from-emerald-500/40 via-green-600/30 to-emerald-500/40",
     },
     reply: {
       bg: "bg-gradient-to-br from-blue-900/60 to-sky-900/60",
@@ -133,16 +147,17 @@ const AgentCard = ({ name, description, image, color, link, tagline, isFavorite,
       button: "from-blue-500 to-sky-600 hover:from-blue-600 hover:to-sky-700",
       hover: "group-hover:text-blue-200",
       accent: "bg-blue-500",
-      mesh: "from-blue-500/40 via-sky-600/30 to-blue-500/40"
+      mesh: "from-blue-500/40 via-sky-600/30 to-blue-500/40",
     },
     lingo: {
       bg: "bg-gradient-to-br from-amber-900/60 to-yellow-900/60",
       border: "border-amber-500/20",
       glow: "from-amber-500 to-yellow-600",
-      button: "from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700",
+      button:
+        "from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700",
       hover: "group-hover:text-amber-200",
       accent: "bg-amber-500",
-      mesh: "from-amber-500/40 via-yellow-600/30 to-amber-500/40"
+      mesh: "from-amber-500/40 via-yellow-600/30 to-amber-500/40",
     },
     scribo: {
       bg: "bg-gradient-to-br from-teal-900/60 to-cyan-900/60",
@@ -151,10 +166,10 @@ const AgentCard = ({ name, description, image, color, link, tagline, isFavorite,
       button: "from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700",
       hover: "group-hover:text-teal-200",
       accent: "bg-teal-500",
-      mesh: "from-teal-500/40 via-cyan-600/30 to-teal-500/40"
-    }
+      mesh: "from-teal-500/40 via-cyan-600/30 to-teal-500/40",
+    },
   };
-  
+
   const style = cardStyles[color];
 
   return (
@@ -167,29 +182,35 @@ const AgentCard = ({ name, description, image, color, link, tagline, isFavorite,
       whileHover={{ scale: 1.02 }}
     >
       <motion.div
-        className={`relative backdrop-blur-xl p-6 rounded-2xl overflow-hidden border ${style.border} group w-full flex flex-col min-h-[420px] shadow-xl`}
-        style={{ 
+        className={`relative backdrop-blur-xl p-4 rounded-xl overflow-hidden border ${style.border} group w-full flex flex-col min-h-[360px] shadow-xl`}
+        style={{
           background: `radial-gradient(circle at 50% 0%, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0) 75%), 
                        linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%)`,
           boxShadow: `0 20px 70px -15px rgba(0,0,0,0.7), 
                       0 0 30px -5px rgba(0,0,0,0.4), 
-                      inset 0 0 15px rgba(255,255,255,0.05)`
+                      inset 0 0 15px rgba(255,255,255,0.05)`,
         }}
-        whileHover={{ 
+        whileHover={{
           y: -15,
           zIndex: 20,
-          transition: { type: "spring", stiffness: 400, damping: 15 }
+          transition: { type: "spring", stiffness: 400, damping: 15 },
         }}
       >
         {/* Mesh gradient background */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${style.bg} opacity-80`}></div>
-        <div className={`absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10`}></div>
-        <div className={`absolute -inset-[100%] bg-gradient-conic ${style.mesh} opacity-30 blur-3xl animate-slow-spin`}></div>
-        
+        <div
+          className={`absolute inset-0 bg-gradient-to-br ${style.bg} opacity-80`}
+        ></div>
+        <div
+          className={`absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10`}
+        ></div>
+        <div
+          className={`absolute -inset-[100%] bg-gradient-conic ${style.mesh} opacity-30 blur-3xl animate-slow-spin`}
+        ></div>
+
         {/* Floating particles */}
-        <motion.div 
-          className="absolute inset-0 overflow-hidden pointer-events-none" 
-          initial={{ opacity: 0 }} 
+        <motion.div
+          className="absolute inset-0 overflow-hidden pointer-events-none"
+          initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
@@ -207,42 +228,44 @@ const AgentCard = ({ name, description, image, color, link, tagline, isFavorite,
             <motion.div
               key={i}
               className={`absolute w-1 h-1 rounded-full ${style.accent} blur-[1px]`}
-              initial={{ 
-                x: particle.x, 
+              initial={{
+                x: particle.x,
                 y: particle.y,
-                opacity: 0.5
+                opacity: 0.5,
               }}
-              animate={{ 
+              animate={{
                 x: [particle.x, i % 2 === 0 ? "10%" : "-10%", particle.x],
                 y: [particle.y, i % 2 === 0 ? "20%" : "70%", particle.y],
                 scale: [1, 1.3, 1],
-                opacity: [0.5, 0.7, 0.5]
+                opacity: [0.5, 0.7, 0.5],
               }}
-              transition={{ 
-                duration: Math.random() * 10 + 15, 
+              transition={{
+                duration: Math.random() * 10 + 15,
                 repeat: Infinity,
-                repeatType: "reverse"
+                repeatType: "reverse",
               }}
             />
           ))}
         </motion.div>
-        
+
         {/* Highlight effect on hover */}
-        <motion.div 
+        <motion.div
           className="absolute inset-0 opacity-0 group-hover:opacity-100"
           initial={{ opacity: 0 }}
           whileHover={{ opacity: 1 }}
           transition={{ duration: 0.4 }}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-white opacity-10"></div>
-          <div className={`absolute -inset-1 bg-gradient-to-r ${style.glow} opacity-20 blur-xl rounded-3xl`}></div>
+          <div
+            className={`absolute -inset-1 bg-gradient-to-r ${style.glow} opacity-20 blur-xl rounded-3xl`}
+          ></div>
         </motion.div>
-        
+
         {/* Content */}
         <div className="relative z-10 flex-1 flex flex-col">
           <div className="flex items-center justify-between mb-2">
             {/* Tagline badge */}
-            <motion.span 
+            <motion.span
               className={`text-xs py-1 px-3 ${style.accent} text-white rounded-full self-start opacity-90`}
               initial={{ x: -20, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
@@ -250,7 +273,7 @@ const AgentCard = ({ name, description, image, color, link, tagline, isFavorite,
             >
               {tagline}
             </motion.span>
-            
+
             {/* Favorite button */}
             <motion.button
               initial={{ scale: 0, opacity: 0 }}
@@ -264,12 +287,14 @@ const AgentCard = ({ name, description, image, color, link, tagline, isFavorite,
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                viewBox="0 0 24 24" 
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
                 fill={isFavorite ? "currentColor" : "none"}
-                stroke="currentColor" 
-                className={`w-5 h-5 ${isFavorite ? 'text-yellow-400' : 'text-gray-300'}`}
+                stroke="currentColor"
+                className={`w-5 h-5 ${
+                  isFavorite ? "text-yellow-400" : "text-gray-300"
+                }`}
                 strokeWidth={isFavorite ? "0" : "2"}
               >
                 <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
@@ -278,7 +303,7 @@ const AgentCard = ({ name, description, image, color, link, tagline, isFavorite,
           </div>
 
           {/* Name */}
-          <motion.h3 
+          <motion.h3
             className={`text-2xl font-bold mb-1 text-white ${style.hover} transition-colors duration-300`}
             initial={{ y: 10, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -288,33 +313,33 @@ const AgentCard = ({ name, description, image, color, link, tagline, isFavorite,
           </motion.h3>
 
           {/* Image */}
-          <motion.div 
-            className="h-40 flex items-center justify-center my-4 relative"
-            whileHover={{ 
-              scale: 1.05, 
+          <motion.div
+            className="h-32 flex items-center justify-center my-3 relative"
+            whileHover={{
+              scale: 1.05,
               rotateZ: [0, -2, 2, -2, 0],
-              transition: { 
-                rotateZ: { 
-                  repeat: Infinity, 
+              transition: {
+                rotateZ: {
+                  repeat: Infinity,
                   duration: 3,
-                  ease: "easeInOut"
-                }
-              }
+                  ease: "easeInOut",
+                },
+              },
             }}
           >
             {/* Glow behind image */}
-            <motion.div 
-              className={`absolute w-24 h-24 rounded-full bg-gradient-to-r ${style.glow} blur-2xl opacity-30 group-hover:opacity-50 transition-opacity duration-700`}
-              animate={{ 
+            <motion.div
+              className={`absolute w-20 h-20 rounded-full bg-gradient-to-r ${style.glow} blur-2xl opacity-30 group-hover:opacity-50 transition-opacity duration-700`}
+              animate={{
                 scale: [1, 1.2, 1],
               }}
               transition={{
                 duration: 4,
                 repeat: Infinity,
-                ease: "easeInOut"
+                ease: "easeInOut",
               }}
             />
-            
+
             <motion.div
               animate={{
                 y: [0, -5, 0],
@@ -322,57 +347,57 @@ const AgentCard = ({ name, description, image, color, link, tagline, isFavorite,
               transition={{
                 duration: 3.5,
                 repeat: Infinity,
-                ease: "easeInOut"
+                ease: "easeInOut",
               }}
             >
-              <Image 
+              <Image
                 src={image}
                 alt={name}
-                width={120}
-                height={120}
-                className="object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.35)]" 
+                width={100}
+                height={100}
+                className="object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.35)]"
                 priority
               />
             </motion.div>
-            
+
             {/* Orbiting particles */}
-            <motion.div 
+            <motion.div
               className="absolute w-full h-full pointer-events-none"
               animate={{ rotate: 360 }}
               transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
             >
-              <motion.div 
+              <motion.div
                 className={`absolute w-2 h-2 rounded-full ${style.accent} top-0 left-1/2 -translate-x-1/2`}
                 animate={{ opacity: [0.7, 0.2, 0.7] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
             </motion.div>
-            <motion.div 
+            <motion.div
               className="absolute w-full h-full pointer-events-none"
               animate={{ rotate: -360 }}
               transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
             >
-              <motion.div 
+              <motion.div
                 className={`absolute w-1.5 h-1.5 rounded-full ${style.accent} bottom-0 left-1/2 -translate-x-1/2`}
                 animate={{ opacity: [0.5, 0.1, 0.5] }}
                 transition={{ duration: 3, repeat: Infinity }}
               />
             </motion.div>
           </motion.div>
-          
+
           {/* Description */}
-          <div className="relative overflow-hidden mb-4">
-            <motion.p 
-              className="text-gray-300 text-sm group-hover:text-white transition-all duration-500 leading-relaxed max-h-[80px] group-hover:max-h-[400px]"
+          <div className="relative overflow-hidden mb-3">
+            <motion.p
+              className="text-gray-300 text-xs group-hover:text-white transition-all duration-500 leading-relaxed max-h-[70px] group-hover:max-h-[400px]"
               initial={{ y: 10, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
               {description}
             </motion.p>
-            <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black/80 to-transparent group-hover:opacity-0 transition-opacity duration-500"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-black/80 to-transparent group-hover:opacity-0 transition-opacity duration-500"></div>
           </div>
-          
+
           {/* Button */}
           <motion.div
             className="mt-auto"
@@ -382,13 +407,24 @@ const AgentCard = ({ name, description, image, color, link, tagline, isFavorite,
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >
-            <Link 
+            <Link
               href={link}
-              className={`block w-full py-3 px-4 bg-gradient-to-r ${style.button} text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center text-sm backdrop-blur-sm`}
+              className={`block w-full py-2 px-3 bg-gradient-to-r ${style.button} text-white font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center text-xs backdrop-blur-sm`}
             >
               <span>Discuter avec {name.split(" ")[0]}</span>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 ml-1.5 transition-transform duration-300 group-hover:translate-x-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M14 5l7 7m0 0l-7 7m7-7H3"
+                />
               </svg>
             </Link>
           </motion.div>
@@ -402,124 +438,125 @@ export default function AgentsPage() {
   // État pour stocker les favoris et le chargement initial
   const [favorites, setFavorites] = useState([]);
   // État pour stocker le filtre actif
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState("all");
   // État pour indiquer que le client est monté (évite les problèmes d'hydratation)
   const [isClientMounted, setIsClientMounted] = useState(false);
-  
+
   // Indiquer que le client est monté - cela évite d'essayer d'accéder au localStorage trop tôt
   useEffect(() => {
     setIsClientMounted(true);
   }, []);
-  
+
   // Charger les favoris et le choix de filtre depuis le localStorage au montage du composant
   useEffect(() => {
     if (!isClientMounted) return; // Ne rien faire si le client n'est pas encore monté
-    
+
     // Fonction pour charger les données depuis le localStorage en toute sécurité
     const loadFromStorage = (key, defaultValue) => {
       try {
         const savedValue = localStorage.getItem(key);
         if (!savedValue) return defaultValue;
-        
+
         const parsedValue = JSON.parse(savedValue);
         return parsedValue !== null ? parsedValue : defaultValue;
       } catch (error) {
-        console.error(`Erreur lors du chargement de ${key} depuis localStorage:`, error);
+        console.error(
+          `Erreur lors du chargement de ${key} depuis localStorage:`,
+          error
+        );
         return defaultValue;
       }
     };
-    
+
     // Charger les favoris
-    const storedFavorites = loadFromStorage('agentFavorites', []);
+    const storedFavorites = loadFromStorage("agentFavorites", []);
     setFavorites(storedFavorites);
-    
+
     // Charger la préférence de filtre
-    const storedFilter = loadFromStorage('agentFilterPreference', 'all');
+    const storedFilter = loadFromStorage("agentFilterPreference", "all");
     setFilter(storedFilter);
   }, [isClientMounted]);
-  
+
   // Sauvegarder les favoris dans le localStorage lorsqu'ils changent
   useEffect(() => {
     if (!isClientMounted) return; // Ne rien faire si le client n'est pas encore monté
-    
+
     try {
-      localStorage.setItem('agentFavorites', JSON.stringify(favorites));
+      localStorage.setItem("agentFavorites", JSON.stringify(favorites));
     } catch (error) {
       console.error("Erreur lors de la sauvegarde des favoris:", error);
     }
   }, [favorites, isClientMounted]);
-  
+
   // Sauvegarder le choix de filtre dans le localStorage lorsqu'il change
   useEffect(() => {
     if (!isClientMounted) return; // Ne rien faire si le client n'est pas encore monté
-    
+
     try {
-      localStorage.setItem('agentFilterPreference', JSON.stringify(filter));
+      localStorage.setItem("agentFilterPreference", JSON.stringify(filter));
     } catch (error) {
       console.error("Erreur lors de la sauvegarde du filtre:", error);
     }
   }, [filter, isClientMounted]);
-  
+
   // Fonction pour basculer l'état favori d'un agent
   const toggleFavorite = (agentName) => {
-    setFavorites(prevFavorites => {
+    setFavorites((prevFavorites) => {
       if (prevFavorites.includes(agentName)) {
-        return prevFavorites.filter(name => name !== agentName);
+        return prevFavorites.filter((name) => name !== agentName);
       } else {
         return [...prevFavorites, agentName];
       }
     });
   };
-  
+
   const agents = [
-    { 
-      name: "Reply", 
-      description: "Le génie des réponses parfaites. Suggère plusieurs options adaptées à chaque situation, du ton pro au ton cool ou humoristique. Idéal pour relations pro, séduction ou service client.", 
-      image: "/max-bot.svg", // Réutilisation de l'image existante - à remplacer par une nouvelle image
-      color: "reply",
-      link: "/agent/reply",
-      tagline: "Messages parfaits"
-    },
-    { 
-      name: "Punchy", 
-      description: "L'ami qui trouve toujours la blague qui tombe juste. Transforme une phrase banale en punchline et répond avec humour dans n'importe quelle conversation. Idéal pour taquineries, posts réseaux et icebreakers.", 
+    {
+      name: "Punchy",
+      description:
+        "L'ami qui trouve toujours la blague qui tombe juste. Transforme une phrase banale en punchline et répond avec humour dans n'importe quelle conversation. Idéal pour taquineries, posts réseaux et icebreakers.",
       image: "/olivier-bot.svg", // Réutilisation de l'image existante
       color: "punchy",
       link: "/agent/punchy",
-      tagline: "Humour instantané"
+      tagline: "Humour instantané",
     },
-    { 
-      name: "Pitchy", 
-      description: "Le coach qui te met à l'aise à l'oral. Transforme un texte en discours fluide, ajoute des respirations et conseille sur l'intonation. Parfait pour présentations, discours et vidéos.", 
-      image: "/max-bot.svg", // Réutilisation de l'image existante
-      color: "pitchy",
-      link: "/agent/pitchy",
-      tagline: "Éloquence assurée"
+    {
+      name: "Reply",
+      description:
+        "Le génie des réponses parfaites. Suggère plusieurs options adaptées à chaque situation, du ton pro au ton cool ou humoristique. Idéal pour relations pro, séduction ou service client.",
+      image: "/max-bot.svg", // Réutilisation de l'image existante - à remplacer par une nouvelle image
+      color: "reply",
+      link: "/agent/reply",
+      tagline: "Messages parfaits",
     },
-    { 
-      name: "Lingo", 
-      description: "Le globe-trotteur des langues. Traduit tout en conservant le ton voulu (pro, amical, séduisant, humoristique). Parfait pour conversations internationales, réseaux sociaux ou voyages.", 
-      image: "/olivier-bot.svg", // Réutilisation de l'image existante - à remplacer par une nouvelle image
-      color: "lingo",
-      link: "/agent/lingo",
-      tagline: "Traduction parfaite"
-    },
-    { 
-      name: "Charm", 
-      description: "Le maître des mots qui font chavirer. Propose des réponses séduisantes adaptées à la situation et au ton voulu (gentleman, joueur, mystérieux). Parfait pour applis de rencontre, SMS coquins ou flirt léger au quotidien.", 
-      image: "/clara-bot.svg", // Réutilisation de l'image existante
-      color: "charm",
-      link: "/agent/charm",
-      tagline: "Séduction garantie"
-    },
-    { 
-      name: "Scribo", 
-      description: "Ton assistant personnel d'écriture et de style. Transforme tes phrases brutes en messages clairs, fluides et impactants. Corrige orthographe, grammaire et ponctuation tout en proposant des reformulations adaptées à ton style et au contexte.", 
+    
+    {
+      name: "Scribo",
+      description:
+        "Ton assistant personnel d'écriture et de style. Transforme tes phrases brutes en messages clairs, fluides et impactants. Corrige orthographe, grammaire et ponctuation tout en proposant des reformulations adaptées à ton style et au contexte.",
       image: "/max-bot.svg", // Réutilisation de l'image existante - à remplacer par une image spécifique à Scribo
       color: "scribo",
       link: "/agent/scribo",
-      tagline: "Style d'écriture parfait"
-    }
+      tagline: "Style d'écriture parfait",
+    },
+    {
+      name: "Lingo",
+      description:
+        "Le globe-trotteur des langues. Traduit tout en conservant le ton voulu (pro, amical, séduisant, humoristique). Parfait pour conversations internationales, réseaux sociaux ou voyages.",
+      image: "/olivier-bot.svg", // Réutilisation de l'image existante - à remplacer par une nouvelle image
+      color: "lingo",
+      link: "/agent/lingo",
+      tagline: "Traduction parfaite",
+    },
+    {
+      name: "Charm",
+      description:
+        "Le maître des mots qui font chavirer. Propose des réponses séduisantes adaptées à la situation et au ton voulu (gentleman, joueur, mystérieux). Parfait pour applis de rencontre, SMS coquins ou flirt léger au quotidien.",
+      image: "/clara-bot.svg", // Réutilisation de l'image existante
+      color: "charm",
+      link: "/agent/charm",
+      tagline: "Séduction garantie",
+    },
   ];
 
   return (
@@ -527,12 +564,12 @@ export default function AgentsPage() {
       <section className="relative py-6 text-center px-4 overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10"></div>
-        
+
         <div className="container mx-auto mb-12 relative">
           {/* Barre de navigation avec bouton retour et menu Google */}
           <div className="flex justify-between items-center w-full absolute top-0 left-0 right-0 z-20 px-4">
             {/* Bouton de retour moderne */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4 }}
@@ -540,16 +577,30 @@ export default function AgentsPage() {
               <Link href="/">
                 <motion.div
                   className="w-10 h-10 bg-white/5 backdrop-blur-md rounded-full border border-white/10 flex items-center justify-center shadow-lg"
-                  whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,255,255,0.1)' }}
+                  whileHover={{
+                    scale: 1.1,
+                    backgroundColor: "rgba(255,255,255,0.1)",
+                  }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                    />
                   </svg>
                 </motion.div>
               </Link>
             </motion.div>
-            
+
             {/* Menu style Google en haut à droite */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
@@ -559,7 +610,7 @@ export default function AgentsPage() {
               <GoogleMenu />
             </motion.div>
           </div>
-          
+
           {/* Boutons de filtrage - Design simplifié pour une fiabilité maximale */}
           <motion.div
             className="relative mx-auto max-w-xs sm:max-w-md backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl p-1.5 shadow-lg mb-12"
@@ -571,65 +622,87 @@ export default function AgentsPage() {
             <div className="absolute inset-0 rounded-xl overflow-hidden">
               <div className="absolute -inset-[100%] bg-gradient-conic from-purple-500/20 via-blue-500/10 to-transparent opacity-30 blur-3xl animate-slow-spin"></div>
             </div>
-            
+
             {/* Boutons de filtre simplifiés avec des divs standard */}
             <div className="grid grid-cols-2 gap-2 p-1 w-full relative z-10">
               {/* Bouton Tous */}
-              <div 
+              <div
                 className={`
                   h-12 rounded-md overflow-hidden relative cursor-pointer
-                  ${filter === 'all' ? 'bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg' : 'bg-white/10 hover:bg-white/20'}
+                  ${
+                    filter === "all"
+                      ? "bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg"
+                      : "bg-white/10 hover:bg-white/20"
+                  }
                 `}
-                onClick={() => setFilter('all')}
+                onClick={() => setFilter("all")}
               >
                 {/* Effet pour l'état actif */}
-                {filter === 'all' && (
+                {filter === "all" && (
                   <div className="absolute inset-0 opacity-30">
                     <div className="absolute inset-0 bg-gradient-conic from-white/30 via-transparent to-white/30 animate-slow-spin"></div>
                   </div>
                 )}
-                
+
                 {/* Overlay cliquable transparent */}
                 <div className="absolute inset-0 z-10"></div>
-                
+
                 {/* Contenu */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className={`text-sm font-medium ${filter === 'all' ? 'text-white' : 'text-blue-100/90'}`}>
+                  <span
+                    className={`text-sm font-medium ${
+                      filter === "all" ? "text-white" : "text-blue-100/90"
+                    }`}
+                  >
                     Tous les agents
                   </span>
                 </div>
               </div>
-              
+
               {/* Bouton Favoris */}
-              <div 
+              <div
                 className={`
                   h-12 rounded-md overflow-hidden relative cursor-pointer
-                  ${filter === 'favorites' ? 'bg-gradient-to-r from-purple-600 to-pink-600 shadow-lg' : 'bg-white/10 hover:bg-white/20'}
+                  ${
+                    filter === "favorites"
+                      ? "bg-gradient-to-r from-purple-600 to-pink-600 shadow-lg"
+                      : "bg-white/10 hover:bg-white/20"
+                  }
                 `}
-                onClick={() => setFilter('favorites')}
+                onClick={() => setFilter("favorites")}
               >
                 {/* Effet pour l'état actif */}
-                {filter === 'favorites' && (
+                {filter === "favorites" && (
                   <div className="absolute inset-0 opacity-30">
                     <div className="absolute inset-0 bg-gradient-conic from-yellow-300/30 via-transparent to-yellow-300/30 animate-slow-spin"></div>
                   </div>
                 )}
-                
+
                 {/* Overlay cliquable transparent */}
                 <div className="absolute inset-0 z-10"></div>
-                
+
                 {/* Contenu */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="flex items-center justify-center gap-2">
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      viewBox="0 0 24 24" 
-                      fill="currentColor" 
-                      className={`w-4 h-4 ${filter === 'favorites' ? 'text-yellow-300' : 'text-yellow-400/70'}`}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className={`w-4 h-4 ${
+                        filter === "favorites"
+                          ? "text-yellow-300"
+                          : "text-yellow-400/70"
+                      }`}
                     >
                       <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
                     </svg>
-                    <span className={`text-sm font-medium ${filter === 'favorites' ? 'text-white' : 'text-blue-100/90'}`}>
+                    <span
+                      className={`text-sm font-medium ${
+                        filter === "favorites"
+                          ? "text-white"
+                          : "text-blue-100/90"
+                      }`}
+                    >
                       Favoris
                     </span>
                   </div>
@@ -638,13 +711,22 @@ export default function AgentsPage() {
             </div>
           </motion.div>
         </div>
-        
+
         {/* Colorful blurred shapes */}
         <div className="absolute top-20 -right-20 w-96 h-96 bg-indigo-600 rounded-full filter blur-[120px] opacity-20 animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-600 rounded-full filter blur-[100px] opacity-20 animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/4 w-40 h-40 bg-purple-500 rounded-full filter blur-[80px] opacity-10 animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-1/3 right-1/4 w-60 h-60 bg-blue-500 rounded-full filter blur-[90px] opacity-10 animate-pulse" style={{ animationDelay: '1.5s' }}></div>
-        
+        <div
+          className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-600 rounded-full filter blur-[100px] opacity-20 animate-pulse"
+          style={{ animationDelay: "1s" }}
+        ></div>
+        <div
+          className="absolute top-1/2 left-1/4 w-40 h-40 bg-purple-500 rounded-full filter blur-[80px] opacity-10 animate-pulse"
+          style={{ animationDelay: "2s" }}
+        ></div>
+        <div
+          className="absolute bottom-1/3 right-1/4 w-60 h-60 bg-blue-500 rounded-full filter blur-[90px] opacity-10 animate-pulse"
+          style={{ animationDelay: "1.5s" }}
+        ></div>
+
         {/* Decorative elements */}
         <div className="absolute top-20 left-10 opacity-30">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
@@ -657,33 +739,54 @@ export default function AgentsPage() {
         <div className="absolute bottom-20 right-10 opacity-30">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
             <circle cx="20" cy="20" r="10" stroke="white" strokeWidth="2" />
-            <circle cx="20" cy="20" r="20" stroke="white" strokeWidth="1" strokeDasharray="4 4" />
+            <circle
+              cx="20"
+              cy="20"
+              r="20"
+              stroke="white"
+              strokeWidth="1"
+              strokeDasharray="4 4"
+            />
           </svg>
         </div>
-        
-        <motion.div 
+
+        <motion.div
           className="relative z-10 container mx-auto"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 1 }}
           viewport={{ once: true }}
         >
-          {filter === 'favorites' && favorites.length === 0 ? (
+          {filter === "favorites" && favorites.length === 0 ? (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="col-span-full p-10 text-center"
             >
               <div className="bg-white/10 backdrop-blur-xl rounded-xl p-8 max-w-md mx-auto">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto mb-4 text-yellow-400 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-16 w-16 mx-auto mb-4 text-yellow-400 opacity-50"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                  />
                 </svg>
                 <h3 className="text-xl font-medium mb-2">Aucun favori</h3>
-                <p className="text-blue-200 mb-6">Cliquez sur l&apos;étoile d&apos;un agent pour l&apos;ajouter à vos favoris.</p>
+                <p className="text-blue-200 mb-6">
+                  Cliquez sur l&apos;étoile d&apos;un agent pour l&apos;ajouter
+                  à vos favoris.
+                </p>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => setFilter('all')}
+                  onClick={() => setFilter("all")}
                   className="px-5 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
                 >
                   Voir tous les agents
@@ -693,9 +796,11 @@ export default function AgentsPage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 p-4 max-w-7xl mx-auto">
               {agents
-                .filter(agent => filter === 'all' || favorites.includes(agent.name))
+                .filter(
+                  (agent) => filter === "all" || favorites.includes(agent.name)
+                )
                 .map((agent, i) => (
-                  <AgentCard 
+                  <AgentCard
                     key={i}
                     name={agent.name}
                     description={agent.description}

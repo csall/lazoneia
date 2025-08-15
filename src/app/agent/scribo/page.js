@@ -99,13 +99,13 @@ export default function ScriboPage() {
           </motion.div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-5">
           {/* Section pour écrire le message */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="bg-gradient-to-br from-teal-800/50 to-cyan-800/50 backdrop-blur-md p-4 rounded-xl shadow-lg border border-teal-500/30"
+            className="bg-gradient-to-br from-teal-800/50 to-cyan-800/50 backdrop-blur-md p-3 rounded-lg shadow-lg border border-teal-500/30"
           >
             <h2 className="text-lg font-bold mb-2">Votre texte</h2>
             <form onSubmit={handleSubmit} className="space-y-3">
@@ -165,7 +165,7 @@ export default function ScriboPage() {
                   value={userInput}
                   onChange={(e) => setUserInput(e.target.value)}
                   placeholder="Écrivez votre texte à améliorer ou corriger..."
-                  className="w-full h-[120px] bg-teal-900/50 text-white placeholder-teal-300 rounded-lg p-3 border border-teal-600/50 focus:border-teal-400 focus:ring focus:ring-teal-300/50 focus:outline-none resize-none transition text-sm"
+                  className="w-full h-[100px] bg-teal-900/50 text-white placeholder-teal-300 rounded-lg p-2 border border-teal-600/50 focus:border-teal-400 focus:ring focus:ring-teal-300/50 focus:outline-none resize-none transition text-sm"
                   rows={4}
                 />
               </div>
@@ -197,7 +197,7 @@ export default function ScriboPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
-            className="bg-gradient-to-br from-cyan-800/50 to-teal-800/50 backdrop-blur-md p-4 rounded-xl shadow-lg border border-cyan-500/30 min-h-[240px] flex flex-col"
+            className="bg-gradient-to-br from-cyan-800/50 to-teal-800/50 backdrop-blur-md p-3 rounded-lg shadow-lg border border-cyan-500/30 min-h-[200px] flex flex-col"
           >
             <h2 className="text-lg font-bold mb-2">Texte amélioré par Scribo</h2>
             {isLoading ? (
@@ -225,10 +225,10 @@ export default function ScriboPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.8 }}
-          className="mt-8 bg-gradient-to-br from-teal-900/30 to-cyan-900/30 backdrop-blur-md p-4 rounded-xl shadow-lg border border-teal-500/20"
+          className="mt-6 bg-gradient-to-br from-teal-900/30 to-cyan-900/30 backdrop-blur-md p-3 rounded-lg shadow-lg border border-teal-500/20"
         >
           <h2 className="text-xl font-bold mb-3 text-teal-200">Pourquoi utiliser Scribo ?</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div className="bg-teal-800/30 p-3 rounded-lg border border-teal-700/30">
               <div className="flex items-center mb-2">
                 <div className="w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center mr-2">
