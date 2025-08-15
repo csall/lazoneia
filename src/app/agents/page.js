@@ -38,7 +38,7 @@ const AgentCard = ({ name, description, image, color, link }) => {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       viewport={{ once: true }}
-      className={`relative ${style.bg} backdrop-blur-lg p-8 rounded-3xl shadow-lg border ${style.border} overflow-hidden group w-full md:w-80 lg:w-96 flex flex-col`}
+      className={`relative ${style.bg} backdrop-blur-lg p-5 rounded-2xl shadow-lg border ${style.border} overflow-hidden group w-full md:w-72 lg:w-80 flex flex-col`}
       whileHover={{ 
         y: -10, 
         boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 15px -6px rgba(0, 0, 0, 0.2)" 
@@ -50,33 +50,33 @@ const AgentCard = ({ name, description, image, color, link }) => {
       {/* Card content */}
       <div className="relative z-10 flex-1 flex flex-col">
         <motion.div 
-          className="h-60 flex items-center justify-center mb-6"
+          className="h-44 flex items-center justify-center mb-4"
           whileHover={{ scale: 1.05, rotate: [-2, 2, -2], transition: { rotate: { repeat: Infinity, duration: 2 } } }}
         >
           <Image 
             src={image}
             alt={name}
-            width={200}
-            height={200}
+            width={150}
+            height={150}
             className="object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" 
             priority
           />
         </motion.div>
         
-        <h3 className={`text-2xl font-bold mb-3 text-white ${style.hover} transition-colors duration-300`}>
+        <h3 className={`text-xl font-bold mb-2 text-white ${style.hover} transition-colors duration-300`}>
           {name}
         </h3>
         
-        <p className="text-gray-300 mb-6 group-hover:text-white transition-colors duration-300 leading-relaxed flex-grow">
+        <p className="text-gray-300 mb-4 text-sm group-hover:text-white transition-colors duration-300 leading-relaxed flex-grow">
           {description}
         </p>
         
         <Link 
           href={link}
-          className={`w-full py-3 px-6 bg-gradient-to-r ${style.button} text-white font-bold rounded-xl transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center mt-auto`}
+          className={`w-full py-2 px-4 bg-gradient-to-r ${style.button} text-white font-bold rounded-lg transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center mt-auto text-sm`}
         >
           <span>Discuter avec {name.split(" ")[0]}</span>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
           </svg>
         </Link>
@@ -124,7 +124,7 @@ export default function AgentsPage() {
         </div>
       </header>
 
-      <section className="relative py-20 text-center px-4 overflow-hidden">
+      <section className="relative py-12 text-center px-4 overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10"></div>
         
@@ -157,27 +157,7 @@ export default function AgentsPage() {
           transition={{ duration: 1 }}
           viewport={{ once: true }}
         >
-          <motion.h1 
-            className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-200 to-purple-100"
-            initial={{ y: 50, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            Le Trio IA Irrésistible
-          </motion.h1>
-          
-          <motion.p 
-            className="mb-16 max-w-2xl mx-auto text-blue-100 text-xl leading-relaxed"
-            initial={{ y: 50, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
-            Découvrez Olivier, Clara et Max, une équipe d&apos;agents IA conçue pour transformer votre entreprise avec humour, charme et intelligence analytique.
-          </motion.p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {agents.map((agent, i) => (
               <AgentCard 
                 key={i}
