@@ -9,6 +9,7 @@ export default function PunchyPage() {
   const [userInput, setUserInput] = useState("");
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
   const textareaRef = useRef(null);
 
   // Ajuster automatiquement la hauteur du textarea en fonction du contenu
@@ -18,6 +19,51 @@ export default function PunchyPage() {
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [userInput]);
+
+  // Ajouter des gestionnaires d'événements pour le collage
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    
+    if (!textarea) return;
+    
+    // Gestionnaire d'événements pour le collage natif (Ctrl+V / Cmd+V)
+    const handleNativePaste = (e) => {
+      // On laisse le comportement par défaut du navigateur coller le texte
+      // React mettra à jour userInput automatiquement via onChange
+      
+      // Puis on ajuste la hauteur après que le contenu soit mis à jour
+      setTimeout(() => {
+        if (textarea) {
+          textarea.style.height = "auto";
+          textarea.style.height = `${textarea.scrollHeight}px`;
+        }
+      }, 10);
+    };
+    
+    // Gestionnaire de raccourcis clavier pour mettre en évidence Ctrl+V
+    const handleKeyDown = (e) => {
+      // Détecter Ctrl+V ou Cmd+V
+      if ((e.ctrlKey || e.metaKey) && e.key === 'v') {
+        // Ajouter une classe pour l'effet visuel
+        textarea.classList.add('paste-highlight');
+        
+        // Retirer la classe après un moment
+        setTimeout(() => {
+          textarea.classList.remove('paste-highlight');
+        }, 500);
+      }
+    };
+    
+    // Ajouter les écouteurs d'événements
+    textarea.addEventListener('paste', handleNativePaste);
+    textarea.addEventListener('keydown', handleKeyDown);
+    
+    // Nettoyer les écouteurs d'événements
+    return () => {
+      textarea.removeEventListener('paste', handleNativePaste);
+      textarea.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   // Fonction pour gérer la soumission du message
   const handleSubmit = async (e) => {
@@ -38,12 +84,31 @@ export default function PunchyPage() {
       const randomResponse = humorResponses[Math.floor(Math.random() * humorResponses.length)];
       setResponse(randomResponse);
       setIsLoading(false);
+      setIsCopied(false); // Réinitialiser l'état de copie
     }, 1500);
   };
 
   const handleClear = () => {
     setUserInput("");
     setResponse("");
+    setIsCopied(false);
+  };
+  
+  // Cette section contenait précédemment la fonction de gestion du collage qui n'est plus nécessaire
+  
+  // Fonction pour copier la réponse dans le presse-papiers
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(response);
+      setIsCopied(true);
+      
+      // Réinitialiser l'état après 2 secondes
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 2000);
+    } catch (err) {
+      console.error("Échec lors de la copie:", err);
+    }
   };
 
   return (
@@ -102,13 +167,25 @@ export default function PunchyPage() {
           >
             <h2 className="text-lg font-bold mb-2">Votre texte</h2>
             <form onSubmit={handleSubmit} className="space-y-3">
-              <div>
+              <div className="relative">
+                <style jsx global>{`
+                  .paste-highlight {
+                    border-color: #818cf8 !important;
+                    box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.3) !important;
+                    animation: paste-flash 0.5s;
+                  }
+                  
+                  @keyframes paste-flash {
+                    0%, 100% { background-color: rgba(79, 70, 229, 0.5); }
+                    50% { background-color: rgba(99, 102, 241, 0.7); }
+                  }
+                `}</style>
                 <textarea
                   ref={textareaRef}
                   value={userInput}
                   onChange={(e) => setUserInput(e.target.value)}
                   placeholder="Écrivez une phrase banale à transformer..."
-                  className="w-full h-[120px] bg-indigo-900/50 text-white placeholder-indigo-300 rounded-lg p-3 border border-indigo-600/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none resize-none transition text-sm"
+                  className="w-full h-[120px] bg-indigo-900/50 text-white placeholder-indigo-300 rounded-lg p-3 border border-indigo-600/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none resize-none transition-all duration-200 text-sm"
                   rows={4}
                 />
               </div>
@@ -149,8 +226,32 @@ export default function PunchyPage() {
                 <p className="mt-2 text-indigo-200 text-sm">Punchy prépare une punchline...</p>
               </div>
             ) : response ? (
-              <div className="bg-indigo-900/30 rounded-lg p-3 border border-indigo-700/30 h-full">
-                <p className="whitespace-pre-wrap text-indigo-100 text-sm">{response}</p>
+              <div className="bg-indigo-900/30 rounded-lg p-3 border border-indigo-700/30 h-full relative">
+                <p className="whitespace-pre-wrap text-indigo-100 text-sm mb-8">{response}</p>
+                <button
+                  onClick={copyToClipboard}
+                  className={`absolute bottom-3 right-3 flex items-center gap-1.5 ${
+                    isCopied 
+                      ? 'bg-green-600/70 hover:bg-green-600/90' 
+                      : 'bg-indigo-600/60 hover:bg-indigo-600/80'
+                  } text-white text-xs py-1.5 px-3 rounded-lg transition-all duration-300`}
+                >
+                  {isCopied ? (
+                    <>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Copié!
+                    </>
+                  ) : (
+                    <>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                      Copier
+                    </>
+                  )}
+                </button>
               </div>
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center text-indigo-300/70">
