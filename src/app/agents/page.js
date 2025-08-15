@@ -36,7 +36,7 @@ const GoogleMenu = () => {
   }, [isOpen]);
 
   return (
-    <div className="relative z-50" ref={menuRef}>
+    <div className="relative z-10" ref={menuRef}>
       {/* Bouton du menu avec l'icône à 9 points */}
       <motion.button
         className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 shadow-lg hover:bg-white/20 transition-colors"
@@ -44,8 +44,9 @@ const GoogleMenu = () => {
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Menu applications"
+        type="button"
       >
-        <div className="grid grid-cols-3 gap-1">
+        <div className="grid grid-cols-3 gap-1 pointer-events-none">
           {Array.from({ length: 9 }).map((_, i) => (
             <div key={i} className="w-1.5 h-1.5 bg-white rounded-full" />
           ))}
@@ -69,7 +70,7 @@ const GoogleMenu = () => {
           >
             <div className="p-1 grid grid-cols-2 gap-2">
               {menuItems.map((item, i) => (
-                <Link href={item.link} key={i}>
+                <Link href={item.link} key={i} className="block">
                   <motion.div
                     className="flex flex-col items-center p-3 rounded-lg hover:bg-white/10 transition-colors"
                     whileHover={{ scale: 1.05 }}
@@ -82,7 +83,7 @@ const GoogleMenu = () => {
                         alt={item.name}
                         width={24}
                         height={24}
-                        className="opacity-90"
+                        className="opacity-90 pointer-events-none"
                       />
                     </div>
                     <span className="text-sm font-medium text-white">
@@ -529,7 +530,7 @@ export default function AgentsPage() {
       link: "/agent/reply",
       tagline: "Messages parfaits",
     },
-    
+
     {
       name: "Scribo",
       description:
@@ -567,7 +568,7 @@ export default function AgentsPage() {
 
         <div className="container mx-auto mb-12 relative">
           {/* Barre de navigation avec bouton retour et menu Google */}
-          <div className="flex justify-between items-center w-full absolute top-0 left-0 right-0 z-20 px-4">
+          <div className="flex justify-between items-center w-full fixed top-0 left-0 right-0 z-40 px-4 py-1 bg-gradient-to-b from-blue-900/80 to-transparent backdrop-blur-sm">
             {/* Bouton de retour moderne */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -585,7 +586,7 @@ export default function AgentsPage() {
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
+                    className="h-5 w-5 pointer-events-none"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -610,105 +611,403 @@ export default function AgentsPage() {
               <GoogleMenu />
             </motion.div>
           </div>
+          
+          {/* Espace pour compenser la barre de navigation fixe - réduit */}
+          <div className="h-10"></div>
+          
+          {/* Titre LaZoneIA avec animations avancées */}
+          <div className="relative mb-6 mt-1 pt-2 pb-2">
+            {/* Effet de glow animé derrière le titre */}
+            <motion.div 
+              className="absolute top-1/2 left-1/2 w-4/5 h-16 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/30 via-indigo-500/30 to-purple-600/30 rounded-full blur-2xl"
+              animate={{ 
+                width: ["60%", "75%", "60%"],
+                height: ["140%", "200%", "140%"],
+                opacity: [0.3, 0.5, 0.3],
+              }}
+              transition={{ 
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+            
+            {/* Particules flottantes autour du titre */}
+            <div className="absolute inset-0 overflow-hidden">
+              {[
+                { x: "20%", y: "20%", size: "2px", delay: 0, duration: 7 },
+                { x: "80%", y: "30%", size: "3px", delay: 1, duration: 9 },
+                { x: "30%", y: "70%", size: "1.5px", delay: 2, duration: 8 },
+                { x: "70%", y: "80%", size: "2px", delay: 3, duration: 6 },
+                { x: "40%", y: "40%", size: "2.5px", delay: 0.5, duration: 10 },
+                { x: "60%", y: "60%", size: "1px", delay: 1.5, duration: 7 },
+                { x: "90%", y: "40%", size: "2px", delay: 2.5, duration: 8 },
+                { x: "10%", y: "50%", size: "1.5px", delay: 3.5, duration: 9 },
+              ].map((particle, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute bg-white rounded-full"
+                  style={{ 
+                    width: particle.size, 
+                    height: particle.size,
+                    left: particle.x,
+                    top: particle.y,
+                  }}
+                  initial={{ opacity: 0 }}
+                  animate={{ 
+                    opacity: [0.4, 0.8, 0.4],
+                    scale: [1, 1.5, 1],
+                    x: [0, 10, -10, 0],
+                    y: [0, -10, 10, 0],
+                  }}
+                  transition={{
+                    duration: particle.duration,
+                    delay: particle.delay,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+              ))}
+            </div>
+            
+            {/* Ligne décorative avec animation */}
+            <motion.div
+              className="absolute left-1/2 -translate-x-1/2 h-[1px] bg-gradient-to-r from-transparent via-blue-400/40 to-transparent"
+              initial={{ width: "0%" }}
+              animate={{ width: ["0%", "50%", "0%"] }}
+              transition={{
+                duration: 5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              style={{ top: "calc(50% + 24px)" }}
+            />
+            
+            {/* Titre principal avec animation lettre par lettre */}
+            <div className="relative flex justify-center items-center">
+              {["L", "a", "Z", "o", "n", "e", "I", "A"].map((letter, index) => (
+                <motion.span
+                  key={index}
+                  className={`text-4xl md:text-5xl font-bold ${
+                    letter === "Z" || letter === "I" || letter === "A" 
+                      ? "bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500" 
+                      : "text-white"
+                  }`}
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.1 * index,
+                    type: "spring",
+                    stiffness: 120,
+                  }}
+                  whileHover={{
+                    scale: 1.2,
+                    rotate: [-5, 5, 0],
+                    transition: { duration: 0.3 }
+                  }}
+                >
+                  {letter}
+                </motion.span>
+              ))}
+            </div>
+            
+            {/* Tagline animée */}
+            <motion.div
+              className="text-sm text-blue-200/80 text-center mt-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 1] }}
+              transition={{ delay: 1, duration: 1 }}
+            >
+              <motion.span
+                animate={{ opacity: [0.7, 1, 0.7] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              >
+                L&apos;intelligence artificielle à votre service
+              </motion.span>
+            </motion.div>
+            
+            {/* Accents décoratifs */}
+            <motion.div
+              className="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-10"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            >
+              <svg viewBox="0 0 100 100" className="w-full h-full opacity-30">
+                <circle cx="50" cy="50" r="40" stroke="white" strokeWidth="1" fill="none" strokeDasharray="3 6" />
+                <circle cx="50" cy="50" r="20" stroke="white" strokeWidth="1" fill="none" />
+              </svg>
+            </motion.div>
+          </div>
 
-          {/* Boutons de filtrage - Design simplifié pour une fiabilité maximale */}
+          {/* Filtres avec design ultra-moderne et animations avancées */}
           <motion.div
-            className="relative mx-auto max-w-xs sm:max-w-md backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl p-1.5 shadow-lg mb-12"
+            className="relative mx-auto max-w-xs sm:max-w-md py-3 mb-8 mt-2"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.7, type: "spring", stiffness: 100 }}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-xl"></div>
-            <div className="absolute inset-0 rounded-xl overflow-hidden">
-              <div className="absolute -inset-[100%] bg-gradient-conic from-purple-500/20 via-blue-500/10 to-transparent opacity-30 blur-3xl animate-slow-spin"></div>
+            {/* Effet de glow derrière le switch */}
+            <div className="absolute inset-0 -z-10">
+              <motion.div 
+                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full blur-2xl opacity-30 bg-gradient-to-r ${filter === "all" ? "from-blue-600 to-purple-600" : "from-amber-500 to-yellow-500"}`}
+                animate={{ 
+                  width: ["40%", "60%", "40%"],
+                  height: ["60%", "90%", "60%"],
+                  opacity: [0.2, 0.3, 0.2]
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
             </div>
-
-            {/* Boutons de filtre simplifiés avec des divs standard */}
-            <div className="grid grid-cols-2 gap-2 p-1 w-full relative z-10">
+            
+            <div className="flex items-center justify-center relative h-14 p-1 rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl overflow-hidden">
+              {/* Motif de grille subtil */}
+              <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5"></div>
+              
+              {/* Particules flottantes */}
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                {/* Positions prédéfinies pour éviter les erreurs d'hydratation */}
+                {[
+                  { x: "20%", y: "30%", scale: 0.8, opacity: 0.3, duration: 8 },
+                  { x: "65%", y: "60%", scale: 0.7, opacity: 0.5, duration: 10 },
+                  { x: "35%", y: "15%", scale: 0.9, opacity: 0.4, duration: 7 },
+                  { x: "80%", y: "40%", scale: 0.75, opacity: 0.6, duration: 9 },
+                  { x: "50%", y: "75%", scale: 0.85, opacity: 0.35, duration: 12 }
+                ].map((particle, i) => (
+                  <motion.div
+                    key={i}
+                    className={`absolute w-1 h-1 rounded-full ${filter === "favorites" ? "bg-yellow-400" : "bg-blue-400"} blur-[1px]`}
+                    initial={{
+                      x: particle.x,
+                      y: particle.y,
+                      opacity: particle.opacity,
+                      scale: particle.scale
+                    }}
+                    animate={{
+                      x: [particle.x, `${parseInt(particle.x) + 10}%`, particle.x],
+                      y: [particle.y, `${parseInt(particle.y) + 15}%`, particle.y],
+                      opacity: [particle.opacity, particle.opacity + 0.2, particle.opacity],
+                    }}
+                    transition={{
+                      duration: particle.duration,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                ))}
+              </div>
+              
+              {/* Pill background animé qui suit la sélection active avec effet de parallaxe */}
+              <motion.div
+                className={`absolute inset-y-1.5 rounded-lg bg-gradient-to-r ${filter === "all" ? "from-blue-600/90 via-indigo-600/90 to-purple-600/90" : "from-amber-500/90 via-orange-400/90 to-yellow-500/90"} shadow-lg`}
+                style={{
+                  boxShadow: `0 4px 12px ${filter === "all" ? "rgba(59, 130, 246, 0.3)" : "rgba(245, 158, 11, 0.3)"}`
+                }}
+                animate={{
+                  left: filter === "all" ? 1.5 : "50%",
+                  width: "50%"
+                }}
+                initial={{
+                  left: filter === "all" ? 1.5 : "50%",
+                  width: "50%"
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 400,
+                  damping: 35
+                }}
+              >
+                {/* Effet de brillance qui se déplace */}
+                <motion.div 
+                  className="absolute inset-0 overflow-hidden"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  <motion.div
+                    className="absolute top-0 -inset-x-full h-full w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-20"
+                    animate={{ x: ["0%", "200%"] }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 2,
+                      ease: "easeInOut",
+                    }}
+                  />
+                </motion.div>
+                
+                {/* Motif de hachure pour texture */}
+                <div className="absolute inset-0 opacity-10 mix-blend-overlay">
+                  <svg width="100%" height="100%">
+                    <pattern id="diagonalHatch" width="10" height="10" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+                      <line x1="0" y1="0" x2="0" y2="10" stroke="white" strokeWidth="1" />
+                    </pattern>
+                    <rect width="100%" height="100%" fill="url(#diagonalHatch)" />
+                  </svg>
+                </div>
+              </motion.div>
+              
               {/* Bouton Tous */}
-              <div
-                className={`
-                  h-12 rounded-md overflow-hidden relative cursor-pointer
-                  ${
-                    filter === "all"
-                      ? "bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg"
-                      : "bg-white/10 hover:bg-white/20"
-                  }
-                `}
+              <motion.button
                 onClick={() => setFilter("all")}
+                className="relative z-10 w-1/2 h-full flex items-center justify-center rounded-lg"
+                whileHover={{ scale: filter === "all" ? 1 : 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                type="button"
+                aria-pressed={filter === "all"}
+                style={{ touchAction: "manipulation" }}
               >
-                {/* Effet pour l'état actif */}
-                {filter === "all" && (
-                  <div className="absolute inset-0 opacity-30">
-                    <div className="absolute inset-0 bg-gradient-conic from-white/30 via-transparent to-white/30 animate-slow-spin"></div>
-                  </div>
-                )}
-
-                {/* Overlay cliquable transparent */}
-                <div className="absolute inset-0 z-10"></div>
-
-                {/* Contenu */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span
-                    className={`text-sm font-medium ${
-                      filter === "all" ? "text-white" : "text-blue-100/90"
+                <div className="flex items-center justify-center gap-2 pointer-events-none">
+                  <motion.div className="relative">
+                    <div className="relative">
+                      <motion.svg 
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                        className={`w-5 h-5 ${filter === "all" ? "text-white" : "text-blue-200"}`}
+                        animate={filter === "all" ? { 
+                          scale: [1, 1.15, 1],
+                        } : {}}
+                        transition={{ duration: 2.5, repeat: filter === "all" ? Infinity : 0 }}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 018.25 20.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                      </motion.svg>
+                      
+                      {/* Badge avec le nombre d'agents */}
+                      <motion.div 
+                        className={`absolute -top-2 -right-2 min-w-[18px] h-[18px] rounded-full ${filter === "all" ? "bg-blue-500" : "bg-blue-400/50"} flex items-center justify-center text-[10px] font-bold border border-white/20 shadow-sm`}
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring", stiffness: 400, delay: 0.2 }}
+                      >
+                        {agents.length}
+                      </motion.div>
+                    </div>
+                    
+                    {filter === "all" && (
+                      <motion.div 
+                        className="absolute -inset-1 rounded-full bg-white/30 blur-md -z-10"
+                        animate={{ 
+                          scale: [1, 1.4, 1],
+                          opacity: [0.2, 0.1, 0.2]
+                        }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      />
+                    )}
+                  </motion.div>
+                  <motion.span
+                    className={`font-medium text-sm tracking-wide ${
+                      filter === "all" ? "text-white" : "text-blue-200"
                     }`}
+                    animate={filter === "all" ? {
+                      opacity: [1, 0.8, 1]
+                    } : {}}
+                    transition={{ duration: 3, repeat: filter === "all" ? Infinity : 0 }}
                   >
-                    Tous les agents
-                  </span>
+                    Tous
+                  </motion.span>
                 </div>
-              </div>
-
+              </motion.button>
+              
+              {/* Séparateur vertical subtil */}
+              {filter !== "all" && filter !== "favorites" && (
+                <div className="h-6 w-px bg-white/20 absolute"></div>
+              )}
+              
               {/* Bouton Favoris */}
-              <div
-                className={`
-                  h-12 rounded-md overflow-hidden relative cursor-pointer
-                  ${
-                    filter === "favorites"
-                      ? "bg-gradient-to-r from-purple-600 to-pink-600 shadow-lg"
-                      : "bg-white/10 hover:bg-white/20"
-                  }
-                `}
+              <motion.button
                 onClick={() => setFilter("favorites")}
+                className="relative z-10 w-1/2 h-full flex items-center justify-center rounded-lg"
+                whileHover={{ scale: filter === "favorites" ? 1 : 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                type="button"
+                aria-pressed={filter === "favorites"}
+                style={{ touchAction: "manipulation" }}
               >
-                {/* Effet pour l'état actif */}
-                {filter === "favorites" && (
-                  <div className="absolute inset-0 opacity-30">
-                    <div className="absolute inset-0 bg-gradient-conic from-yellow-300/30 via-transparent to-yellow-300/30 animate-slow-spin"></div>
-                  </div>
-                )}
-
-                {/* Overlay cliquable transparent */}
-                <div className="absolute inset-0 z-10"></div>
-
-                {/* Contenu */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="flex items-center justify-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className={`w-4 h-4 ${
-                        filter === "favorites"
-                          ? "text-yellow-300"
-                          : "text-yellow-400/70"
-                      }`}
-                    >
-                      <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
-                    </svg>
-                    <span
-                      className={`text-sm font-medium ${
-                        filter === "favorites"
-                          ? "text-white"
-                          : "text-blue-100/90"
-                      }`}
-                    >
-                      Favoris
-                    </span>
-                  </div>
+                <div className="flex items-center justify-center gap-2 pointer-events-none">
+                  <motion.div className="relative">
+                    <div className="relative">
+                      <motion.svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className={`w-5 h-5 pointer-events-none ${
+                          filter === "favorites" ? "text-white" : "text-yellow-300"
+                        }`}
+                        animate={
+                          filter === "favorites"
+                            ? {
+                                scale: [1, 1.2, 1],
+                                rotate: [0, 6, -6, 0],
+                              }
+                            : {}
+                        }
+                        transition={{
+                          duration: 1.5,
+                          repeat: filter === "favorites" ? Infinity : 0,
+                          ease: "easeInOut"
+                        }}
+                      >
+                        <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                      </motion.svg>
+                      
+                      {/* Badge avec le nombre de favoris */}
+                      <motion.div 
+                        className={`absolute -top-2 -right-2 min-w-[18px] h-[18px] rounded-full ${filter === "favorites" ? "bg-yellow-500" : "bg-yellow-400/50"} flex items-center justify-center text-[10px] font-bold border border-white/20 shadow-sm`}
+                        initial={{ scale: 0 }}
+                        animate={{ 
+                          scale: 1,
+                          rotateZ: favorites.length > 0 ? [0, -10, 10, -10, 0] : 0
+                        }}
+                        transition={{ 
+                          type: "spring", 
+                          stiffness: 400, 
+                          delay: 0.2,
+                          rotateZ: { duration: 0.6, ease: "easeInOut" }
+                        }}
+                      >
+                        {favorites.length}
+                      </motion.div>
+                    </div>
+                    
+                    {filter === "favorites" && (
+                      <motion.div 
+                        className="absolute -inset-1 rounded-full bg-yellow-300/30 blur-md -z-10"
+                        animate={{ 
+                          scale: [1, 1.4, 1],
+                          opacity: [0.2, 0.1, 0.2]
+                        }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      />
+                    )}
+                  </motion.div>
+                  <motion.span
+                    className={`font-medium text-sm tracking-wide ${
+                      filter === "favorites" ? "text-white" : "text-blue-200"
+                    }`}
+                    animate={filter === "favorites" ? {
+                      opacity: [1, 0.8, 1]
+                    } : {}}
+                    transition={{ duration: 3, repeat: filter === "favorites" ? Infinity : 0 }}
+                  >
+                    Favoris
+                  </motion.span>
                 </div>
-              </div>
+              </motion.button>
             </div>
+            
+            {/* Ligne de séparation décorative en bas des filtres */}
+            <motion.div
+              className="absolute -bottom-4 left-1/2 h-[1px] bg-gradient-to-r from-transparent via-blue-400/30 to-transparent"
+              style={{ width: "60%" }}
+              initial={{ opacity: 0, x: "-50%" }}
+              animate={{ opacity: 1, x: "-50%" }}
+              transition={{ delay: 0.7 }}
+            />
           </motion.div>
         </div>
 
