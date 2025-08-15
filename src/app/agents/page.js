@@ -52,10 +52,12 @@ const AgentCard = ({ name, description, image, color, link }) => {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       viewport={{ once: true }}
-      className={`relative ${style.bg} backdrop-blur-lg p-5 rounded-2xl shadow-lg border ${style.border} overflow-hidden group w-full md:w-72 lg:w-80 flex flex-col`}
+      className={`relative ${style.bg} backdrop-blur-lg p-5 rounded-2xl shadow-lg border ${style.border} group w-full md:w-72 lg:w-80 flex flex-col min-h-[360px]`}
       whileHover={{ 
-        y: -10, 
-        boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 15px -6px rgba(0, 0, 0, 0.2)" 
+        y: -10,
+        zIndex: 20, 
+        scale: 1.03,
+        boxShadow: "0 25px 35px -5px rgba(0, 0, 0, 0.4), 0 15px 20px -6px rgba(0, 0, 0, 0.3)" 
       }}
     >
       {/* Background glow effect */}
@@ -81,9 +83,12 @@ const AgentCard = ({ name, description, image, color, link }) => {
           {name}
         </h3>
         
-        <p className="text-gray-300 mb-4 text-sm group-hover:text-white transition-colors duration-300 leading-relaxed flex-grow">
-          {description}
-        </p>
+        <div className="relative overflow-hidden">
+          <p className="text-gray-300 mb-4 text-sm group-hover:text-white transition-all duration-300 leading-relaxed flex-grow max-h-[80px] group-hover:max-h-[400px]">
+            {description}
+          </p>
+          <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-black/60 to-transparent group-hover:opacity-0 transition-opacity duration-300"></div>
+        </div>
         
         <Link 
           href={link}
@@ -102,11 +107,11 @@ const AgentCard = ({ name, description, image, color, link }) => {
 export default function AgentsPage() {
   const agents = [
     { 
-      name: "Charm", 
-      description: "Le maître des mots qui font chavirer. Propose des réponses séduisantes adaptées à la situation et au ton voulu (gentleman, joueur, mystérieux). Parfait pour applis de rencontre, SMS coquins ou flirt léger au quotidien.", 
-      image: "/clara-bot.svg", // Réutilisation de l'image existante
-      color: "charm",
-      link: "/agent/charm"
+      name: "Reply", 
+      description: "Le génie des réponses parfaites. Suggère plusieurs options adaptées à chaque situation, du ton pro au ton cool ou humoristique. Idéal pour relations pro, séduction ou service client.", 
+      image: "/max-bot.svg", // Réutilisation de l'image existante - à remplacer par une nouvelle image
+      color: "reply",
+      link: "/agent/reply"
     },
     { 
       name: "Punchy", 
@@ -123,18 +128,18 @@ export default function AgentsPage() {
       link: "/agent/pitchy"
     },
     { 
-      name: "Reply", 
-      description: "Le génie des réponses parfaites. Suggère plusieurs options adaptées à chaque situation, du ton pro au ton cool ou humoristique. Idéal pour relations pro, séduction ou service client.", 
-      image: "/max-bot.svg", // Réutilisation de l'image existante - à remplacer par une nouvelle image
-      color: "reply",
-      link: "/agent/reply"
-    },
-    { 
       name: "Lingo", 
       description: "Le globe-trotteur des langues. Traduit tout en conservant le ton voulu (pro, amical, séduisant, humoristique). Parfait pour conversations internationales, réseaux sociaux ou voyages.", 
       image: "/olivier-bot.svg", // Réutilisation de l'image existante - à remplacer par une nouvelle image
       color: "lingo",
       link: "/agent/lingo"
+    },
+    { 
+      name: "Charm", 
+      description: "Le maître des mots qui font chavirer. Propose des réponses séduisantes adaptées à la situation et au ton voulu (gentleman, joueur, mystérieux). Parfait pour applis de rencontre, SMS coquins ou flirt léger au quotidien.", 
+      image: "/clara-bot.svg", // Réutilisation de l'image existante
+      color: "charm",
+      link: "/agent/charm"
     }
   ];
 
@@ -185,7 +190,7 @@ export default function AgentsPage() {
           transition={{ duration: 1 }}
           viewport={{ once: true }}
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 p-4 max-w-7xl mx-auto">
             {agents.map((agent, i) => (
               <AgentCard 
                 key={i}
@@ -199,18 +204,6 @@ export default function AgentsPage() {
           </div>
         </motion.div>
       </section>
-
-      {/* Footer avec effet visuel */}
-      <footer className="relative py-8 bg-blue-950 text-center">
-        <div className="absolute inset-0 overflow-hidden opacity-20">
-          <div className="absolute inset-0" style={{ 
-            backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(62, 116, 255, 0.8) 0%, transparent 40%), radial-gradient(circle at 80% 60%, rgba(148, 99, 255, 0.8) 0%, transparent 40%)'
-          }}></div>
-        </div>
-        <div className="relative z-10 container mx-auto px-4">
-          <p className="text-blue-300 text-sm">© 2025 La Zone IA. Tous droits réservés.</p>
-        </div>
-      </footer>
     </main>
   );
 }

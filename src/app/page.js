@@ -152,18 +152,6 @@ export default function Home() {
           </motion.div>
         </motion.div>
       </section>
-      
-      {/* Footer avec effet visuel */}
-      <footer className="relative py-8 bg-blue-950 text-center">
-        <div className="absolute inset-0 overflow-hidden opacity-20">
-          <div className="absolute inset-0" style={{ 
-            backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(62, 116, 255, 0.8) 0%, transparent 40%), radial-gradient(circle at 80% 60%, rgba(148, 99, 255, 0.8) 0%, transparent 40%)'
-          }}></div>
-        </div>
-        <div className="relative z-10 container mx-auto px-4">
-          <p className="text-blue-300 text-sm">© 2025 La Zone IA. Tous droits réservés.</p>
-        </div>
-      </footer>
     </main>
   );
 }

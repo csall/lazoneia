@@ -13,9 +13,6 @@ export default function Layout({ children }) {
         </nav>
       </header>
       <main className="flex-1">{children}</main>
-      <footer className="bg-blue-800 text-white p-4 text-center">
-        © 2025 La Zone IA
-      </footer>
     </div>
   );
 }
