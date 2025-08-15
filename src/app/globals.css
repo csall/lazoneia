@@ -12,6 +12,62 @@
   --font-mono: var(--font-geist-mono);
 }
 
+@keyframes slow-pulse {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes slow-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-slow-pulse {
+  animation: slow-pulse 8s infinite ease-in-out;
+}
+
+.animate-slow-spin {
+  animation: slow-spin 60s infinite linear;
+}
+
+.animate-gradient-shift {
+  animation: gradient-shift 15s infinite linear;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.bg-gradient-conic {
+  background-image: conic-gradient(from 0deg at 50% 50%, var(--tw-gradient-from) 0%, var(--tw-gradient-via) 50%, var(--tw-gradient-to) 100%);
+}
+
+.bg-gradient-radial {
+  background-image: radial-gradient(ellipse at center, var(--tw-gradient-from), var(--tw-gradient-to));
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;

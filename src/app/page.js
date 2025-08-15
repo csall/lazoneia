@@ -66,7 +66,7 @@ export default function Home() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 1 }}
           >
-            Automatisez, optimisez et propulsez votre business avec nos agents IA intelligents.
+            Exprimez-vous parfaitement dans toutes les situations avec nos agents IA spécialisés en communication.
           </motion.p>
           
           <motion.div
@@ -86,68 +86,6 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
               </div>
-            </Link>
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* Contact Section */}
-      <section id="contact" className="relative py-36 text-center px-4 bg-gradient-to-t from-blue-950 to-blue-900/70 overflow-hidden">
-        {/* Background decoration */}
-        <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-transparent to-blue-900/80 blur-md"></div>
-        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
-        
-        <motion.div 
-          className="relative z-10 max-w-4xl mx-auto"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <motion.h2 
-            className="text-4xl md:text-5xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200"
-            initial={{ y: 50, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <AnimatedText>Contactez-nous</AnimatedText>
-          </motion.h2>
-          
-          <motion.p 
-            className="mb-12 max-w-xl mx-auto text-blue-100 text-xl"
-            initial={{ y: 30, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
-            Posez vos questions ou demandez une démonstration personnalisée.
-          </motion.p>
-          
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 150, damping: 20, delay: 0.3 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            viewport={{ once: true }}
-            className="inline-block"
-          >
-            <Link
-              href="/contact"
-              className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-yellow-500/30"
-            >
-              <span>Envoyer un message</span>
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
-              <div className="absolute -inset-1 rounded-full blur opacity-30 group-hover:opacity-100 transition duration-300 group-hover:duration-200 bg-gradient-to-r from-yellow-400 to-amber-300"></div>
             </Link>
           </motion.div>
         </motion.div>
