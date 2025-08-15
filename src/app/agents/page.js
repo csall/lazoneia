@@ -2,8 +2,99 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+
+// Composant de menu style Google
+const GoogleMenu = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef(null);
+  
+  // Liste des applications/options du menu
+  const menuItems = [
+    { name: "Accueil", icon: "/globe.svg", link: "/" },
+    { name: "Agents", icon: "/max-bot.svg", link: "/agents" },
+    { name: "À propos", icon: "/file.svg", link: "/a-propos" },
+    { name: "Contact", icon: "/window.svg", link: "/contact" }
+  ];
+
+  // Fermer le menu si on clique à l'extérieur
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
+  return (
+    <div className="relative z-50" ref={menuRef}>
+      {/* Bouton du menu avec l'icône à 9 points */}
+      <motion.button
+        className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 shadow-lg hover:bg-white/20 transition-colors"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Menu applications"
+      >
+        <div className="grid grid-cols-3 gap-1">
+          {Array.from({ length: 9 }).map((_, i) => (
+            <div key={i} className="w-1.5 h-1.5 bg-white rounded-full" />
+          ))}
+        </div>
+      </motion.button>
+
+      {/* Menu déroulant */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: -5 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: -5 }}
+            transition={{ type: "spring", bounce: 0.1, duration: 0.4 }}
+            className="absolute right-0 mt-2 p-2 w-64 rounded-xl bg-white/10 backdrop-blur-xl border border-white/10 shadow-2xl"
+            style={{ 
+              boxShadow: '0 10px 40px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.2)', 
+              transformOrigin: 'top right'
+            }}
+          >
+            <div className="p-1 grid grid-cols-2 gap-2">
+              {menuItems.map((item, i) => (
+                <Link href={item.link} key={i}>
+                  <motion.div
+                    className="flex flex-col items-center p-3 rounded-lg hover:bg-white/10 transition-colors"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <div className="w-12 h-12 mb-2 bg-white/15 backdrop-blur-md rounded-full flex items-center justify-center">
+                      <Image 
+                        src={item.icon} 
+                        alt={item.name}
+                        width={24}
+                        height={24}
+                        className="opacity-90"
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-white">{item.name}</span>
+                  </motion.div>
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 // Composant pour chaque carte d'agent
 const AgentCard = ({ name, description, image, color, link, tagline, isFavorite, onToggleFavorite }) => {
@@ -189,7 +280,7 @@ const AgentCard = ({ name, description, image, color, link, tagline, isFavorite,
 
           {/* Image */}
           <motion.div 
-            className="h-48 flex items-center justify-center my-4 relative"
+            className="h-40 flex items-center justify-center my-4 relative"
             whileHover={{ 
               scale: 1.05, 
               rotateZ: [0, -2, 2, -2, 0],
@@ -204,7 +295,7 @@ const AgentCard = ({ name, description, image, color, link, tagline, isFavorite,
           >
             {/* Glow behind image */}
             <motion.div 
-              className={`absolute w-32 h-32 rounded-full bg-gradient-to-r ${style.glow} blur-2xl opacity-30 group-hover:opacity-50 transition-opacity duration-700`}
+              className={`absolute w-24 h-24 rounded-full bg-gradient-to-r ${style.glow} blur-2xl opacity-30 group-hover:opacity-50 transition-opacity duration-700`}
               animate={{ 
                 scale: [1, 1.2, 1],
               }}
@@ -217,7 +308,7 @@ const AgentCard = ({ name, description, image, color, link, tagline, isFavorite,
             
             <motion.div
               animate={{
-                y: [0, -7, 0],
+                y: [0, -5, 0],
               }}
               transition={{
                 duration: 3.5,
@@ -228,8 +319,8 @@ const AgentCard = ({ name, description, image, color, link, tagline, isFavorite,
               <Image 
                 src={image}
                 alt={name}
-                width={160}
-                height={160}
+                width={120}
+                height={120}
                 className="object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.35)]" 
                 priority
               />
@@ -421,27 +512,38 @@ export default function AgentsPage() {
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10"></div>
         
         <div className="container mx-auto mb-12 relative">
-          {/* Bouton de retour moderne - positionnement absolu par rapport au conteneur */}
-          <motion.div 
-            className="absolute left-0 top-0 z-20 md:left-4"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <Link href="/">
-              <motion.div
-                className="w-10 h-10 bg-white/5 backdrop-blur-md rounded-full border border-white/10 flex items-center justify-center shadow-lg"
-                whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,255,255,0.1)' }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-              </motion.div>
-            </Link>
-          </motion.div>
+          {/* Barre de navigation avec bouton retour et menu Google */}
+          <div className="flex justify-between items-center w-full absolute top-0 left-0 right-0 z-20 px-4">
+            {/* Bouton de retour moderne */}
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <Link href="/">
+                <motion.div
+                  className="w-10 h-10 bg-white/5 backdrop-blur-md rounded-full border border-white/10 flex items-center justify-center shadow-lg"
+                  whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,255,255,0.1)' }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg>
+                </motion.div>
+              </Link>
+            </motion.div>
+            
+            {/* Menu style Google en haut à droite */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+            >
+              <GoogleMenu />
+            </motion.div>
+          </div>
           
-          {/* Boutons de filtrage - Design moderne */}
+          {/* Boutons de filtrage - Design simplifié pour une fiabilité maximale */}
           <motion.div
             className="relative mx-auto max-w-xs sm:max-w-md backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl p-1.5 shadow-lg mb-12"
             initial={{ opacity: 0, y: 20 }}
@@ -453,47 +555,69 @@ export default function AgentsPage() {
               <div className="absolute -inset-[100%] bg-gradient-conic from-purple-500/20 via-blue-500/10 to-transparent opacity-30 blur-3xl animate-slow-spin"></div>
             </div>
             
-            <div className="relative z-10 flex w-full">
-              <motion.button
-                className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-300 relative ${filter === 'all' ? '' : 'text-blue-100/80 hover:text-white'}`}
+            {/* Boutons de filtre simplifiés avec des divs standard */}
+            <div className="grid grid-cols-2 gap-2 p-1 w-full relative z-10">
+              {/* Bouton Tous */}
+              <div 
+                className={`
+                  h-12 rounded-md overflow-hidden relative cursor-pointer
+                  ${filter === 'all' ? 'bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg' : 'bg-white/10 hover:bg-white/20'}
+                `}
                 onClick={() => setFilter('all')}
-                whileTap={{ scale: 0.97 }}
               >
-                <span className="relative z-10">Tous les agents</span>
+                {/* Effet pour l'état actif */}
                 {filter === 'all' && (
-                  <motion.div 
-                    className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-md shadow-lg"
-                    layoutId="filterBackground"
-                    initial={false}
-                    transition={{ type: "spring", duration: 0.6 }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-tr from-blue-400/20 to-transparent opacity-100 rounded-md"></div>
-                  </motion.div>
+                  <div className="absolute inset-0 opacity-30">
+                    <div className="absolute inset-0 bg-gradient-conic from-white/30 via-transparent to-white/30 animate-slow-spin"></div>
+                  </div>
                 )}
-              </motion.button>
+                
+                {/* Overlay cliquable transparent */}
+                <div className="absolute inset-0 z-10"></div>
+                
+                {/* Contenu */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className={`text-sm font-medium ${filter === 'all' ? 'text-white' : 'text-blue-100/90'}`}>
+                    Tous les agents
+                  </span>
+                </div>
+              </div>
               
-              <motion.button
-                className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-300 relative ${filter === 'favorites' ? '' : 'text-blue-100/80 hover:text-white'}`}
+              {/* Bouton Favoris */}
+              <div 
+                className={`
+                  h-12 rounded-md overflow-hidden relative cursor-pointer
+                  ${filter === 'favorites' ? 'bg-gradient-to-r from-purple-600 to-pink-600 shadow-lg' : 'bg-white/10 hover:bg-white/20'}
+                `}
                 onClick={() => setFilter('favorites')}
-                whileTap={{ scale: 0.97 }}
               >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`w-4 h-4 ${filter === 'favorites' ? 'text-yellow-300' : 'text-yellow-400/70'}`}>
-                    <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
-                  </svg>
-                  Favoris
-                </span>
+                {/* Effet pour l'état actif */}
                 {filter === 'favorites' && (
-                  <motion.div 
-                    className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-md shadow-lg"
-                    layoutId="filterBackground"
-                    initial={false}
-                    transition={{ type: "spring", duration: 0.6 }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-tr from-purple-400/20 to-transparent opacity-100 rounded-md"></div>
-                  </motion.div>
+                  <div className="absolute inset-0 opacity-30">
+                    <div className="absolute inset-0 bg-gradient-conic from-yellow-300/30 via-transparent to-yellow-300/30 animate-slow-spin"></div>
+                  </div>
                 )}
-              </motion.button>
+                
+                {/* Overlay cliquable transparent */}
+                <div className="absolute inset-0 z-10"></div>
+                
+                {/* Contenu */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="flex items-center justify-center gap-2">
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      viewBox="0 0 24 24" 
+                      fill="currentColor" 
+                      className={`w-4 h-4 ${filter === 'favorites' ? 'text-yellow-300' : 'text-yellow-400/70'}`}
+                    >
+                      <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                    </svg>
+                    <span className={`text-sm font-medium ${filter === 'favorites' ? 'text-white' : 'text-blue-100/90'}`}>
+                      Favoris
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>
