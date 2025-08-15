@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-export default function ClaraPage() {
+export default function PitchyPage() {
   const [userInput, setUserInput] = useState("");
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +29,25 @@ export default function ClaraPage() {
     
     // Simulation d'une réponse d'API (à remplacer par votre véritable appel API)
     setTimeout(() => {
-      setResponse(`Bonjour ! Je suis Clara, la séductrice virtuelle. Votre message était : "${userInput}"\n\nMerci de m'avoir partagé cela. Je trouve votre manière de vous exprimer vraiment captivante. Comment puis-je vous aider à créer une expérience plus engageante pour vos clients ?`);
+      const formattedText = userInput
+        .replace(/\./g, "... [pause courte] ")
+        .replace(/,/g, ", [respiration] ")
+        .replace(/\?/g, "? [ton montant] ")
+        .replace(/!/g, "! [ton affirmatif] ");
+        
+      const speechTips = [
+        "👉 Commencez fort pour capter l'attention",
+        "👉 Accentuez les mots-clés en gras",
+        "👉 Parlez plus lentement sur les concepts complexes",
+        "👉 Modulez votre voix pour maintenir l'intérêt",
+        "👉 Regardez votre audience, pas vos notes"
+      ];
+      
+      const randomTips = speechTips.sort(() => 0.5 - Math.random()).slice(0, 3);
+      
+      const responseText = `Voici votre texte optimisé pour l'oral:\n\n${formattedText}\n\n---\n\nConseils pour la présentation:\n${randomTips.join("\n")}`;
+      
+      setResponse(responseText);
       setIsLoading(false);
     }, 1500);
   };
@@ -40,7 +58,7 @@ export default function ClaraPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-r from-pink-900 to-rose-800 text-white">
+    <main className="min-h-screen bg-gradient-to-r from-emerald-900 to-green-800 text-white">
       {/* Header avec navigation */}
       <header className="py-3 px-4">
         <div className="container mx-auto flex justify-between items-center">
@@ -62,11 +80,11 @@ export default function ClaraPage() {
             className="w-24 h-24 md:w-32 md:h-32"
           >
             <Image 
-              src="/clara-bot.svg"
-              alt="Clara la séductrice"
+              src="/max-bot.svg"
+              alt="Pitchy"
               width={128}
               height={128}
-              className="w-full h-full drop-shadow-[0_0_20px_rgba(244,114,182,0.5)]" 
+              className="w-full h-full drop-shadow-[0_0_20px_rgba(16,185,129,0.5)]" 
               priority
             />
           </motion.div>
@@ -76,11 +94,11 @@ export default function ClaraPage() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-center md:text-left"
           >
-            <h1 className="text-3xl md:text-4xl font-extrabold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-pink-200 to-rose-200">
-              Clara la séductrice
+            <h1 className="text-3xl md:text-4xl font-extrabold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-emerald-200 to-green-200">
+              Pitchy
             </h1>
-            <p className="text-sm md:text-base text-pink-200 max-w-xl">
-              Partagez votre projet et je vous aiderai à créer une communication captivante.
+            <p className="text-sm md:text-base text-emerald-200 max-w-xl">
+              Le coach qui te met à l&apos;aise à l&apos;oral. Transforme un texte en discours fluide avec respirations et intonations.
             </p>
           </motion.div>
         </div>
@@ -91,17 +109,17 @@ export default function ClaraPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="bg-gradient-to-br from-pink-800/50 to-rose-800/50 backdrop-blur-md p-4 rounded-xl shadow-lg border border-pink-500/30"
+            className="bg-gradient-to-br from-emerald-800/50 to-green-800/50 backdrop-blur-md p-4 rounded-xl shadow-lg border border-emerald-500/30"
           >
-            <h2 className="text-lg font-bold mb-2">Votre message</h2>
+            <h2 className="text-lg font-bold mb-2">Votre texte</h2>
             <form onSubmit={handleSubmit} className="space-y-3">
               <div>
                 <textarea
                   ref={textareaRef}
                   value={userInput}
                   onChange={(e) => setUserInput(e.target.value)}
-                  placeholder="Décrivez votre projet ou posez votre question..."
-                  className="w-full h-[120px] bg-pink-900/50 text-white placeholder-pink-300 rounded-lg p-3 border border-pink-600/50 focus:border-pink-400 focus:ring focus:ring-pink-300/50 focus:outline-none resize-none transition text-sm"
+                  placeholder="Collez votre texte à transformer en discours..."
+                  className="w-full h-[120px] bg-emerald-900/50 text-white placeholder-emerald-300 rounded-lg p-3 border border-emerald-600/50 focus:border-emerald-400 focus:ring focus:ring-emerald-300/50 focus:outline-none resize-none transition text-sm"
                   rows={4}
                 />
               </div>
@@ -109,18 +127,18 @@ export default function ClaraPage() {
                 <button
                   type="submit"
                   disabled={isLoading || !userInput.trim()}
-                  className="flex-1 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 flex justify-center items-center text-sm"
+                  className="flex-1 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 flex justify-center items-center text-sm"
                 >
                   {isLoading ? (
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                   ) : (
-                    "Envoyer"
+                    "Optimiser pour l'oral"
                   )}
                 </button>
                 <button
                   type="button"
                   onClick={handleClear}
-                  className="bg-transparent border border-pink-400 hover:bg-pink-800/30 text-white py-2 px-4 rounded-lg transition-all duration-300 text-sm"
+                  className="bg-transparent border border-emerald-400 hover:bg-emerald-800/30 text-white py-2 px-4 rounded-lg transition-all duration-300 text-sm"
                 >
                   Effacer
                 </button>
@@ -133,24 +151,24 @@ export default function ClaraPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
-            className="bg-gradient-to-br from-rose-800/50 to-pink-800/50 backdrop-blur-md p-4 rounded-xl shadow-lg border border-rose-500/30 min-h-[240px] flex flex-col"
+            className="bg-gradient-to-br from-green-800/50 to-emerald-800/50 backdrop-blur-md p-4 rounded-xl shadow-lg border border-green-500/30 min-h-[240px] flex flex-col"
           >
-            <h2 className="text-lg font-bold mb-2">Réponse de Clara</h2>
+            <h2 className="text-lg font-bold mb-2">Conseils de Pitchy</h2>
             {isLoading ? (
               <div className="flex-1 flex flex-col items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                <p className="mt-2 text-pink-200 text-sm">Clara prépare une réponse captivante...</p>
+                <p className="mt-2 text-emerald-200 text-sm">Pitchy améliore votre discours...</p>
               </div>
             ) : response ? (
-              <div className="bg-pink-900/30 rounded-lg p-3 border border-pink-700/30 h-full">
-                <p className="whitespace-pre-wrap text-pink-100 text-sm">{response}</p>
+              <div className="bg-emerald-900/30 rounded-lg p-3 border border-emerald-700/30 h-full overflow-auto">
+                <p className="whitespace-pre-wrap text-emerald-100 text-sm">{response}</p>
               </div>
             ) : (
-              <div className="flex-1 flex flex-col items-center justify-center text-pink-300/70">
+              <div className="flex-1 flex flex-col items-center justify-center text-emerald-300/70">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                 </svg>
-                <p className="text-sm">La réponse de Clara apparaîtra ici</p>
+                <p className="text-sm">Les conseils de Pitchy apparaîtront ici</p>
               </div>
             )}
           </motion.div>

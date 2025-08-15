@@ -5,10 +5,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-export default function ClaraPage() {
+export default function CharmPage() {
   const [userInput, setUserInput] = useState("");
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedTone, setSelectedTone] = useState("gentleman");
   const textareaRef = useRef(null);
 
   // Ajuster automatiquement la hauteur du textarea en fonction du contenu
@@ -29,7 +30,17 @@ export default function ClaraPage() {
     
     // Simulation d'une réponse d'API (à remplacer par votre véritable appel API)
     setTimeout(() => {
-      setResponse(`Bonjour ! Je suis Clara, la séductrice virtuelle. Votre message était : "${userInput}"\n\nMerci de m'avoir partagé cela. Je trouve votre manière de vous exprimer vraiment captivante. Comment puis-je vous aider à créer une expérience plus engageante pour vos clients ?`);
+      let responseText = "";
+      
+      if (selectedTone === "gentleman") {
+        responseText = `Votre message est tel une mélodie à mes oreilles. "${userInput}"\n\nPermettez-moi de vous dire que votre façon de vous exprimer est élégante. Je serais honoré de poursuivre cette conversation et d'apprendre à vous connaître davantage.`;
+      } else if (selectedTone === "joueur") {
+        responseText = `Hey! J'adore ton message! "${userInput}"\n\nOn dirait que le destin nous a mis en contact pour une raison... Tu es aussi intéressant(e) que tu en as l'air sur ta photo? J'ai hâte de découvrir ça!`;
+      } else if (selectedTone === "mystérieux") {
+        responseText = `Intrigant... "${userInput}"\n\nIl y a quelque chose dans votre message qui éveille ma curiosité. Peut-être est-ce ce qui n'est pas dit qui est le plus fascinant. Laissez-moi vous connaître... petit à petit.`;
+      }
+      
+      setResponse(responseText);
       setIsLoading(false);
     }, 1500);
   };
@@ -63,7 +74,7 @@ export default function ClaraPage() {
           >
             <Image 
               src="/clara-bot.svg"
-              alt="Clara la séductrice"
+              alt="Charm"
               width={128}
               height={128}
               className="w-full h-full drop-shadow-[0_0_20px_rgba(244,114,182,0.5)]" 
@@ -77,10 +88,10 @@ export default function ClaraPage() {
             className="text-center md:text-left"
           >
             <h1 className="text-3xl md:text-4xl font-extrabold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-pink-200 to-rose-200">
-              Clara la séductrice
+              Charm
             </h1>
             <p className="text-sm md:text-base text-pink-200 max-w-xl">
-              Partagez votre projet et je vous aiderai à créer une communication captivante.
+              Le maître des mots qui font chavirer. Propose des réponses séduisantes adaptées à votre style.
             </p>
           </motion.div>
         </div>
@@ -95,12 +106,51 @@ export default function ClaraPage() {
           >
             <h2 className="text-lg font-bold mb-2">Votre message</h2>
             <form onSubmit={handleSubmit} className="space-y-3">
+              <div className="mb-3">
+                <label className="text-sm text-pink-200 mb-1 block">Choisissez votre style :</label>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTone("gentleman")}
+                    className={`px-3 py-1 rounded-lg text-xs transition ${
+                      selectedTone === "gentleman"
+                        ? "bg-pink-500 text-white"
+                        : "bg-pink-900/50 text-pink-300 hover:bg-pink-800/70"
+                    }`}
+                  >
+                    Gentleman
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTone("joueur")}
+                    className={`px-3 py-1 rounded-lg text-xs transition ${
+                      selectedTone === "joueur"
+                        ? "bg-pink-500 text-white"
+                        : "bg-pink-900/50 text-pink-300 hover:bg-pink-800/70"
+                    }`}
+                  >
+                    Joueur
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTone("mystérieux")}
+                    className={`px-3 py-1 rounded-lg text-xs transition ${
+                      selectedTone === "mystérieux"
+                        ? "bg-pink-500 text-white"
+                        : "bg-pink-900/50 text-pink-300 hover:bg-pink-800/70"
+                    }`}
+                  >
+                    Mystérieux
+                  </button>
+                </div>
+              </div>
+              
               <div>
                 <textarea
                   ref={textareaRef}
                   value={userInput}
                   onChange={(e) => setUserInput(e.target.value)}
-                  placeholder="Décrivez votre projet ou posez votre question..."
+                  placeholder="Écrivez votre message ou décrivez une situation..."
                   className="w-full h-[120px] bg-pink-900/50 text-white placeholder-pink-300 rounded-lg p-3 border border-pink-600/50 focus:border-pink-400 focus:ring focus:ring-pink-300/50 focus:outline-none resize-none transition text-sm"
                   rows={4}
                 />
@@ -114,7 +164,7 @@ export default function ClaraPage() {
                   {isLoading ? (
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                   ) : (
-                    "Envoyer"
+                    "Séduire"
                   )}
                 </button>
                 <button
@@ -135,11 +185,11 @@ export default function ClaraPage() {
             transition={{ duration: 0.5, delay: 0.6 }}
             className="bg-gradient-to-br from-rose-800/50 to-pink-800/50 backdrop-blur-md p-4 rounded-xl shadow-lg border border-rose-500/30 min-h-[240px] flex flex-col"
           >
-            <h2 className="text-lg font-bold mb-2">Réponse de Clara</h2>
+            <h2 className="text-lg font-bold mb-2">Réponse de Charm</h2>
             {isLoading ? (
               <div className="flex-1 flex flex-col items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                <p className="mt-2 text-pink-200 text-sm">Clara prépare une réponse captivante...</p>
+                <p className="mt-2 text-pink-200 text-sm">Charm prépare une réponse irrésistible...</p>
               </div>
             ) : response ? (
               <div className="bg-pink-900/30 rounded-lg p-3 border border-pink-700/30 h-full">
@@ -150,7 +200,7 @@ export default function ClaraPage() {
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
-                <p className="text-sm">La réponse de Clara apparaîtra ici</p>
+                <p className="text-sm">La réponse de Charm apparaîtra ici</p>
               </div>
             )}
           </motion.div>

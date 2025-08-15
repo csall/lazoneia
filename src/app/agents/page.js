@@ -7,26 +7,40 @@ import { motion } from "framer-motion";
 // Composant pour chaque carte d'agent
 const AgentCard = ({ name, description, image, color, link }) => {
   const cardStyles = {
-    olivier: {
-      bg: "bg-gradient-to-br from-indigo-900/60 to-violet-900/60",
-      border: "border-violet-500/20",
-      glow: "from-violet-500 to-indigo-600",
-      button: "from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700",
-      hover: "group-hover:text-indigo-200"
-    },
-    clara: {
+    charm: {
       bg: "bg-gradient-to-br from-pink-900/60 to-rose-900/60",
       border: "border-pink-500/20",
       glow: "from-pink-500 to-rose-600",
       button: "from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700",
       hover: "group-hover:text-pink-200"
     },
-    max: {
+    punchy: {
+      bg: "bg-gradient-to-br from-indigo-900/60 to-violet-900/60",
+      border: "border-violet-500/20",
+      glow: "from-violet-500 to-indigo-600",
+      button: "from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700",
+      hover: "group-hover:text-indigo-200"
+    },
+    pitchy: {
+      bg: "bg-gradient-to-br from-emerald-900/60 to-green-900/60",
+      border: "border-emerald-500/20",
+      glow: "from-emerald-500 to-green-600",
+      button: "from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700",
+      hover: "group-hover:text-emerald-200"
+    },
+    reply: {
       bg: "bg-gradient-to-br from-blue-900/60 to-sky-900/60",
       border: "border-blue-500/20",
       glow: "from-blue-500 to-sky-600",
       button: "from-blue-500 to-sky-600 hover:from-blue-600 hover:to-sky-700",
       hover: "group-hover:text-blue-200"
+    },
+    lingo: {
+      bg: "bg-gradient-to-br from-amber-900/60 to-yellow-900/60",
+      border: "border-amber-500/20",
+      glow: "from-amber-500 to-yellow-600",
+      button: "from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700",
+      hover: "group-hover:text-amber-200"
     }
   };
   
@@ -88,25 +102,39 @@ const AgentCard = ({ name, description, image, color, link }) => {
 export default function AgentsPage() {
   const agents = [
     { 
-      name: "Olivier l&apos;humoriste", 
-      description: "L&apos;assistant IA qui transforme vos journées en spectacle de stand-up et apporte une touche de légèreté à votre entreprise. Il améliore l&apos;engagement client grâce à son humour personnalisé.", 
-      image: "/olivier-bot.svg",
-      color: "olivier",
-      link: "/olivier"
+      name: "Charm", 
+      description: "Le maître des mots qui font chavirer. Propose des réponses séduisantes adaptées à la situation et au ton voulu (gentleman, joueur, mystérieux). Parfait pour applis de rencontre, SMS coquins ou flirt léger au quotidien.", 
+      image: "/clara-bot.svg", // Réutilisation de l'image existante
+      color: "charm",
+      link: "/agent/charm"
     },
     { 
-      name: "Clara la séductrice", 
-      description: "Attire et fidélise vos clients grâce à ses stratégies de communication captivantes et son charme irrésistible. Elle crée des expériences personnalisées qui convertissent les visiteurs en clients fidèles.", 
-      image: "/clara-bot.svg",
-      color: "clara",
-      link: "/clara"
+      name: "Punchy", 
+      description: "L'ami qui trouve toujours la blague qui tombe juste. Transforme une phrase banale en punchline et répond avec humour dans n'importe quelle conversation. Idéal pour taquineries, posts réseaux et icebreakers.", 
+      image: "/olivier-bot.svg", // Réutilisation de l'image existante
+      color: "punchy",
+      link: "/agent/punchy"
     },
     { 
-      name: "Max l&apos;analyste", 
-      description: "Expert en données qui transforme les chiffres complexes en insights actionnables. Il identifie les tendances cachées et vous aide à prendre des décisions stratégiques éclairées.", 
-      image: "/max-bot.svg",
-      color: "max",
-      link: "/max"
+      name: "Pitchy", 
+      description: "Le coach qui te met à l'aise à l'oral. Transforme un texte en discours fluide, ajoute des respirations et conseille sur l'intonation. Parfait pour présentations, discours et vidéos.", 
+      image: "/max-bot.svg", // Réutilisation de l'image existante
+      color: "pitchy",
+      link: "/agent/pitchy"
+    },
+    { 
+      name: "Reply", 
+      description: "Le génie des réponses parfaites. Suggère plusieurs options adaptées à chaque situation, du ton pro au ton cool ou humoristique. Idéal pour relations pro, séduction ou service client.", 
+      image: "/max-bot.svg", // Réutilisation de l'image existante - à remplacer par une nouvelle image
+      color: "reply",
+      link: "/agent/reply"
+    },
+    { 
+      name: "Lingo", 
+      description: "Le globe-trotteur des langues. Traduit tout en conservant le ton voulu (pro, amical, séduisant, humoristique). Parfait pour conversations internationales, réseaux sociaux ou voyages.", 
+      image: "/olivier-bot.svg", // Réutilisation de l'image existante - à remplacer par une nouvelle image
+      color: "lingo",
+      link: "/agent/lingo"
     }
   ];
 
@@ -157,7 +185,7 @@ export default function AgentsPage() {
           transition={{ duration: 1 }}
           viewport={{ once: true }}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-7xl mx-auto">
             {agents.map((agent, i) => (
               <AgentCard 
                 key={i}
