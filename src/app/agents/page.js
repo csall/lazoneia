@@ -143,6 +143,15 @@ const AgentCard = ({ name, description, image, color, link, tagline, isFavorite,
       hover: "group-hover:text-amber-200",
       accent: "bg-amber-500",
       mesh: "from-amber-500/40 via-yellow-600/30 to-amber-500/40"
+    },
+    scribo: {
+      bg: "bg-gradient-to-br from-teal-900/60 to-cyan-900/60",
+      border: "border-teal-500/20",
+      glow: "from-teal-500 to-cyan-600",
+      button: "from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700",
+      hover: "group-hover:text-teal-200",
+      accent: "bg-teal-500",
+      mesh: "from-teal-500/40 via-cyan-600/30 to-teal-500/40"
     }
   };
   
@@ -502,6 +511,14 @@ export default function AgentsPage() {
       color: "charm",
       link: "/agent/charm",
       tagline: "Séduction garantie"
+    },
+    { 
+      name: "Scribo", 
+      description: "Ton assistant personnel d'écriture et de style. Transforme tes phrases brutes en messages clairs, fluides et impactants. Corrige orthographe, grammaire et ponctuation tout en proposant des reformulations adaptées à ton style et au contexte.", 
+      image: "/max-bot.svg", // Réutilisation de l'image existante - à remplacer par une image spécifique à Scribo
+      color: "scribo",
+      link: "/agent/scribo",
+      tagline: "Style d'écriture parfait"
     }
   ];
 
