@@ -3,12 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import dynamic from "next/dynamic";
-
-// Import JSON Lottie depuis assets
-import botMarketing from "../../assets/lotties/bot-marketing.json";
-import botSupport from "../../assets/lotties/bot-support.json";
-import botData from "../../assets/lotties/bot-data.json";
 
 // Composant pour chaque carte d'agent
 const AgentCard = ({ name, description, image, color, link }) => {
