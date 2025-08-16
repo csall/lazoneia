@@ -121,6 +121,15 @@ const AgentCard = ({
       accent: "bg-pink-500",
       mesh: "from-pink-500/40 via-rose-600/30 to-pink-500/40",
     },
+    glow: {
+      bg: "bg-gradient-to-br from-pink-900/60 to-rose-900/60",
+      border: "border-pink-500/20",
+      glow: "from-pink-500 to-rose-600",
+      button: "from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700",
+      hover: "group-hover:text-pink-200",
+      accent: "bg-pink-500",
+      mesh: "from-pink-500/40 via-rose-600/30 to-pink-500/40",
+    },
     punchy: {
       bg: "bg-gradient-to-br from-indigo-900/60 to-violet-900/60",
       border: "border-violet-500/20",
@@ -525,7 +534,7 @@ export default function AgentsPage() {
       name: "Reply",
       description:
         "Le génie des réponses parfaites. Suggère plusieurs options adaptées à chaque situation, du ton pro au ton cool ou humoristique. Idéal pour relations pro, séduction ou service client.",
-      image: "/max-bot.svg", // Réutilisation de l'image existante - à remplacer par une nouvelle image
+      image: "/olivier-bot.svg", // Icône unique pour Reply
       color: "reply",
       link: "/agent/reply",
       tagline: "Messages parfaits",
@@ -550,12 +559,12 @@ export default function AgentsPage() {
       tagline: "Traduction parfaite",
     },
     {
-      name: "Charm",
+      name: "Glow",
       description:
         "Le maître des mots qui font chavirer. Propose des réponses séduisantes adaptées à la situation et au ton voulu (gentleman, joueur, mystérieux). Parfait pour applis de rencontre, SMS coquins ou flirt léger au quotidien.",
       image: "/clara-bot.svg", // Réutilisation de l'image existante
-      color: "charm",
-      link: "/agent/charm",
+      color: "glow",
+      link: "/agent/glow",
       tagline: "Séduction garantie",
     },
   ];
