@@ -32,18 +32,33 @@ const nextConfig = {
   
   // Garantit que les SVGs sont traités correctement
   webpack(config) {
+    // Configuration spécifique pour les SVG
+    // On gère deux cas:
+    // 1. Les SVG importés en tant que composants React via SVGR
+    // 2. Les SVG utilisés comme assets statiques
+    
+    // D'abord, on supprime la règle existante qui pourrait s'appliquer aux SVG
+    const fileLoaderRule = config.module.rules.find(
+      (rule) => rule.test?.test?.('.svg')
+    );
+    if (fileLoaderRule) {
+      fileLoaderRule.exclude = /\.svg$/;
+    }
+    
     // Règle pour traiter les SVG comme des composants React
     config.module.rules.push({
       test: /\.svg$/,
+      issuer: { not: [/\.(css|scss|sass)$/] },
       use: ['@svgr/webpack']
     });
     
-    // Règle spéciale pour les SVG dans le dossier app
+    // Règle spéciale pour les SVG dans le dossier app - traités comme assets statiques
     config.module.rules.push({
       test: /\/app\/.*\.svg$/,
       type: 'asset/resource',
       generator: {
-        filename: 'static/[name][ext]'
+        filename: 'static/[name][ext]',
+        publicPath: '/'
       }
     });
     

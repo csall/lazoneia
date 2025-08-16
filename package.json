@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "vercel-build": "next build && npm run copy-svg",
-    "copy-svg": "mkdir -p .next/static && cp -r src/app/*.svg .next/static/"
+    "copy-svg": "node copy-svg-files.js"
   },
   "dependencies": {
     "aos": "^2.3.4",

@@ -10,31 +10,31 @@
     },
     {
       "src": "/agents-bot.svg",
-      "dest": "/agents-bot.svg"
+      "dest": "/_next/static/agents-bot.svg"
     },
     {
       "src": "/glow-bot.svg",
-      "dest": "/glow-bot.svg"
+      "dest": "/_next/static/glow-bot.svg"
     },
     {
       "src": "/punchy-bot.svg",
-      "dest": "/punchy-bot.svg"
+      "dest": "/_next/static/punchy-bot.svg"
     },
     {
       "src": "/lingo-bot.svg",
-      "dest": "/lingo-bot.svg"
+      "dest": "/_next/static/lingo-bot.svg"
     },
     {
       "src": "/pitchy-bot.svg",
-      "dest": "/pitchy-bot.svg"
+      "dest": "/_next/static/pitchy-bot.svg"
     },
     {
       "src": "/scribo-bot.svg",
-      "dest": "/scribo-bot.svg"
+      "dest": "/_next/static/scribo-bot.svg"
     },
     {
       "src": "/reply-bot.svg",
-      "dest": "/reply-bot.svg"
+      "dest": "/_next/static/reply-bot.svg"
     },
     {
       "handle": "filesystem"
