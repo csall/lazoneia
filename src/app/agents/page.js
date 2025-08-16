@@ -5,6 +5,8 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { useImagePath } from "@/hooks/useImagePath";
+import { useSvgAnimation } from "@/hooks/useSvgAnimation";
+import OptimizedImage from "@/components/OptimizedImage";
 
 // Composant de menu style Google
 const GoogleMenu = () => {
@@ -15,7 +17,7 @@ const GoogleMenu = () => {
   const { getImagePath } = useImagePath();
   const menuItems = [
     { name: "Accueil", icon: getImagePath("/globe.svg"), link: "/" },
-    { name: "Agents", icon: getImagePath("/max-bot.svg"), link: "/agents" },
+    { name: "Agents", icon: getImagePath("/agents-bot.svg"), link: "/agents" },
     { name: "À propos", icon: getImagePath("/file.svg"), link: "/a-propos" },
     { name: "Contact", icon: getImagePath("/window.svg"), link: "/contact" },
   ];
@@ -445,6 +447,13 @@ export default function AgentsPage() {
   const [filter, setFilter] = useState("all");
   // État pour indiquer que le client est monté (évite les problèmes d'hydratation)
   const [isClientMounted, setIsClientMounted] = useState(false);
+  
+  // Animation du SVG des agents
+  const svgAnimation = useSvgAnimation({
+    rotationDuration: 15,
+    hoverIntensity: 1.1,
+    pulseSpeed: 0.5
+  });
 
   // Indiquer que le client est monté - cela évite d'essayer d'accéder au localStorage trop tôt
   useEffect(() => {
@@ -568,6 +577,37 @@ export default function AgentsPage() {
       <section className="relative py-6 text-center px-4 overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 bg-center opacity-10" style={{backgroundImage: `url(${useImagePath().getImagePath("/grid.svg")})`}}></div>
+
+        {/* Section héros avec notre nouveau SVG animé */}
+        <div className="max-w-4xl mx-auto pt-20 pb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col items-center"
+          >
+            <motion.div 
+              className="w-48 h-48 mb-6"
+              {...svgAnimation.handlers}
+              {...svgAnimation.animationProps}
+            >
+              <OptimizedImage
+                src="/agents-bot.svg"
+                alt="Les Agents LaZoneIA"
+                width={240}
+                height={240}
+                priority
+                className="drop-shadow-[0_0_20px_rgba(167,139,250,0.3)]"
+              />
+            </motion.div>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500">
+              Les Agents LaZoneIA
+            </h1>
+            <p className="text-lg text-gray-300 max-w-2xl mb-8">
+              Découvrez notre collection d&apos;agents IA spécialisés, conçus pour répondre à vos besoins spécifiques
+            </p>
+          </motion.div>
+        </div>
 
         <div className="container mx-auto mb-12 relative">
           {/* Barre de navigation avec bouton retour et menu Google */}

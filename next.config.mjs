@@ -3,23 +3,37 @@ const nextConfig = {
   // Configuration pour les images
   images: {
     unoptimized: true, // Désactive l'optimisation d'image pour garantir qu'elles s'affichent correctement
-    domains: ['vercel.app', 'lazoneia.vercel.app'], // Ajouter les domaines où vos images sont hébergées
+    domains: ['vercel.app', 'lazoneia.vercel.app', 'lazoneia.com'], // Domaines autorisés
     remotePatterns: [
       {
         protocol: 'https',
         hostname: '**.vercel.app',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lazoneia.com',
       }
     ]
   },
-  // Ne pas utiliser assetPrefix ou basePath spécifique pour Vercel
-  // car Vercel gère correctement les chemins statiques par défaut
+  // Configuration des assets statiques pour Vercel
+  assetPrefix: process.env.NODE_ENV === 'production' ? '.' : '', // Préfixe relatif pour les assets en production
+  
+  // Configuration générale
   poweredByHeader: false, // Désactive l'en-tête "X-Powered-By"
   reactStrictMode: true, // Bon pour le développement
-  // Nous désactivons temporairement le prérendu statique pour les pages avec des hooks clients
-  // qui ne sont pas compatibles avec le rendu côté serveur
+  
+  // Configuration pour le fonctionnement en production sur Vercel
+  output: 'standalone', // Optimise le déploiement sur Vercel
+  
+  // Configuration avancée pour garantir que les chemins statiques sont correctement résolus
   experimental: {
-    // Next.js 15+ n'a plus besoin de l'option appDir (elle est activée par défaut)
-    // Laissons la configuration expérimentale plus propre
+    // Optimisations pour les ressources statiques
+    optimizeFonts: true,
+    optimizeImages: true,
+    
+    // Ces options peuvent aider avec les chemins statiques
+    serverComponents: true,
+    swcMinify: true,
   }
 };
 

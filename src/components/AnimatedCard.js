@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Lottie from "lottie-react";
 import { useImagePath } from "@/hooks/useImagePath";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function AnimatedCard({ title, description, icon, animationData, delay = 0, botType = "" }) {
   const [ref, inView] = useInView({
@@ -43,8 +44,12 @@ export default function AnimatedCard({ title, description, icon, animationData, 
   // Déterminer quelle image SVG utiliser en fonction du botType ou du nom
   const { getImagePath } = useImagePath();
   const getBotImage = () => {
+    // Image collective pour les agents (utilisée pour la page agents)
+    if (botType === "agents" || title.toLowerCase().includes("agents")) {
+      return getImagePath("/agents-bot.svg");
+    }
     // Utiliser des images spécifiques pour chaque agent
-    if (botType === "punchy" || title.toLowerCase().includes("punchy")) {
+    else if (botType === "punchy" || title.toLowerCase().includes("punchy")) {
       return getImagePath("/punchy-bot.svg");
     } else if (botType === "reply" || title.toLowerCase().includes("reply")) {
       return getImagePath("/reply-bot.svg");
@@ -68,8 +73,15 @@ export default function AnimatedCard({ title, description, icon, animationData, 
 
   // Définir les couleurs selon le type d'agent
   const getCardStyles = () => {
+    // Agents (page collective) - style multicolor
+    if (botType === "agents" || title.toLowerCase().includes("agents")) {
+      return {
+        card: "relative bg-gradient-to-br from-purple-900/60 via-blue-900/60 to-indigo-900/60 backdrop-blur-lg p-8 rounded-3xl shadow-lg border border-purple-500/20 overflow-hidden group w-80",
+        glow: "absolute -inset-1 bg-gradient-to-r from-purple-500 via-blue-500 to-pink-500 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-700 rounded-3xl"
+      };
+    }
     // Punchy - style violet/indigo
-    if (botType === "punchy" || title.toLowerCase().includes("punchy")) {
+    else if (botType === "punchy" || title.toLowerCase().includes("punchy")) {
       return {
         card: "relative bg-gradient-to-br from-indigo-900/60 to-violet-900/60 backdrop-blur-lg p-8 rounded-3xl shadow-lg border border-violet-500/20 overflow-hidden group w-80",
         glow: "absolute -inset-1 bg-gradient-to-r from-violet-500 to-indigo-600 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-700 rounded-3xl"
@@ -159,7 +171,7 @@ export default function AnimatedCard({ title, description, icon, animationData, 
           whileHover={{ scale: 1.05, rotate: [-2, 2, -2], transition: { rotate: { repeat: Infinity, duration: 2 } } }}
         >
           {botImage ? (
-            <Image 
+            <OptimizedImage
               src={botImage}
               alt={title}
               width={180}
@@ -183,8 +195,11 @@ export default function AnimatedCard({ title, description, icon, animationData, 
         </motion.div>
         
         <h3 className={`text-2xl font-bold mb-3 ${
+          // Agents - multicolor
+          (botType === "agents" || title.toLowerCase().includes("agents"))
+            ? "text-white group-hover:text-purple-200"
           // Punchy - violet
-          (botType === "punchy" || title.toLowerCase().includes("punchy"))
+          : (botType === "punchy" || title.toLowerCase().includes("punchy"))
             ? "text-white group-hover:text-indigo-200"
           // Reply - bleu
           : (botType === "reply" || title.toLowerCase().includes("reply"))
@@ -217,31 +232,37 @@ export default function AnimatedCard({ title, description, icon, animationData, 
         
         <Link 
           href={
-            // Nouveaux agents
-            (botType === "punchy" || title.toLowerCase().includes("punchy"))
-              ? "/agent/punchy"
-              : (botType === "reply" || title.toLowerCase().includes("reply"))
-                ? "/agent/reply"
-                : (botType === "scribo" || title.toLowerCase().includes("scribo"))
-                  ? "/agent/scribo"
-                  : (botType === "lingo" || title.toLowerCase().includes("lingo"))
-                    ? "/agent/lingo"
-                    : (botType === "charm" || title.toLowerCase().includes("charm"))
-                      ? "/agent/charm"
-                      : (botType === "glow" || title.toLowerCase().includes("glow"))
-                        ? "/agent/glow"
-                        : (botType === "pitchy" || title.toLowerCase().includes("pitchy"))
-                          ? "/agent/pitchy"
-                          // Anciens agents (pour compatibilité)
-                          : (botType === "olivier" || title.toLowerCase().includes("olivier"))
-                            ? "/olivier"
-                            : (botType === "clara" || title.toLowerCase().includes("clara"))
-                              ? "/clara"
-                              : "/max"
+            // Agents collectifs
+            (botType === "agents" || title.toLowerCase().includes("agents"))
+              ? "/agents"
+              // Nouveaux agents
+              : (botType === "punchy" || title.toLowerCase().includes("punchy"))
+                ? "/agent/punchy"
+                : (botType === "reply" || title.toLowerCase().includes("reply"))
+                  ? "/agent/reply"
+                  : (botType === "scribo" || title.toLowerCase().includes("scribo"))
+                    ? "/agent/scribo"
+                    : (botType === "lingo" || title.toLowerCase().includes("lingo"))
+                      ? "/agent/lingo"
+                      : (botType === "charm" || title.toLowerCase().includes("charm"))
+                        ? "/agent/charm"
+                        : (botType === "glow" || title.toLowerCase().includes("glow"))
+                          ? "/agent/glow"
+                          : (botType === "pitchy" || title.toLowerCase().includes("pitchy"))
+                            ? "/agent/pitchy"
+                            // Anciens agents (pour compatibilité)
+                            : (botType === "olivier" || title.toLowerCase().includes("olivier"))
+                              ? "/olivier"
+                              : (botType === "clara" || title.toLowerCase().includes("clara"))
+                                ? "/clara"
+                                : "/max"
           } 
           className={`w-full py-3 px-6 ${
+            // Agents - multicolor
+            (botType === "agents" || title.toLowerCase().includes("agents"))
+              ? "bg-gradient-to-r from-purple-500 via-blue-500 to-pink-500 hover:from-purple-600 hover:via-blue-600 hover:to-pink-600"
             // Punchy - violet
-            (botType === "punchy" || title.toLowerCase().includes("punchy"))
+            : (botType === "punchy" || title.toLowerCase().includes("punchy"))
               ? "bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700"
             // Reply - bleu
             : (botType === "reply" || title.toLowerCase().includes("reply"))

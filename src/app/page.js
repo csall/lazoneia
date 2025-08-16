@@ -20,7 +20,7 @@ const GoogleMenu = () => {
   // Liste des applications/options du menu
   const menuItems = [
     { name: "Accueil", icon: "globe.svg", link: "/" },
-    { name: "Agents", icon: "max-bot.svg", link: "/agents" },
+    { name: "Agents", icon: "agents-bot.svg", link: "/agents" },
     { name: "À propos", icon: "file.svg", link: "/a-propos" },
     { name: "Contact", icon: "window.svg", link: "/contact" },
   ];
