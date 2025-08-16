@@ -96,6 +96,7 @@ export default function GlowPage() {
               height={128}
               className="w-full h-full drop-shadow-[0_0_20px_rgba(244,114,182,0.5)]" 
               priority
+              unoptimized
             />
           </motion.div>
           <motion.div
