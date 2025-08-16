@@ -16,6 +16,20 @@ export function normalizeImagePath(path, basePath = '') {
   // Normalise le chemin en supprimant les doubles slashes
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
   
+  // Si c'est un SVG qui se trouvait auparavant dans app/
+  // (liste des SVG connus qui ont été déplacés)
+  const appSvgs = [
+    'agents-bot.svg', 'globe.svg', 'glow-bot.svg', 'grid.svg',
+    'lingo-bot.svg', 'next.svg', 'pitchy-bot.svg', 'punchy-bot.svg',
+    'reply-bot.svg', 'scribo-bot.svg', 'vercel.svg', 'window.svg',
+    'file.svg', 'favicon.svg', 'favicon-large.svg'
+  ];
+  
+  if (appSvgs.some(svg => path.endsWith(svg))) {
+    // Pour ces SVG spécifiques, on les sert directement depuis la racine
+    return `${basePath}/${path.split('/').pop()}`;
+  }
+  
   // Ajoute le basePath si nécessaire
   return `${basePath}${normalizedPath}`;
 }
