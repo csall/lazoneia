@@ -90,7 +90,7 @@ export default function CharmPage() {
             className="w-24 h-24 md:w-32 md:h-32"
           >
             <Image 
-              src="/clara-bot.svg"
+              src="/glow-bot.svg"
               alt="Charm"
               width={128}
               height={128}

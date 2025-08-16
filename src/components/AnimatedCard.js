@@ -61,12 +61,7 @@ export default function AnimatedCard({ title, description, icon, animationData, 
       return getImagePath("/glow-bot.svg");
     } else if (botType === "pitchy" || title.toLowerCase().includes("pitchy")) {
       return getImagePath("/pitchy-bot.svg");
-    } else if (botType === "olivier" || title.toLowerCase().includes("olivier")) {
-      return getImagePath("/olivier-bot.svg");
-    } else if (botType === "clara" || title.toLowerCase().includes("clara")) {
-      return getImagePath("/clara-bot.svg");
-    } else if (botType === "max" || title.toLowerCase().includes("max")) {
-      return getImagePath("/max-bot.svg");
+    // Les anciens agents ont été remplacés par les nouveaux
     }
     return null;
   };
@@ -122,21 +117,7 @@ export default function AnimatedCard({ title, description, icon, animationData, 
         glow: "absolute -inset-1 bg-gradient-to-r from-emerald-500 to-green-600 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-700 rounded-3xl"
       };
     }
-    // Olivier - style violet (maintien pour compatibilité)
-    else if (botType === "olivier" || title.toLowerCase().includes("olivier")) {
-      return {
-        card: "relative bg-gradient-to-br from-indigo-900/60 to-violet-900/60 backdrop-blur-lg p-8 rounded-3xl shadow-lg border border-violet-500/20 overflow-hidden group w-80",
-        glow: "absolute -inset-1 bg-gradient-to-r from-violet-500 to-indigo-600 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-700 rounded-3xl"
-      };
-    } 
-    // Clara - style rose/pink (maintien pour compatibilité)
-    else if (botType === "clara" || title.toLowerCase().includes("clara")) {
-      return {
-        card: "relative bg-gradient-to-br from-pink-900/60 to-rose-900/60 backdrop-blur-lg p-8 rounded-3xl shadow-lg border border-pink-500/20 overflow-hidden group w-80",
-        glow: "absolute -inset-1 bg-gradient-to-r from-pink-500 to-rose-600 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-700 rounded-3xl"
-      };
-    } 
-    // Max - style bleu (maintien pour compatibilité) ou défaut
+    // Valeur par défaut pour tout autre type non spécifié
     else {
       return {
         card: "relative bg-gradient-to-br from-blue-900/60 to-sky-900/60 backdrop-blur-lg p-8 rounded-3xl shadow-lg border border-blue-500/20 overflow-hidden group w-80",
@@ -216,12 +197,8 @@ export default function AnimatedCard({ title, description, icon, animationData, 
           // Pitchy - green
           : (botType === "pitchy" || title.toLowerCase().includes("pitchy"))
             ? "text-white group-hover:text-emerald-200"
-          // Anciens agents (pour compatibilité)
-          : (botType === "olivier" || title.toLowerCase().includes("olivier")) 
-            ? "text-white group-hover:text-indigo-200" 
-            : (botType === "clara" || title.toLowerCase().includes("clara"))
-              ? "text-white group-hover:text-pink-200"
-              : "text-white group-hover:text-blue-200"
+          // Style par défaut
+          : "text-white group-hover:text-blue-200"
         } transition-colors duration-300`}>
           {title}
         </h3>
@@ -250,12 +227,8 @@ export default function AnimatedCard({ title, description, icon, animationData, 
                           ? "/agent/glow"
                           : (botType === "pitchy" || title.toLowerCase().includes("pitchy"))
                             ? "/agent/pitchy"
-                            // Anciens agents (pour compatibilité)
-                            : (botType === "olivier" || title.toLowerCase().includes("olivier"))
-                              ? "/olivier"
-                              : (botType === "clara" || title.toLowerCase().includes("clara"))
-                                ? "/clara"
-                                : "/max"
+                            // Valeur par défaut - rediriger vers la page des agents
+                            : "/agents"
           } 
           className={`w-full py-3 px-6 ${
             // Agents - multicolor
@@ -279,11 +252,7 @@ export default function AnimatedCard({ title, description, icon, animationData, 
             // Pitchy - emerald/green
             : (botType === "pitchy" || title.toLowerCase().includes("pitchy"))
               ? "bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700"
-            // Anciens agents (pour compatibilité)
-            : (botType === "olivier" || title.toLowerCase().includes("olivier"))
-              ? "bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700"
-            : (botType === "clara" || title.toLowerCase().includes("clara"))
-              ? "bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700"
+            // Style par défaut (bleu)
             : "bg-gradient-to-r from-blue-500 to-sky-600 hover:from-blue-600 hover:to-sky-700"
           } text-white font-bold rounded-xl transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center`}
         >
