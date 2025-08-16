@@ -16,7 +16,8 @@ const nextConfig = {
     ]
   },
   // Configuration des assets statiques pour Vercel
-  assetPrefix: process.env.NODE_ENV === 'production' ? '.' : '', // Préfixe relatif pour les assets en production
+  // assetPrefix doit commencer par / ou être une URL absolue
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/' : '',
   
   // Configuration générale
   poweredByHeader: false, // Désactive l'en-tête "X-Powered-By"
@@ -27,13 +28,8 @@ const nextConfig = {
   
   // Configuration avancée pour garantir que les chemins statiques sont correctement résolus
   experimental: {
-    // Optimisations pour les ressources statiques
-    optimizeFonts: true,
-    optimizeImages: true,
-    
-    // Ces options peuvent aider avec les chemins statiques
-    serverComponents: true,
-    swcMinify: true,
+    // Options expérimentales plus récentes pour Next.js 15+
+    // Les options sont simplifiées pour éviter les erreurs
   }
 };
 
