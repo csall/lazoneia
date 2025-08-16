@@ -2,19 +2,13 @@
 const nextConfig = {
   // Configuration pour les images
   images: {
-    unoptimized: true, // Désactive l'optimisation d'image pour garantir qu'elles s'affichent correctement
-    domains: ['vercel.app', 'lazoneia.vercel.app'] // Autorise les images depuis ces domaines
+    unoptimized: true // Désactive l'optimisation d'image pour garantir qu'elles s'affichent correctement
   },
-  // Configuration des assets statiques
-  // Utiliser les variables d'environnement pour ajuster les chemins en production
-  assetPrefix: process.env.NODE_ENV === 'production' ? '.' : '',
-  // Pas de basePath spécifique
-  basePath: '',
-  // Ajout de la configuration pour les ressources statiques publiques
-  // pour s'assurer qu'elles sont correctement servies en production
-  publicRuntimeConfig: {
-    staticFolder: process.env.NODE_ENV === 'production' ? '.' : '',
-  }
+  // Ne pas utiliser assetPrefix ou basePath spécifique pour Vercel
+  // car Vercel gère correctement les chemins statiques par défaut
+  output: 'standalone', // Optimisation pour les déploiements sur Vercel
+  poweredByHeader: false, // Désactive l'en-tête "X-Powered-By"
+  reactStrictMode: true, // Bon pour le développement
 };
 
 export default nextConfig;
