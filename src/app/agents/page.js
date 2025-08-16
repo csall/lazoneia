@@ -522,6 +522,15 @@ export default function AgentsPage() {
       }
     });
   };
+  
+  // Fonction pour changer de filtre qui empêche le comportement par défaut
+  const handleFilterChange = (newFilter, event) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    setFilter(newFilter);
+  };
 
   const agents = [
     {
@@ -894,8 +903,9 @@ export default function AgentsPage() {
               
               {/* Bouton Tous */}
               <motion.button
-                onClick={() => setFilter("all")}
-                className="relative z-10 w-1/2 h-full flex items-center justify-center rounded-lg"
+                onClick={(e) => handleFilterChange("all", e)}
+                onTouchStart={(e) => handleFilterChange("all", e)}
+                className="relative z-10 w-1/2 h-full flex items-center justify-center rounded-lg touch-manipulation"
                 whileHover={{ scale: filter === "all" ? 1 : 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 type="button"
@@ -963,8 +973,9 @@ export default function AgentsPage() {
               
               {/* Bouton Favoris */}
               <motion.button
-                onClick={() => setFilter("favorites")}
-                className="relative z-10 w-1/2 h-full flex items-center justify-center rounded-lg"
+                onClick={(e) => handleFilterChange("favorites", e)}
+                onTouchStart={(e) => handleFilterChange("favorites", e)}
+                className="relative z-10 w-1/2 h-full flex items-center justify-center rounded-lg touch-manipulation"
                 whileHover={{ scale: filter === "favorites" ? 1 : 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 type="button"
