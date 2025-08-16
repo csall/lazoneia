@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
+import { useImagePath } from "@/hooks/useImagePath";
 
 // Composant de menu style Google
 const GoogleMenu = () => {
@@ -11,11 +12,12 @@ const GoogleMenu = () => {
   const menuRef = useRef(null);
 
   // Liste des applications/options du menu
+  const { getImagePath } = useImagePath();
   const menuItems = [
-    { name: "Accueil", icon: "/globe.svg", link: "/" },
-    { name: "Agents", icon: "/max-bot.svg", link: "/agents" },
-    { name: "À propos", icon: "/file.svg", link: "/a-propos" },
-    { name: "Contact", icon: "/window.svg", link: "/contact" },
+    { name: "Accueil", icon: getImagePath("/globe.svg"), link: "/" },
+    { name: "Agents", icon: getImagePath("/max-bot.svg"), link: "/agents" },
+    { name: "À propos", icon: getImagePath("/file.svg"), link: "/a-propos" },
+    { name: "Contact", icon: getImagePath("/window.svg"), link: "/contact" },
   ];
 
   // Fermer le menu si on clique à l'extérieur
@@ -202,7 +204,8 @@ const AgentCard = ({
           className={`absolute inset-0 bg-gradient-to-br ${style.bg} opacity-80`}
         ></div>
         <div
-          className={`absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10`}
+          className={`absolute inset-0 bg-center opacity-10`}
+          style={{backgroundImage: `url(${useImagePath().getImagePath("/grid.svg")})`}}
         ></div>
         <div
           className={`absolute -inset-[100%] bg-gradient-conic ${style.mesh} opacity-30 blur-3xl animate-slow-spin`}
@@ -352,7 +355,7 @@ const AgentCard = ({
               }}
             >
               <Image
-                src={image}
+                src={useImagePath().getImagePath(image)}
                 alt={name}
                 width={100}
                 height={100}
@@ -564,7 +567,7 @@ export default function AgentsPage() {
     <main className="min-h-screen bg-gradient-to-r from-blue-900 to-purple-900 animate-gradient-x text-white font-sans">
       <section className="relative py-6 text-center px-4 overflow-hidden">
         {/* Background decoration */}
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10"></div>
+        <div className="absolute inset-0 bg-center opacity-10" style={{backgroundImage: `url(${useImagePath().getImagePath("/grid.svg")})`}}></div>
 
         <div className="container mx-auto mb-12 relative">
           {/* Barre de navigation avec bouton retour et menu Google */}
