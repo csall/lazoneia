@@ -4,12 +4,15 @@ import Image from "next/image";
 import { useImagePath } from "@/hooks/useImagePath";
 
 // Composant qui optimise le chargement des images avec une gestion robuste des chemins
+// et des optimisations pour mobile
 export default function OptimizedImage({ 
   src, 
   alt, 
   width, 
-  height, 
+  height,
+  sizes = "(max-width: 640px) 100vw, (max-width: 768px) 80vw, 50vw",
   priority = false,
+  quality = 90,
   className = "",
   ...props 
 }) {
