@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "vercel-build": "next build && mkdir -p .next/static && cp -R ./public/. .next/static/"
+    "vercel-build": "next build"
   },
   "dependencies": {
     "aos": "^2.3.4",
