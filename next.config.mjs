@@ -32,10 +32,21 @@ const nextConfig = {
   
   // Garantit que les SVGs sont traités correctement
   webpack(config) {
+    // Règle pour traiter les SVG comme des composants React
     config.module.rules.push({
       test: /\.svg$/,
       use: ['@svgr/webpack']
     });
+    
+    // Règle spéciale pour les SVG dans le dossier app
+    config.module.rules.push({
+      test: /\/app\/.*\.svg$/,
+      type: 'asset/resource',
+      generator: {
+        filename: 'static/[name][ext]'
+      }
+    });
+    
     return config;
   },
   

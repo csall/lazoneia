@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Face/Head -->
+  <circle cx="120" cy="120" r="90" fill="url(#gradient-face-scribo)" />
+  <circle cx="120" cy="120" r="90" stroke="#0F766E" stroke-width="4" />
+  
+  <!-- Eyes -->
+  <circle cx="90" cy="100" r="12" fill="white" />
+  <circle cx="150" cy="100" r="12" fill="white" />
+  <circle cx="90" cy="100" r="6" fill="#134E4A" />
+  <circle cx="150" cy="100" r="6" fill="#134E4A" />
+  <circle cx="92" cy="98" r="2" fill="white" />
+  <circle cx="152" cy="98" r="2" fill="white" />
+  
+  <!-- Eyebrows - thoughtful writer -->
+  <path d="M78 85C85 80 95 82 100 85" stroke="#134E4A" stroke-width="4" stroke-linecap="round" />
+  <path d="M162 85C155 80 145 82 140 85" stroke="#134E4A" stroke-width="4" stroke-linecap="round" />
+  
+  <!-- Slight smile - creative writer -->
+  <path d="M100 140C110 148 130 148 140 140" stroke="#134E4A" stroke-width="4" stroke-linecap="round" />
+  
+  <!-- Reading glasses - writer style -->
+  <rect x="75" y="90" width="30" height="20" rx="5" stroke="#134E4A" stroke-width="2" fill="none" />
+  <rect x="135" y="90" width="30" height="20" rx="5" stroke="#134E4A" stroke-width="2" fill="none" />
+  <path d="M105 100H135" stroke="#134E4A" stroke-width="2" />
+  
+  <!-- Pen and quill -->
+  <path d="M50 60L60 50L70 60L60 90" stroke="#2DD4BF" stroke-width="2" />
+  <path d="M60 90L55 95L60 100L65 95L60 90" fill="#2DD4BF" />
+  
+  <!-- Notebook/paper elements -->
+  <path d="M160 50H190V80H160V50Z" fill="#99F6E4" />
+  <line x1="165" y1="60" x2="185" y2="60" stroke="#0F766E" stroke-width="1" />
+  <line x1="165" y1="65" x2="185" y2="65" stroke="#0F766E" stroke-width="1" />
+  <line x1="165" y1="70" x2="175" y2="70" stroke="#0F766E" stroke-width="1" />
+  
+  <!-- Decorative text elements -->
+  <path d="M80 170C80 165 85 165 90 170C95 165 100 165 100 170C100 175 90 180 90 180C90 180 80 175 80 170Z" fill="#5EEAD4" />
+  <path d="M140 170C140 165 145 165 150 170C155 165 160 165 160 170C160 175 150 180 150 180C150 180 140 175 140 170Z" fill="#5EEAD4" />
+  
+  <!-- Decorative elements -->
+  <circle cx="120" cy="120" r="100" stroke="#99F6E4" stroke-width="1" stroke-dasharray="4 4" />
+  <circle cx="120" cy="120" r="110" stroke="#99F6E4" stroke-width="1" stroke-dasharray="8 8" />
+  
+  <!-- Writing implement on top -->
+  <path d="M120 50L115 60H125L120 50Z" fill="#14B8A6" />
+  <rect x="115" y="60" width="10" height="15" fill="#14B8A6" />
+  
+  <!-- Definitions for gradients -->
+  <defs>
+    <linearGradient id="gradient-face-scribo" x1="60" y1="60" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#14B8A6" />
+      <stop offset="100%" stop-color="#0F766E" />
+    </linearGradient>
+  </defs>
+</svg>

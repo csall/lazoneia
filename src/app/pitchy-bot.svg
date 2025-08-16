@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Face/Head -->
+  <circle cx="120" cy="120" r="90" fill="url(#gradient-face-pitchy)" />
+  <circle cx="120" cy="120" r="90" stroke="#047857" stroke-width="4" />
+  
+  <!-- Eyes -->
+  <circle cx="90" cy="100" r="12" fill="white" />
+  <circle cx="150" cy="100" r="12" fill="white" />
+  <circle cx="90" cy="100" r="6" fill="#064E3B" />
+  <circle cx="150" cy="100" r="6" fill="#064E3B" />
+  <circle cx="92" cy="98" r="2" fill="white" />
+  <circle cx="152" cy="98" r="2" fill="white" />
+  
+  <!-- Eyebrows - confident presenter look -->
+  <path d="M78 85C85 82 95 80 100 85" stroke="#064E3B" stroke-width="4" stroke-linecap="round" />
+  <path d="M162 85C155 82 145 80 140 85" stroke="#064E3B" stroke-width="4" stroke-linecap="round" />
+  
+  <!-- Confident smile -->
+  <path d="M90 140C100 150 140 150 150 140" stroke="#064E3B" stroke-width="4" stroke-linecap="round" />
+  
+  <!-- Bowtie - for professional presenter -->
+  <path d="M100 130L120 135L140 130L120 125L100 130Z" fill="#34D399" />
+  <circle cx="120" cy="130" r="4" fill="#10B981" />
+  
+  <!-- Presentation elements -->
+  <path d="M50 70L80 70V90H50V70Z" fill="#A7F3D0" stroke="#047857" />
+  <path d="M55 75H75" stroke="#047857" stroke-width="1" />
+  <path d="M55 80H70" stroke="#047857" stroke-width="1" />
+  <path d="M55 85H65" stroke="#047857" stroke-width="1" />
+  
+  <!-- Growth chart - success -->
+  <path d="M160 70L170 60L180 50L190 60L200 50" stroke="#10B981" stroke-width="2" />
+  <circle cx="170" cy="60" r="3" fill="#34D399" />
+  <circle cx="190" cy="60" r="3" fill="#34D399" />
+  
+  <!-- Speech text -->
+  <path d="M50 160C50 150 60 150 70 160L80 170H60L50 160Z" fill="#D1FAE5" />
+  <text x="60" y="163" font-family="Arial" font-size="10" fill="#047857">Pitch!</text>
+  
+  <path d="M190 160C190 150 180 150 170 160L160 170H180L190 160Z" fill="#D1FAE5" />
+  <text x="170" y="163" font-family="Arial" font-size="10" fill="#047857">Idea!</text>
+  
+  <!-- Decorative elements -->
+  <circle cx="120" cy="120" r="100" stroke="#A7F3D0" stroke-width="1" stroke-dasharray="4 4" />
+  <circle cx="120" cy="120" r="110" stroke="#A7F3D0" stroke-width="1" stroke-dasharray="8 8" />
+  
+  <!-- Lightbulb - ideas -->
+  <path d="M120 45C110 45 105 55 110 65C115 70 125 70 130 65C135 55 130 45 120 45Z" fill="#34D399" />
+  <rect x="115" y="65" width="10" height="5" fill="#10B981" />
+  
+  <!-- Definitions for gradients -->
+  <defs>
+    <linearGradient id="gradient-face-pitchy" x1="60" y1="60" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#065F46" />
+    </linearGradient>
+  </defs>
+</svg>

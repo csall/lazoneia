@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Face background with gradient -->
+  <circle cx="120" cy="120" r="100" fill="url(#faceGradient)"/>
+  
+  <!-- Eyes -->
+  <circle cx="80" cy="100" r="15" fill="white"/>
+  <circle cx="160" cy="100" r="15" fill="white"/>
+  <circle cx="80" cy="100" r="7" fill="#92400E"/>
+  <circle cx="160" cy="100" r="7" fill="#92400E"/>
+  
+  <!-- Eyebrows - expressive -->
+  <path d="M65 80C75 75 85 75 95 80" stroke="#FEF3C7" stroke-width="5" stroke-linecap="round"/>
+  <path d="M145 80C155 75 165 75 175 80" stroke="#FEF3C7" stroke-width="5" stroke-linecap="round"/>
+  
+  <!-- Smile - friendly linguist -->
+  <path d="M80 150C100 170 140 170 160 150" stroke="#FEF3C7" stroke-width="5" stroke-linecap="round"/>
+  
+  <!-- Language symbols around the head -->
+  <text x="70" y="60" font-family="Arial" font-size="18" fill="#FEF3C7">A</text>
+  <text x="90" y="50" font-family="Arial" font-size="18" fill="#FEF3C7">あ</text>
+  <text x="130" y="50" font-family="Arial" font-size="18" fill="#FEF3C7">字</text>
+  <text x="160" y="60" font-family="Arial" font-size="18" fill="#FEF3C7">إ</text>
+  
+  <!-- Globe icon on forehead -->
+  <circle cx="120" cy="70" r="15" fill="#FCD34D" stroke="#92400E" stroke-width="2" />
+  <path d="M110 70H130" stroke="#92400E" stroke-width="2" />
+  <path d="M120 60V80" stroke="#92400E" stroke-width="2" />
+  <path d="M110 65C110 65 115 75 120 75C125 75 130 65 130 65" stroke="#92400E" stroke-width="2" />
+  <path d="M110 75C110 75 115 65 120 65C125 65 130 75 130 75" stroke="#92400E" stroke-width="2" />
+  
+  <!-- Translation bubbles -->
+  <path d="M60 120L70 110H90L100 120L90 130H70L60 120Z" fill="#FCD34D" stroke="#92400E" stroke-width="1" />
+  <text x="75" y="123" font-family="Arial" font-size="12" fill="#92400E">Hi</text>
+  
+  <path d="M140 120L150 110H170L180 120L170 130H150L140 120Z" fill="#FCD34D" stroke="#92400E" stroke-width="1" />
+  <text x="155" y="123" font-family="Arial" font-size="12" fill="#92400E">Hola</text>
+  
+  <!-- Flag-inspired decorative elements -->
+  <rect x="80" y="180" width="80" height="10" fill="#FCD34D" rx="5" />
+  <rect x="80" y="190" width="80" height="10" fill="#FBBF24" rx="5" />
+  
+  <!-- Radial pattern for background -->
+  <circle cx="120" cy="120" r="120" fill="url(#bgPattern)" opacity="0.3"/>
+  
+  <!-- Gradients and patterns -->
+  <defs>
+    <radialGradient id="faceGradient" cx="0.5" cy="0.5" r="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#FBBF24"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </radialGradient>
+    
+    <pattern id="bgPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="10" r="1" fill="#FEF3C7"/>
+    </pattern>
+  </defs>
+</svg>

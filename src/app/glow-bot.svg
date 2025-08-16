@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Face background with gradient -->
+  <circle cx="120" cy="120" r="100" fill="url(#faceGradient)"/>
+  
+  <!-- Eyes - alluring -->
+  <path d="M75 95C75 95 80 85 90 85C100 85 105 95 105 95" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <path d="M135 95C135 95 140 85 150 85C160 85 165 95 165 95" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="90" cy="100" r="10" fill="white"/>
+  <circle cx="150" cy="100" r="10" fill="white"/>
+  <circle cx="90" cy="100" r="5" fill="#DB2777"/>
+  <circle cx="150" cy="100" r="5" fill="#DB2777"/>
+  
+  <!-- Enhanced eyelashes - glamorous -->
+  <line x1="80" y1="85" x2="75" y2="78" stroke="white" stroke-width="2"/>
+  <line x1="90" y1="85" x2="90" y2="75" stroke="white" stroke-width="2"/>
+  <line x1="100" y1="85" x2="105" y2="78" stroke="white" stroke-width="2"/>
+  <line x1="140" y1="85" x2="135" y2="78" stroke="white" stroke-width="2"/>
+  <line x1="150" y1="85" x2="150" y2="75" stroke="white" stroke-width="2"/>
+  <line x1="160" y1="85" x2="165" y2="78" stroke="white" stroke-width="2"/>
+  
+  <!-- Glamorous smile with lipstick -->
+  <path d="M80 140C100 165 140 165 160 140" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <path d="M80 140C100 160 140 160 160 140" fill="#BE185D"/>
+  
+  <!-- Flowing hair with glow effect -->
+  <path d="M60 70C40 40 50 30 70 40C90 10 120 20 120 20C120 20 150 10 170 40C190 30 200 40 180 70" fill="#F472B6"/>
+  
+  <!-- Elegant earrings -->
+  <circle cx="50" cy="120" r="8" fill="#F9A8D4"/>
+  <circle cx="190" cy="120" r="8" fill="#F9A8D4"/>
+  <path d="M50 128L45 140" stroke="#F9A8D4" stroke-width="2"/>
+  <path d="M190 128L195 140" stroke="#F9A8D4" stroke-width="2"/>
+  <circle cx="45" cy="140" r="3" fill="#F9A8D4"/>
+  <circle cx="195" cy="140" r="3" fill="#F9A8D4"/>
+  
+  <!-- Glowing heart decorations -->
+  <path d="M60 170C60 160 70 160 75 165C80 160 90 160 90 170C90 180 75 190 75 190C75 190 60 180 60 170Z" fill="#EC4899"/>
+  <path d="M150 170C150 160 160 160 165 165C170 160 180 160 180 170C180 180 165 190 165 190C165 190 150 180 150 170Z" fill="#EC4899"/>
+  
+  <!-- Sparkles and glow elements -->
+  <circle cx="60" cy="60" r="5" fill="white" opacity="0.8" />
+  <circle cx="180" cy="60" r="5" fill="white" opacity="0.8" />
+  <circle cx="80" cy="40" r="3" fill="white" opacity="0.8" />
+  <circle cx="160" cy="40" r="3" fill="white" opacity="0.8" />
+  <circle cx="40" cy="100" r="4" fill="white" opacity="0.8" />
+  <circle cx="200" cy="100" r="4" fill="white" opacity="0.8" />
+  
+  <!-- Heart necklace -->
+  <path d="M110 180C110 175 115 175 120 180C125 175 130 175 130 180C130 185 120 195 120 195C120 195 110 185 110 180Z" fill="#FBCFE8" />
+  <path d="M120 195L120 205" stroke="#F9A8D4" stroke-width="2" />
+  
+  <!-- Radial pattern for background with pink glow -->
+  <circle cx="120" cy="120" r="120" fill="url(#bgPattern)" opacity="0.3"/>
+  
+  <!-- Gradients and patterns -->
+  <defs>
+    <radialGradient id="faceGradient" cx="0.5" cy="0.5" r="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#F472B6"/>
+      <stop offset="100%" stop-color="#9D174D"/>
+    </radialGradient>
+    
+    <pattern id="bgPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="10" r="1" fill="#FBCFE8"/>
+    </pattern>
+    
+    <!-- Additional glow effect -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feFlood flood-color="#F472B6" result="color" />
+      <feComposite operator="in" in="color" in2="blur" result="glow" />
+      <feMerge>
+        <feMergeNode in="glow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+</svg>
