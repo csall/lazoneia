@@ -16,14 +16,14 @@ export const metadata = {
   description: "Découvrez nos agents IA spécialisés, conçus pour répondre à vos besoins en marketing, support, rédaction, traduction et bien plus encore.",
   icons: {
     icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/favicon.svg', type: 'image/svg+xml' }
+      { url: 'https://www.lazoneia.com/favicon.ico', sizes: 'any' },
+      { url: 'https://www.lazoneia.com/favicon.svg', type: 'image/svg+xml' }
     ],
     apple: [
-      { url: '/favicon-large.svg', type: 'image/svg+xml' }
+      { url: 'https://www.lazoneia.com/favicon-large.svg', type: 'image/svg+xml' }
     ]
   },
-  manifest: '/manifest.json'
+  manifest: 'https://www.lazoneia.com/manifest.json'
 };
 
 // Configuration du viewport séparée selon les recommandations de Next.js
@@ -38,9 +38,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="fr">
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/favicon-large.svg" />
+        <link rel="icon" href="https://www.lazoneia.com/favicon.ico" sizes="any" />
+        <link rel="icon" href="https://www.lazoneia.com/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="https://www.lazoneia.com/favicon-large.svg" />
         <meta name="theme-color" content="#3b82f6" />
       </head>
       <body

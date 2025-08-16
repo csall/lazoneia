@@ -19,17 +19,28 @@ const publicDir = path.join(__dirname, 'public');
 });
 
 try {
-  // Lire tous les fichiers SVG dans le répertoire src/app
-  const files = fs.readdirSync(appDir).filter(file => file.endsWith('.svg'));
+  // Lire tous les fichiers SVG et autres ressources importantes (favicon.ico, manifest.json) dans le répertoire src/app
+  const files = fs.readdirSync(appDir).filter(file => 
+    file.endsWith('.svg') || 
+    file === 'favicon.ico' || 
+    file === 'favicon-large.ico' ||
+    file === 'manifest.json'
+  );
   
-  console.log(`${files.length} fichiers SVG trouvés dans ${appDir}`);
+  console.log(`${files.length} fichiers trouvés dans ${appDir}`);
   
-  // Copier chaque fichier SVG vers les destinations
+  // Copier chaque fichier vers les destinations
   files.forEach(file => {
     const sourcePath = path.join(appDir, file);
     const staticPath = path.join(nextStaticDir, file);
     const publicPath = path.join(publicDir, file);
     const nextPublicPath = path.join(nextPublicDir, file);
+    
+    // Vérifier que le fichier source existe
+    if (!fs.existsSync(sourcePath)) {
+      console.warn(`Attention: Le fichier source n'existe pas: ${sourcePath}`);
+      return;
+    }
     
     // Copier vers .next/static
     fs.copyFileSync(sourcePath, staticPath);

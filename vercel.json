@@ -37,6 +37,22 @@
       "dest": "/_next/static/reply-bot.svg"
     },
     {
+      "src": "/favicon.ico",
+      "dest": "/_next/static/favicon.ico"
+    },
+    {
+      "src": "/favicon.svg",
+      "dest": "/_next/static/favicon.svg"
+    },
+    {
+      "src": "/favicon-large.svg",
+      "dest": "/_next/static/favicon-large.svg"
+    },
+    {
+      "src": "/manifest.json",
+      "dest": "/_next/static/manifest.json"
+    },
+    {
       "handle": "filesystem"
     }
   ],
