@@ -30,19 +30,39 @@ export function useImagePath() {
     const isProduction = process.env.NODE_ENV === 'production';
     const isVercel = typeof window !== 'undefined' && 
                     (window.location.hostname.includes('vercel.app') || 
+                     window.location.hostname.includes('lazoneia.com') ||
                      window.location.hostname === 'lazoneia.fr');
     
     // Récupère le basePath de Next.js si disponible
     // Dans la plupart des cas, ce sera vide (''), mais pourrait être configuré
     const nextBasePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
     
-    // Utilise le basePath détecté
+    // Dans l'environnement de développement, on utilise '/public' comme base
+    // En production, on utilise '/public' ou '/' selon le déploiement
     setBasePath(nextBasePath);
+    
+    // Log pour le debugging sur le déploiement
+    if (isProduction) {
+      console.log('Environment: Production, BasePath:', nextBasePath);
+      console.log('Hostname:', window.location.hostname);
+    }
   }, []);
   
-  return {
-    getImagePath: (path) => normalizeImagePath(path, basePath)
+  // Fonction qui gère correctement les chemins d'images
+  const getImagePath = (path) => {
+    // Retire tout slash en début de chaîne pour standardiser
+    const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+    
+    // Pour les chemins absolus déjà complets
+    if (cleanPath.startsWith('http')) {
+      return cleanPath;
+    }
+    
+    // Pour les chemins relatifs, on s'assure qu'ils pointent vers le dossier public
+    return `/${cleanPath}`;
   };
+  
+  return { getImagePath };
 }
 
 // Version statique pour les imports dans les contextes non-React

@@ -24,20 +24,39 @@ export default function OptimizedImage({
       alt={alt || "Image"}
       width={width || 100}
       height={height || 100}
+      sizes={sizes}
       priority={priority}
-      className={className}
-      // Pour le déploiement Vercel, ces options aident à éviter les problèmes 404
+      quality={quality}
+      className={`${className} transition-opacity duration-300`}
+      style={{
+        maxWidth: "100%",
+        height: "auto",
+        objectFit: props.objectFit || "contain"
+      }}
       loading={priority ? "eager" : "lazy"}
-      // Essayons différentes stratégies de fallback
+      // Gestion avancée des erreurs et fallbacks
       onError={(e) => {
-        // En cas d'erreur, essayons une URL différente
-        if (imageSrc.startsWith('/')) {
-          // Si c'est un chemin absolu, essayons avec un chemin relatif
-          e.currentTarget.src = imageSrc.substring(1);
-        } else {
-          // Sinon, ajoutons un slash
-          e.currentTarget.src = `/${imageSrc}`;
-        }
+        console.warn(`Image loading error for ${imageSrc}`);
+        
+        // Essayons différentes stratégies pour récupérer l'image
+        const tryAlternativePaths = () => {
+          const paths = [
+            // Chemin original sans slash
+            imageSrc.startsWith('/') ? imageSrc.substring(1) : imageSrc,
+            // Chemin avec slash
+            imageSrc.startsWith('/') ? imageSrc : `/${imageSrc}`,
+            // Essai avec URL absolue si on est sur Vercel
+            `https://www.lazoneia.com/${imageSrc.replace(/^\/+/, '')}`
+          ];
+          
+          // On essaie le premier chemin alternatif
+          if (paths.length > 0) {
+            console.log(`Trying alternative path: ${paths[0]}`);
+            e.currentTarget.src = paths[0];
+          }
+        };
+        
+        tryAlternativePaths();
       }}
       {...props}
     />

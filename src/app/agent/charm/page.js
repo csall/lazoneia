@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useImagePath } from "@/hooks/useImagePath";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function CharmPage() {
   const [userInput, setUserInput] = useState("");
@@ -12,6 +14,7 @@ export default function CharmPage() {
   const [selectedTone, setSelectedTone] = useState("gentleman");
   const [isCopied, setIsCopied] = useState(false);
   const textareaRef = useRef(null);
+  const { getImagePath } = useImagePath();
 
   // Ajuster automatiquement la hauteur du textarea en fonction du contenu
   useEffect(() => {
@@ -89,8 +92,8 @@ export default function CharmPage() {
             transition={{ duration: 0.5 }}
             className="w-24 h-24 md:w-32 md:h-32"
           >
-            <Image 
-              src="/glow-bot.svg"
+            <OptimizedImage 
+              src="glow-bot.svg"
               alt="Charm"
               width={128}
               height={128}

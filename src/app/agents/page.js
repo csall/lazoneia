@@ -16,10 +16,10 @@ const GoogleMenu = () => {
   // Liste des applications/options du menu
   const { getImagePath } = useImagePath();
   const menuItems = [
-    { name: "Accueil", icon: getImagePath("/globe.svg"), link: "/" },
-    { name: "Agents", icon: getImagePath("/agents-bot.svg"), link: "/agents" },
-    { name: "À propos", icon: getImagePath("/file.svg"), link: "/a-propos" },
-    { name: "Contact", icon: getImagePath("/window.svg"), link: "/contact" },
+    { name: "Accueil", icon: getImagePath("globe.svg"), link: "/" },
+    { name: "Agents", icon: getImagePath("agents-bot.svg"), link: "/agents" },
+    { name: "À propos", icon: getImagePath("file.svg"), link: "/a-propos" },
+    { name: "Contact", icon: getImagePath("window.svg"), link: "/contact" },
   ];
 
   // Fermer le menu si on clique à l'extérieur

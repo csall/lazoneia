@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useImagePath } from "@/hooks/useImagePath";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function GlowPage() {
   const [userInput, setUserInput] = useState("");
@@ -92,8 +93,8 @@ export default function GlowPage() {
             transition={{ duration: 0.5 }}
             className="w-24 h-24 md:w-32 md:h-32"
           >
-            <Image 
-              src={getImagePath("/glow-bot.svg")}
+            <OptimizedImage 
+              src="glow-bot.svg"
               alt="Glow"
               width={128}
               height={128}

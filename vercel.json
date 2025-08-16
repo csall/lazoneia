@@ -9,6 +9,34 @@
       "continue": true
     },
     {
+      "src": "/agents-bot.svg",
+      "dest": "/agents-bot.svg"
+    },
+    {
+      "src": "/glow-bot.svg",
+      "dest": "/glow-bot.svg"
+    },
+    {
+      "src": "/punchy-bot.svg",
+      "dest": "/punchy-bot.svg"
+    },
+    {
+      "src": "/lingo-bot.svg",
+      "dest": "/lingo-bot.svg"
+    },
+    {
+      "src": "/pitchy-bot.svg",
+      "dest": "/pitchy-bot.svg"
+    },
+    {
+      "src": "/scribo-bot.svg",
+      "dest": "/scribo-bot.svg"
+    },
+    {
+      "src": "/reply-bot.svg",
+      "dest": "/reply-bot.svg"
+    },
+    {
       "handle": "filesystem"
     }
   ],
