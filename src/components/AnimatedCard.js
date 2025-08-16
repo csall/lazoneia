@@ -5,6 +5,7 @@ import { useInView } from "react-intersection-observer";
 import Image from "next/image";
 import Link from "next/link";
 import Lottie from "lottie-react";
+import { useImagePath } from "@/hooks/useImagePath";
 
 export default function AnimatedCard({ title, description, icon, animationData, delay = 0, botType = "" }) {
   const [ref, inView] = useInView({
@@ -40,30 +41,91 @@ export default function AnimatedCard({ title, description, icon, animationData, 
   };
   
   // Déterminer quelle image SVG utiliser en fonction du botType ou du nom
+  const { getImagePath } = useImagePath();
   const getBotImage = () => {
-    if (botType === "olivier" || title.toLowerCase().includes("olivier")) {
-      return "/olivier-bot.svg";
+    // Utiliser des images spécifiques pour chaque agent
+    if (botType === "punchy" || title.toLowerCase().includes("punchy")) {
+      return getImagePath("/punchy-bot.svg");
+    } else if (botType === "reply" || title.toLowerCase().includes("reply")) {
+      return getImagePath("/reply-bot.svg");
+    } else if (botType === "scribo" || title.toLowerCase().includes("scribo")) {
+      return getImagePath("/scribo-bot.svg");
+    } else if (botType === "lingo" || title.toLowerCase().includes("lingo")) {
+      return getImagePath("/lingo-bot.svg");
+    } else if (botType === "charm" || title.toLowerCase().includes("charm") || botType === "glow" || title.toLowerCase().includes("glow")) {
+      return getImagePath("/glow-bot.svg");
+    } else if (botType === "pitchy" || title.toLowerCase().includes("pitchy")) {
+      return getImagePath("/pitchy-bot.svg");
+    } else if (botType === "olivier" || title.toLowerCase().includes("olivier")) {
+      return getImagePath("/olivier-bot.svg");
     } else if (botType === "clara" || title.toLowerCase().includes("clara")) {
-      return "/clara-bot.svg";
-    } else if (botType === "data" || title.toLowerCase().includes("max")) {
-      return "/max-bot.svg";
+      return getImagePath("/clara-bot.svg");
+    } else if (botType === "max" || title.toLowerCase().includes("max")) {
+      return getImagePath("/max-bot.svg");
     }
     return null;
   };
 
   // Définir les couleurs selon le type d'agent
   const getCardStyles = () => {
-    if (botType === "olivier" || title.toLowerCase().includes("olivier")) {
+    // Punchy - style violet/indigo
+    if (botType === "punchy" || title.toLowerCase().includes("punchy")) {
       return {
         card: "relative bg-gradient-to-br from-indigo-900/60 to-violet-900/60 backdrop-blur-lg p-8 rounded-3xl shadow-lg border border-violet-500/20 overflow-hidden group w-80",
         glow: "absolute -inset-1 bg-gradient-to-r from-violet-500 to-indigo-600 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-700 rounded-3xl"
       };
-    } else if (botType === "clara" || title.toLowerCase().includes("clara")) {
+    } 
+    // Reply - style bleu
+    else if (botType === "reply" || title.toLowerCase().includes("reply")) {
+      return {
+        card: "relative bg-gradient-to-br from-blue-900/60 to-sky-900/60 backdrop-blur-lg p-8 rounded-3xl shadow-lg border border-blue-500/20 overflow-hidden group w-80",
+        glow: "absolute -inset-1 bg-gradient-to-r from-blue-500 to-sky-600 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-700 rounded-3xl"
+      };
+    } 
+    // Scribo - style teal/cyan
+    else if (botType === "scribo" || title.toLowerCase().includes("scribo")) {
+      return {
+        card: "relative bg-gradient-to-br from-teal-900/60 to-cyan-900/60 backdrop-blur-lg p-8 rounded-3xl shadow-lg border border-teal-500/20 overflow-hidden group w-80",
+        glow: "absolute -inset-1 bg-gradient-to-r from-teal-500 to-cyan-600 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-700 rounded-3xl"
+      };
+    } 
+    // Lingo - style amber/yellow
+    else if (botType === "lingo" || title.toLowerCase().includes("lingo")) {
+      return {
+        card: "relative bg-gradient-to-br from-amber-900/60 to-yellow-900/60 backdrop-blur-lg p-8 rounded-3xl shadow-lg border border-amber-500/20 overflow-hidden group w-80",
+        glow: "absolute -inset-1 bg-gradient-to-r from-amber-500 to-yellow-600 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-700 rounded-3xl"
+      };
+    } 
+    // Charm/Glow - style rose/pink
+    else if (botType === "charm" || title.toLowerCase().includes("charm") || botType === "glow" || title.toLowerCase().includes("glow")) {
       return {
         card: "relative bg-gradient-to-br from-pink-900/60 to-rose-900/60 backdrop-blur-lg p-8 rounded-3xl shadow-lg border border-pink-500/20 overflow-hidden group w-80",
         glow: "absolute -inset-1 bg-gradient-to-r from-pink-500 to-rose-600 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-700 rounded-3xl"
       };
-    } else {
+    } 
+    // Pitchy - style emerald/green
+    else if (botType === "pitchy" || title.toLowerCase().includes("pitchy")) {
+      return {
+        card: "relative bg-gradient-to-br from-emerald-900/60 to-green-900/60 backdrop-blur-lg p-8 rounded-3xl shadow-lg border border-emerald-500/20 overflow-hidden group w-80",
+        glow: "absolute -inset-1 bg-gradient-to-r from-emerald-500 to-green-600 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-700 rounded-3xl"
+      };
+    }
+    // Olivier - style violet (maintien pour compatibilité)
+    else if (botType === "olivier" || title.toLowerCase().includes("olivier")) {
+      return {
+        card: "relative bg-gradient-to-br from-indigo-900/60 to-violet-900/60 backdrop-blur-lg p-8 rounded-3xl shadow-lg border border-violet-500/20 overflow-hidden group w-80",
+        glow: "absolute -inset-1 bg-gradient-to-r from-violet-500 to-indigo-600 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-700 rounded-3xl"
+      };
+    } 
+    // Clara - style rose/pink (maintien pour compatibilité)
+    else if (botType === "clara" || title.toLowerCase().includes("clara")) {
+      return {
+        card: "relative bg-gradient-to-br from-pink-900/60 to-rose-900/60 backdrop-blur-lg p-8 rounded-3xl shadow-lg border border-pink-500/20 overflow-hidden group w-80",
+        glow: "absolute -inset-1 bg-gradient-to-r from-pink-500 to-rose-600 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-700 rounded-3xl"
+      };
+    } 
+    // Max - style bleu (maintien pour compatibilité) ou défaut
+    else {
       return {
         card: "relative bg-gradient-to-br from-blue-900/60 to-sky-900/60 backdrop-blur-lg p-8 rounded-3xl shadow-lg border border-blue-500/20 overflow-hidden group w-80",
         glow: "absolute -inset-1 bg-gradient-to-r from-blue-500 to-sky-600 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-700 rounded-3xl"
@@ -121,7 +183,26 @@ export default function AnimatedCard({ title, description, icon, animationData, 
         </motion.div>
         
         <h3 className={`text-2xl font-bold mb-3 ${
-          (botType === "olivier" || title.toLowerCase().includes("olivier")) 
+          // Punchy - violet
+          (botType === "punchy" || title.toLowerCase().includes("punchy"))
+            ? "text-white group-hover:text-indigo-200"
+          // Reply - bleu
+          : (botType === "reply" || title.toLowerCase().includes("reply"))
+            ? "text-white group-hover:text-blue-200"
+          // Scribo - teal
+          : (botType === "scribo" || title.toLowerCase().includes("scribo"))
+            ? "text-white group-hover:text-teal-200"
+          // Lingo - amber
+          : (botType === "lingo" || title.toLowerCase().includes("lingo"))
+            ? "text-white group-hover:text-amber-200"
+          // Charm/Glow - rose/pink
+          : (botType === "charm" || title.toLowerCase().includes("charm") || botType === "glow" || title.toLowerCase().includes("glow"))
+            ? "text-white group-hover:text-pink-200"
+          // Pitchy - green
+          : (botType === "pitchy" || title.toLowerCase().includes("pitchy"))
+            ? "text-white group-hover:text-emerald-200"
+          // Anciens agents (pour compatibilité)
+          : (botType === "olivier" || title.toLowerCase().includes("olivier")) 
             ? "text-white group-hover:text-indigo-200" 
             : (botType === "clara" || title.toLowerCase().includes("clara"))
               ? "text-white group-hover:text-pink-200"
@@ -136,18 +217,53 @@ export default function AnimatedCard({ title, description, icon, animationData, 
         
         <Link 
           href={
-            (botType === "olivier" || title.toLowerCase().includes("olivier")) 
-              ? "/olivier" 
-              : (botType === "clara" || title.toLowerCase().includes("clara")) 
-                ? "/clara" 
-                : "/max"
+            // Nouveaux agents
+            (botType === "punchy" || title.toLowerCase().includes("punchy"))
+              ? "/agent/punchy"
+              : (botType === "reply" || title.toLowerCase().includes("reply"))
+                ? "/agent/reply"
+                : (botType === "scribo" || title.toLowerCase().includes("scribo"))
+                  ? "/agent/scribo"
+                  : (botType === "lingo" || title.toLowerCase().includes("lingo"))
+                    ? "/agent/lingo"
+                    : (botType === "charm" || title.toLowerCase().includes("charm"))
+                      ? "/agent/charm"
+                      : (botType === "glow" || title.toLowerCase().includes("glow"))
+                        ? "/agent/glow"
+                        : (botType === "pitchy" || title.toLowerCase().includes("pitchy"))
+                          ? "/agent/pitchy"
+                          // Anciens agents (pour compatibilité)
+                          : (botType === "olivier" || title.toLowerCase().includes("olivier"))
+                            ? "/olivier"
+                            : (botType === "clara" || title.toLowerCase().includes("clara"))
+                              ? "/clara"
+                              : "/max"
           } 
           className={`w-full py-3 px-6 ${
-            (botType === "olivier" || title.toLowerCase().includes("olivier"))
+            // Punchy - violet
+            (botType === "punchy" || title.toLowerCase().includes("punchy"))
               ? "bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700"
-              : (botType === "clara" || title.toLowerCase().includes("clara"))
-                ? "bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700"
-                : "bg-gradient-to-r from-blue-500 to-sky-600 hover:from-blue-600 hover:to-sky-700"
+            // Reply - bleu
+            : (botType === "reply" || title.toLowerCase().includes("reply"))
+              ? "bg-gradient-to-r from-blue-500 to-sky-600 hover:from-blue-600 hover:to-sky-700"
+            // Scribo - teal/cyan
+            : (botType === "scribo" || title.toLowerCase().includes("scribo"))
+              ? "bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700"
+            // Lingo - amber/yellow
+            : (botType === "lingo" || title.toLowerCase().includes("lingo"))
+              ? "bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700"
+            // Charm/Glow - rose/pink
+            : (botType === "charm" || title.toLowerCase().includes("charm") || botType === "glow" || title.toLowerCase().includes("glow"))
+              ? "bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700"
+            // Pitchy - emerald/green
+            : (botType === "pitchy" || title.toLowerCase().includes("pitchy"))
+              ? "bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700"
+            // Anciens agents (pour compatibilité)
+            : (botType === "olivier" || title.toLowerCase().includes("olivier"))
+              ? "bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700"
+            : (botType === "clara" || title.toLowerCase().includes("clara"))
+              ? "bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700"
+            : "bg-gradient-to-r from-blue-500 to-sky-600 hover:from-blue-600 hover:to-sky-700"
           } text-white font-bold rounded-xl transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center`}
         >
           <span>En savoir plus</span>

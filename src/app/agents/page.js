@@ -519,7 +519,7 @@ export default function AgentsPage() {
       name: "Punchy",
       description:
         "L'ami qui trouve toujours la blague qui tombe juste. Transforme une phrase banale en punchline et répond avec humour dans n'importe quelle conversation. Idéal pour taquineries, posts réseaux et icebreakers.",
-      image: "/olivier-bot.svg", // Réutilisation de l'image existante
+      image: "/punchy-bot.svg", // Image spécifique à Punchy
       color: "punchy",
       link: "/agent/punchy",
       tagline: "Humour instantané",
@@ -528,7 +528,7 @@ export default function AgentsPage() {
       name: "Reply",
       description:
         "Le génie des réponses parfaites. Suggère plusieurs options adaptées à chaque situation, du ton pro au ton cool ou humoristique. Idéal pour relations pro, séduction ou service client.",
-      image: "/max-bot.svg", // Réutilisation de l'image existante - à remplacer par une nouvelle image
+      image: "/reply-bot.svg", // Image spécifique à Reply
       color: "reply",
       link: "/agent/reply",
       tagline: "Messages parfaits",
@@ -538,7 +538,7 @@ export default function AgentsPage() {
       name: "Scribo",
       description:
         "Ton assistant personnel d'écriture et de style. Transforme tes phrases brutes en messages clairs, fluides et impactants. Corrige orthographe, grammaire et ponctuation tout en proposant des reformulations adaptées à ton style et au contexte.",
-      image: "/max-bot.svg", // Réutilisation de l'image existante - à remplacer par une image spécifique à Scribo
+      image: "/scribo-bot.svg", // Image spécifique à Scribo
       color: "scribo",
       link: "/agent/scribo",
       tagline: "Style d'écriture parfait",
@@ -547,7 +547,7 @@ export default function AgentsPage() {
       name: "Lingo",
       description:
         "Le globe-trotteur des langues. Traduit tout en conservant le ton voulu (pro, amical, séduisant, humoristique). Parfait pour conversations internationales, réseaux sociaux ou voyages.",
-      image: "/olivier-bot.svg", // Réutilisation de l'image existante - à remplacer par une nouvelle image
+      image: "/lingo-bot.svg", // Image spécifique à Lingo
       color: "lingo",
       link: "/agent/lingo",
       tagline: "Traduction parfaite",
@@ -556,7 +556,7 @@ export default function AgentsPage() {
       name: "Charm",
       description:
         "Le maître des mots qui font chavirer. Propose des réponses séduisantes adaptées à la situation et au ton voulu (gentleman, joueur, mystérieux). Parfait pour applis de rencontre, SMS coquins ou flirt léger au quotidien.",
-      image: "/clara-bot.svg", // Réutilisation de l'image existante
+      image: "/glow-bot.svg", // Image spécifique à Charm/Glow
       color: "charm",
       link: "/agent/charm",
       tagline: "Séduction garantie",
