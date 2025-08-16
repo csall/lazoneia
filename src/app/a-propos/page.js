@@ -50,19 +50,19 @@ export default function AboutPage() {
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="grid grid-cols-3 gap-8">
                   <Image
-                    src="/olivier-bot.svg"
+                    src="/punchy-bot.svg"
                     alt="Olivier l'humoriste"
                     width={100}
                     height={100}
                   />
                   <Image
-                    src="/clara-bot.svg"
+                    src="/glow-bot.svg"
                     alt="Clara la séductrice"
                     width={100}
                     height={100}
                   />
                   <Image
-                    src="/max-bot.svg"
+                    src="/reply-bot.svg"
                     alt="Max l'analyste"
                     width={100}
                     height={100}

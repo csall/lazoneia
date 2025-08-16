@@ -93,7 +93,7 @@ export default function GlowPage() {
             className="w-24 h-24 md:w-32 md:h-32"
           >
             <Image 
-              src={getImagePath("clara-bot.svg")}
+              src={getImagePath("/glow-bot.svg")}
               alt="Glow"
               width={128}
               height={128}

@@ -134,7 +134,7 @@ export default function PunchyPage() {
             className="w-24 h-24 md:w-32 md:h-32"
           >
             <Image 
-              src="/olivier-bot.svg"
+              src="/punchy-bot.svg"
               alt="Punchy"
               width={128}
               height={128}

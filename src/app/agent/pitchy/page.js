@@ -80,7 +80,7 @@ export default function PitchyPage() {
             className="w-24 h-24 md:w-32 md:h-32"
           >
             <Image 
-              src="/max-bot.svg"
+              src="/pitchy-bot.svg"
               alt="Pitchy"
               width={128}
               height={128}

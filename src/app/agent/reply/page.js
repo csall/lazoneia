@@ -69,7 +69,7 @@ export default function ReplyPage() {
             className="w-24 h-24 md:w-32 md:h-32"
           >
             <Image 
-              src="/olivier-bot.svg"
+              src="/reply-bot.svg"
               alt="Reply"
               width={128}
               height={128}

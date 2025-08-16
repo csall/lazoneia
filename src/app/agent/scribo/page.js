@@ -93,7 +93,7 @@ export default function ScriboPage() {
             className="w-24 h-24 md:w-32 md:h-32"
           >
             <Image 
-              src="/max-bot.svg" // À remplacer par l'image spécifique à Scribo
+              src="/scribo-bot.svg"
               alt="Scribo"
               width={128}
               height={128}
