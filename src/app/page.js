@@ -5,8 +5,11 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 
-// Import du hook pour les chemins d'images
-import { useImagePath } from "@/hooks/useImagePath";
+// Cette configuration est nécessaire pour éviter les erreurs de prérendu
+export const dynamic = "force-dynamic";
+
+// Import du hook pour les chemins d'images et de la fonction utilitaire
+import { useImagePath, normalizeImagePath } from "@/hooks/useImagePath";
 
 // Composant de menu style Google
 const GoogleMenu = () => {
@@ -83,7 +86,7 @@ const GoogleMenu = () => {
                   >
                     <div className="w-12 h-12 mb-2 bg-white/15 backdrop-blur-md rounded-full flex items-center justify-center">
                       <Image
-                        src={getImagePath(item.icon)}
+                        src={normalizeImagePath(item.icon)}
                         alt={item.name}
                         width={24}
                         height={24}
@@ -366,7 +369,7 @@ const AgentCard = ({
               }}
             >
               <Image
-                src={getImagePath(image)}
+                src={normalizeImagePath(image)}
                 alt={name}
                 width={100}
                 height={100}
@@ -457,8 +460,6 @@ export default function AgentsPage() {
   const [filter, setFilter] = useState("all");
   // Plus besoin d'attendre que le client soit monté pour améliorer la performance
   const [isClientMounted, setIsClientMounted] = useState(true);
-  // Utilisation du hook pour les chemins d'images
-  const { getImagePath } = useImagePath();
 
   // Effet d'initialisation exécuté immédiatement
   useEffect(() => {

@@ -6,9 +6,14 @@ const nextConfig = {
   },
   // Ne pas utiliser assetPrefix ou basePath spécifique pour Vercel
   // car Vercel gère correctement les chemins statiques par défaut
-  output: 'standalone', // Optimisation pour les déploiements sur Vercel
   poweredByHeader: false, // Désactive l'en-tête "X-Powered-By"
   reactStrictMode: true, // Bon pour le développement
+  // Nous désactivons temporairement le prérendu statique pour les pages avec des hooks clients
+  // qui ne sont pas compatibles avec le rendu côté serveur
+  experimental: {
+    // Cette option permet d'éviter les erreurs de prérendu pour les pages utilisant des hooks clients
+    appDir: true,
+  }
 };
 
 export default nextConfig;
