@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "vercel-build": "cp -R ./public/. ./.next/static/ && next build"
   },
   "dependencies": {
     "aos": "^2.3.4",

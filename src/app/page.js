@@ -5,17 +5,21 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 
+// Import du hook pour les chemins d'images
+import { useImagePath } from "@/hooks/useImagePath";
+
 // Composant de menu style Google
 const GoogleMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
+  const { getImagePath } = useImagePath();
 
   // Liste des applications/options du menu
   const menuItems = [
-    { name: "Accueil", icon: "/globe.svg", link: "/" },
-    { name: "Agents", icon: "/max-bot.svg", link: "/agents" },
-    { name: "À propos", icon: "/file.svg", link: "/a-propos" },
-    { name: "Contact", icon: "/window.svg", link: "/contact" },
+    { name: "Accueil", icon: "globe.svg", link: "/" },
+    { name: "Agents", icon: "max-bot.svg", link: "/agents" },
+    { name: "À propos", icon: "file.svg", link: "/a-propos" },
+    { name: "Contact", icon: "window.svg", link: "/contact" },
   ];
 
   // Fermer le menu si on clique à l'extérieur
@@ -79,11 +83,12 @@ const GoogleMenu = () => {
                   >
                     <div className="w-12 h-12 mb-2 bg-white/15 backdrop-blur-md rounded-full flex items-center justify-center">
                       <Image
-                        src={item.icon}
+                        src={getImagePath(item.icon)}
                         alt={item.name}
                         width={24}
                         height={24}
                         className="opacity-90 pointer-events-none"
+                        unoptimized
                       />
                     </div>
                     <span className="text-sm font-medium text-white">
@@ -361,12 +366,13 @@ const AgentCard = ({
               }}
             >
               <Image
-                src={image}
+                src={getImagePath(image)}
                 alt={name}
                 width={100}
                 height={100}
                 className="object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.35)]"
                 priority
+                unoptimized
               />
             </motion.div>
 
@@ -449,43 +455,30 @@ export default function AgentsPage() {
   const [favorites, setFavorites] = useState([]);
   // État pour stocker le filtre actif
   const [filter, setFilter] = useState("all");
-  // État pour indiquer que le client est monté (évite les problèmes d'hydratation)
-  const [isClientMounted, setIsClientMounted] = useState(false);
+  // Plus besoin d'attendre que le client soit monté pour améliorer la performance
+  const [isClientMounted, setIsClientMounted] = useState(true);
+  // Utilisation du hook pour les chemins d'images
+  const { getImagePath } = useImagePath();
 
-  // Indiquer que le client est monté - cela évite d'essayer d'accéder au localStorage trop tôt
+  // Effet d'initialisation exécuté immédiatement
   useEffect(() => {
+    // Initialiser immédiatement pour éviter le délai de chargement
     setIsClientMounted(true);
+    
+    // Récupérer les données du localStorage directement
+    try {
+      const storedFavorites = localStorage.getItem("agentFavorites");
+      if (storedFavorites) setFavorites(JSON.parse(storedFavorites));
+      
+      const storedFilter = localStorage.getItem("agentFilterPreference");
+      if (storedFilter) setFilter(JSON.parse(storedFilter));
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données:", error);
+    }
   }, []);
 
-  // Charger les favoris et le choix de filtre depuis le localStorage au montage du composant
-  useEffect(() => {
-    if (!isClientMounted) return; // Ne rien faire si le client n'est pas encore monté
-
-    // Fonction pour charger les données depuis le localStorage en toute sécurité
-    const loadFromStorage = (key, defaultValue) => {
-      try {
-        const savedValue = localStorage.getItem(key);
-        if (!savedValue) return defaultValue;
-
-        const parsedValue = JSON.parse(savedValue);
-        return parsedValue !== null ? parsedValue : defaultValue;
-      } catch (error) {
-        console.error(
-          `Erreur lors du chargement de ${key} depuis localStorage:`,
-          error
-        );
-        return defaultValue;
-      }
-    };
-
-    // Charger les favoris
-    const storedFavorites = loadFromStorage("agentFavorites", []);
-    setFavorites(storedFavorites);
-
-    // Charger la préférence de filtre
-    const storedFilter = loadFromStorage("agentFilterPreference", "all");
-    setFilter(storedFilter);
-  }, [isClientMounted]);
+  // On a retiré l'effet de chargement des favoris et du filtre
+  // car il est maintenant intégré dans l'effet d'initialisation
 
   // Sauvegarder les favoris dans le localStorage lorsqu'ils changent
   useEffect(() => {
@@ -525,7 +518,7 @@ export default function AgentsPage() {
       name: "Punchy",
       description:
         "L'ami qui trouve toujours la blague qui tombe juste. Transforme une phrase banale en punchline et répond avec humour dans n'importe quelle conversation. Idéal pour taquineries, posts réseaux et icebreakers.",
-      image: "/olivier-bot.svg", // Réutilisation de l'image existante
+      image: "olivier-bot.svg", // Sans le / initial pour éviter les problèmes en production
       color: "punchy",
       link: "/agent/punchy",
       tagline: "Humour instantané",
@@ -534,7 +527,7 @@ export default function AgentsPage() {
       name: "Reply",
       description:
         "Le génie des réponses parfaites. Suggère plusieurs options adaptées à chaque situation, du ton pro au ton cool ou humoristique. Idéal pour relations pro, séduction ou service client.",
-      image: "/olivier-bot.svg", // Icône unique pour Reply
+      image: "olivier-bot.svg", // Icône unique pour Reply
       color: "reply",
       link: "/agent/reply",
       tagline: "Messages parfaits",
@@ -544,7 +537,7 @@ export default function AgentsPage() {
       name: "Scribo",
       description:
         "Ton assistant personnel d'écriture et de style. Transforme tes phrases brutes en messages clairs, fluides et impactants. Corrige orthographe, grammaire et ponctuation tout en proposant des reformulations adaptées à ton style et au contexte.",
-      image: "/max-bot.svg", // Réutilisation de l'image existante - à remplacer par une image spécifique à Scribo
+      image: "max-bot.svg", // Sans le / initial pour éviter les problèmes en production
       color: "scribo",
       link: "/agent/scribo",
       tagline: "Style d'écriture parfait",
@@ -553,7 +546,7 @@ export default function AgentsPage() {
       name: "Lingo",
       description:
         "Le globe-trotteur des langues. Traduit tout en conservant le ton voulu (pro, amical, séduisant, humoristique). Parfait pour conversations internationales, réseaux sociaux ou voyages.",
-      image: "/olivier-bot.svg", // Réutilisation de l'image existante - à remplacer par une nouvelle image
+      image: "olivier-bot.svg", // Sans le / initial pour éviter les problèmes en production
       color: "lingo",
       link: "/agent/lingo",
       tagline: "Traduction parfaite",
@@ -562,7 +555,7 @@ export default function AgentsPage() {
       name: "Glow",
       description:
         "Le maître des mots qui font chavirer. Propose des réponses séduisantes adaptées à la situation et au ton voulu (gentleman, joueur, mystérieux). Parfait pour applis de rencontre, SMS coquins ou flirt léger au quotidien.",
-      image: "/clara-bot.svg", // Réutilisation de l'image existante
+      image: "clara-bot.svg", // Sans le / initial pour éviter les problèmes en production
       color: "glow",
       link: "/agent/glow",
       tagline: "Séduction garantie",

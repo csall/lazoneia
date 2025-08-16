@@ -59,10 +59,10 @@ export default function PitchyPage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-r from-emerald-900 to-green-800 text-white">
-      {/* Header avec navigation - avec rechargement forcé */}
+      {/* Header avec navigation - sans rechargement forcé */}
       <header className="py-3 px-4">
         <div className="container mx-auto flex justify-between items-center">
-          <Link href="/" onClick={() => window.location.href = "/"} className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>

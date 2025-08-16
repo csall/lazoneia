@@ -1,13 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Assurez-vous que les images statiques sont correctement servies
+  // Configuration pour les images
   images: {
-    unoptimized: true // Désactive l'optimisation d'image pour garantir qu'elles s'affichent correctement
+    unoptimized: true, // Désactive l'optimisation d'image pour garantir qu'elles s'affichent correctement
+    domains: ['vercel.app', 'lazoneia.vercel.app'] // Autorise les images depuis ces domaines
   },
-  // Assurez-vous que le chemin de base est correctement défini
+  // Configuration des assets statiques
+  // Utiliser les variables d'environnement pour ajuster les chemins en production
+  assetPrefix: process.env.NODE_ENV === 'production' ? '.' : '',
+  // Pas de basePath spécifique
   basePath: '',
-  // Assurez-vous que les ressources statiques sont correctement servies
-  assetPrefix: ''
+  // Ajout de la configuration pour les ressources statiques publiques
+  // pour s'assurer qu'elles sont correctement servies en production
+  publicRuntimeConfig: {
+    staticFolder: process.env.NODE_ENV === 'production' ? '.' : '',
+  }
 };
 
 export default nextConfig;
