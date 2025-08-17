@@ -10,6 +10,7 @@ export const dynamic = "force-dynamic";
 
 // Import du hook pour les chemins d'images et de la fonction utilitaire
 import { useImagePath, normalizeImagePath } from "@/hooks/useImagePath";
+import FilterBar from "@/components/agents/FilterBar";
 
 // Composant de menu style Google
 const GoogleMenu = () => {
@@ -455,7 +456,7 @@ const AgentCard = ({
 export default function AgentsPage() {
   // État pour stocker les favoris et le chargement initial
   const [favorites, setFavorites] = useState([]);
-  // État pour stocker le filtre actif
+  // État pour stocker le filtre actif - peut être "all", "favorites", "marketing" ou "communication"
   const [filter, setFilter] = useState("all");
   // Plus besoin d'attendre que le client soit monté pour améliorer la performance
   const [isClientMounted, setIsClientMounted] = useState(true);
@@ -522,6 +523,7 @@ export default function AgentsPage() {
       color: "punchy",
       link: "/agent/punchy",
       tagline: "Humour instantané",
+      category: "communication",
     },
     {
       name: "Reply",
@@ -531,6 +533,7 @@ export default function AgentsPage() {
       color: "reply",
       link: "/agent/reply",
       tagline: "Messages parfaits",
+      category: "communication",
     },
 
     {
@@ -541,6 +544,7 @@ export default function AgentsPage() {
       color: "scribo",
       link: "/agent/scribo",
       tagline: "Style d'écriture parfait",
+      category: "marketing",
     },
     {
       name: "Lingo",
@@ -550,6 +554,7 @@ export default function AgentsPage() {
       color: "lingo",
       link: "/agent/lingo",
       tagline: "Traduction parfaite",
+      category: "communication",
     },
     {
       name: "Glow",
@@ -559,6 +564,7 @@ export default function AgentsPage() {
       color: "glow",
       link: "/agent/glow",
       tagline: "Séduction garantie",
+      category: "marketing",
     },
   ];
 
@@ -709,6 +715,72 @@ export default function AgentsPage() {
             </motion.div>
           </div>
 
+          {/* Filtre ultra-moderne avec effet néomorphique et animations */}
+          <motion.div
+            className="relative mx-auto max-w-2xl py-4 px-2 mb-10 mt-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, type: "spring", stiffness: 100 }}
+          >
+            {/* Fond néomorphique avec effet glass */}
+            <div className="absolute inset-0 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.1)] overflow-hidden z-0">
+              {/* Effet de reflet sur le dessus */}
+              <div className="absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-white/10 to-transparent"></div>
+              
+              {/* Particules dynamiques en arrière-plan */}
+              <div className="absolute inset-0 overflow-hidden opacity-30">
+                {[...Array(8)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute rounded-full bg-white/40"
+                    style={{
+                      width: Math.random() * 4 + 2 + "px",
+                      height: Math.random() * 4 + 2 + "px",
+                      left: Math.random() * 100 + "%",
+                      top: Math.random() * 100 + "%",
+                    }}
+                    animate={{
+                      x: [0, Math.random() * 40 - 20, 0],
+                      y: [0, Math.random() * 40 - 20, 0],
+                      opacity: [0.2, 0.6, 0.2],
+                    }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: Math.random() * 5 + 3,
+                      ease: "easeInOut",
+                    }}
+                  />
+                ))}
+              </div>
+              
+              {/* Effet de ligne diagonale */}
+              <motion.div 
+                className="absolute w-[200%] h-[1px] bg-gradient-to-r from-transparent via-indigo-400/20 to-transparent -left-1/2"
+                style={{ top: "70%" }}
+                animate={{ 
+                  left: ["-100%", "100%"] 
+                }}
+                transition={{ 
+                  duration: 8, 
+                  repeat: Infinity,
+                  ease: "linear" 
+                }}
+              />
+            </div>
+
+            <div className="relative z-10 flex flex-col">
+              {/* Utilisation du composant FilterBar amélioré */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                <FilterBar filter={filter} setFilter={setFilter} favorites={favorites} />
+              </motion.div>
+
+              {/* Suppression de la barre de recherche */}
+            </div>
+          </motion.div>
         </div>
 
         {/* Colorful blurred shapes */}
@@ -796,7 +868,13 @@ export default function AgentsPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 p-4 max-w-7xl mx-auto">
               {agents
                 .filter(
-                  (agent) => filter === "all" || favorites.includes(agent.name)
+                  (agent) => {
+                    if (filter === "all") return true;
+                    if (filter === "favorites") return favorites.includes(agent.name);
+                    if (filter === "marketing") return agent.category === "marketing";
+                    if (filter === "communication") return agent.category === "communication";
+                    return true;
+                  }
                 )
                 .map((agent, i) => (
                   <AgentCard
