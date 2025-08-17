@@ -1,15 +1,51 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const FilterBar = ({ filter, setFilter, favorites }) => {
   const [hoverIndex, setHoverIndex] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [indicatorDimensions, setIndicatorDimensions] = useState({ 
+    width: 0, 
+    height: 0, 
+    left: 0, 
+    top: 0 
+  });
   
+  const allButtonRef = useRef(null);
+  const favButtonRef = useRef(null);
+  
+  // Initialisation
   useEffect(() => {
     setIsVisible(true);
   }, []);
+  
+  // Mise à jour des dimensions de l'indicateur
+  useEffect(() => {
+    const updateIndicator = () => {
+      const activeRef = filter === "all" ? allButtonRef : favButtonRef;
+      
+      if (activeRef.current) {
+        const rect = activeRef.current.getBoundingClientRect();
+        const parentRect = activeRef.current.parentElement.getBoundingClientRect();
+        
+        setIndicatorDimensions({
+          width: rect.width,
+          height: rect.height,
+          left: rect.left - parentRect.left,
+          top: rect.top - parentRect.top
+        });
+      }
+    };
+    
+    // Mise à jour initiale
+    updateIndicator();
+    
+    // Mise à jour lors des redimensionnements
+    window.addEventListener("resize", updateIndicator);
+    return () => window.removeEventListener("resize", updateIndicator);
+  }, [filter]);
   
   return (
     <div className="relative flex justify-center">
@@ -41,16 +77,17 @@ const FilterBar = ({ filter, setFilter, favorites }) => {
           
           {/* Halo lumineux qui suit le filtre actif */}
           <motion.div
-            className="absolute w-[120px] h-[40px] rounded-xl blur-2xl"
-            style={{
+            className="absolute rounded-xl blur-2xl"
+            layoutId="filterHalo"
+            animate={{
               background: filter === "all" 
                 ? "radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%)" 
                 : "radial-gradient(circle, rgba(250, 204, 21, 0.15) 0%, transparent 70%)",
-              left: filter === "all" ? "20px" : "120px",
-              top: "50%",
-              transform: "translateY(-50%)",
+              width: `${indicatorDimensions.width + 30}px`,
+              height: `${indicatorDimensions.height + 20}px`,
+              left: `${indicatorDimensions.left - 15}px`,
+              top: `${indicatorDimensions.top - 10}px`
             }}
-            layoutId="filterHalo"
             transition={{ 
               type: "spring", 
               stiffness: 50,
@@ -136,22 +173,34 @@ const FilterBar = ({ filter, setFilter, favorites }) => {
             <AnimatePresence>
               {isVisible && (
                 <motion.div
-                  className="absolute h-10 rounded-xl bg-gradient-to-r from-indigo-600/40 to-purple-600/40 border border-indigo-400/30 backdrop-blur-sm shadow-lg z-0"
+                  className="absolute backdrop-blur-sm shadow-lg z-0"
                   layoutId="filterIndicator"
-                  style={{ 
-                    width: filter === "all" ? "90px" : "102px",
-                    top: "2px",
-                    left: filter === "all" ? "-2px" : "92px",
-                  }}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ 
                     opacity: 1,
                     scale: 1,
+                    background: filter === "all"
+                      ? "linear-gradient(90deg, rgba(99, 102, 241, 0.4) 0%, rgba(168, 85, 247, 0.4) 100%)"
+                      : "linear-gradient(90deg, rgba(234, 179, 8, 0.4) 0%, rgba(217, 119, 6, 0.4) 100%)",
+                    borderColor: filter === "all"
+                      ? "rgba(99, 102, 241, 0.3)"
+                      : "rgba(234, 179, 8, 0.3)",
                     boxShadow: [
                       "0 0 0 rgba(99, 102, 241, 0)",
-                      "0 0 12px rgba(99, 102, 241, 0.4)",
+                      filter === "all" 
+                        ? "0 0 12px rgba(99, 102, 241, 0.4)" 
+                        : "0 0 12px rgba(234, 179, 8, 0.4)",
                       "0 0 0 rgba(99, 102, 241, 0)"
                     ]
+                  }}
+                  style={{ 
+                    top: indicatorDimensions.top,
+                    left: indicatorDimensions.left,
+                    width: indicatorDimensions.width,
+                    height: indicatorDimensions.height,
+                    borderWidth: "1px",
+                    borderStyle: "solid",
+                    borderRadius: "12px"
                   }}
                   exit={{ opacity: 0 }}
                   transition={{ 
@@ -171,6 +220,7 @@ const FilterBar = ({ filter, setFilter, favorites }) => {
             
             {/* Filtre "Tous" */}
             <motion.button
+              ref={allButtonRef}
               className={`relative z-10 px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-300 ${
                 filter === "all" ? "text-white" : "text-blue-200/80 hover:text-white"
               }`}
@@ -178,7 +228,30 @@ const FilterBar = ({ filter, setFilter, favorites }) => {
               onMouseLeave={() => setHoverIndex(null)}
               whileHover={{ scale: 1.05, y: -1 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setFilter("all")}
+              onClick={() => {
+                const clickEffect = document.createElement('div');
+                clickEffect.style.position = 'absolute';
+                clickEffect.style.borderRadius = '50%';
+                clickEffect.style.backgroundColor = 'rgba(99, 102, 241, 0.3)';
+                clickEffect.style.width = '5px';
+                clickEffect.style.height = '5px';
+                clickEffect.style.transition = 'all 0.6s ease-out';
+                clickEffect.style.zIndex = '0';
+                
+                document.body.appendChild(clickEffect);
+                
+                // Animation avec setTimeout
+                setTimeout(() => {
+                  clickEffect.style.transform = 'scale(40)';
+                  clickEffect.style.opacity = '0';
+                }, 10);
+                
+                // Nettoyage
+                setTimeout(() => {
+                  document.body.removeChild(clickEffect);
+                  setFilter("all");
+                }, 300);
+              }}
             >
               <motion.span
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -216,6 +289,7 @@ const FilterBar = ({ filter, setFilter, favorites }) => {
 
             {/* Filtre "Favoris" */}
             <motion.button
+              ref={favButtonRef}
               className={`relative z-10 px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-300 ${
                 filter === "favorites" ? "text-white" : "text-yellow-200/80 hover:text-white"
               }`}
@@ -223,7 +297,30 @@ const FilterBar = ({ filter, setFilter, favorites }) => {
               onMouseLeave={() => setHoverIndex(null)}
               whileHover={{ scale: 1.05, y: -1 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setFilter("favorites")}
+              onClick={() => {
+                const clickEffect = document.createElement('div');
+                clickEffect.style.position = 'absolute';
+                clickEffect.style.borderRadius = '50%';
+                clickEffect.style.backgroundColor = 'rgba(234, 179, 8, 0.3)';
+                clickEffect.style.width = '5px';
+                clickEffect.style.height = '5px';
+                clickEffect.style.transition = 'all 0.6s ease-out';
+                clickEffect.style.zIndex = '0';
+                
+                document.body.appendChild(clickEffect);
+                
+                // Animation avec setTimeout
+                setTimeout(() => {
+                  clickEffect.style.transform = 'scale(40)';
+                  clickEffect.style.opacity = '0';
+                }, 10);
+                
+                // Nettoyage
+                setTimeout(() => {
+                  document.body.removeChild(clickEffect);
+                  setFilter("favorites");
+                }, 300);
+              }}
             >
               <motion.span
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -235,7 +332,7 @@ const FilterBar = ({ filter, setFilter, favorites }) => {
                   animate={filter === "favorites" || hoverIndex === 1 ? { 
                     rotate: [0, 15, -15, 10, -10, 0],
                     scale: [1, 1.2, 1],
-                    transition: { duration: 1.2, repeat: filter === "favorites" ? Infinity : 0, repeatDelay: 1 }
+                    transition: { duration: 1.2, repeat: filter === "favorites" ? Infinity : 0, repeatDelay: 0.5 }
                   } : {}}
                 >
                   <motion.svg
@@ -243,6 +340,10 @@ const FilterBar = ({ filter, setFilter, favorites }) => {
                     fill={filter === "favorites" ? "currentColor" : "none"}
                     stroke="currentColor"
                     viewBox="0 0 24 24"
+                    animate={filter === "favorites" ? {
+                      filter: ["drop-shadow(0 0 2px rgba(234, 179, 8, 0))", "drop-shadow(0 0 4px rgba(234, 179, 8, 0.6))", "drop-shadow(0 0 2px rgba(234, 179, 8, 0))"]
+                    } : {}}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                   </motion.svg>
