@@ -119,6 +119,7 @@ const AgentCard = ({
   isFavorite,
   onToggleFavorite,
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const cardStyles = {
     charm: {
       bg: "bg-gradient-to-br from-pink-900/60 to-rose-900/60",
@@ -407,14 +408,34 @@ const AgentCard = ({
           {/* Description */}
           <div className="relative overflow-hidden mb-3">
             <motion.p
-              className="text-gray-300 text-xs group-hover:text-white transition-all duration-500 leading-relaxed max-h-[70px] group-hover:max-h-[400px]"
+              className={`text-gray-300 text-xs group-hover:text-white transition-all duration-500 leading-relaxed ${
+                isExpanded ? "max-h-[400px]" : "max-h-[70px] md:group-hover:max-h-[400px]"
+              }`}
               initial={{ y: 10, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
               {description}
             </motion.p>
-            <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-black/80 to-transparent group-hover:opacity-0 transition-opacity duration-500"></div>
+            {/* Dégradé qui masque le texte tronqué */}
+            <div className={`absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-black/80 to-transparent ${
+              isExpanded ? "opacity-0" : "md:group-hover:opacity-0"
+            } transition-opacity duration-500`}></div>
+          </div>
+          
+          {/* Bouton pour afficher plus/moins (visible uniquement sur mobile) */}
+          <div className="md:hidden flex justify-center mb-3">
+            <motion.button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className={`w-8 h-8 rounded-full ${style.accent} flex items-center justify-center shadow-lg`}
+              whileTap={{ scale: 0.9 }}
+              animate={{ y: [0, -2, 0], rotate: isExpanded ? 180 : 0 }}
+              transition={{ y: { repeat: Infinity, duration: 1.5, ease: "easeInOut" }, rotate: { duration: 0.3 } }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </motion.button>
           </div>
 
           {/* Button */}
