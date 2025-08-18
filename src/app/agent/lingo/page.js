@@ -9,7 +9,7 @@ export default function LingoPage() {
   const [userInput, setUserInput] = useState("");
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [sourceLang, setSourceLang] = useState("fr");
+  const [sourceLang, setSourceLang] = useState("auto");
   const [targetLang, setTargetLang] = useState("en");
   const [translationTone, setTranslationTone] = useState("pro");
   const [isCopied, setIsCopied] = useState(false);
@@ -33,8 +33,17 @@ export default function LingoPage() {
     
     // Simulation d'une réponse d'API (à remplacer par votre véritable appel API)
     setTimeout(() => {
+      // Détection automatique de la langue (simulation)
+      // Dans une application réelle, un service comme Google Cloud Translation API pourrait être utilisé
+      const detectedLang = userInput.toLowerCase().includes("the") || 
+                         userInput.toLowerCase().includes("and") || 
+                         userInput.toLowerCase().includes("is") ? "en" : "fr";
+      
+      const effectiveSourceLang = sourceLang === "auto" ? detectedLang : sourceLang;
+      
       // Exemples de traductions simplifiées
       const translations = {
+        // Pour les langues détectées automatiquement
         "fr-en": {
           pro: `Thank you for your message: "${userInput.substring(0, 40)}...". We will carefully analyze this information and get back to you promptly with our professional assessment.`,
           amical: `Hey there! Thanks for the message: "${userInput.substring(0, 40)}...". That's really cool, I'll take a look and get back to you soon, friend!`,
@@ -46,11 +55,24 @@ export default function LingoPage() {
           amical: `Salut ! Merci pour ton message : "${userInput.substring(0, 40)}...". C'est vraiment cool, je vais y jeter un œil et je te réponds bientôt, l'ami !`,
           seduisant: `Eh bien bonjour... "${userInput.substring(0, 40)}..." - quel message intrigant. Je trouve ton point de vue absolument fascinant. Peut-être pourrions-nous en discuter davantage... bientôt ?`,
           humoristique: `Donc tu as dit "${userInput.substring(0, 40)}..." ? C'est comme demander si l'ananas a sa place sur une pizza - controversé mais je suis prêt pour le débat ! Je te réponds correctement dès que j'arrête de rire !`
+        },
+        // Traductions vers d'autres langues (exemples simplifiés)
+        "fr-es": {
+          pro: `Gracias por su mensaje: "${userInput.substring(0, 40)}...". Analizaremos cuidadosamente esta información y le responderemos con prontitud.`,
+          amical: `¡Hola! Gracias por el mensaje: "${userInput.substring(0, 40)}...". ¡Qué genial! Lo revisaré y te responderé pronto, ¡amigo!`,
+          seduisant: `Vaya, hola... "${userInput.substring(0, 40)}..." - qué mensaje tan intrigante. Encuentro tu perspectiva absolutamente fascinante. ¿Quizás podríamos hablar más... pronto?`,
+          humoristique: `¿Así que dijiste "${userInput.substring(0, 40)}..."? ¡Eso es como preguntar si la piña va en la pizza - controvertido pero estoy listo para el debate!`
+        },
+        "en-es": {
+          pro: `Gracias por su mensaje: "${userInput.substring(0, 40)}...". Analizaremos cuidadosamente esta información y le responderemos con prontitud.`,
+          amical: `¡Hola! Gracias por el mensaje: "${userInput.substring(0, 40)}...". ¡Qué genial! Lo revisaré y te responderé pronto, ¡amigo!`,
+          seduisant: `Vaya, hola... "${userInput.substring(0, 40)}..." - qué mensaje tan intrigante. Encuentro tu perspectiva absolutamente fascinante. ¿Quizás podríamos hablar más... pronto?`,
+          humoristique: `¿Así que dijiste "${userInput.substring(0, 40)}..."? ¡Eso es como preguntar si la piña va en la pizza - controvertido pero estoy listo para el debate!`
         }
       };
 
-      const langPair = `${sourceLang}-${targetLang}`;
-      let responseText = "Traduction non disponible pour cette combinaison de langues.";
+      const langPair = `${effectiveSourceLang}-${targetLang}`;
+      let responseText = `Traduction de ${effectiveSourceLang} vers ${targetLang} non disponible pour le moment. Nous travaillons à élargir nos capacités linguistiques.`;
       
       if (translations[langPair] && translations[langPair][translationTone]) {
         responseText = translations[langPair][translationTone];
@@ -141,14 +163,12 @@ export default function LingoPage() {
               <div className="grid grid-cols-2 gap-3 mb-3">
                 <div>
                   <label className="text-xs text-amber-200 mb-1 block">De :</label>
-                  <select 
-                    value={sourceLang}
-                    onChange={(e) => setSourceLang(e.target.value)}
-                    className="w-full bg-amber-900/50 text-white rounded-lg p-2 border border-amber-600/50 focus:border-amber-400 text-sm"
-                  >
-                    <option value="fr">Français</option>
-                    <option value="en">Anglais</option>
-                  </select>
+                  <div className="w-full bg-amber-900/50 text-white rounded-lg p-2 border border-amber-600/50 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <span className="text-sm">Détection automatique</span>
+                  </div>
                 </div>
                 <div>
                   <label className="text-xs text-amber-200 mb-1 block">Vers :</label>
@@ -159,6 +179,14 @@ export default function LingoPage() {
                   >
                     <option value="en">Anglais</option>
                     <option value="fr">Français</option>
+                    <option value="es">Espagnol</option>
+                    <option value="de">Allemand</option>
+                    <option value="it">Italien</option>
+                    <option value="pt">Portugais</option>
+                    <option value="zh">Chinois</option>
+                    <option value="ja">Japonais</option>
+                    <option value="ar">Arabe</option>
+                    <option value="ru">Russe</option>
                   </select>
                 </div>
               </div>
