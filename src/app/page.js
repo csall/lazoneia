@@ -715,72 +715,10 @@ export default function AgentsPage() {
             </motion.div>
           </div>
 
-          {/* Filtre ultra-moderne avec effet néomorphique et animations */}
-          <motion.div
-            className="relative mx-auto max-w-2xl py-4 px-2 mb-10 mt-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, type: "spring", stiffness: 100 }}
-          >
-            {/* Fond néomorphique avec effet glass */}
-            <div className="absolute inset-0 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.1)] overflow-hidden z-0">
-              {/* Effet de reflet sur le dessus */}
-              <div className="absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-white/10 to-transparent"></div>
-              
-              {/* Particules dynamiques en arrière-plan */}
-              <div className="absolute inset-0 overflow-hidden opacity-30">
-                {[...Array(8)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute rounded-full bg-white/40"
-                    style={{
-                      width: Math.random() * 4 + 2 + "px",
-                      height: Math.random() * 4 + 2 + "px",
-                      left: Math.random() * 100 + "%",
-                      top: Math.random() * 100 + "%",
-                    }}
-                    animate={{
-                      x: [0, Math.random() * 40 - 20, 0],
-                      y: [0, Math.random() * 40 - 20, 0],
-                      opacity: [0.2, 0.6, 0.2],
-                    }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: Math.random() * 5 + 3,
-                      ease: "easeInOut",
-                    }}
-                  />
-                ))}
-              </div>
-              
-              {/* Effet de ligne diagonale */}
-              <motion.div 
-                className="absolute w-[200%] h-[1px] bg-gradient-to-r from-transparent via-indigo-400/20 to-transparent -left-1/2"
-                style={{ top: "70%" }}
-                animate={{ 
-                  left: ["-100%", "100%"] 
-                }}
-                transition={{ 
-                  duration: 8, 
-                  repeat: Infinity,
-                  ease: "linear" 
-                }}
-              />
-            </div>
-
-            <div className="relative z-10 flex flex-col">
-              {/* Utilisation du composant FilterBar amélioré */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                <FilterBar filter={filter} setFilter={setFilter} favorites={favorites} />
-              </motion.div>
-
-              {/* Suppression de la barre de recherche */}
-            </div>
-          </motion.div>
+          {/* Composant FilterBar avec son propre conteneur néomorphique */}
+          <div className="-mb-5">
+            <FilterBar filter={filter} setFilter={setFilter} favorites={favorites} />
+          </div>
         </div>
 
         {/* Colorful blurred shapes */}

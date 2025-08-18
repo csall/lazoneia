@@ -1,7 +1,106 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import Image from "next/image";
+import { useImagePath, normalizeImagePath } from "@/hooks/useImagePath";
+
+// Composant de menu style Google
+const GoogleMenu = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef(null);
+  const { getImagePath } = useImagePath();
+
+  // Liste des applications/options du menu
+  const menuItems = [
+    { name: "Accueil", icon: "globe.svg", link: "/" },
+    { name: "À propos", icon: "file.svg", link: "/a-propos" },
+    { name: "Contact", icon: "window.svg", link: "/contact" },
+  ];
+
+  // Fermer le menu si on clique à l'extérieur
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
+  return (
+    <div className="relative z-10" ref={menuRef}>
+      {/* Bouton du menu avec l'icône à 9 points */}
+      <motion.button
+        className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 shadow-lg hover:bg-white/20 transition-colors"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Menu applications"
+        type="button"
+      >
+        <div className="grid grid-cols-3 gap-1 pointer-events-none">
+          {Array.from({ length: 9 }).map((_, i) => (
+            <div key={i} className="w-1.5 h-1.5 bg-white rounded-full" />
+          ))}
+        </div>
+      </motion.button>
+
+      {/* Menu déroulant */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: -5 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: -5 }}
+            transition={{ type: "spring", bounce: 0.1, duration: 0.4 }}
+            className="absolute right-0 mt-2 p-2 w-64 rounded-xl bg-white/10 backdrop-blur-xl border border-white/10 shadow-2xl"
+            style={{
+              boxShadow:
+                "0 10px 40px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.2)",
+              transformOrigin: "top right",
+            }}
+          >
+            <div className="p-1 grid grid-cols-2 gap-2">
+              {menuItems.map((item, i) => (
+                <Link href={item.link} key={i} className="block">
+                  <motion.div
+                    className="flex flex-col items-center p-3 rounded-lg hover:bg-white/10 transition-colors"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <div className="w-12 h-12 mb-2 bg-white/15 backdrop-blur-md rounded-full flex items-center justify-center">
+                      <Image
+                        src={normalizeImagePath(item.icon)}
+                        alt={item.name}
+                        width={24}
+                        height={24}
+                        className="opacity-90 pointer-events-none"
+                        unoptimized
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-white">
+                      {item.name}
+                    </span>
+                  </motion.div>
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 export default function ContactPage() {
   const [formState, setFormState] = useState({
@@ -40,7 +139,53 @@ export default function ContactPage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-r from-blue-900 to-purple-900 text-white">
-      <section className="py-24 px-4">
+      {/* Barre de navigation avec menu Google et flèche retour */}
+      <div className="flex justify-between items-center w-full fixed top-0 left-0 right-0 z-40 px-4 py-4 bg-gradient-to-b from-blue-900/80 to-transparent backdrop-blur-sm">
+        {/* Flèche de retour */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <Link href="/">
+            <motion.button
+              className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 shadow-lg hover:bg-white/20 transition-colors"
+              whileHover={{ scale: 1.05, x: -3 }}
+              whileTap={{ scale: 0.95 }}
+              aria-label="Retour à l'accueil"
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className="h-5 w-5 text-white" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18" 
+                />
+              </svg>
+            </motion.button>
+          </Link>
+        </motion.div>
+        
+        {/* Menu style Google en haut à droite */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+        >
+          <GoogleMenu />
+        </motion.div>
+      </div>
+      
+      {/* Espace pour compenser la barre de navigation fixe */}
+      <div className="h-16"></div>
+      
+      <section className="py-16 px-4">
         <div className="container mx-auto max-w-4xl">
           <motion.div 
             className="text-center mb-16"
@@ -56,71 +201,12 @@ export default function ContactPage() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-12">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-gradient-to-br from-indigo-800/40 to-purple-800/40 p-8 rounded-3xl backdrop-blur-md shadow-lg border border-indigo-500/20"
-            >
-              <h2 className="text-3xl font-semibold mb-6 text-blue-200">Nos coordonnées</h2>
-              
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="bg-indigo-700/40 p-3 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-medium mb-1">Adresse</h3>
-                    <p className="text-blue-200">123 Avenue de l&apos;Innovation<br />75008 Paris, France</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                  <div className="bg-indigo-700/40 p-3 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-medium mb-1">Email</h3>
-                    <p className="text-blue-200">contact@lazoneia.com</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                  <div className="bg-indigo-700/40 p-3 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-medium mb-1">Téléphone</h3>
-                    <p className="text-blue-200">+33 (0)1 23 45 67 89</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                  <div className="bg-indigo-700/40 p-3 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-medium mb-1">Horaires</h3>
-                    <p className="text-blue-200">Lun-Ven: 9h00-18h00<br />Week-end: Fermé</p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+          <div className="grid md:grid-cols-1 gap-12 max-w-xl mx-auto">
 
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
             >
               {isSubmitted ? (
                 <motion.div
