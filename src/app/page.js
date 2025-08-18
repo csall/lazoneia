@@ -598,7 +598,7 @@ export default function AgentsPage() {
     {
       name: "Glow",
       description:
-        "Le maître des mots qui font chavirer. Propose des réponses séduisantes adaptées à la situation et au ton voulu (gentleman, joueur, mystérieux). Parfait pour applis de rencontre, SMS coquins ou flirt léger au quotidien.",
+        "Le maître des mots qui font chavirer. Propose des réponses séduisantes adaptées à la situation et au ton voulu (gentleman, joueur, mystérieux). Parfait pour applis de rencontre ou flirt léger au quotidien.",
       image: "glow-bot.svg", // Image spécifique à Glow
       color: "glow",
       link: "/agent/glow",

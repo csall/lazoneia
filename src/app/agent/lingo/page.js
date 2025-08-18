@@ -118,6 +118,9 @@ export default function LingoPage() {
         </div>
       </header>
 
+      {/* Espace supplémentaire après le header */}
+      <div className="h-8"></div>
+
       <div className="container mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row gap-4 items-center mb-6">
           <motion.div

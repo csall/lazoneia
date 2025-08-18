@@ -71,6 +71,8 @@ export default function PitchyPage() {
         </div>
       </header>
 
+      <div className="h-6">{/* Espace supplémentaire */}</div>
+
       <div className="container mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row gap-4 items-center mb-6">
           <motion.div
