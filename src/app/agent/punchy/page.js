@@ -269,12 +269,6 @@ export default function PunchyPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                       Copié!
-                    "use client";
-                    import GoogleMenu from "@/components/navigation/GoogleMenu";
-                    import { useState, useRef, useEffect } from "react";
-                    import Link from "next/link";
-                    import Image from "next/image";
-                    import { motion } from "framer-motion";
                     </>
                   ) : (
                     <>
