@@ -287,7 +287,7 @@ const GoogleMenu = () => {
                 ease: "easeInOut"
               }
             }}
-            className="absolute right-0 mt-2 p-2 w-64 rounded-xl bg-white/10 backdrop-blur-xl border border-white/10 shadow-2xl"
+            className="absolute right-0 mt-2 p-2 w-64 rounded-xl bg-gradient-to-br from-indigo-900 via-purple-800 to-pink-700 border border-purple-700 shadow-2xl"
             style={{
               transformOrigin: "top right",
             }}
@@ -296,13 +296,13 @@ const GoogleMenu = () => {
               {menuItems.map((item, i) => (
                 <Link href={item.link} key={i} className="block">
                   <motion.div
-                    className="flex flex-col items-center p-3 rounded-lg hover:bg-white/10 transition-colors"
+                    className="flex flex-col items-center p-3 rounded-lg hover:bg-purple-900/60 transition-colors"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setIsOpen(false)}
                   >
                     <motion.div 
-                      className="w-12 h-12 mb-2 bg-white/15 backdrop-blur-md rounded-full flex items-center justify-center"
+                      className="w-12 h-12 mb-2 bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg"
                       whileHover={{ 
                         boxShadow: "0 0 15px rgba(255,255,255,0.3)",
                         backgroundColor: "rgba(255,255,255,0.25)" 
