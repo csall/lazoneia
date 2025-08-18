@@ -417,25 +417,43 @@ const AgentCard = ({
             >
               {description}
             </motion.p>
-            {/* Dégradé qui masque le texte tronqué */}
+            {/* Dégradé qui masque le texte tronqué avec flèche intégrée */}
             <div className={`absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-black/80 to-transparent ${
               isExpanded ? "opacity-0" : "md:group-hover:opacity-0"
-            } transition-opacity duration-500`}></div>
+            } transition-opacity duration-500 flex justify-center items-end pb-1`}>
+              {/* Flèche vers le bas visible uniquement sur mobile et quand non-étendu */}
+              <motion.button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className={`md:hidden w-6 h-6 rounded-full ${style.accent} flex items-center justify-center shadow-lg opacity-80 ${
+                  isExpanded ? "hidden" : "flex"
+                }`}
+                whileTap={{ scale: 0.9 }}
+                animate={{ y: [0, -2, 0] }}
+                transition={{ y: { repeat: Infinity, duration: 1.5, ease: "easeInOut" }}}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </motion.button>
+            </div>
           </div>
           
-          {/* Bouton pour afficher plus/moins (visible uniquement sur mobile) */}
+          {/* Bouton pour réduire la description (visible uniquement sur mobile quand étendu) */}
           <div className="md:hidden flex justify-center mb-3">
-            <motion.button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className={`w-8 h-8 rounded-full ${style.accent} flex items-center justify-center shadow-lg`}
-              whileTap={{ scale: 0.9 }}
-              animate={{ y: [0, -2, 0], rotate: isExpanded ? 180 : 0 }}
-              transition={{ y: { repeat: Infinity, duration: 1.5, ease: "easeInOut" }, rotate: { duration: 0.3 } }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </motion.button>
+            {isExpanded && (
+              <motion.button
+                onClick={() => setIsExpanded(false)}
+                className={`w-8 h-8 rounded-full ${style.accent} flex items-center justify-center shadow-lg`}
+                whileTap={{ scale: 0.9 }}
+                initial={{ rotate: 180 }}
+                animate={{ y: [0, -2, 0] }}
+                transition={{ y: { repeat: Infinity, duration: 1.5, ease: "easeInOut" }}}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </motion.button>
+            )}
           </div>
 
           {/* Button */}
