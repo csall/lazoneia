@@ -314,7 +314,9 @@ const AgentCard = ({
           <div className="relative overflow-hidden mb-3">
             <motion.p
               className={`text-gray-300 text-xs group-hover:text-white transition-all duration-500 leading-relaxed ${
-                isExpanded ? "max-h-[400px]" : "max-h-[70px] md:group-hover:max-h-[400px]"
+                isExpanded
+                  ? "max-h-[400px]"
+                  : "max-h-[70px] md:group-hover:max-h-[400px]"
               }`}
               initial={{ y: 10, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -323,26 +325,43 @@ const AgentCard = ({
               {description}
             </motion.p>
             {/* Dégradé qui masque le texte tronqué avec flèche intégrée */}
-            <div className={`absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-black/80 to-transparent ${
-              isExpanded ? "opacity-0" : "md:group-hover:opacity-0"
-            } transition-opacity duration-500 flex justify-center items-end pb-1`}>
+            <div
+              className={`absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-black/80 to-transparent ${
+                isExpanded ? "opacity-0" : "md:group-hover:opacity-0"
+              } transition-opacity duration-500 flex justify-center items-end pb-1`}
+            >
               {/* Flèche vers le bas visible uniquement sur mobile et quand non-étendu */}
               <motion.button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className={`md:hidden w-6 h-6 rounded-full ${style.accent} flex items-center justify-center shadow-lg opacity-80 ${
+                className={`md:hidden w-6 h-6 rounded-full ${
+                  style.accent
+                } flex items-center justify-center shadow-lg opacity-80 ${
                   isExpanded ? "hidden" : "flex"
                 }`}
                 whileTap={{ scale: 0.9 }}
                 animate={{ y: [0, -2, 0] }}
-                transition={{ y: { repeat: Infinity, duration: 1.5, ease: "easeInOut" }}}
+                transition={{
+                  y: { repeat: Infinity, duration: 1.5, ease: "easeInOut" },
+                }}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-3 w-3 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </motion.button>
             </div>
           </div>
-          
+
           {/* Bouton pour réduire la description (visible uniquement sur mobile quand étendu) */}
           <div className="md:hidden flex justify-center mb-3">
             {isExpanded && (
@@ -352,10 +371,23 @@ const AgentCard = ({
                 whileTap={{ scale: 0.9 }}
                 initial={{ rotate: 180 }}
                 animate={{ y: [0, -2, 0] }}
-                transition={{ y: { repeat: Infinity, duration: 1.5, ease: "easeInOut" }}}
+                transition={{
+                  y: { repeat: Infinity, duration: 1.5, ease: "easeInOut" },
+                }}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </motion.button>
             )}
@@ -371,8 +403,14 @@ const AgentCard = ({
             whileTap={{ scale: 0.97 }}
           >
             <Link
-              href={link}
-              className={`block w-full py-2 px-3 bg-gradient-to-r ${style.button} text-white font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center text-xs backdrop-blur-sm`}
+              href={name.split(" ")[0] === "Reply" ? "#" : link} // Désactive le lien si Reply
+              className={`block w-full py-2 px-3 text-white font-bold rounded-lg transition-all duration-300 shadow-lg flex items-center justify-center text-xs backdrop-blur-sm
+    ${
+      name.split(" ")[0] === "Reply"
+        ? "bg-gray-500 cursor-not-allowed opacity-50 pointer-events-none"
+        : `bg-gradient-to-r ${style.button} hover:shadow-xl`
+    }
+  `}
             >
               <span>Discuter avec {name.split(" ")[0]}</span>
               <svg
@@ -409,12 +447,12 @@ export default function AgentsPage() {
   useEffect(() => {
     // Initialiser immédiatement pour éviter le délai de chargement
     setIsClientMounted(true);
-    
+
     // Récupérer les données du localStorage directement
     try {
       const storedFavorites = localStorage.getItem("agentFavorites");
       if (storedFavorites) setFavorites(JSON.parse(storedFavorites));
-      
+
       const storedFilter = localStorage.getItem("agentFilterPreference");
       if (storedFilter) setFilter(JSON.parse(storedFilter));
     } catch (error) {
@@ -479,7 +517,6 @@ export default function AgentsPage() {
       tagline: "Messages parfaits",
       category: "communication",
     },
-
     {
       name: "Scribo",
       description:
@@ -530,27 +567,27 @@ export default function AgentsPage() {
               <GoogleMenu />
             </motion.div>
           </div>
-          
+
           {/* Espace pour compenser la barre de navigation fixe - réduit */}
           <div className="h-10"></div>
-          
+
           {/* Titre LaZoneIA avec animations avancées */}
           <div className="relative mb-6 mt-1 pt-2 pb-2">
             {/* Effet de glow animé derrière le titre */}
-            <motion.div 
+            <motion.div
               className="absolute top-1/2 left-1/2 w-4/5 h-16 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/30 via-indigo-500/30 to-purple-600/30 rounded-full blur-2xl"
-              animate={{ 
+              animate={{
                 width: ["60%", "75%", "60%"],
                 height: ["140%", "200%", "140%"],
                 opacity: [0.3, 0.5, 0.3],
               }}
-              transition={{ 
+              transition={{
                 duration: 6,
                 repeat: Infinity,
-                ease: "easeInOut"
+                ease: "easeInOut",
               }}
             />
-            
+
             {/* Particules flottantes autour du titre */}
             <div className="absolute inset-0 overflow-hidden">
               {[
@@ -566,14 +603,14 @@ export default function AgentsPage() {
                 <motion.div
                   key={i}
                   className="absolute bg-white rounded-full"
-                  style={{ 
-                    width: particle.size, 
+                  style={{
+                    width: particle.size,
                     height: particle.size,
                     left: particle.x,
                     top: particle.y,
                   }}
                   initial={{ opacity: 0 }}
-                  animate={{ 
+                  animate={{
                     opacity: [0.4, 0.8, 0.4],
                     scale: [1, 1.5, 1],
                     x: [0, 10, -10, 0],
@@ -588,7 +625,7 @@ export default function AgentsPage() {
                 />
               ))}
             </div>
-            
+
             {/* Ligne décorative avec animation */}
             <motion.div
               className="absolute left-1/2 -translate-x-1/2 h-[1px] bg-gradient-to-r from-transparent via-blue-400/40 to-transparent"
@@ -601,15 +638,15 @@ export default function AgentsPage() {
               }}
               style={{ top: "calc(50% + 24px)" }}
             />
-            
+
             {/* Titre principal avec animation lettre par lettre */}
             <div className="relative flex justify-center items-center">
               {["L", "a", "Z", "o", "n", "e", "I", "A"].map((letter, index) => (
                 <motion.span
                   key={index}
                   className={`text-4xl md:text-5xl font-bold ${
-                    letter === "Z" || letter === "I" || letter === "A" 
-                      ? "bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500" 
+                    letter === "Z" || letter === "I" || letter === "A"
+                      ? "bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500"
                       : "text-white"
                   }`}
                   initial={{ opacity: 0, y: -20 }}
@@ -623,14 +660,14 @@ export default function AgentsPage() {
                   whileHover={{
                     scale: 1.2,
                     rotate: [-5, 5, 0],
-                    transition: { duration: 0.3 }
+                    transition: { duration: 0.3 },
                   }}
                 >
                   {letter}
                 </motion.span>
               ))}
             </div>
-            
+
             {/* Tagline animée */}
             <motion.div
               className="text-sm text-blue-200/80 text-center mt-2"
@@ -640,12 +677,16 @@ export default function AgentsPage() {
             >
               <motion.span
                 animate={{ opacity: [0.7, 1, 0.7] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
               >
                 L&apos;intelligence artificielle à votre service
               </motion.span>
             </motion.div>
-            
+
             {/* Accents décoratifs */}
             <motion.div
               className="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-10"
@@ -653,15 +694,34 @@ export default function AgentsPage() {
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
             >
               <svg viewBox="0 0 100 100" className="w-full h-full opacity-30">
-                <circle cx="50" cy="50" r="40" stroke="white" strokeWidth="1" fill="none" strokeDasharray="3 6" />
-                <circle cx="50" cy="50" r="20" stroke="white" strokeWidth="1" fill="none" />
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  stroke="white"
+                  strokeWidth="1"
+                  fill="none"
+                  strokeDasharray="3 6"
+                />
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="20"
+                  stroke="white"
+                  strokeWidth="1"
+                  fill="none"
+                />
               </svg>
             </motion.div>
           </div>
 
           {/* Composant FilterBar avec son propre conteneur néomorphique */}
           <div className="-mb-5">
-            <FilterBar filter={filter} setFilter={setFilter} favorites={favorites} />
+            <FilterBar
+              filter={filter}
+              setFilter={setFilter}
+              favorites={favorites}
+            />
           </div>
         </div>
 
@@ -749,15 +809,16 @@ export default function AgentsPage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 p-4 max-w-7xl mx-auto">
               {agents
-                .filter(
-                  (agent) => {
-                    if (filter === "all") return true;
-                    if (filter === "favorites") return favorites.includes(agent.name);
-                    if (filter === "marketing") return agent.category === "marketing";
-                    if (filter === "communication") return agent.category === "communication";
-                    return true;
-                  }
-                )
+                .filter((agent) => {
+                  if (filter === "all") return true;
+                  if (filter === "favorites")
+                    return favorites.includes(agent.name);
+                  if (filter === "marketing")
+                    return agent.category === "marketing";
+                  if (filter === "communication")
+                    return agent.category === "communication";
+                  return true;
+                })
                 .map((agent, i) => (
                   <AgentCard
                     key={i}
