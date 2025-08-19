@@ -25,64 +25,33 @@ export default function LingoPage() {
   }, [userInput]);
 
   // Fonction pour gérer la soumission du message
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!userInput.trim()) return;
-    
-    setIsLoading(true);
-    
-    // Simulation d'une réponse d'API (à remplacer par votre véritable appel API)
-    setTimeout(() => {
-      // Détection automatique de la langue (simulation)
-      // Dans une application réelle, un service comme Google Cloud Translation API pourrait être utilisé
-      const detectedLang = userInput.toLowerCase().includes("the") || 
-                         userInput.toLowerCase().includes("and") || 
-                         userInput.toLowerCase().includes("is") ? "en" : "fr";
-      
-      const effectiveSourceLang = sourceLang === "auto" ? detectedLang : sourceLang;
-      
-      // Exemples de traductions simplifiées
-      const translations = {
-        // Pour les langues détectées automatiquement
-        "fr-en": {
-          pro: `Thank you for your message: "${userInput.substring(0, 40)}...". We will carefully analyze this information and get back to you promptly with our professional assessment.`,
-          amical: `Hey there! Thanks for the message: "${userInput.substring(0, 40)}...". That's really cool, I'll take a look and get back to you soon, friend!`,
-          seduisant: `Well hello... "${userInput.substring(0, 40)}..." - what an intriguing message. I find your perspective absolutely fascinating. Perhaps we could discuss more... soon?`,
-          humoristique: `So you said "${userInput.substring(0, 40)}..."? That's like asking if pineapple belongs on pizza - controversial but I'm here for the debate! Let me respond properly once I stop laughing!`
-        },
-        "en-fr": {
-          pro: `Merci pour votre message : "${userInput.substring(0, 40)}...". Nous analyserons attentivement ces informations et reviendrons vers vous rapidement avec notre évaluation professionnelle.`,
-          amical: `Salut ! Merci pour ton message : "${userInput.substring(0, 40)}...". C'est vraiment cool, je vais y jeter un œil et je te réponds bientôt, l'ami !`,
-          seduisant: `Eh bien bonjour... "${userInput.substring(0, 40)}..." - quel message intrigant. Je trouve ton point de vue absolument fascinant. Peut-être pourrions-nous en discuter davantage... bientôt ?`,
-          humoristique: `Donc tu as dit "${userInput.substring(0, 40)}..." ? C'est comme demander si l'ananas a sa place sur une pizza - controversé mais je suis prêt pour le débat ! Je te réponds correctement dès que j'arrête de rire !`
-        },
-        // Traductions vers d'autres langues (exemples simplifiés)
-        "fr-es": {
-          pro: `Gracias por su mensaje: "${userInput.substring(0, 40)}...". Analizaremos cuidadosamente esta información y le responderemos con prontitud.`,
-          amical: `¡Hola! Gracias por el mensaje: "${userInput.substring(0, 40)}...". ¡Qué genial! Lo revisaré y te responderé pronto, ¡amigo!`,
-          seduisant: `Vaya, hola... "${userInput.substring(0, 40)}..." - qué mensaje tan intrigante. Encuentro tu perspectiva absolutamente fascinante. ¿Quizás podríamos hablar más... pronto?`,
-          humoristique: `¿Así que dijiste "${userInput.substring(0, 40)}..."? ¡Eso es como preguntar si la piña va en la pizza - controvertido pero estoy listo para el debate!`
-        },
-        "en-es": {
-          pro: `Gracias por su mensaje: "${userInput.substring(0, 40)}...". Analizaremos cuidadosamente esta información y le responderemos con prontitud.`,
-          amical: `¡Hola! Gracias por el mensaje: "${userInput.substring(0, 40)}...". ¡Qué genial! Lo revisaré y te responderé pronto, ¡amigo!`,
-          seduisant: `Vaya, hola... "${userInput.substring(0, 40)}..." - qué mensaje tan intrigante. Encuentro tu perspectiva absolutamente fascinante. ¿Quizás podríamos hablar más... pronto?`,
-          humoristique: `¿Así que dijiste "${userInput.substring(0, 40)}..."? ¡Eso es como preguntar si la piña va en la pizza - controvertido pero estoy listo para el debate!`
-        }
-      };
-
-      const langPair = `${effectiveSourceLang}-${targetLang}`;
-      let responseText = `Traduction de ${effectiveSourceLang} vers ${targetLang} non disponible pour le moment. Nous travaillons à élargir nos capacités linguistiques.`;
-      
-      if (translations[langPair] && translations[langPair][translationTone]) {
-        responseText = translations[langPair][translationTone];
-      }
-      
-      setResponse(responseText);
-      setIsLoading(false);
-    }, 1500);
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!userInput.trim()) return;
+  setIsLoading(true);
+  setResponse("");
+  try {
+    const res = await fetch("https://cheikh06000.app.n8n.cloud/webhook/lingo", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message: userInput, tone: translationTone, target: targetLang })
+    });
+    let resultText = "";
+    if (!res.ok) {
+      resultText = `Erreur réseau (${res.status})`;
+    } else {
+      // Si la réponse n'est pas du JSON
+      resultText = await res.text();
+      resultText=JSON.parse(resultText)[0].text;
+    }
+    setResponse(resultText);
+  } catch (err) {
+    setResponse("Erreur lors de la requête : " + err.message);
+  }
+  setIsLoading(false);
+};
 
   const handleClear = () => {
     setUserInput("");
