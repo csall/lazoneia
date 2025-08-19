@@ -69,24 +69,37 @@ export default function PunchyPage() {
   // Fonction pour gérer la soumission du message
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!userInput.trim()) return;
-    
     setIsLoading(true);
-    
-    // Simulation d'une réponse d'API (à remplacer par votre véritable appel API)
-    setTimeout(() => {
-      const humorResponses = [
-        `"${userInput}"\n\nC'est comme demander à un poisson de grimper à un arbre – techniquement possible, mais tellement absurde que même Darwin abandonnerait l'évolution.`,
-        `"${userInput}"\n\nSi cette phrase était un plat, ce serait une pizza à l'ananas... controversée mais étrangement addictive pour ceux qui osent essayer.`,
-        `"${userInput}"\n\nC'est le genre de logique qui fait que les chats nous regardent comme si on était stupides – et franchement, ils n'ont peut-être pas tort.`
-      ];
-      
-      const randomResponse = humorResponses[Math.floor(Math.random() * humorResponses.length)];
-      setResponse(randomResponse);
-      setIsLoading(false);
-      setIsCopied(false); // Réinitialiser l'état de copie
-    }, 1500);
+    setIsCopied(false);
+    try {
+  const res = await fetch("https://cheikh06000.app.n8n.cloud/webhook/blague", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+  body: JSON.stringify({ message: userInput })
+      });
+      let resultText = "";
+      if (!res.ok) {
+        resultText = `Erreur réseau (${res.status})`;
+      } else {
+        // Essaye de parser la réponse JSON
+        try {
+          resultText = res[0].text;
+          // Supporte plusieurs formats de réponse
+          
+        } catch (jsonErr) {
+          // Si la réponse n'est pas du JSON
+          resultText = await res.text();
+          resultText=JSON.parse(resultText)[0].text;
+        }
+      }
+      setResponse(resultText);
+    } catch (err) {
+      setResponse("Erreur lors de la requête : " + err.message);
+    }
+    setIsLoading(false);
   };
 
   const handleClear = () => {
