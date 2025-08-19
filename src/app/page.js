@@ -403,10 +403,10 @@ const AgentCard = ({
             whileTap={{ scale: 0.97 }}
           >
             <Link
-              href={name.split(" ")[0] === "Reply" ? "#" : link} // Désactive le lien si Reply
+              href={name.split(" ")[0] === "to_be_desactivated" ? "#" : link} // Désactive le lien si Reply
               className={`block w-full py-2 px-3 text-white font-bold rounded-lg transition-all duration-300 shadow-lg flex items-center justify-center text-xs backdrop-blur-sm
     ${
-      name.split(" ")[0] === "Reply"
+      name.split(" ")[0] === "to_be_desactivated"
         ? "bg-gray-500 cursor-not-allowed opacity-50 pointer-events-none"
         : `bg-gradient-to-r ${style.button} hover:shadow-xl`
     }

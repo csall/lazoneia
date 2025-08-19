@@ -8,7 +8,8 @@ import { motion } from "framer-motion";
 
 export default function ReplyPage() {
   const [userInput, setUserInput] = useState("");
-  const [responses, setResponses] = useState([]);
+  const [response, setResponse] = useState("");
+  const [isCopied, setIsCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTone, setSelectedTone] = useState("pro");
   const textareaRef = useRef(null);
@@ -21,30 +22,59 @@ export default function ReplyPage() {
     }
   }, [userInput]);
 
-  // Fonction pour gérer la soumission du message
+  // Fonction pour gérer la soumission du message (API n8n, une seule réponse)
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!userInput.trim()) return;
-    
     setIsLoading(true);
-    
-    // Simulation d'une réponse d'API (à remplacer par votre véritable appel API)
-    setTimeout(() => {
-      const generatedResponses = {
-        pro: `Je vous remercie pour votre message concernant "${userInput.substring(0, 40)}...". Je vais étudier cette question avec attention et reviendrai vers vous dans les meilleurs délais avec une réponse complète. N'hésitez pas si vous avez besoin d'informations supplémentaires.`,
-        cool: `Hey ! Merci pour ton message à propos de "${userInput.substring(0, 40)}...". J'ai bien noté, je m'en occupe et je te réponds très vite. À plus !`,
-        humoristique: `Alors comme ça on me parle de "${userInput.substring(0, 40)}..." ? J'ai failli renverser mon café en lisant ça ! Ne t'inquiète pas, je m'occupe de tout, même si je dois sacrifier ma pause déjeuner (ce qui est un ÉNORME sacrifice, crois-moi).`
-      };
-      
-      setResponses(Object.entries(generatedResponses).map(([tone, text]) => ({ tone, text })));
-      setIsLoading(false);
-    }, 1500);
+    setResponse("");
+    try {
+      const res = await fetch("https://cheikh06000.app.n8n.cloud/webhook/reply", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: userInput, tone: selectedTone })
+      });
+      let resultText = "";
+      if (!res.ok) {
+        resultText = `Erreur réseau (${res.status})`;
+      } else {
+        const raw = await res.text();
+        try {
+          // On suppose que l'API renvoie [{text: ...}] ou {text: ...}
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            resultText = parsed[0]?.text || "";
+          } else {
+            resultText = parsed.text || raw;
+          }
+        } catch {
+          resultText = raw;
+        }
+      }
+      setResponse(resultText);
+    } catch (err) {
+      setResponse("Erreur lors de la requête : " + err.message);
+    }
+    setIsLoading(false);
   };
 
   const handleClear = () => {
     setUserInput("");
-    setResponses([]);
+    setResponse("");
+    setIsCopied(false);
+  };
+
+  // Fonction pour copier la réponse dans le presse-papiers
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(response);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.error("Échec lors de la copie:", err);
+    }
   };
 
   return (
@@ -165,6 +195,17 @@ export default function ReplyPage() {
                   >
                     Humoristique
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTone("seduisant")}
+                    className={`px-3 py-1 rounded-lg text-xs transition ${
+                      selectedTone === "seduisant"
+                        ? "bg-pink-500 text-white"
+                        : "bg-pink-900/50 text-pink-300 hover:bg-pink-800/70"
+                    }`}
+                  >
+                    Séduisant
+                  </button>
                 </div>
               </div>
               
@@ -208,54 +249,46 @@ export default function ReplyPage() {
             transition={{ duration: 0.5, delay: 0.6 }}
             className="bg-gradient-to-br from-sky-800/50 to-blue-800/50 backdrop-blur-md p-4 rounded-xl shadow-lg border border-sky-500/30 min-h-[240px] flex flex-col"
           >
-            <h2 className="text-lg font-bold mb-2">Suggestions de Reply</h2>
+            <h2 className="text-lg font-bold mb-2">Réponse de Reply</h2>
             {isLoading ? (
               <div className="flex-1 flex flex-col items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                <p className="mt-2 text-blue-200 text-sm">Reply génère des options de réponse...</p>
+                <p className="mt-2 text-blue-200 text-sm">Reply prépare une réponse...</p>
               </div>
-            ) : responses.length > 0 ? (
-              <div className="space-y-3 overflow-auto">
-                {responses.map((response, index) => (
-                  <div 
-                    key={index} 
-                    className={`bg-blue-900/30 rounded-lg p-3 border ${
-                      response.tone === selectedTone 
-                        ? "border-blue-400 shadow-lg shadow-blue-500/20" 
-                        : "border-blue-700/30"
-                    }`}
-                  >
-                    <div className="flex justify-between items-center mb-2">
-                      <span className={`text-xs px-2 py-0.5 rounded ${
-                        response.tone === "pro" 
-                          ? "bg-blue-600/50" 
-                          : response.tone === "cool" 
-                            ? "bg-sky-600/50" 
-                            : "bg-indigo-600/50"
-                      }`}>
-                        {response.tone === "pro" 
-                          ? "Professionnel" 
-                          : response.tone === "cool" 
-                            ? "Décontracté" 
-                            : "Humoristique"}
-                      </span>
-                      <button 
-                        className="text-xs text-blue-300 hover:text-white transition"
-                        onClick={() => navigator.clipboard.writeText(response.text)}
-                      >
-                        Copier
-                      </button>
-                    </div>
-                    <p className="whitespace-pre-wrap text-blue-100 text-sm">{response.text}</p>
-                  </div>
-                ))}
+            ) : response ? (
+              <div className="bg-blue-900/30 rounded-lg p-3 border border-blue-700/30 h-full relative">
+                <p className="whitespace-pre-wrap text-blue-100 text-sm mb-10">{response}</p>
+                <button
+                  onClick={copyToClipboard}
+                  className={`absolute bottom-3 right-3 flex items-center gap-1.5 ${
+                    isCopied 
+                      ? 'bg-green-600/70 hover:bg-green-600/90' 
+                      : 'bg-blue-600/60 hover:bg-blue-600/80'
+                  } text-white text-xs py-1.5 px-3 rounded-lg transition-all duration-300`}
+                >
+                  {isCopied ? (
+                    <>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Copié!
+                    </>
+                  ) : (
+                    <>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                      Copier
+                    </>
+                  )}
+                </button>
               </div>
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center text-blue-300/70">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                 </svg>
-                <p className="text-sm">Les suggestions de Reply apparaîtront ici</p>
+                <p className="text-sm">La réponse de Reply apparaîtra ici</p>
               </div>
             )}
           </motion.div>
