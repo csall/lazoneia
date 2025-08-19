@@ -30,29 +30,33 @@ export default function GlowPage() {
   }, [userInput]);
 
   // Fonction pour gérer la soumission du message
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!userInput.trim()) return;
-    
-    setIsLoading(true);
-    
-    // Simulation d'une réponse d'API (à remplacer par votre véritable appel API)
-    setTimeout(() => {
-      let responseText = "";
-      
-      if (selectedTone === "gentleman") {
-        responseText = `Votre message est tel une mélodie à mes oreilles. "${userInput}"\n\nPermettez-moi de vous dire que votre façon de vous exprimer est élégante. Je serais honoré de poursuivre cette conversation et d'apprendre à vous connaître davantage.`;
-      } else if (selectedTone === "joueur") {
-        responseText = `Hey! J'adore ton message! "${userInput}"\n\nOn dirait que le destin nous a mis en contact pour une raison... Tu es aussi intéressant(e) que tu en as l'air sur ta photo? J'ai hâte de découvrir ça!`;
-      } else if (selectedTone === "mystérieux") {
-        responseText = `Intrigant... "${userInput}"\n\nIl y a quelque chose dans votre message qui éveille ma curiosité. Peut-être est-ce ce qui n'est pas dit qui est le plus fascinant. Laissez-moi vous connaître... petit à petit.`;
-      }
-      
-      setResponse(responseText);
-      setIsLoading(false);
-    }, 1500);
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!userInput.trim()) return;
+  setIsLoading(true);
+  setResponse("");
+  try {
+    const res = await fetch("https://cheikh06000.app.n8n.cloud/webhook/glow", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message: userInput, tone: selectedTone })
+    });
+    let resultText = "";
+    if (!res.ok) {
+      resultText = `Erreur réseau (${res.status})`;
+    } else {
+      // Si la réponse n'est pas du JSON
+      resultText = await res.text();
+      resultText=JSON.parse(resultText)[0].text;
+    }
+    setResponse(resultText);
+  } catch (err) {
+    setResponse("Erreur lors de la requête : " + err.message);
+  }
+  setIsLoading(false);
+};
 
   const handleClear = () => {
     setUserInput("");
