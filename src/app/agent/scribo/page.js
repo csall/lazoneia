@@ -23,32 +23,33 @@ export default function ScriboPage() {
   }, [userInput]);
 
   // Fonction pour gérer la soumission du message
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!userInput.trim()) return;
-    
-    setIsLoading(true);
-    
-    // Simulation d'une réponse d'API (à remplacer par votre véritable appel API)
-    setTimeout(() => {
-      let responseText = "";
-      
-      // Différentes réponses selon le style sélectionné
-      if (selectedStyle === "professionnel") {
-        responseText = `Version professionnelle :\n\n${userInput.trim().replace(/fautes?|erreurs?|typos?/gi, "")}`;
-      } else if (selectedStyle === "décontracté") {
-        responseText = `Version décontractée :\n\n${userInput.trim().replace(/fautes?|erreurs?|typos?/gi, "")}`;
-      } else if (selectedStyle === "créatif") {
-        responseText = `Version créative :\n\n${userInput.trim().replace(/fautes?|erreurs?|typos?/gi, "")}`;
-      } else if (selectedStyle === "concis") {
-        responseText = `Version concise :\n\n${userInput.trim().replace(/fautes?|erreurs?|typos?/gi, "")}`;
-      }
-      
-      setResponse(responseText);
-      setIsLoading(false);
-    }, 1500);
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!userInput.trim()) return;
+  setIsLoading(true);
+  setResponse("");
+  try {
+    const res = await fetch("https://cheikh06000.app.n8n.cloud/webhook/scribo", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message: userInput, tone: selectedStyle })
+    });
+    let resultText = "";
+    if (!res.ok) {
+      resultText = `Erreur réseau (${res.status})`;
+    } else {
+      // Si la réponse n'est pas du JSON
+      resultText = await res.text();
+      resultText=JSON.parse(resultText)[0].text;
+    }
+    setResponse(resultText);
+  } catch (err) {
+    setResponse("Erreur lors de la requête : " + err.message);
+  }
+  setIsLoading(false);
+};
 
   const handleClear = () => {
     setUserInput("");
