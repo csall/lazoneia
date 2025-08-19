@@ -73,7 +73,7 @@ export default function PunchyPage() {
     setIsLoading(true);
     setIsCopied(false);
     try {
-  const res = await fetch("https://cheikh06000.app.n8n.cloud/webhook/blague", {
+  const res = await fetch("https://cheikh06000.app.n8n.cloud/webhook-test/punchy", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
