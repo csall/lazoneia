@@ -1,4 +1,3 @@
-
 "use client";
 import GoogleMenu from "@/components/navigation/GoogleMenu";
 import { useState, useRef, useEffect } from "react";
@@ -163,34 +162,35 @@ export default function ScriboPage() {
     setShowMic(!userInput || userInput.trim().length === 0);
   }, [userInput]);
 
-  // Fonction pour gérer la soumission du message
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!userInput.trim()) return;
-  setIsLoading(true);
-  setResponse("");
-  try {
-    const res = await fetch("https://cheikh06000.app.n8n.cloud/webhook/scribo", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ message: userInput, tone: selectedStyle })
-    });
-    let resultText = "";
-    if (!res.ok) {
-      resultText = `Erreur réseau (${res.status})`;
-    } else {
-      // Si la réponse n'est pas du JSON
-      resultText = await res.text();
-      resultText=JSON.parse(resultText)[0].text;
+  // Fonction pour gérer la soumission du message (comme Reply)
+  const handleSubmit = async (e, overrideInput) => {
+    if (e && e.preventDefault) e.preventDefault();
+    const input = overrideInput !== undefined ? overrideInput : userInput;
+    if (!input.trim()) return;
+    setIsLoading(true);
+    setResponse("");
+    try {
+      const res = await fetch("https://cheikh06000.app.n8n.cloud/webhook/scribo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: input, tone: selectedStyle })
+      });
+      let resultText = "";
+      if (!res.ok) {
+        resultText = `Erreur réseau (${res.status})`;
+      } else {
+        // Si la réponse n'est pas du JSON
+        resultText = await res.text();
+        resultText=JSON.parse(resultText)[0].text;
+      }
+      setResponse(resultText);
+    } catch (err) {
+      setResponse("Erreur lors de la requête : " + err.message);
     }
-    setResponse(resultText);
-  } catch (err) {
-    setResponse("Erreur lors de la requête : " + err.message);
-  }
-  setIsLoading(false);
-};
+    setIsLoading(false);
+  };
 
   const handleClear = () => {
     setUserInput("");
@@ -310,7 +310,7 @@ const handleSubmit = async (e) => {
                   ref={textareaRef}
                   value={userInput}
                   onChange={(e) => setUserInput(e.target.value)}
-                  placeholder={isRecording ? '' : "Écrivez ou enregistrez votre texte..."}
+                  placeholder={isRecording ? '' : "Collez ou enregistrez le texte à améliorer..."}
                   className={`w-full h-[120px] bg-teal-900/50 text-white placeholder-teal-300 rounded-lg p-3 border border-teal-600/50 focus:border-teal-400 focus:ring focus:ring-teal-300/50 focus:outline-none resize-none transition text-sm pr-12 select-none touch-none ${isRecording ? 'bg-gray-400 text-gray-700 opacity-70 cursor-not-allowed' : ''}`}
                   rows={4}
                   disabled={isRecording}
@@ -360,11 +360,11 @@ const handleSubmit = async (e) => {
                 )}
                 {/* Transcript en direct */}
                 {isRecording && tempTranscriptRef.current && (
-                  <p className="mt-2 text-cyan-300 text-xs italic">{tempTranscriptRef.current}</p>
+                  <p className="mt-2 text-blue-300 text-xs italic">{tempTranscriptRef.current}</p>
                 )}
               </div>
               {isRecording && tempTranscriptRef.current && (
-                <p className="mt-2 text-cyan-300 text-xs italic">{tempTranscriptRef.current}</p>
+                <p className="mt-2 text-blue-300 text-xs italic">{tempTranscriptRef.current}</p>
               )}
               
               <div className="flex gap-2">
