@@ -18,6 +18,7 @@ export default function PunchyPage() {
   const [isRecording, setIsRecording] = useState(false);
   const [isCancelled, setIsCancelled] = useState(false);
   const [micButtonActive, setMicButtonActive] = useState(false);
+  const [showMic, setShowMic] = useState(true);
 
   const recognitionRef = useRef(null);
   const micButtonRef = useRef(null);
@@ -170,12 +171,13 @@ export default function PunchyPage() {
     );
   };
 
-  // Ajustement automatique textarea
+  // Ajustement automatique textarea + gestion affichage micro
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
+    setShowMic(!userInput || userInput.trim().length === 0);
   }, [userInput]);
 
   // Soumission texte à n8n
@@ -275,10 +277,11 @@ export default function PunchyPage() {
                     ref={textareaRef}
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
-                    placeholder="Écrivez ou enregistrez une phrase banale à transformer..."
-                    className={`w-full h-[120px] bg-indigo-900/50 text-white placeholder-indigo-300 rounded-lg p-3 border border-indigo-600/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none resize-none transition-all duration-200 text-sm pr-12 ${isRecording ? 'bg-gray-400 text-gray-700 placeholder-white opacity-70 cursor-not-allowed' : ''}`}
+                    placeholder={isRecording ? "" : "Écrivez ou enregistrez une phrase banale à transformer..."}
+                    className={`w-full h-[120px] bg-indigo-900/50 text-white placeholder-indigo-300 rounded-lg p-3 border border-indigo-600/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none resize-none transition-all duration-200 text-sm pr-12 ${isRecording ? 'bg-gray-400 text-gray-700 placeholder-white opacity-70 cursor-not-allowed select-none' : ''}`}
                     rows={4}
                     disabled={isRecording}
+                    style={isRecording ? { userSelect: 'none', WebkitUserSelect: 'none' } : {}}
                   />
                   {isRecording && (
                     <motion.div
@@ -304,15 +307,15 @@ export default function PunchyPage() {
                     </motion.div>
                   )}
                 </div>
-                {(!userInput || userInput.trim().length === 0) && (
+                {showMic && (
                   <motion.button
                     ref={micButtonRef}
                     type="button"
                     onMouseDown={handleMicMouseDown}
                     onTouchStart={handleMicTouchStart}
-                    className={`absolute right-2 top-2 bg-indigo-600/80 hover:bg-indigo-700 text-white rounded-full p-2 shadow transition-all duration-200
+                    className={`absolute right-2 top-2 rounded-full p-2 shadow transition-all duration-200
                       ${micButtonActive ? 'scale-110 ring-4 ring-indigo-400/40' : ''}
-                      ${isRecording ? 'animate-pulse opacity-80' : ''}
+                      ${isRecording ? 'bg-indigo-400/80 animate-pulse opacity-80' : 'bg-indigo-600/80 hover:bg-indigo-700'}
                       ${isCancelled ? 'bg-red-600/80 ring-red-400/40' : ''}`}
                     aria-label="Appuyez et maintenez pour parler"
                     style={{ touchAction: 'none' }}
@@ -320,11 +323,10 @@ export default function PunchyPage() {
                     animate={micButtonActive ? { scale: 1.1 } : { scale: 1 }}
                   >
                     {isRecording ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="red" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="6" /></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="6" /></svg>
                     ) : (
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18v2m0-2a6 6 0 006-6V9a6 6 0 10-12 0v3a6 6 0 006 6zm0 0v2m0 0h-2m2 0h2" /></svg>
                     )}
-                    {/* Animation sous le bouton micro supprimée */}
                   </motion.button>
                 )}
               </div>
