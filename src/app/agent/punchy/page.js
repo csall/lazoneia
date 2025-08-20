@@ -338,8 +338,13 @@ export default function PunchyPage() {
                 <p className="whitespace-pre-wrap text-indigo-100 text-sm mb-8">{response}</p>
                 <button
                   onClick={copyToClipboard}
+                  disabled={isRecording}
                   className={`absolute bottom-3 right-3 flex items-center gap-1.5 ${
-                    isCopied ? "bg-green-600/70 hover:bg-green-600/90" : "bg-indigo-600/60 hover:bg-indigo-600/80"
+                    isCopied
+                      ? 'bg-green-600/70 hover:bg-green-600/90'
+                      : isRecording
+                        ? 'bg-gray-400/60 cursor-not-allowed'
+                        : 'bg-indigo-600/60 hover:bg-indigo-600/80'
                   } text-white text-xs py-1.5 px-3 rounded-lg transition-all duration-300`}
                 >
                   {isCopied ? (
