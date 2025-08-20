@@ -334,16 +334,6 @@ const handleSubmit = async (e) => {
                 </button>
               </div>
               
-              <div>
-                <textarea
-                  ref={textareaRef}
-                  value={userInput}
-                  onChange={(e) => setUserInput(e.target.value)}
-                  placeholder="Écrivez votre texte à améliorer ou corriger..."
-                  className="w-full h-[100px] bg-teal-900/50 text-white placeholder-teal-300 rounded-lg p-2 border border-teal-600/50 focus:border-teal-400 focus:ring focus:ring-teal-300/50 focus:outline-none resize-none transition text-sm"
-                  rows={4}
-                />
-              </div>
               <div className="flex gap-2">
                 <button
                   type="submit"
