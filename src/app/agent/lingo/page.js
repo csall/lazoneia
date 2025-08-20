@@ -411,7 +411,7 @@ export default function LingoPage() {
                             onMouseDown={handleMicMouseDown}
                             onTouchStart={handleMicTouchStart}
                             onContextMenu={e => e.preventDefault()}
-                            className={`absolute bottom-3 right-3 bg-gradient-to-br from-amber-500 via-yellow-400 to-amber-400 text-white rounded-full p-2 shadow-lg transition-all duration-200 select-none touch-none border-2 border-amber-300/60 ${micButtonActive ? 'scale-125 ring-4 ring-yellow-300/60 shadow-yellow-400/40' : ''} ${isRecording ? 'animate-pulse opacity-80' : ''} ${isCancelled ? 'bg-red-600/80 ring-red-400/40' : ''}`}
+                            className={`absolute right-2 top-2 bg-gradient-to-br from-amber-500 via-yellow-400 to-amber-400 text-white rounded-full p-2 shadow-lg transition-all duration-200 select-none touch-none border-2 border-amber-300/60 ${micButtonActive ? 'scale-125 ring-4 ring-yellow-300/60 shadow-yellow-400/40' : ''} ${isRecording ? 'animate-pulse opacity-80' : ''} ${isCancelled ? 'bg-red-600/80 ring-red-400/40' : ''}`}
                             aria-label="Appuyez et maintenez pour parler"
                             style={{ touchAction: 'none', WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none', background: isRecording ? 'linear-gradient(90deg, #f59e11 60%, #fde68a 100%)' : undefined, filter: micButtonActive ? 'drop-shadow(0 0 16px #fde68a)' : undefined }}
                             initial={{ scale: 1 }}
