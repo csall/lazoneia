@@ -1,5 +1,6 @@
-
 "use client";
+// Micro pour dictée vocale
+// ...existing code...
 import GoogleMenu from "@/components/navigation/GoogleMenu";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
@@ -12,6 +13,42 @@ export default function PunchyPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const textareaRef = useRef(null);
+  // Microphone logic
+  const [isRecording, setIsRecording] = useState(false);
+  const recognitionRef = useRef(null);
+
+  useEffect(() => {
+    if (!('webkitSpeechRecognition' in window)) return;
+    const SpeechRecognition = window.webkitSpeechRecognition;
+    recognitionRef.current = new SpeechRecognition();
+    recognitionRef.current.lang = 'fr-FR';
+    recognitionRef.current.continuous = false;
+    recognitionRef.current.interimResults = false;
+    recognitionRef.current.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setUserInput((prev) => prev ? prev + ' ' + transcript : transcript);
+    };
+    recognitionRef.current.onstart = () => setIsRecording(true);
+    recognitionRef.current.onend = () => setIsRecording(false);
+    recognitionRef.current.onerror = () => setIsRecording(false);
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.onresult = null;
+        recognitionRef.current.onstart = null;
+        recognitionRef.current.onend = null;
+        recognitionRef.current.onerror = null;
+      }
+    };
+  }, []);
+
+  const handleMicClick = () => {
+    if (!recognitionRef.current) return;
+    if (isRecording) {
+      recognitionRef.current.stop();
+    } else {
+      recognitionRef.current.start();
+    }
+  };
 
   // Ajuster automatiquement la hauteur du textarea en fonction du contenu
   useEffect(() => {
@@ -207,14 +244,13 @@ export default function PunchyPage() {
           >
             <h2 className="text-lg font-bold mb-2">Votre texte</h2>
             <form onSubmit={handleSubmit} className="space-y-3">
-              <div className="relative">
+              <div className="relative flex items-center">
                 <style jsx global>{`
                   .paste-highlight {
                     border-color: #818cf8 !important;
                     box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.3) !important;
                     animation: paste-flash 0.5s;
                   }
-                  
                   @keyframes paste-flash {
                     0%, 100% { background-color: rgba(79, 70, 229, 0.5); }
                     50% { background-color: rgba(99, 102, 241, 0.7); }
@@ -224,10 +260,23 @@ export default function PunchyPage() {
                   ref={textareaRef}
                   value={userInput}
                   onChange={(e) => setUserInput(e.target.value)}
-                  placeholder="Écrivez une phrase banale à transformer..."
-                  className="w-full h-[120px] bg-indigo-900/50 text-white placeholder-indigo-300 rounded-lg p-3 border border-indigo-600/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none resize-none transition-all duration-200 text-sm"
+                  placeholder="Écrivez ou enregistrez une phrase banale à transformer..."
+                  className="w-full h-[120px] bg-indigo-900/50 text-white placeholder-indigo-300 rounded-lg p-3 border border-indigo-600/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none resize-none transition-all duration-200 text-sm pr-12"
                   rows={4}
                 />
+                <button
+                  type="button"
+                  onClick={handleMicClick}
+                  disabled={isRecording}
+                  className={`absolute right-2 top-2 bg-indigo-600/80 hover:bg-indigo-700 text-white rounded-full p-2 shadow transition ${isRecording ? 'animate-pulse opacity-70' : ''}`}
+                  aria-label="Enregistrer via le micro"
+                >
+                  {isRecording ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="red" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="6" /></svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18v2m0-2a6 6 0 006-6V9a6 6 0 10-12 0v3a6 6 0 006 6zm0 0v2m0 0h-2m2 0h2" /></svg>
+                  )}
+                </button>
               </div>
               <div className="flex gap-2">
                 <button

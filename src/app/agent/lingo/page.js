@@ -15,6 +15,31 @@ export default function LingoPage() {
   const [translationTone, setTranslationTone] = useState("pro");
   const [isCopied, setIsCopied] = useState(false);
   const textareaRef = useRef(null);
+  // Micro pour dictée vocale
+  const [isRecording, setIsRecording] = useState(false);
+  const recognitionRef = useRef(null);
+  useEffect(() => {
+    if (typeof window !== "undefined" && 'webkitSpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.lang = "fr-FR";
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+      recognitionRef.current.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setUserInput((prev) => prev ? prev + " " + transcript : transcript);
+        setIsRecording(false);
+      };
+      recognitionRef.current.onerror = () => { setIsRecording(false); };
+      recognitionRef.current.onend = () => { setIsRecording(false); };
+    }
+  }, []);
+  const handleMicClick = () => {
+    if (recognitionRef.current) {
+      setIsRecording(true);
+      recognitionRef.current.start();
+    }
+  };
 
   // Ajuster automatiquement la hauteur du textarea en fonction du contenu
   useEffect(() => {
@@ -236,14 +261,29 @@ const handleSubmit = async (e) => {
               </div>
               
               <div>
-                <textarea
-                  ref={textareaRef}
-                  value={userInput}
-                  onChange={(e) => setUserInput(e.target.value)}
-                  placeholder="Entrez votre texte à traduire..."
-                  className="w-full h-[120px] bg-amber-900/50 text-white placeholder-amber-300 rounded-lg p-3 border border-amber-600/50 focus:border-amber-400 focus:ring focus:ring-amber-300/50 focus:outline-none resize-none transition text-sm"
-                  rows={4}
-                />
+                <div className="relative flex items-center">
+                  <textarea
+                    ref={textareaRef}
+                    value={userInput}
+                    onChange={(e) => setUserInput(e.target.value)}
+                    placeholder="Entrez votre texte à traduire..."
+                    className="w-full h-[120px] bg-amber-900/50 text-white placeholder-amber-300 rounded-lg p-3 border border-amber-600/50 focus:border-amber-400 focus:ring focus:ring-amber-300/50 focus:outline-none resize-none transition text-sm pr-12"
+                    rows={4}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleMicClick}
+                    disabled={isRecording}
+                    className={`absolute right-2 top-2 bg-amber-600/80 hover:bg-amber-700 text-white rounded-full p-2 shadow transition ${isRecording ? 'animate-pulse opacity-70' : ''}`}
+                    aria-label="Enregistrer via le micro"
+                  >
+                    {isRecording ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="red" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="6" /></svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18v2m0-2a6 6 0 006-6V9a6 6 0 10-12 0v3a6 6 0 006 6zm0 0v2m0 0h-2m2 0h2" /></svg>
+                    )}
+                  </button>
+                </div>
               </div>
               <div className="flex gap-2">
                 <button
