@@ -10,8 +10,7 @@ import { useImagePath } from "@/hooks/useImagePath";
 import OptimizedImage from "@/components/OptimizedImage";
 
 export default function GlowPage() {
-  const [isRecording, setIsRecording] = useState(false);
-  const recognitionRef = useRef(null);
+  // ...existing code...
   const [userInput, setUserInput] = useState("");
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -21,33 +20,141 @@ export default function GlowPage() {
   // Utilisation du hook pour les chemins d'images
   const { getImagePath } = useImagePath();
 
-  // Initialisation de l'API SpeechRecognition
+  // Micro WhatsApp-like
+  const [isRecording, setIsRecording] = useState(false);
+  const [isCancelled, setIsCancelled] = useState(false);
+  const [micButtonActive, setMicButtonActive] = useState(false);
+  const recognitionRef = useRef(null);
+  const micButtonRef = useRef(null);
+  const tempTranscriptRef = useRef("");
+  const recordingActiveRef = useRef(false);
+
   useEffect(() => {
-    if (typeof window !== "undefined" && 'webkitSpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.lang = "fr-FR";
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
-      recognitionRef.current.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        setUserInput((prev) => prev ? prev + " " + transcript : transcript);
-        setIsRecording(false);
-      };
-      recognitionRef.current.onerror = () => {
-        setIsRecording(false);
-      };
-recognitionRef.current.onend = () => {
-  setIsRecording(false);
-};
-    }
+    if (!('webkitSpeechRecognition' in window)) return;
+    const SpeechRecognition = window.webkitSpeechRecognition;
+    recognitionRef.current = new SpeechRecognition();
+    recognitionRef.current.lang = "fr-FR";
+    recognitionRef.current.continuous = false;
+    recognitionRef.current.interimResults = true;
+    recognitionRef.current.onresult = (event) => {
+      if (!recordingActiveRef.current) return;
+      const transcript = Array.from(event.results)
+        .map((result) => result[0].transcript)
+        .join("");
+      tempTranscriptRef.current = transcript;
+    };
+    recognitionRef.current.onstart = () => {
+      setIsRecording(true);
+      recordingActiveRef.current = true;
+    };
+    recognitionRef.current.onend = () => {
+      setIsRecording(false);
+      setMicButtonActive(false);
+      setIsCancelled(false);
+      recordingActiveRef.current = false;
+    };
+    recognitionRef.current.onerror = () => {
+      setIsRecording(false);
+      setMicButtonActive(false);
+      recordingActiveRef.current = false;
+    };
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.onresult = null;
+        recognitionRef.current.onstart = null;
+        recognitionRef.current.onend = null;
+        recognitionRef.current.onerror = null;
+      }
+    };
   }, []);
 
-  const handleMicClick = () => {
-    if (recognitionRef.current) {
-      setIsRecording(true);
-      recognitionRef.current.start();
+  const startRecording = () => {
+    if (!recognitionRef.current) return;
+    if (isRecording || recordingActiveRef.current) return;
+    tempTranscriptRef.current = "";
+    setIsCancelled(false);
+    setMicButtonActive(true);
+    recordingActiveRef.current = true;
+    recognitionRef.current.start();
+  };
+  const stopRecording = () => {
+    if (!recognitionRef.current) return;
+    recordingActiveRef.current = false;
+    recognitionRef.current.stop();
+    if (!isCancelled && tempTranscriptRef.current) {
+      setUserInput((prev) => prev ? prev + " " + tempTranscriptRef.current : tempTranscriptRef.current);
     }
+    tempTranscriptRef.current = "";
+  };
+  const cancelRecording = () => {
+    setIsCancelled(true);
+    recordingActiveRef.current = false;
+    if (recognitionRef.current && recognitionRef.current.state !== "inactive") {
+      recognitionRef.current.stop();
+    }
+    tempTranscriptRef.current = "";
+  };
+  // Gestion souris
+  const handleMicMouseDown = (e) => {
+    e.preventDefault();
+    startRecording();
+    window.addEventListener("mouseup", handleMicMouseUp);
+    window.addEventListener("mousemove", handleMicMouseMove);
+  };
+  const handleMicMouseUp = (e) => {
+    if (!micButtonRef.current) return;
+    const rect = micButtonRef.current.getBoundingClientRect();
+    if (
+      e.clientX < rect.left ||
+      e.clientX > rect.right ||
+      e.clientY < rect.top ||
+      e.clientY > rect.bottom
+    ) {
+      cancelRecording();
+    } else {
+      stopRecording();
+    }
+    window.removeEventListener("mouseup", handleMicMouseUp);
+    window.removeEventListener("mousemove", handleMicMouseMove);
+  };
+  const handleMicMouseMove = (e) => {
+    if (!micButtonRef.current) return;
+    const rect = micButtonRef.current.getBoundingClientRect();
+    setIsCancelled(
+      e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom
+    );
+  };
+  // Gestion tactile
+  const handleMicTouchStart = (e) => {
+    e.preventDefault();
+    startRecording();
+    window.addEventListener("touchend", handleMicTouchEnd);
+    window.addEventListener("touchmove", handleMicTouchMove);
+  };
+  const handleMicTouchEnd = (e) => {
+    if (!micButtonRef.current) return;
+    const touch = e.changedTouches[0];
+    const rect = micButtonRef.current.getBoundingClientRect();
+    if (
+      touch.clientX < rect.left ||
+      touch.clientX > rect.right ||
+      touch.clientY < rect.top ||
+      touch.clientY > rect.bottom
+    ) {
+      cancelRecording();
+    } else {
+      stopRecording();
+    }
+    window.removeEventListener("touchend", handleMicTouchEnd);
+    window.removeEventListener("touchmove", handleMicTouchMove);
+  };
+  const handleMicTouchMove = (e) => {
+    if (!micButtonRef.current) return;
+    const touch = e.touches[0];
+    const rect = micButtonRef.current.getBoundingClientRect();
+    setIsCancelled(
+      touch.clientX < rect.left || touch.clientX > rect.right || touch.clientY < rect.top || touch.clientY > rect.bottom
+    );
   };
 
   // Ajuster automatiquement la hauteur du textarea en fonction du contenu
@@ -240,16 +347,26 @@ recognitionRef.current.onend = () => {
                   rows={4}
                 />
                 <button
+                  ref={micButtonRef}
                   type="button"
-                  onClick={handleMicClick}
-                  disabled={isRecording}
-                  className={`absolute right-2 top-2 bg-pink-600/80 hover:bg-pink-700 text-white rounded-full p-2 shadow transition ${isRecording ? 'animate-pulse opacity-70' : ''}`}
-                  aria-label="Enregistrer via le micro"
+                  onMouseDown={handleMicMouseDown}
+                  onTouchStart={handleMicTouchStart}
+                  className={`absolute right-2 top-2 bg-pink-600/80 hover:bg-pink-700 text-white rounded-full p-2 shadow transition-all duration-200
+                    ${micButtonActive ? 'scale-110 ring-4 ring-pink-400/40' : ''}
+                    ${isRecording ? 'animate-pulse opacity-80' : ''}
+                    ${isCancelled ? 'bg-red-600/80 ring-red-400/40' : ''}`}
+                  aria-label="Appuyez et maintenez pour parler"
+                  style={{ touchAction: 'none' }}
                 >
                   {isRecording ? (
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="red" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="6" /></svg>
                   ) : (
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18v2m0-2a6 6 0 006-6V9a6 6 0 10-12 0v3a6 6 0 006 6zm0 0v2m0 0h-2m2 0h2" /></svg>
+                  )}
+                  {micButtonActive && (
+                    <span className="absolute left-1/2 -bottom-7 -translate-x-1/2 px-2 py-1 text-xs rounded bg-pink-700/90 text-white shadow-lg animate-fade-in">
+                      {isCancelled ? 'Annulé' : 'Enregistrement...'}
+                    </span>
                   )}
                 </button>
               </div>
