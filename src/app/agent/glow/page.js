@@ -2,6 +2,7 @@
 "use client";
 
 import GoogleMenu from "@/components/navigation/GoogleMenu";
+import ChatGPTMicIcon from "../../components/ChatGPTMicIcon";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -10,6 +11,7 @@ import { useImagePath } from "@/hooks/useImagePath";
 import OptimizedImage from "@/components/OptimizedImage";
 
 export default function GlowPage() {
+  const [showMic, setShowMic] = useState(true);
   // ...existing code...
   const [userInput, setUserInput] = useState("");
   const [response, setResponse] = useState("");
@@ -82,7 +84,9 @@ export default function GlowPage() {
     recordingActiveRef.current = false;
     recognitionRef.current.stop();
     if (!isCancelled && tempTranscriptRef.current) {
-      setUserInput((prev) => prev ? prev + " " + tempTranscriptRef.current : tempTranscriptRef.current);
+      const newInput = userInput ? userInput + " " + tempTranscriptRef.current : tempTranscriptRef.current;
+      setUserInput(newInput);
+      handleSubmit({ preventDefault: () => {} }, newInput);
     }
     tempTranscriptRef.current = "";
   };
@@ -163,12 +167,14 @@ export default function GlowPage() {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
+    setShowMic(!userInput || userInput.trim().length === 0);
   }, [userInput]);
 
   // Fonction pour gérer la soumission du message
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!userInput.trim()) return;
+  const handleSubmit = async (e, overrideInput) => {
+    if (e && e.preventDefault) e.preventDefault();
+    const input = overrideInput !== undefined ? overrideInput : userInput;
+    if (!input.trim()) return;
     setIsLoading(true);
     setResponse("");
     try {
@@ -177,7 +183,7 @@ export default function GlowPage() {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ message: userInput, tone: selectedTone })
+        body: JSON.stringify({ message: input, tone: selectedTone })
       });
       let resultText = "";
       if (!res.ok) {
@@ -342,33 +348,58 @@ export default function GlowPage() {
                   ref={textareaRef}
                   value={userInput}
                   onChange={(e) => setUserInput(e.target.value)}
-                  placeholder="Écrivez ou enregistrez votre message..."
-                  className="w-full h-[120px] bg-pink-900/50 text-white placeholder-pink-300 rounded-lg p-3 border border-pink-600/50 focus:border-pink-400 focus:ring focus:ring-pink-300/50 focus:outline-none resize-none transition text-sm pr-12"
+                  placeholder={isRecording ? '' : "Écrivez ou enregistrez votre message..."}
+                  className={`w-full h-[120px] bg-pink-900/50 text-white placeholder-pink-300 rounded-lg p-3 border border-pink-600/50 focus:border-pink-400 focus:ring focus:ring-pink-300/50 focus:outline-none resize-none transition text-sm pr-12 select-none touch-none ${isRecording ? 'bg-gray-400 text-gray-700 opacity-70 cursor-not-allowed' : ''}`}
                   rows={4}
+                  disabled={isRecording}
+                  onContextMenu={e => e.preventDefault()}
+                  style={{ WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none' }}
                 />
-                <button
-                  ref={micButtonRef}
-                  type="button"
-                  onMouseDown={handleMicMouseDown}
-                  onTouchStart={handleMicTouchStart}
-                  className={`absolute right-2 top-2 bg-pink-600/80 hover:bg-pink-700 text-white rounded-full p-2 shadow transition-all duration-200
-                    ${micButtonActive ? 'scale-110 ring-4 ring-pink-400/40' : ''}
-                    ${isRecording ? 'animate-pulse opacity-80' : ''}
-                    ${isCancelled ? 'bg-red-600/80 ring-red-400/40' : ''}`}
-                  aria-label="Appuyez et maintenez pour parler"
-                  style={{ touchAction: 'none' }}
-                >
-                  {isRecording ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="red" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="6" /></svg>
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18v2m0-2a6 6 0 006-6V9a6 6 0 10-12 0v3a6 6 0 006 6zm0 0v2m0 0h-2m2 0h2" /></svg>
-                  )}
-                  {micButtonActive && (
-                    <span className="absolute left-1/2 -bottom-7 -translate-x-1/2 px-2 py-1 text-xs rounded bg-pink-700/90 text-white shadow-lg animate-fade-in">
-                      {isCancelled ? 'Annulé' : 'Enregistrement...'}
-                    </span>
-                  )}
-                </button>
+                {showMic && (
+                  <motion.button
+                    ref={micButtonRef}
+                    type="button"
+                    onMouseDown={handleMicMouseDown}
+                    onTouchStart={handleMicTouchStart}
+                    onContextMenu={e => e.preventDefault()}
+                    className={`absolute right-2 top-2 bg-gradient-to-br from-pink-500 via-rose-400 to-pink-400 text-white rounded-full p-2 shadow-lg transition-all duration-200 select-none touch-none border-2 border-pink-300/60 ${micButtonActive ? 'scale-125 ring-4 ring-rose-300/60 shadow-rose-400/40' : ''} ${isRecording ? 'animate-pulse opacity-80' : ''} ${isCancelled ? 'bg-red-600/80 ring-red-400/40' : ''}`}
+                    aria-label="Appuyez et maintenez pour parler"
+                    style={{ touchAction: 'none', WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none', background: isRecording ? 'linear-gradient(90deg, #ec4899 60%, #f472b6 100%)' : undefined, filter: micButtonActive ? 'drop-shadow(0 0 16px #f472b6)' : undefined }}
+                    initial={{ scale: 1 }}
+                    animate={micButtonActive ? { scale: 1.25, boxShadow: '0 0 32px #f472b6' } : { scale: 1, boxShadow: 'none' }}
+                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.1 }}
+                  >
+                    <ChatGPTMicIcon className="h-7 w-7 opacity-80" />
+                  </motion.button>
+                )}
+                {isRecording && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95, y: -20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                    className="absolute left-1/2 top-2 -translate-x-1/2 px-6 py-3 rounded-2xl bg-gradient-to-br from-pink-500/80 via-rose-600/70 to-pink-900/80 backdrop-blur-lg shadow-2xl border border-pink-300/30 flex flex-col items-center z-20"
+                    style={{ boxShadow: '0 4px 32px 0 rgba(244,114,182,0.25)' }}
+                  >
+                    <motion.div
+                      className="relative flex items-center justify-center mb-1"
+                      initial={{ scale: 0.9 }}
+                      animate={{ scale: [0.9, 1.1, 0.9] }}
+                      transition={{ repeat: Infinity, duration: 1.2 }}
+                    >
+                      <span className="absolute w-12 h-12 rounded-full bg-pink-400/30 blur-md animate-pulse" />
+                      <span className="absolute w-20 h-20 rounded-full bg-rose-400/20 blur-lg animate-pulse" />
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 z-10 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 18v2m0-2a6 6 0 006-6V9a6 6 0 10-12 0v3a6 6 0 006 6zm0 0v2m0 0h-2m2 0h2" />
+                      </svg>
+                    </motion.div>
+                    <span className="text-base font-bold text-white drop-shadow-sm tracking-wide animate-fade-in">Relâcher pour envoyer</span>
+                  </motion.div>
+                )}
+                {/* Transcript en direct */}
+                {isRecording && tempTranscriptRef.current && (
+                  <p className="mt-2 text-pink-300 text-xs italic">{tempTranscriptRef.current}</p>
+                )}
               </div>
               <div className="flex gap-2">
                 <button
