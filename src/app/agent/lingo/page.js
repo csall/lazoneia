@@ -396,8 +396,8 @@ export default function LingoPage() {
                           ref={textareaRef}
                           value={userInput}
                           onChange={(e) => setUserInput(e.target.value)}
-                          placeholder="Entrez votre texte à traduire..."
-                          className={`w-full h-[120px] bg-amber-900/50 text-white placeholder-amber-300 rounded-lg p-3 border border-amber-600/50 focus:border-amber-400 focus:ring focus:ring-amber-300/50 focus:outline-none resize-none transition text-sm pr-12 select-none touch-none ${isRecording ? 'bg-gray-400 text-gray-700 placeholder-white opacity-70 cursor-not-allowed' : ''}`}
+                          placeholder={isRecording ? '' : "Entrez votre texte à traduire..."}
+                          className={`w-full h-[120px] bg-amber-900/50 text-white placeholder-amber-300 rounded-lg p-3 border border-amber-600/50 focus:border-amber-400 focus:ring focus:ring-amber-300/50 focus:outline-none resize-none transition text-sm pr-12 select-none touch-none ${isRecording ? 'bg-gray-400 text-gray-700 opacity-70 cursor-not-allowed' : ''}`}
                           rows={4}
                           disabled={isRecording}
                           onContextMenu={e => e.preventDefault()}
@@ -411,7 +411,7 @@ export default function LingoPage() {
                             onMouseDown={handleMicMouseDown}
                             onTouchStart={handleMicTouchStart}
                             onContextMenu={e => e.preventDefault()}
-                            className={`absolute bottom-3 right-3 bg-gray-400/80 text-white rounded-full p-2 shadow-lg transition-all duration-200 select-none touch-none border-2 border-gray-300/60 ${micButtonActive ? 'scale-125 ring-4 ring-amber-300/60 shadow-amber-400/40' : ''} ${isRecording ? 'animate-pulse opacity-80' : ''} ${isCancelled ? 'bg-red-600/80 ring-red-400/40' : ''}`}
+                            className={`absolute bottom-3 right-3 bg-gradient-to-br from-amber-500 via-yellow-400 to-amber-400 text-white rounded-full p-2 shadow-lg transition-all duration-200 select-none touch-none border-2 border-amber-300/60 ${micButtonActive ? 'scale-125 ring-4 ring-yellow-300/60 shadow-yellow-400/40' : ''} ${isRecording ? 'animate-pulse opacity-80' : ''} ${isCancelled ? 'bg-red-600/80 ring-red-400/40' : ''}`}
                             aria-label="Appuyez et maintenez pour parler"
                             style={{ touchAction: 'none', WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none', background: isRecording ? 'linear-gradient(90deg, #f59e11 60%, #fde68a 100%)' : undefined, filter: micButtonActive ? 'drop-shadow(0 0 16px #fde68a)' : undefined }}
                             initial={{ scale: 1 }}
@@ -419,7 +419,7 @@ export default function LingoPage() {
                             whileTap={{ scale: 0.95 }}
                             whileHover={{ scale: 1.1 }}
                           >
-                            <ChatGPTMicIcon className="h-7 w-7 opacity-70" />
+                            <ChatGPTMicIcon className="h-7 w-7 opacity-80" />
                           </motion.button>
                         )}
                       {isRecording && (
