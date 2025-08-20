@@ -37,40 +37,9 @@ export default function GlowPage() {
       recognitionRef.current.onerror = () => {
         setIsRecording(false);
       };
-      recognitionRef.current.onend = () => {
-         // Utilisation du hook pour les chemins d'images
-         const { getImagePath } = useImagePath();
- 
-         // Initialisation de l'API SpeechRecognition
-         useEffect(() => {
-           if (typeof window !== "undefined" && 'webkitSpeechRecognition' in window) {
-             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-             recognitionRef.current = new SpeechRecognition();
-             recognitionRef.current.lang = "fr-FR";
-             recognitionRef.current.continuous = false;
-             recognitionRef.current.interimResults = false;
-             recognitionRef.current.onresult = (event) => {
-               const transcript = event.results[0][0].transcript;
-               setUserInput((prev) => prev ? prev + " " + transcript : transcript);
-               setIsRecording(false);
-             };
-             recognitionRef.current.onerror = () => {
-               setIsRecording(false);
-             };
-             recognitionRef.current.onend = () => {
-               setIsRecording(false);
-             };
-           }
-         }, []);
- 
-         const handleMicClick = () => {
-           if (recognitionRef.current) {
-             setIsRecording(true);
-             recognitionRef.current.start();
-           }
-         };
-        setIsRecording(false);
-      };
+recognitionRef.current.onend = () => {
+  setIsRecording(false);
+};
     }
   }, []);
 
