@@ -86,9 +86,9 @@ export default function PunchyPage() {
     recognitionRef.current.stop();
 
     if (!isCancelled && tempTranscriptRef.current) {
-      setUserInput((prev) =>
-        prev ? prev + " " + tempTranscriptRef.current : tempTranscriptRef.current
-      );
+      const newInput = userInput ? userInput + " " + tempTranscriptRef.current : tempTranscriptRef.current;
+      setUserInput(newInput);
+      handleSubmit({ preventDefault: () => {} }, newInput);
     }
     tempTranscriptRef.current = "";
   };
@@ -179,16 +179,17 @@ export default function PunchyPage() {
   }, [userInput]);
 
   // Soumission texte à n8n
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!userInput.trim()) return;
+  const handleSubmit = async (e, overrideInput) => {
+    if (e && e.preventDefault) e.preventDefault();
+    const input = overrideInput !== undefined ? overrideInput : userInput;
+    if (!input.trim()) return;
     setIsLoading(true);
     setIsCopied(false);
     try {
       const res = await fetch("https://cheikh06000.app.n8n.cloud/webhook/punchy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userInput }),
+        body: JSON.stringify({ message: input }),
       });
       let resultText = "";
       if (!res.ok) {
@@ -269,41 +270,63 @@ export default function PunchyPage() {
             <h2 className="text-lg font-bold mb-2">Votre texte</h2>
             <form onSubmit={handleSubmit} className="space-y-3">
               <div className="relative flex items-center">
-                <textarea
-                  ref={textareaRef}
-                  value={userInput}
-                  onChange={(e) => setUserInput(e.target.value)}
-                  placeholder="Écrivez ou enregistrez une phrase banale à transformer..."
-                  className="w-full h-[120px] bg-indigo-900/50 text-white placeholder-indigo-300 rounded-lg p-3 border border-indigo-600/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none resize-none transition-all duration-200 text-sm pr-12"
-                  rows={4}
-                />
-                <button
-                  ref={micButtonRef}
-                  type="button"
-                  onMouseDown={handleMicMouseDown}
-                  onTouchStart={handleMicTouchStart}
-                  className={`absolute right-2 top-2 bg-indigo-600/80 hover:bg-indigo-700 text-white rounded-full p-2 shadow transition-all duration-200
-                    ${micButtonActive ? "scale-110 ring-4 ring-indigo-400/40" : ""}
-                    ${isRecording ? "animate-pulse opacity-80" : ""}
-                    ${isCancelled ? "bg-red-600/80 ring-red-400/40" : ""}`}
-                  aria-label="Appuyez et maintenez pour parler"
-                  style={{ touchAction: "none" }}
-                >
-                  {isRecording ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="red" viewBox="0 0 24 24" stroke="currentColor">
-                      <circle cx="12" cy="12" r="6" />
-                    </svg>
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18v2m0-2a6 6 0 006-6V9a6 6 0 10-12 0v3a6 6 0 006 6zm0 0v2m0 0h-2m2 0h2" />
-                    </svg>
+                <div className="relative w-full">
+                  <textarea
+                    ref={textareaRef}
+                    value={userInput}
+                    onChange={(e) => setUserInput(e.target.value)}
+                    placeholder="Écrivez ou enregistrez une phrase banale à transformer..."
+                    className={`w-full h-[120px] bg-indigo-900/50 text-white placeholder-indigo-300 rounded-lg p-3 border border-indigo-600/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none resize-none transition-all duration-200 text-sm pr-12 ${isRecording ? 'bg-gray-400 text-gray-700 placeholder-white opacity-70 cursor-not-allowed' : ''}`}
+                    rows={4}
+                    disabled={isRecording}
+                  />
+                  {isRecording && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: -20 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                      className="absolute left-1/2 top-2 -translate-x-1/2 px-6 py-3 rounded-2xl bg-gradient-to-br from-indigo-500/80 via-violet-600/70 to-indigo-900/80 backdrop-blur-lg shadow-2xl border border-indigo-300/30 flex flex-col items-center z-20"
+                      style={{ boxShadow: '0 4px 32px 0 rgba(139,92,246,0.25)' }}
+                    >
+                      <motion.div
+                        className="relative flex items-center justify-center mb-1"
+                        initial={{ scale: 0.9 }}
+                        animate={{ scale: [0.9, 1.1, 0.9] }}
+                        transition={{ repeat: Infinity, duration: 1.2 }}
+                      >
+                        <span className="absolute w-12 h-12 rounded-full bg-indigo-400/30 blur-md animate-pulse" />
+                        <span className="absolute w-20 h-20 rounded-full bg-violet-400/20 blur-lg animate-pulse" />
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 z-10 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 18v2m0-2a6 6 0 006-6V9a6 6 0 10-12 0v3a6 6 0 006 6zm0 0v2m0 0h-2m2 0h2" />
+                        </svg>
+                      </motion.div>
+                      <span className="text-base font-bold text-white drop-shadow-sm tracking-wide animate-fade-in">Relâcher pour envoyer</span>
+                    </motion.div>
                   )}
-                  {micButtonActive && (
-                    <span className="absolute left-1/2 -bottom-7 -translate-x-1/2 px-2 py-1 text-xs rounded bg-indigo-700/90 text-white shadow-lg animate-fade-in">
-                      {isCancelled ? "Annulé" : "Enregistrement..."}
-                    </span>
-                  )}
-                </button>
+                </div>
+                {(!userInput || userInput.trim().length === 0) && (
+                  <motion.button
+                    ref={micButtonRef}
+                    type="button"
+                    onMouseDown={handleMicMouseDown}
+                    onTouchStart={handleMicTouchStart}
+                    className={`absolute right-2 top-2 bg-indigo-600/80 hover:bg-indigo-700 text-white rounded-full p-2 shadow transition-all duration-200
+                      ${micButtonActive ? 'scale-110 ring-4 ring-indigo-400/40' : ''}
+                      ${isRecording ? 'animate-pulse opacity-80' : ''}
+                      ${isCancelled ? 'bg-red-600/80 ring-red-400/40' : ''}`}
+                    aria-label="Appuyez et maintenez pour parler"
+                    style={{ touchAction: 'none' }}
+                    initial={{ scale: 1 }}
+                    animate={micButtonActive ? { scale: 1.1 } : { scale: 1 }}
+                  >
+                    {isRecording ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="red" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="6" /></svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18v2m0-2a6 6 0 006-6V9a6 6 0 10-12 0v3a6 6 0 006 6zm0 0v2m0 0h-2m2 0h2" /></svg>
+                    )}
+                    {/* Animation sous le bouton micro supprimée */}
+                  </motion.button>
+                )}
               </div>
               {/* Transcript en direct */}
               {isRecording && tempTranscriptRef.current && (
