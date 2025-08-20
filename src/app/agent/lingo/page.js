@@ -172,7 +172,6 @@ export default function LingoPage() {
     );
   };
 
-  // Ajuster automatiquement la hauteur du textarea en fonction du contenu
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
@@ -392,34 +391,37 @@ export default function LingoPage() {
                   </button>
                 </div>
                   <div className="relative w-full">
-                    <div className="relative w-full">
+                    {/* ...existing code... */}
                       <textarea
-                        ref={textareaRef}
-                        value={userInput}
-                        onChange={(e) => setUserInput(e.target.value)}
-                        placeholder="Entrez votre texte à traduire..."
-                        className={`w-full h-[120px] bg-amber-900/50 text-white placeholder-amber-300 rounded-lg p-3 border border-amber-600/50 focus:border-amber-400 focus:ring focus:ring-amber-300/50 focus:outline-none resize-none transition text-sm pr-12 select-none touch-none ${isRecording ? 'bg-gray-400 text-gray-700 placeholder-white opacity-70 cursor-not-allowed' : ''}`}
-                        rows={4}
-                        disabled={isRecording}
-                        onContextMenu={e => e.preventDefault()}
-                        style={{ WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none' }}
-                      />
-                      <motion.button
-                        ref={micButtonRef}
-                        type="button"
-                        onMouseDown={handleMicMouseDown}
-                        onTouchStart={handleMicTouchStart}
-                        onContextMenu={e => e.preventDefault()}
-                        className={`absolute bottom-3 right-3 bg-gray-400/80 text-white rounded-full p-2 shadow-lg transition-all duration-200 select-none touch-none border-2 border-gray-300/60 ${micButtonActive ? 'scale-125 ring-4 ring-amber-300/60 shadow-amber-400/40' : ''} ${isRecording ? 'animate-pulse opacity-80' : ''} ${isCancelled ? 'bg-red-600/80 ring-red-400/40' : ''}`}
-                        aria-label="Appuyez et maintenez pour parler"
-                        style={{ touchAction: 'none', WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none', background: isRecording ? 'linear-gradient(90deg, #f59e11 60%, #fde68a 100%)' : undefined, filter: micButtonActive ? 'drop-shadow(0 0 16px #fde68a)' : undefined }}
-                        initial={{ scale: 1 }}
-                        animate={micButtonActive ? { scale: 1.25, boxShadow: '0 0 32px #fde68a' } : { scale: 1, boxShadow: 'none' }}
-                        whileTap={{ scale: 0.95 }}
-                        whileHover={{ scale: 1.1 }}
-                      >
-                        <ChatGPTMicIcon className="h-7 w-7 opacity-70" />
-                      </motion.button>
+                          ref={textareaRef}
+                          value={userInput}
+                          onChange={(e) => setUserInput(e.target.value)}
+                          placeholder="Entrez votre texte à traduire..."
+                          className={`w-full h-[120px] bg-amber-900/50 text-white placeholder-amber-300 rounded-lg p-3 border border-amber-600/50 focus:border-amber-400 focus:ring focus:ring-amber-300/50 focus:outline-none resize-none transition text-sm pr-12 select-none touch-none ${isRecording ? 'bg-gray-400 text-gray-700 placeholder-white opacity-70 cursor-not-allowed' : ''}`}
+                          rows={4}
+                          disabled={isRecording}
+                          onContextMenu={e => e.preventDefault()}
+                          style={{ WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none' }}
+                        />
+                        {/* Microphone button only if no text */}
+                        {(!userInput || userInput.trim().length === 0) && (
+                          <motion.button
+                            ref={micButtonRef}
+                            type="button"
+                            onMouseDown={handleMicMouseDown}
+                            onTouchStart={handleMicTouchStart}
+                            onContextMenu={e => e.preventDefault()}
+                            className={`absolute bottom-3 right-3 bg-gray-400/80 text-white rounded-full p-2 shadow-lg transition-all duration-200 select-none touch-none border-2 border-gray-300/60 ${micButtonActive ? 'scale-125 ring-4 ring-amber-300/60 shadow-amber-400/40' : ''} ${isRecording ? 'animate-pulse opacity-80' : ''} ${isCancelled ? 'bg-red-600/80 ring-red-400/40' : ''}`}
+                            aria-label="Appuyez et maintenez pour parler"
+                            style={{ touchAction: 'none', WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none', background: isRecording ? 'linear-gradient(90deg, #f59e11 60%, #fde68a 100%)' : undefined, filter: micButtonActive ? 'drop-shadow(0 0 16px #fde68a)' : undefined }}
+                            initial={{ scale: 1 }}
+                            animate={micButtonActive ? { scale: 1.25, boxShadow: '0 0 32px #fde68a' } : { scale: 1, boxShadow: 'none' }}
+                            whileTap={{ scale: 0.95 }}
+                            whileHover={{ scale: 1.1 }}
+                          >
+                            <ChatGPTMicIcon className="h-7 w-7 opacity-70" />
+                          </motion.button>
+                        )}
                       {isRecording && (
                         <motion.div
                           initial={{ opacity: 0, scale: 0.95, y: -20 }}
@@ -443,7 +445,6 @@ export default function LingoPage() {
                           <span className="text-base font-bold text-white drop-shadow-sm tracking-wide animate-fade-in">Relâcher pour envoyer</span>
                         </motion.div>
                       )}
-                    </div>
                 {/* Transcript en direct */}
                 {isRecording && tempTranscriptRef.current && (
                   <p className="mt-2 text-amber-300 text-xs italic">{tempTranscriptRef.current}</p>
@@ -469,6 +470,7 @@ export default function LingoPage() {
                   Effacer
                 </button>
               </div>
+            </div>
             </form>
           </motion.div>
 
