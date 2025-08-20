@@ -5,6 +5,8 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import LingoWaveBackground from "../../components/LingoWaveBackground";
+import ChatGPTMicIcon from "../../components/ChatGPTMicIcon";
 
 export default function LingoPage() {
   const [userInput, setUserInput] = useState("");
@@ -16,6 +18,7 @@ export default function LingoPage() {
   const [isCopied, setIsCopied] = useState(false);
   const textareaRef = useRef(null);
   // Micro WhatsApp-like
+  // Microphone / dictée vocale
   const [isRecording, setIsRecording] = useState(false);
   const [isCancelled, setIsCancelled] = useState(false);
   const [micButtonActive, setMicButtonActive] = useState(false);
@@ -25,12 +28,13 @@ export default function LingoPage() {
   const recordingActiveRef = useRef(false);
 
   useEffect(() => {
-    if (!('webkitSpeechRecognition' in window)) return;
+    if (!("webkitSpeechRecognition" in window)) return;
     const SpeechRecognition = window.webkitSpeechRecognition;
     recognitionRef.current = new SpeechRecognition();
     recognitionRef.current.lang = "fr-FR";
     recognitionRef.current.continuous = false;
     recognitionRef.current.interimResults = true;
+
     recognitionRef.current.onresult = (event) => {
       if (!recordingActiveRef.current) return;
       const transcript = Array.from(event.results)
@@ -38,21 +42,25 @@ export default function LingoPage() {
         .join("");
       tempTranscriptRef.current = transcript;
     };
+
     recognitionRef.current.onstart = () => {
       setIsRecording(true);
       recordingActiveRef.current = true;
     };
+
     recognitionRef.current.onend = () => {
       setIsRecording(false);
       setMicButtonActive(false);
       setIsCancelled(false);
       recordingActiveRef.current = false;
     };
+
     recognitionRef.current.onerror = () => {
       setIsRecording(false);
       setMicButtonActive(false);
       recordingActiveRef.current = false;
     };
+
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.onresult = null;
@@ -63,24 +71,30 @@ export default function LingoPage() {
     };
   }, []);
 
+  // Démarrage / arrêt / annulation dictée
   const startRecording = () => {
     if (!recognitionRef.current) return;
-    if (isRecording || recordingActiveRef.current) return;
+    if (isRecording || recordingActiveRef.current) return; // Empêche le double démarrage
     tempTranscriptRef.current = "";
     setIsCancelled(false);
     setMicButtonActive(true);
     recordingActiveRef.current = true;
     recognitionRef.current.start();
   };
+
   const stopRecording = () => {
     if (!recognitionRef.current) return;
     recordingActiveRef.current = false;
     recognitionRef.current.stop();
+
     if (!isCancelled && tempTranscriptRef.current) {
-      setUserInput((prev) => prev ? prev + " " + tempTranscriptRef.current : tempTranscriptRef.current);
+      const newInput = userInput ? userInput + " " + tempTranscriptRef.current : tempTranscriptRef.current;
+      setUserInput(newInput);
+      handleSubmit({ preventDefault: () => {} }, newInput);
     }
     tempTranscriptRef.current = "";
   };
+
   const cancelRecording = () => {
     setIsCancelled(true);
     recordingActiveRef.current = false;
@@ -89,13 +103,15 @@ export default function LingoPage() {
     }
     tempTranscriptRef.current = "";
   };
-  // Gestion souris
+
+  // Gestion souris (WhatsApp-like)
   const handleMicMouseDown = (e) => {
     e.preventDefault();
     startRecording();
     window.addEventListener("mouseup", handleMicMouseUp);
     window.addEventListener("mousemove", handleMicMouseMove);
   };
+
   const handleMicMouseUp = (e) => {
     if (!micButtonRef.current) return;
     const rect = micButtonRef.current.getBoundingClientRect();
@@ -112,6 +128,7 @@ export default function LingoPage() {
     window.removeEventListener("mouseup", handleMicMouseUp);
     window.removeEventListener("mousemove", handleMicMouseMove);
   };
+
   const handleMicMouseMove = (e) => {
     if (!micButtonRef.current) return;
     const rect = micButtonRef.current.getBoundingClientRect();
@@ -119,6 +136,7 @@ export default function LingoPage() {
       e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom
     );
   };
+
   // Gestion tactile
   const handleMicTouchStart = (e) => {
     e.preventDefault();
@@ -126,6 +144,7 @@ export default function LingoPage() {
     window.addEventListener("touchend", handleMicTouchEnd);
     window.addEventListener("touchmove", handleMicTouchMove);
   };
+
   const handleMicTouchEnd = (e) => {
     if (!micButtonRef.current) return;
     const touch = e.changedTouches[0];
@@ -143,6 +162,7 @@ export default function LingoPage() {
     window.removeEventListener("touchend", handleMicTouchEnd);
     window.removeEventListener("touchmove", handleMicTouchMove);
   };
+
   const handleMicTouchMove = (e) => {
     if (!micButtonRef.current) return;
     const touch = e.touches[0];
@@ -160,34 +180,35 @@ export default function LingoPage() {
     }
   }, [userInput]);
 
-  // Fonction pour gérer la soumission du message
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!userInput.trim()) return;
-  setIsLoading(true);
-  setResponse("");
-  try {
-    const res = await fetch("https://cheikh06000.app.n8n.cloud/webhook/lingo", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ message: userInput, tone: translationTone, target: targetLang })
-    });
-    let resultText = "";
-    if (!res.ok) {
-      resultText = `Erreur réseau (${res.status})`;
-    } else {
-      // Si la réponse n'est pas du JSON
-      resultText = await res.text();
-      resultText=JSON.parse(resultText)[0].text;
+  // Fonction pour gérer la soumission du message (compatible soumission auto)
+  const handleSubmit = async (e, overrideInput) => {
+    if (e && e.preventDefault) e.preventDefault();
+    const input = overrideInput !== undefined ? overrideInput : userInput;
+    if (!input.trim()) return;
+    setIsLoading(true);
+    setResponse("");
+    try {
+      const res = await fetch("https://cheikh06000.app.n8n.cloud/webhook/lingo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: input, tone: translationTone, target: targetLang })
+      });
+      let resultText = "";
+      if (!res.ok) {
+        resultText = `Erreur réseau (${res.status})`;
+      } else {
+        // Si la réponse n'est pas du JSON
+        resultText = await res.text();
+        resultText=JSON.parse(resultText)[0].text;
+      }
+      setResponse(resultText);
+    } catch (err) {
+      setResponse("Erreur lors de la requête : " + err.message);
     }
-    setResponse(resultText);
-  } catch (err) {
-    setResponse("Erreur lors de la requête : " + err.message);
-  }
-  setIsLoading(false);
-};
+    setIsLoading(false);
+  };
 
   const handleClear = () => {
     setUserInput("");
@@ -211,7 +232,8 @@ const handleSubmit = async (e) => {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-r from-amber-900 to-yellow-800 text-white">
+    <main className="min-h-screen bg-gradient-to-r from-amber-900 to-yellow-800 text-white relative overflow-hidden">
+      <LingoWaveBackground />
       {/* Header avec navigation - sans rechargement forcé */}
       <header className="py-3 px-4">
         <div className="container mx-auto flex justify-between items-center">
@@ -369,42 +391,63 @@ const handleSubmit = async (e) => {
                     Humoristique
                   </button>
                 </div>
-              </div>
-              
-              <div>
-                <div className="relative flex items-center">
-                  <textarea
-                    ref={textareaRef}
-                    value={userInput}
-                    onChange={(e) => setUserInput(e.target.value)}
-                    placeholder="Entrez votre texte à traduire..."
-                    className="w-full h-[120px] bg-amber-900/50 text-white placeholder-amber-300 rounded-lg p-3 border border-amber-600/50 focus:border-amber-400 focus:ring focus:ring-amber-300/50 focus:outline-none resize-none transition text-sm pr-12"
-                    rows={4}
-                  />
-                  <button
-                    ref={micButtonRef}
-                    type="button"
-                    onMouseDown={handleMicMouseDown}
-                    onTouchStart={handleMicTouchStart}
-                    className={`absolute right-2 top-2 bg-amber-600/80 hover:bg-amber-700 text-white rounded-full p-2 shadow transition-all duration-200
-                      ${micButtonActive ? 'scale-110 ring-4 ring-amber-400/40' : ''}
-                      ${isRecording ? 'animate-pulse opacity-80' : ''}
-                      ${isCancelled ? 'bg-red-600/80 ring-red-400/40' : ''}`}
-                    aria-label="Appuyez et maintenez pour parler"
-                    style={{ touchAction: 'none' }}
-                  >
-                    {isRecording ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="red" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="6" /></svg>
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18v2m0-2a6 6 0 006-6V9a6 6 0 10-12 0v3a6 6 0 006 6zm0 0v2m0 0h-2m2 0h2" /></svg>
+                  <div className="relative w-full">
+                    <textarea
+                      ref={textareaRef}
+                      value={userInput}
+                      onChange={(e) => setUserInput(e.target.value)}
+                      placeholder="Entrez votre texte à traduire..."
+                      className={`w-full h-[120px] bg-amber-900/50 text-white placeholder-amber-300 rounded-lg p-3 border border-amber-600/50 focus:border-amber-400 focus:ring focus:ring-amber-300/50 focus:outline-none resize-none transition text-sm pr-12 ${isRecording ? 'bg-gray-400 text-gray-700 placeholder-white opacity-70 cursor-not-allowed' : ''}`}
+                      rows={4}
+                      disabled={isRecording}
+                    />
+                    {isRecording && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95, y: -20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                        className="absolute left-1/2 top-2 -translate-x-1/2 px-6 py-3 rounded-2xl bg-gradient-to-br from-amber-500/80 via-yellow-600/70 to-amber-900/80 backdrop-blur-lg shadow-2xl border border-amber-300/30 flex flex-col items-center z-20"
+                        style={{ boxShadow: '0 4px 32px 0 rgba(245,158,11,0.25)' }}
+                      >
+                        <motion.div
+                          className="relative flex items-center justify-center mb-1"
+                          initial={{ scale: 0.9 }}
+                          animate={{ scale: [0.9, 1.1, 0.9] }}
+                          transition={{ repeat: Infinity, duration: 1.2 }}
+                        >
+                          <span className="absolute w-12 h-12 rounded-full bg-amber-400/30 blur-md animate-pulse" />
+                          <span className="absolute w-20 h-20 rounded-full bg-yellow-400/20 blur-lg animate-pulse" />
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 z-10 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 18v2m0-2a6 6 0 006-6V9a6 6 0 10-12 0v3a6 6 0 006 6zm0 0v2m0 0h-2m2 0h2" />
+                          </svg>
+                        </motion.div>
+                        <span className="text-base font-bold text-white drop-shadow-sm tracking-wide animate-fade-in">Relâcher pour envoyer</span>
+                      </motion.div>
                     )}
-                    {micButtonActive && (
-                      <span className="absolute left-1/2 -bottom-7 -translate-x-1/2 px-2 py-1 text-xs rounded bg-amber-700/90 text-white shadow-lg animate-fade-in">
-                        {isCancelled ? 'Annulé' : 'Enregistrement...'}
-                      </span>
-                    )}
-                  </button>
-                </div>
+                  </div>
+                  {(!userInput || userInput.trim().length === 0) && (
+                    <motion.button
+                      ref={micButtonRef}
+                      type="button"
+                      onMouseDown={handleMicMouseDown}
+                      onTouchStart={handleMicTouchStart}
+                      onContextMenu={e => e.preventDefault()}
+                      className={`absolute right-2 top-2 bg-amber-600/80 hover:bg-amber-700 text-white rounded-full p-2 shadow transition-all duration-200
+                        ${micButtonActive ? 'scale-110 ring-4 ring-amber-400/40' : ''}
+                        ${isRecording ? 'animate-pulse opacity-80' : ''}
+                        ${isCancelled ? 'bg-red-600/80 ring-red-400/40' : ''}`}
+                      aria-label="Appuyez et maintenez pour parler"
+                      style={{ touchAction: 'none' }}
+                      initial={{ scale: 1 }}
+                      animate={micButtonActive ? { scale: 1.1 } : { scale: 1 }}
+                    >
+                      <ChatGPTMicIcon className="h-7 w-7" />
+                    </motion.button>
+                  )}
+                {/* Transcript en direct */}
+                {isRecording && tempTranscriptRef.current && (
+                  <p className="mt-2 text-amber-300 text-xs italic">{tempTranscriptRef.current}</p>
+                )}
               </div>
               <div className="flex gap-2">
                 <button
