@@ -397,9 +397,11 @@ export default function LingoPage() {
                       value={userInput}
                       onChange={(e) => setUserInput(e.target.value)}
                       placeholder="Entrez votre texte à traduire..."
-                      className={`w-full h-[120px] bg-amber-900/50 text-white placeholder-amber-300 rounded-lg p-3 border border-amber-600/50 focus:border-amber-400 focus:ring focus:ring-amber-300/50 focus:outline-none resize-none transition text-sm pr-12 ${isRecording ? 'bg-gray-400 text-gray-700 placeholder-white opacity-70 cursor-not-allowed' : ''}`}
+                      className={`w-full h-[120px] bg-amber-900/50 text-white placeholder-amber-300 rounded-lg p-3 border border-amber-600/50 focus:border-amber-400 focus:ring focus:ring-amber-300/50 focus:outline-none resize-none transition text-sm pr-12 select-none touch-none ${isRecording ? 'bg-gray-400 text-gray-700 placeholder-white opacity-70 cursor-not-allowed' : ''}`}
                       rows={4}
                       disabled={isRecording}
+                      onContextMenu={e => e.preventDefault()}
+                      style={{ WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none' }}
                     />
                     {isRecording && (
                       <motion.div
