@@ -434,12 +434,12 @@ export default function LingoPage() {
                       onMouseDown={handleMicMouseDown}
                       onTouchStart={handleMicTouchStart}
                       onContextMenu={e => e.preventDefault()}
-                      className={`absolute right-2 top-2 bg-amber-600/80 hover:bg-amber-700 text-white rounded-full p-2 shadow transition-all duration-200
+                      className={`absolute right-2 top-2 bg-amber-600/80 hover:bg-amber-700 text-white rounded-full p-2 shadow transition-all duration-200 select-none touch-none
                         ${micButtonActive ? 'scale-110 ring-4 ring-amber-400/40' : ''}
                         ${isRecording ? 'animate-pulse opacity-80' : ''}
                         ${isCancelled ? 'bg-red-600/80 ring-red-400/40' : ''}`}
                       aria-label="Appuyez et maintenez pour parler"
-                      style={{ touchAction: 'none' }}
+                      style={{ touchAction: 'none', WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none' }}
                       initial={{ scale: 1 }}
                       animate={micButtonActive ? { scale: 1.1 } : { scale: 1 }}
                     >
