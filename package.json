@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "aos": "^2.3.4",
+    "formidable": "^3.5.4",
     "framer-motion": "^12.23.12",
     "lottie-react": "^2.4.1",
     "next": "15.4.6",

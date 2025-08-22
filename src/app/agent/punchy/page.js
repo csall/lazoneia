@@ -1,4 +1,10 @@
+
+
 "use client";
+// Vérifie si l'API SpeechRecognition est supportée
+const isSpeechRecognitionSupported = typeof window !== 'undefined' && (
+  'SpeechRecognition' in window || 'webkitSpeechRecognition' in window
+);
 
 import GoogleMenu from "@/components/navigation/GoogleMenu";
 import { useState, useRef, useEffect } from "react";
@@ -8,6 +14,108 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 
 export default function PunchyPage() {
+  // Gestion micro façon ChatGPT
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const [micState, setMicState] = useState("idle"); // idle | recording | loading | error
+  const [micError, setMicError] = useState("");
+
+  // Micro façon ChatGPT : maintien = enregistrement, relâchement = transcription
+  const startMicRecording = async () => {
+    if (micState !== "idle" && micState !== "error") return;
+    setMicError("");
+    setMicState("loading");
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error("Micro non disponible");
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new window.MediaRecorder(stream);
+      mediaRecorderRef.current = recorder;
+      audioChunksRef.current = [];
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+      recorder.onstop = () => handleAudioStop(stream);
+      recorder.start();
+      setMicState("recording");
+    } catch (err) {
+      setMicError("Impossible d'accéder au micro");
+      setMicState("error");
+    }
+  };
+
+  const stopMicRecording = () => {
+    if (micState === "recording" && mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      setMicState("loading");
+    }
+    // Si on relâche le bouton alors qu'on est en erreur, on repasse en idle
+    if (micState === "error") {
+      setMicState("idle");
+      setMicError("");
+    }
+  };
+
+  // Envoi backend et gestion état
+  const handleAudioStop = async (stream) => {
+    setMicState("loading");
+    const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+    stream.getTracks().forEach(track => track.stop());
+    // Contrôle taille minimale (env. 1kB) pour éviter les transcriptions fantômes
+    if (audioBlob.size < 1000) {
+      setMicError("Aucun son détecté. Veuillez parler plus fort ou plus longtemps.");
+      setMicState("error");
+      return;
+    }
+    const formData = new FormData();
+    formData.append('audio', audioBlob, 'recording.webm');
+    try {
+      const res = await fetch('/api/whisper-transcribe', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.text) {
+        setUserInput(data.text);
+        setMicState("idle");
+      } else {
+        setMicError("Erreur de transcription");
+        setMicState("error");
+      }
+    } catch (err) {
+      setMicError("Erreur réseau ou backend");
+      setMicState("error");
+    }
+  };
+  // Démarrer l'enregistrement audio
+  const startAudioRecording = async () => {
+    setMicError("");
+    setIsMicLoading(true);
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error("Micro non disponible");
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new window.MediaRecorder(stream);
+      mediaRecorderRef.current = recorder;
+      audioChunksRef.current = [];
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+      recorder.onstop = () => handleAudioStop(stream);
+      recorder.start();
+      setIsAudioRecording(true);
+    } catch (err) {
+      setMicError("Impossible d'accéder au micro");
+    }
+    setIsMicLoading(false);
+  };
+
+  // Arrêter l'enregistrement audio
+  const stopAudioRecording = () => {
+    if (mediaRecorderRef.current && isAudioRecording) {
+      mediaRecorderRef.current.stop();
+      setIsAudioRecording(false);
+    }
+  };
+
   const [userInput, setUserInput] = useState("");
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -20,6 +128,7 @@ export default function PunchyPage() {
   const [isCancelled, setIsCancelled] = useState(false);
   const [micButtonActive, setMicButtonActive] = useState(false);
   const [showMic, setShowMic] = useState(true);
+  const [micSupported, setMicSupported] = useState(true);
 
   const recognitionRef = useRef(null);
   const micButtonRef = useRef(null);
@@ -28,8 +137,12 @@ export default function PunchyPage() {
 
   // Initialisation SpeechRecognition
   useEffect(() => {
-    if (!("webkitSpeechRecognition" in window)) return;
-    const SpeechRecognition = window.webkitSpeechRecognition;
+    // Cross-browser SpeechRecognition
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setMicSupported(false);
+      return;
+    }
     recognitionRef.current = new SpeechRecognition();
     recognitionRef.current.lang = "fr-FR";
     recognitionRef.current.continuous = false;
@@ -253,7 +366,25 @@ export default function PunchyPage() {
       </header>
 
       <div className="h-6" />
-
+                {/* Animation centrale d'enregistrement façon ChatGPT */}
+                {micState === 'recording' && (
+                  <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: [0.9, 1.1, 0.9] }}
+                      transition={{ repeat: Infinity, duration: 1.2 }}
+                      className="relative flex flex-col items-center justify-center"
+                    >
+                      <span className="absolute w-32 h-32 rounded-full bg-indigo-400/30 blur-2xl animate-pulse" />
+                      <span className="absolute w-48 h-48 rounded-full bg-violet-400/20 blur-3xl animate-pulse" />
+                      <span className="absolute w-64 h-64 rounded-full bg-indigo-500/10 blur-2xl animate-pulse" />
+                      <div className="relative z-10 flex flex-col items-center">
+                        <ChatGPTMicIcon className="h-16 w-16 text-white drop-shadow-lg animate-pulse" />
+                        <span className="mt-4 text-lg font-bold text-white drop-shadow tracking-wide animate-fade-in">Enregistrement en cours...</span>
+                      </div>
+                    </motion.div>
+                  </div>
+                )}
       <div className="container mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row gap-4 items-center mb-6">
           <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }} className="w-24 h-24 md:w-32 md:h-32">
@@ -285,95 +416,67 @@ export default function PunchyPage() {
                     onContextMenu={e => e.preventDefault()}
                     style={{ WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none' }}
                   />
-                  {isRecording && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95, y: -20 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                      className="absolute left-1/2 top-2 -translate-x-1/2 px-6 py-3 rounded-2xl bg-gradient-to-br from-indigo-500/80 via-violet-600/70 to-indigo-900/80 backdrop-blur-lg shadow-2xl border border-indigo-300/30 flex flex-col items-center z-20"
-                      style={{ boxShadow: '0 4px 32px 0 rgba(139,92,246,0.25)' }}
-                    >
-                      <motion.div
-                        className="relative flex items-center justify-center mb-1"
-                        initial={{ scale: 0.9 }}
-                        animate={{ scale: [0.9, 1.1, 0.9] }}
-                        transition={{ repeat: Infinity, duration: 1.2 }}
+                  {showMic && (
+                    <div className="absolute top-2 right-2 flex items-center justify-end" style={{ minWidth: 48 }}>
+                      <motion.button
+                        ref={micButtonRef}
+                        type="button"
+                        onMouseDown={startMicRecording}
+                        onTouchStart={startMicRecording}
+                        onMouseUp={stopMicRecording}
+                        onTouchEnd={stopMicRecording}
+                        onContextMenu={e => e.preventDefault()}
+                        className={`bg-gradient-to-br from-indigo-500 via-violet-400 to-indigo-400 text-white rounded-full p-2 shadow-lg transition-all duration-200 select-none touch-none border-2 border-indigo-300/60 ${micButtonActive ? 'scale-125 ring-4 ring-violet-300/60 shadow-violet-400/40' : ''} ${micState === 'recording' ? 'opacity-80' : ''} ${micState === 'loading' ? 'opacity-60 cursor-wait' : ''} ${isCancelled ? 'bg-red-600/80 ring-red-400/40' : ''}`}
+                        aria-label={micState === 'idle' ? 'Appuyez et maintenez pour parler' : micState === 'recording' ? 'Relâchez pour envoyer' : 'Micro en cours'}
+                        style={{ touchAction: 'none', WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none', background: micState === 'recording' ? 'linear-gradient(90deg, #6366f1 60%, #a78bfa 100%)' : undefined, filter: micButtonActive ? 'drop-shadow(0 0 16px #a78bfa)' : undefined, opacity: micState === 'loading' ? 0.6 : 1, cursor: micState === 'loading' ? 'wait' : 'pointer', marginRight: 0 }}
+                        initial={{ scale: 1 }}
+                        animate={micButtonActive ? { scale: 1.25, boxShadow: '0 0 32px #a78bfa' } : { scale: 1, boxShadow: 'none' }}
+                        whileTap={{ scale: 0.95 }}
+                        whileHover={{ scale: 1.1 }}
+                        disabled={micState === 'loading'}
                       >
-                        <span className="absolute w-12 h-12 rounded-full bg-indigo-400/30 blur-md animate-pulse" />
-                        <span className="absolute w-20 h-20 rounded-full bg-violet-400/20 blur-lg animate-pulse" />
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 z-10 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 18v2m0-2a6 6 0 006-6V9a6 6 0 10-12 0v3a6 6 0 006 6zm0 0v2m0 0h-2m2 0h2" />
-                        </svg>
-                      </motion.div>
-                      <span className="text-base font-bold text-white drop-shadow-sm tracking-wide animate-fade-in">Relâcher pour envoyer</span>
-                    </motion.div>
+                        <ChatGPTMicIcon className="h-7 w-7 opacity-80" />
+                      </motion.button>
+                      {micState === 'recording' && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: [0.95, 1.1, 0.95] }}
+                          transition={{ repeat: Infinity, duration: 1.2 }}
+                          className="absolute right-0 z-10 flex items-center justify-center"
+                          style={{ pointerEvents: 'none' }}
+                        >
+                          <span className="absolute w-12 h-12 rounded-full bg-indigo-400/30 blur-md animate-pulse" />
+                          <span className="absolute w-20 h-20 rounded-full bg-violet-400/20 blur-lg animate-pulse" />
+                          <span className="absolute w-28 h-28 rounded-full bg-indigo-500/10 blur-2xl animate-pulse" />
+                        </motion.div>
+                      )}
+                    </div>
                   )}
                 </div>
-                {showMic && (
-                  <motion.button
-                    ref={micButtonRef}
-                    type="button"
-                    onMouseDown={handleMicMouseDown}
-                    onTouchStart={handleMicTouchStart}
-                    onContextMenu={e => e.preventDefault()}
-                    className={`absolute right-2 top-2 bg-gradient-to-br from-indigo-500 via-violet-400 to-indigo-400 text-white rounded-full p-2 shadow-lg transition-all duration-200 select-none touch-none border-2 border-indigo-300/60 ${micButtonActive ? 'scale-125 ring-4 ring-violet-300/60 shadow-violet-400/40' : ''} ${isRecording ? 'animate-pulse opacity-80' : ''} ${isCancelled ? 'bg-red-600/80 ring-red-400/40' : ''}`}
-                    aria-label="Appuyez et maintenez pour parler"
-                    style={{ touchAction: 'none', WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none', background: isRecording ? 'linear-gradient(90deg, #6366f1 60%, #a78bfa 100%)' : undefined, filter: micButtonActive ? 'drop-shadow(0 0 16px #a78bfa)' : undefined }}
-                    initial={{ scale: 1 }}
-                    animate={micButtonActive ? { scale: 1.25, boxShadow: '0 0 32px #a78bfa' } : { scale: 1, boxShadow: 'none' }}
-                    whileTap={{ scale: 0.95 }}
-                    whileHover={{ scale: 1.1 }}
-                  >
-                    <ChatGPTMicIcon className="h-7 w-7 opacity-80" />
-                  </motion.button>
-                )}
-                {isRecording && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: -20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                    className="absolute left-1/2 top-2 -translate-x-1/2 px-6 py-3 rounded-2xl bg-gradient-to-br from-indigo-500/80 via-violet-600/70 to-indigo-900/80 backdrop-blur-lg shadow-2xl border border-indigo-300/30 flex flex-col items-center z-20"
-                    style={{ boxShadow: '0 4px 32px 0 rgba(139,92,246,0.25)' }}
-                  >
-                    <motion.div
-                      className="relative flex items-center justify-center mb-1"
-                      initial={{ scale: 0.9 }}
-                      animate={{ scale: [0.9, 1.1, 0.9] }}
-                      transition={{ repeat: Infinity, duration: 1.2 }}
-                    >
-                      <span className="absolute w-12 h-12 rounded-full bg-indigo-400/30 blur-md animate-pulse" />
-                      <span className="absolute w-20 h-20 rounded-full bg-violet-400/20 blur-lg animate-pulse" />
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 z-10 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 18v2m0-2a6 6 0 006-6V9a6 6 0 10-12 0v3a6 6 0 006 6zm0 0v2m0 0h-2m2 0h2" />
-                      </svg>
-                    </motion.div>
-                    <span className="text-base font-bold text-white drop-shadow-sm tracking-wide animate-fade-in">Relâcher pour envoyer</span>
-                  </motion.div>
+                  </div>
+                {micState === 'error' && micError && (
+                  <div className="absolute right-2 top-24 bg-red-700/80 text-white rounded-lg px-3 py-2 text-xs shadow-lg border border-red-400/40 z-30">
+                    {micError}
+                  </div>
                 )}
                 {/* Transcript en direct */}
                 {isRecording && tempTranscriptRef.current && (
                   <p className="mt-2 text-indigo-300 text-xs italic">{tempTranscriptRef.current}</p>
                 )}
-              </div>
-              {/* Transcript en direct */}
-              {isRecording && tempTranscriptRef.current && (
-                <p className="mt-2 text-indigo-300 text-xs italic">{tempTranscriptRef.current}</p>
-              )}
-
-              <div className="flex gap-2">
-                <button
-                  type="submit"
-                  disabled={isLoading || !userInput.trim()}
-                  className="flex-1 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 flex justify-center items-center text-sm"
-                >
-                  {isLoading ? <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div> : "Faire une blague"}
-                </button>
-                <button type="button" onClick={handleClear} className="bg-transparent border border-indigo-400 hover:bg-indigo-800/30 text-white py-2 px-4 rounded-lg transition-all duration-300 text-sm">
-                  Effacer
-                </button>
-              </div>
-            </form>
-          </motion.div>
+                <div className="flex gap-2 mt-4">
+                  <button
+                    type="submit"
+                    disabled={isLoading || !userInput.trim()}
+                    className="flex-1 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 flex justify-center items-center text-sm"
+                  >
+                    {isLoading ? <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div> : "Faire une blague"}
+                  </button>
+                  <button type="button" onClick={handleClear} className="bg-transparent border border-indigo-400 hover:bg-indigo-800/30 text-white py-2 px-4 rounded-lg transition-all duration-300 text-sm">
+                    Effacer
+                  </button>
+                </div>
+              </form>
+            </motion.div>
 
           {/* Section réponse */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="bg-gradient-to-br from-violet-800/50 to-indigo-800/50 backdrop-blur-md p-4 rounded-xl shadow-lg border border-violet-500/30 min-h-[240px] flex flex-col">
