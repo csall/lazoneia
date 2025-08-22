@@ -37,7 +37,6 @@ export default function PunchyPage() {
           return;
         }
         setMicReady(true);
-        setMicStream(stream);
         setMicState("idle");
         setMicError("Micro prêt. Appuyez à nouveau pour enregistrer.");
       } catch (err) {
@@ -46,17 +45,23 @@ export default function PunchyPage() {
       }
       return;
     }
-    // Permission déjà accordée, démarre l'enregistrement
-    if (micStream) {
+    // Permission déjà accordée, démarre l'enregistrement avec un nouveau stream
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      if (!stream || !stream.active) {
+        setMicError("Impossible d'obtenir le flux audio");
+        setMicState("error");
+        return;
+      }
       setMicError("");
       setMicState("recording");
-      const recorder = new window.MediaRecorder(micStream);
+      const recorder = new window.MediaRecorder(stream);
       mediaRecorderRef.current = recorder;
       audioChunksRef.current = [];
       recorder.ondataavailable = (e) => {
         if (e.data.size > 0) audioChunksRef.current.push(e.data);
       };
-      recorder.onstop = () => handleAudioStop(micStream);
+      recorder.onstop = () => handleAudioStop(stream);
       recorder.start();
       // Ajoute un listener pour stopper sur mouseup
       const stopOnMouseUp = () => {
@@ -67,6 +72,9 @@ export default function PunchyPage() {
         window.removeEventListener("mouseup", stopOnMouseUp);
       };
       window.addEventListener("mouseup", stopOnMouseUp);
+    } catch (err) {
+      setMicError("Impossible d'obtenir le flux audio");
+      setMicState("error");
     }
   };
 
