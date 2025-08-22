@@ -111,8 +111,9 @@ export default function PunchyPage() {
       if (data.text) {
         setUserInput(data.text);
         setMicState("idle");
+        // Déclenche la blague automatiquement après transcription
+        handleSubmit({ preventDefault: () => {} }, data.text);
       } else {
-       // setMicError("Erreur de transcription");
         setMicState("error");
       }
     } catch (err) {
