@@ -25,22 +25,22 @@ export default function PunchyPage() {
   // Micro façon ChatGPT : maintien = enregistrement, relâchement = transcription
   const startMicRecording = async () => {
     if (micState !== "idle" && micState !== "error") return;
-    setMicError("");
+   // setMicError("");
     if (!micReady) {
       setMicState("loading");
       try {
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error("Micro non disponible");
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         if (!stream || !stream.active) {
-          setMicError("Permission micro refusée");
+        //  setMicError("Permission micro refusée");
           setMicState("error");
           return;
         }
         setMicReady(true);
         setMicState("idle");
-        setMicError("Micro prêt. Appuyez à nouveau pour enregistrer.");
+     //   setMicError("Micro prêt. Appuyez à nouveau pour enregistrer.");
       } catch (err) {
-        setMicError("Impossible d'accéder au micro");
+      //  setMicError("Impossible d'accéder au micro");
         setMicState("error");
       }
       return;
@@ -49,7 +49,7 @@ export default function PunchyPage() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       if (!stream || !stream.active) {
-        setMicError("Impossible d'obtenir le flux audio");
+       // setMicError("Impossible d'obtenir le flux audio");
         setMicState("error");
         return;
       }
@@ -72,7 +72,7 @@ export default function PunchyPage() {
       window.addEventListener("mouseup", stopOnMicRelease);
       window.addEventListener("touchend", stopOnMicRelease);
     } catch (err) {
-      setMicError("Impossible d'obtenir le flux audio");
+      //setMicError("Impossible d'obtenir le flux audio");
       setMicState("error");
     }
   };
@@ -96,7 +96,7 @@ export default function PunchyPage() {
     stream.getTracks().forEach(track => track.stop());
     // Contrôle taille minimale (env. 1kB) pour éviter les transcriptions fantômes
     if (audioBlob.size < 1000) {
-      setMicError("Aucun son détecté. Veuillez parler plus fort ou plus longtemps.");
+     // setMicError("Aucun son détecté. Veuillez parler plus fort ou plus longtemps.");
       setMicState("error");
       return;
     }
@@ -112,7 +112,7 @@ export default function PunchyPage() {
         setUserInput(data.text);
         setMicState("idle");
       } else {
-        setMicError("Erreur de transcription");
+       // setMicError("Erreur de transcription");
         setMicState("error");
       }
     } catch (err) {
@@ -137,7 +137,7 @@ export default function PunchyPage() {
       recorder.start();
       setIsAudioRecording(true);
     } catch (err) {
-      setMicError("Impossible d'accéder au micro");
+     // setMicError("Impossible d'accéder au micro");
     }
     setIsMicLoading(false);
   };
