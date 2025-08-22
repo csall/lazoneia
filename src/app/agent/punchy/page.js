@@ -18,28 +18,55 @@ export default function PunchyPage() {
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const [micState, setMicState] = useState("idle"); // idle | recording | loading | error
+  const [micReady, setMicReady] = useState(false); // Permission micro accordée
+  const [micStream, setMicStream] = useState(null);
   const [micError, setMicError] = useState("");
 
   // Micro façon ChatGPT : maintien = enregistrement, relâchement = transcription
   const startMicRecording = async () => {
     if (micState !== "idle" && micState !== "error") return;
     setMicError("");
-    setMicState("loading");
-    try {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error("Micro non disponible");
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new window.MediaRecorder(stream);
+    if (!micReady) {
+      setMicState("loading");
+      try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error("Micro non disponible");
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        if (!stream || !stream.active) {
+          setMicError("Permission micro refusée");
+          setMicState("error");
+          return;
+        }
+        setMicReady(true);
+        setMicStream(stream);
+        setMicState("idle");
+        setMicError("Micro prêt. Appuyez à nouveau pour enregistrer.");
+      } catch (err) {
+        setMicError("Impossible d'accéder au micro");
+        setMicState("error");
+      }
+      return;
+    }
+    // Permission déjà accordée, démarre l'enregistrement
+    if (micStream) {
+      setMicError("");
+      setMicState("recording");
+      const recorder = new window.MediaRecorder(micStream);
       mediaRecorderRef.current = recorder;
       audioChunksRef.current = [];
       recorder.ondataavailable = (e) => {
         if (e.data.size > 0) audioChunksRef.current.push(e.data);
       };
-      recorder.onstop = () => handleAudioStop(stream);
+      recorder.onstop = () => handleAudioStop(micStream);
       recorder.start();
-      setMicState("recording");
-    } catch (err) {
-      setMicError("Impossible d'accéder au micro");
-      setMicState("error");
+      // Ajoute un listener pour stopper sur mouseup
+      const stopOnMouseUp = () => {
+        if (recorder.state === "recording") {
+          recorder.stop();
+          setMicState("loading");
+        }
+        window.removeEventListener("mouseup", stopOnMouseUp);
+      };
+      window.addEventListener("mouseup", stopOnMouseUp);
     }
   };
 
