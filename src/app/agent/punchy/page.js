@@ -63,15 +63,14 @@ export default function PunchyPage() {
       };
       recorder.onstop = () => handleAudioStop(stream);
       recorder.start();
-      // Ajoute un listener pour stopper sur mouseup
-      const stopOnMouseUp = () => {
-        if (recorder.state === "recording") {
-          recorder.stop();
-          setMicState("loading");
-        }
-        window.removeEventListener("mouseup", stopOnMouseUp);
+      // Ajoute un listener pour stopper sur mouseup/touchend
+      const stopOnMicRelease = () => {
+        stopMicRecording();
+        window.removeEventListener("mouseup", stopOnMicRelease);
+        window.removeEventListener("touchend", stopOnMicRelease);
       };
-      window.addEventListener("mouseup", stopOnMouseUp);
+      window.addEventListener("mouseup", stopOnMicRelease);
+      window.addEventListener("touchend", stopOnMicRelease);
     } catch (err) {
       setMicError("Impossible d'obtenir le flux audio");
       setMicState("error");
