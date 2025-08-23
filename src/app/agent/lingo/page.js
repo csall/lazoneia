@@ -17,59 +17,13 @@ export default function LingoPage() {
   const [translationTone, setTranslationTone] = useState("pro");
   const [isCopied, setIsCopied] = useState(false);
   const textareaRef = useRef(null);
-  // Micro WhatsApp-like
-  // Microphone / dictée vocale
-  const [isRecording, setIsRecording] = useState(false);
-  const [isCancelled, setIsCancelled] = useState(false);
-  const [micButtonActive, setMicButtonActive] = useState(false);
-  const recognitionRef = useRef(null);
-  const micButtonRef = useRef(null);
-  const tempTranscriptRef = useRef("");
-  const recordingActiveRef = useRef(false);
+  // Gestion micro façon ChatGPT (MediaRecorder)
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const [micState, setMicState] = useState("idle"); // idle | recording | loading | error
+  const [micReady, setMicReady] = useState(false); // Permission micro accordée
+  const [micError, setMicError] = useState("");
 
-  useEffect(() => {
-    if (!("webkitSpeechRecognition" in window)) return;
-    const SpeechRecognition = window.webkitSpeechRecognition;
-    recognitionRef.current = new SpeechRecognition();
-    recognitionRef.current.lang = "fr-FR";
-    recognitionRef.current.continuous = false;
-    recognitionRef.current.interimResults = true;
-
-    recognitionRef.current.onresult = (event) => {
-      if (!recordingActiveRef.current) return;
-      const transcript = Array.from(event.results)
-        .map((result) => result[0].transcript)
-        .join("");
-      tempTranscriptRef.current = transcript;
-    };
-
-    recognitionRef.current.onstart = () => {
-      setIsRecording(true);
-      recordingActiveRef.current = true;
-    };
-
-    recognitionRef.current.onend = () => {
-      setIsRecording(false);
-      setMicButtonActive(false);
-      setIsCancelled(false);
-      recordingActiveRef.current = false;
-    };
-
-    recognitionRef.current.onerror = () => {
-      setIsRecording(false);
-      setMicButtonActive(false);
-      recordingActiveRef.current = false;
-    };
-
-    return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.onresult = null;
-        recognitionRef.current.onstart = null;
-        recognitionRef.current.onend = null;
-        recognitionRef.current.onerror = null;
-      }
-    };
-  }, []);
 
   // Démarrage / arrêt / annulation dictée
   const startRecording = () => {
@@ -90,7 +44,7 @@ export default function LingoPage() {
     if (!isCancelled && tempTranscriptRef.current) {
       const newInput = userInput ? userInput + " " + tempTranscriptRef.current : tempTranscriptRef.current;
       setUserInput(newInput);
-      handleSubmit({ preventDefault: () => {} }, newInput);
+      handleSubmit({ preventDefault: () => {} }, newInput); // auto-submit
     }
     tempTranscriptRef.current = "";
   };
@@ -105,80 +59,98 @@ export default function LingoPage() {
   };
 
   // Gestion souris (WhatsApp-like)
-  const handleMicMouseDown = (e) => {
-    e.preventDefault();
-    startRecording();
-    window.addEventListener("mouseup", handleMicMouseUp);
-    window.addEventListener("mousemove", handleMicMouseMove);
-  };
-
-  const handleMicMouseUp = (e) => {
-    if (!micButtonRef.current) return;
-    const rect = micButtonRef.current.getBoundingClientRect();
-    if (
-      e.clientX < rect.left ||
-      e.clientX > rect.right ||
-      e.clientY < rect.top ||
-      e.clientY > rect.bottom
-    ) {
-      cancelRecording();
-    } else {
-      stopRecording();
+  // Micro façon ChatGPT : maintien = enregistrement, relâchement = transcription
+  const startMicRecording = async () => {
+    if (micState !== "idle" && micState !== "error") return;
+    setMicError("");
+    if (!micReady) {
+      setMicState("loading");
+      try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error("Micro non disponible");
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        if (!stream || !stream.active) {
+          setMicState("error");
+          return;
+        }
+        setMicReady(true);
+        setMicState("idle");
+      } catch (err) {
+        // Si l'utilisateur refuse ou interrompt la demande d'autorisation, on repasse en idle
+        setMicState("idle");
+      }
+      return;
     }
-    window.removeEventListener("mouseup", handleMicMouseUp);
-    window.removeEventListener("mousemove", handleMicMouseMove);
-  };
-
-  const handleMicMouseMove = (e) => {
-    if (!micButtonRef.current) return;
-    const rect = micButtonRef.current.getBoundingClientRect();
-    setIsCancelled(
-      e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom
-    );
-  };
-
-  // Gestion tactile
-  const handleMicTouchStart = (e) => {
-    e.preventDefault();
-    startRecording();
-    window.addEventListener("touchend", handleMicTouchEnd);
-    window.addEventListener("touchmove", handleMicTouchMove);
-  };
-
-  const handleMicTouchEnd = (e) => {
-    if (!micButtonRef.current) return;
-    const touch = e.changedTouches[0];
-    const rect = micButtonRef.current.getBoundingClientRect();
-    if (
-      touch.clientX < rect.left ||
-      touch.clientX > rect.right ||
-      touch.clientY < rect.top ||
-      touch.clientY > rect.bottom
-    ) {
-      cancelRecording();
-    } else {
-      stopRecording();
+    // Permission déjà accordée, démarre l'enregistrement avec un nouveau stream
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      if (!stream || !stream.active) {
+        setMicState("error");
+        return;
+      }
+      setMicError("");
+      setMicState("recording");
+      const recorder = new window.MediaRecorder(stream);
+      mediaRecorderRef.current = recorder;
+      audioChunksRef.current = [];
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+      recorder.onstop = () => handleAudioStop(stream);
+      recorder.start();
+      // Ajoute un listener pour stopper sur mouseup/touchend
+      const stopOnMicRelease = () => {
+        stopMicRecording();
+        window.removeEventListener("mouseup", stopOnMicRelease);
+        window.removeEventListener("touchend", stopOnMicRelease);
+      };
+      window.addEventListener("mouseup", stopOnMicRelease);
+      window.addEventListener("touchend", stopOnMicRelease);
+    } catch (err) {
+      setMicState("error");
     }
-    window.removeEventListener("touchend", handleMicTouchEnd);
-    window.removeEventListener("touchmove", handleMicTouchMove);
   };
 
-  const handleMicTouchMove = (e) => {
-    if (!micButtonRef.current) return;
-    const touch = e.touches[0];
-    const rect = micButtonRef.current.getBoundingClientRect();
-    setIsCancelled(
-      touch.clientX < rect.left || touch.clientX > rect.right || touch.clientY < rect.top || touch.clientY > rect.bottom
-    );
-  };
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+  const stopMicRecording = () => {
+    if (micState === "recording" && mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      setMicState("loading");
     }
-  }, [userInput]);
+    if (micState === "error") {
+      setMicState("idle");
+      setMicError("");
+    }
+  };
 
+  // Envoi backend et gestion état
+  const handleAudioStop = async (stream) => {
+    setMicState("loading");
+    const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+    stream.getTracks().forEach(track => track.stop());
+    if (audioBlob.size < 1000) {
+      setMicState("error");
+      return;
+    }
+    const formData = new FormData();
+    formData.append('audio', audioBlob, 'recording.webm');
+    try {
+      const res = await fetch('/api/whisper-transcribe', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.text) {
+        setUserInput(data.text);
+        setMicState("idle");
+        // Déclenche la traduction automatiquement après transcription
+        handleSubmit({ preventDefault: () => {} }, data.text);
+      } else {
+        setMicState("error");
+      }
+    } catch (err) {
+      setMicError("Erreur réseau ou backend");
+      setMicState("error");
+    }
+  };
   // Fonction pour gérer la soumission du message (compatible soumission auto)
   const handleSubmit = async (e, overrideInput) => {
     if (e && e.preventDefault) e.preventDefault();
@@ -187,6 +159,24 @@ export default function LingoPage() {
     setIsLoading(true);
     setResponse("");
     try {
+      // Utilise la nouvelle API whisper-transcribe si input commence par 'audio:'
+      if (input.startsWith('audio:')) {
+        const audioUrl = input.slice(6);
+        const res = await fetch('/api/whisper-transcribe', {
+          method: 'POST',
+          body: JSON.stringify({ audioUrl }),
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await res.json();
+        if (data.text) {
+          setUserInput(data.text);
+          // Enchaîne la traduction après transcription
+          await handleSubmit({ preventDefault: () => {} }, data.text);
+        }
+        setIsLoading(false);
+        return;
+      }
+      // Sinon, workflow classique
       const res = await fetch("https://cheikh06000.app.n8n.cloud/webhook/lingo", {
         method: "POST",
         headers: {
@@ -198,7 +188,6 @@ export default function LingoPage() {
       if (!res.ok) {
         resultText = `Erreur réseau (${res.status})`;
       } else {
-        // Si la réponse n'est pas du JSON
         resultText = await res.text();
         resultText=JSON.parse(resultText)[0].text;
       }
@@ -392,63 +381,58 @@ export default function LingoPage() {
                 </div>
                   <div className="relative w-full">
                     {/* ...existing code... */}
-                      <textarea
+                      <div className="relative w-full">
+                        <textarea
                           ref={textareaRef}
                           value={userInput}
                           onChange={(e) => setUserInput(e.target.value)}
-                          placeholder={isRecording ? '' : "Entrez votre texte à traduire..."}
-                          className={`w-full h-[120px] bg-amber-900/50 text-white placeholder-amber-300 rounded-lg p-3 border border-amber-600/50 focus:border-amber-400 focus:ring focus:ring-amber-300/50 focus:outline-none resize-none transition text-sm pr-12 select-none touch-none ${isRecording ? 'bg-gray-400 text-gray-700 opacity-70 cursor-not-allowed' : ''}`}
+                          placeholder={micState === 'recording' ? '' : "Entrez votre texte à traduire..."}
+                          className={`w-full h-[120px] bg-amber-900/50 text-white placeholder-amber-300 rounded-lg p-3 border border-amber-600/50 focus:border-amber-400 focus:ring focus:ring-amber-300/50 focus:outline-none resize-none transition text-sm pr-12 select-none touch-none ${micState === 'recording' ? 'bg-gray-400 text-gray-700 opacity-70 cursor-not-allowed' : ''}`}
                           rows={4}
-                          disabled={isRecording}
+                          disabled={micState === 'recording'}
                           onContextMenu={e => e.preventDefault()}
                           style={{ WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none' }}
                         />
                         {/* Microphone button only if no text */}
                         {(!userInput || userInput.trim().length === 0) && (
                           <motion.button
-                            ref={micButtonRef}
                             type="button"
-                            onMouseDown={handleMicMouseDown}
-                            onTouchStart={handleMicTouchStart}
+                            onMouseDown={startMicRecording}
+                            onTouchStart={startMicRecording}
+                            onMouseUp={stopMicRecording}
+                            onTouchEnd={stopMicRecording}
                             onContextMenu={e => e.preventDefault()}
-                            className={`absolute right-2 top-2 bg-gradient-to-br from-amber-500 via-yellow-400 to-amber-400 text-white rounded-full p-2 shadow-lg transition-all duration-200 select-none touch-none border-2 border-amber-300/60 ${micButtonActive ? 'scale-125 ring-4 ring-yellow-300/60 shadow-yellow-400/40' : ''} ${isRecording ? 'animate-pulse opacity-80' : ''} ${isCancelled ? 'bg-red-600/80 ring-red-400/40' : ''}`}
-                            aria-label="Appuyez et maintenez pour parler"
-                            style={{ touchAction: 'none', WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none', background: isRecording ? 'linear-gradient(90deg, #f59e11 60%, #fde68a 100%)' : undefined, filter: micButtonActive ? 'drop-shadow(0 0 16px #fde68a)' : undefined }}
+                            className={`absolute right-2 top-2 bg-gradient-to-br from-amber-500 via-yellow-400 to-amber-400 text-white rounded-full p-2 shadow-lg transition-all duration-200 select-none touch-none border-2 border-amber-300/60 ${micState === 'recording' ? 'animate-pulse opacity-80' : ''} ${micState === 'loading' ? 'opacity-60 cursor-wait' : ''}`}
+                            aria-label={micState === 'idle' ? 'Appuyez et maintenez pour parler' : micState === 'recording' ? 'Relâchez pour envoyer' : 'Micro en cours'}
+                            style={{ touchAction: 'none', WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none', background: micState === 'recording' ? 'linear-gradient(90deg, #f59e11 60%, #fde68a 100%)' : undefined, opacity: micState === 'loading' ? 0.6 : 1, cursor: micState === 'loading' ? 'wait' : 'pointer' }}
                             initial={{ scale: 1 }}
-                            animate={micButtonActive ? { scale: 1.25, boxShadow: '0 0 32px #fde68a' } : { scale: 1, boxShadow: 'none' }}
+                            animate={micState === 'recording' ? { scale: 1.25, boxShadow: '0 0 32px #fde68a' } : { scale: 1, boxShadow: 'none' }}
                             whileTap={{ scale: 0.95 }}
                             whileHover={{ scale: 1.1 }}
+                            disabled={micState === 'loading'}
                           >
                             <ChatGPTMicIcon className="h-7 w-7 opacity-80" />
                           </motion.button>
                         )}
-                      {isRecording && (
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.95, y: -20 }}
-                          animate={{ opacity: 1, scale: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                          className="absolute left-1/2 top-2 -translate-x-1/2 px-6 py-3 rounded-2xl bg-gradient-to-br from-amber-500/80 via-yellow-600/70 to-amber-900/80 backdrop-blur-lg shadow-2xl border border-amber-300/30 flex flex-col items-center z-20"
-                          style={{ boxShadow: '0 4px 32px 0 rgba(245,158,11,0.25)' }}
-                        >
+                        {/* Animation d'enregistrement en overlay dans la zone de saisie */}
+                        {micState === 'recording' && (
                           <motion.div
-                            className="relative flex items-center justify-center mb-1"
-                            initial={{ scale: 0.9 }}
-                            animate={{ scale: [0.9, 1.1, 0.9] }}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: [0.9, 1.1, 0.9] }}
                             transition={{ repeat: Infinity, duration: 1.2 }}
+                            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center z-30"
+                            style={{ pointerEvents: 'none' }}
                           >
-                            <span className="absolute w-12 h-12 rounded-full bg-amber-400/30 blur-md animate-pulse" />
-                            <span className="absolute w-20 h-20 rounded-full bg-yellow-400/20 blur-lg animate-pulse" />
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 z-10 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M12 18v2m0-2a6 6 0 006-6V9a6 6 0 10-12 0v3a6 6 0 006 6zm0 0v2m0 0h-2m2 0h2" />
-                            </svg>
+                            <span className="absolute w-32 h-32 rounded-full bg-indigo-400/30 blur-2xl animate-pulse" />
+                            <span className="absolute w-48 h-48 rounded-full bg-violet-400/20 blur-3xl animate-pulse" />
+                            <span className="absolute w-64 h-64 rounded-full bg-indigo-500/10 blur-2xl animate-pulse" />
+                            <div className="relative z-10 flex flex-col items-center">
+                              <ChatGPTMicIcon className="h-16 w-16 text-white drop-shadow-lg animate-pulse" />
+                              <span className="mt-4 text-lg font-bold text-white drop-shadow tracking-wide animate-fade-in">Enregistrement en cours...</span>
+                            </div>
                           </motion.div>
-                          <span className="text-base font-bold text-white drop-shadow-sm tracking-wide animate-fade-in">Relâcher pour envoyer</span>
-                        </motion.div>
-                      )}
-                {/* Transcript en direct */}
-                {isRecording && tempTranscriptRef.current && (
-                  <p className="mt-2 text-amber-300 text-xs italic">{tempTranscriptRef.current}</p>
-                )}
+                        )}
+                      </div>
               </div>
               <div className="flex gap-2">
                 <button
