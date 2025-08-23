@@ -7,7 +7,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import LingoWaveBackground from "../../components/LingoWaveBackground";
 import ChatGPTMicIcon from "../../components/ChatGPTMicIcon";
-import ChatGPTMicAnimation from "../../components/ChatGPTMicAnimation";
+import ChatGPTMicAnimation from "@/components/ChatGPTMicAnimation";
 
 export default function LingoPage() {
   const [userInput, setUserInput] = useState("");
