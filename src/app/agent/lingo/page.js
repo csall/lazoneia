@@ -7,6 +7,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import LingoWaveBackground from "../../components/LingoWaveBackground";
 import ChatGPTMicIcon from "../../components/ChatGPTMicIcon";
+import ChatGPTMicAnimation from "../../components/ChatGPTMicAnimation";
 
 export default function LingoPage() {
   const [userInput, setUserInput] = useState("");
@@ -439,23 +440,9 @@ export default function LingoPage() {
                             <ChatGPTMicIcon className="h-7 w-7 opacity-80" />
                           </motion.button>
                         )}
-                        {/* Animation d'enregistrement en overlay dans la zone de saisie */}
+                        {/* Animation d'enregistrement façon ChatGPT */}
                         {micState === 'recording' && (
-                          <motion.div
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: [0.8, 1.05, 0.8] }}
-                            transition={{ repeat: Infinity, duration: 1.2 }}
-                            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center z-30"
-                            style={{ pointerEvents: 'none' }}
-                          >
-                            <span className="absolute w-16 h-16 rounded-full bg-indigo-400/30 blur-2xl animate-pulse" />
-                            <span className="absolute w-28 h-28 rounded-full bg-violet-400/20 blur-3xl animate-pulse" />
-                            <span className="absolute w-40 h-40 rounded-full bg-indigo-500/10 blur-2xl animate-pulse" />
-                            <div className="relative z-10 flex flex-col items-center">
-                              <ChatGPTMicIcon className="h-8 w-8 text-white drop-shadow-lg animate-pulse" />
-                              <span className="mt-2 text-base font-bold text-white drop-shadow tracking-wide animate-fade-in">Enregistrement en cours...</span>
-                            </div>
-                          </motion.div>
+                          <ChatGPTMicAnimation text="Enregistrement en cours..." />
                         )}
                       </div>
               </div>
