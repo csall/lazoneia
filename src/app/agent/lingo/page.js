@@ -75,7 +75,6 @@ export default function LingoPage() {
         setMicReady(true);
         setMicState("idle");
       } catch (err) {
-        // Si l'utilisateur refuse ou interrompt la demande d'autorisation, on repasse en idle
         setMicState("idle");
       }
       return;
@@ -97,14 +96,38 @@ export default function LingoPage() {
       };
       recorder.onstop = () => handleAudioStop(stream);
       recorder.start();
-      // Ajoute un listener pour stopper sur mouseup/touchend
-      const stopOnMicRelease = () => {
+      // Strict press-and-hold: stop/cancel recording immediately on release
+      const stopOnMicRelease = (e) => {
         stopMicRecording();
         window.removeEventListener("mouseup", stopOnMicRelease);
         window.removeEventListener("touchend", stopOnMicRelease);
+        window.removeEventListener("mousemove", cancelOnMove);
+        window.removeEventListener("touchmove", cancelOnMove);
       };
       window.addEventListener("mouseup", stopOnMicRelease);
       window.addEventListener("touchend", stopOnMicRelease);
+      // Cancel if pointer leaves button while held (mouse/touch)
+      const micButton = document.getElementById("mic-btn-lingo");
+      const cancelOnMove = (e) => {
+        let x, y;
+        if (e.type === "mousemove") {
+          x = e.clientX; y = e.clientY;
+        } else if (e.type === "touchmove") {
+          x = e.touches[0].clientX; y = e.touches[0].clientY;
+        }
+        if (micButton) {
+          const rect = micButton.getBoundingClientRect();
+          if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+            stopMicRecording();
+            window.removeEventListener("mousemove", cancelOnMove);
+            window.removeEventListener("touchmove", cancelOnMove);
+            window.removeEventListener("mouseup", stopOnMicRelease);
+            window.removeEventListener("touchend", stopOnMicRelease);
+          }
+        }
+      };
+      window.addEventListener("mousemove", cancelOnMove);
+      window.addEventListener("touchmove", cancelOnMove);
     } catch (err) {
       setMicState("error");
     }
@@ -387,20 +410,22 @@ export default function LingoPage() {
                           value={userInput}
                           onChange={(e) => setUserInput(e.target.value)}
                           placeholder={micState === 'recording' ? '' : "Entrez votre texte à traduire..."}
-                          className={`w-full h-[120px] bg-amber-900/50 text-white placeholder-amber-300 rounded-lg p-3 border border-amber-600/50 focus:border-amber-400 focus:ring focus:ring-amber-300/50 focus:outline-none resize-none transition text-sm pr-12 select-none touch-none ${micState === 'recording' ? 'bg-gray-400 text-gray-700 opacity-70 cursor-not-allowed' : ''}`}
+                          className={`w-full h-[120px] bg-amber-900/50 text-white placeholder-amber-300 rounded-lg p-3 border border-amber-600/50 focus:border-amber-400 focus:ring focus:ring-amber-300/50 focus:outline-none resize-none transition text-sm pr-12 select-none touch-none ${micState === 'recording' ? 'bg-gray-300 text-gray-500 opacity-80 cursor-not-allowed' : ''}`}
                           rows={4}
                           disabled={micState === 'recording'}
                           onContextMenu={e => e.preventDefault()}
-                          style={{ WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none' }}
+                          style={{ WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none', background: micState === 'recording' ? '#e5e7eb' : undefined, color: micState === 'recording' ? '#6b7280' : undefined, opacity: micState === 'recording' ? 0.8 : 1, cursor: micState === 'recording' ? 'not-allowed' : 'auto' }}
                         />
                         {/* Microphone button only if no text */}
                         {(!userInput || userInput.trim().length === 0) && (
                           <motion.button
+                            id="mic-btn-lingo"
                             type="button"
                             onMouseDown={startMicRecording}
                             onTouchStart={startMicRecording}
                             onMouseUp={stopMicRecording}
                             onTouchEnd={stopMicRecording}
+                            onClick={e => e.preventDefault()} // Désactive le simple clic/tap
                             onContextMenu={e => e.preventDefault()}
                             className={`absolute right-2 top-2 bg-gradient-to-br from-amber-500 via-yellow-400 to-amber-400 text-white rounded-full p-2 shadow-lg transition-all duration-200 select-none touch-none border-2 border-amber-300/60 ${micState === 'recording' ? 'animate-pulse opacity-80' : ''} ${micState === 'loading' ? 'opacity-60 cursor-wait' : ''}`}
                             aria-label={micState === 'idle' ? 'Appuyez et maintenez pour parler' : micState === 'recording' ? 'Relâchez pour envoyer' : 'Micro en cours'}
@@ -417,18 +442,18 @@ export default function LingoPage() {
                         {/* Animation d'enregistrement en overlay dans la zone de saisie */}
                         {micState === 'recording' && (
                           <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: [0.9, 1.1, 0.9] }}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: [0.8, 1.05, 0.8] }}
                             transition={{ repeat: Infinity, duration: 1.2 }}
                             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center z-30"
                             style={{ pointerEvents: 'none' }}
                           >
-                            <span className="absolute w-32 h-32 rounded-full bg-indigo-400/30 blur-2xl animate-pulse" />
-                            <span className="absolute w-48 h-48 rounded-full bg-violet-400/20 blur-3xl animate-pulse" />
-                            <span className="absolute w-64 h-64 rounded-full bg-indigo-500/10 blur-2xl animate-pulse" />
+                            <span className="absolute w-16 h-16 rounded-full bg-indigo-400/30 blur-2xl animate-pulse" />
+                            <span className="absolute w-28 h-28 rounded-full bg-violet-400/20 blur-3xl animate-pulse" />
+                            <span className="absolute w-40 h-40 rounded-full bg-indigo-500/10 blur-2xl animate-pulse" />
                             <div className="relative z-10 flex flex-col items-center">
-                              <ChatGPTMicIcon className="h-16 w-16 text-white drop-shadow-lg animate-pulse" />
-                              <span className="mt-4 text-lg font-bold text-white drop-shadow tracking-wide animate-fade-in">Enregistrement en cours...</span>
+                              <ChatGPTMicIcon className="h-8 w-8 text-white drop-shadow-lg animate-pulse" />
+                              <span className="mt-2 text-base font-bold text-white drop-shadow tracking-wide animate-fade-in">Enregistrement en cours...</span>
                             </div>
                           </motion.div>
                         )}

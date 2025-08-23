@@ -63,14 +63,37 @@ export default function PunchyPage() {
       };
       recorder.onstop = () => handleAudioStop(stream);
       recorder.start();
-      // Ajoute un listener pour stopper sur mouseup/touchend
+      // Ajoute un listener pour stopper sur mouseup/touchend et annuler sur touchmove
       const stopOnMicRelease = () => {
         stopMicRecording();
         window.removeEventListener("mouseup", stopOnMicRelease);
         window.removeEventListener("touchend", stopOnMicRelease);
+        window.removeEventListener("touchmove", cancelOnMove);
+        window.removeEventListener("mousemove", cancelOnMove);
       };
       window.addEventListener("mouseup", stopOnMicRelease);
       window.addEventListener("touchend", stopOnMicRelease);
+      // Annule si le doigt quitte le bouton
+      const cancelOnMove = (e) => {
+        let x, y;
+        if (e.type === "mousemove") {
+          x = e.clientX; y = e.clientY;
+        } else if (e.type === "touchmove") {
+          x = e.touches[0].clientX; y = e.touches[0].clientY;
+        }
+        if (micButtonRef.current) {
+          const rect = micButtonRef.current.getBoundingClientRect();
+          if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+            stopMicRecording();
+            window.removeEventListener("touchmove", cancelOnMove);
+            window.removeEventListener("mousemove", cancelOnMove);
+            window.removeEventListener("mouseup", stopOnMicRelease);
+            window.removeEventListener("touchend", stopOnMicRelease);
+          }
+        }
+      };
+      window.addEventListener("touchmove", cancelOnMove);
+      window.addEventListener("mousemove", cancelOnMove);
     } catch (err) {
       //setMicError("Impossible d'obtenir le flux audio");
       setMicState("error");
@@ -254,13 +277,16 @@ export default function PunchyPage() {
 
   // Gestion souris (WhatsApp-like)
   const handleMicMouseDown = (e) => {
-    e.preventDefault();
-    startRecording();
-    window.addEventListener("mouseup", handleMicMouseUp);
-    window.addEventListener("mousemove", handleMicMouseMove);
+  e.preventDefault();
+  startRecording();
+  // Track if mouse is held
+  recordingActiveRef.current = true;
+  window.addEventListener("mouseup", handleMicMouseUp);
+  window.addEventListener("mousemove", handleMicMouseMove);
   };
 
   const handleMicMouseUp = (e) => {
+    // Always stop/cancel recording immediately when mouse is released
     if (!micButtonRef.current) return;
     const rect = micButtonRef.current.getBoundingClientRect();
     if (
@@ -273,6 +299,7 @@ export default function PunchyPage() {
     } else {
       stopRecording();
     }
+    recordingActiveRef.current = false;
     window.removeEventListener("mouseup", handleMicMouseUp);
     window.removeEventListener("mousemove", handleMicMouseMove);
   };
@@ -280,20 +307,28 @@ export default function PunchyPage() {
   const handleMicMouseMove = (e) => {
     if (!micButtonRef.current) return;
     const rect = micButtonRef.current.getBoundingClientRect();
-    setIsCancelled(
+    // If mouse leaves button while held, cancel recording
+    if (
       e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom
-    );
+    ) {
+      setIsCancelled(true);
+      cancelRecording();
+    } else {
+      setIsCancelled(false);
+    }
   };
 
   // Gestion tactile
   const handleMicTouchStart = (e) => {
-    e.preventDefault();
-    startRecording();
-    window.addEventListener("touchend", handleMicTouchEnd);
-    window.addEventListener("touchmove", handleMicTouchMove);
+  e.preventDefault();
+  startRecording();
+  recordingActiveRef.current = true;
+  window.addEventListener("touchend", handleMicTouchEnd);
+  window.addEventListener("touchmove", handleMicTouchMove);
   };
 
   const handleMicTouchEnd = (e) => {
+    // Always stop/cancel recording immediately when touch is released
     if (!micButtonRef.current) return;
     const touch = e.changedTouches[0];
     const rect = micButtonRef.current.getBoundingClientRect();
@@ -307,6 +342,7 @@ export default function PunchyPage() {
     } else {
       stopRecording();
     }
+    recordingActiveRef.current = false;
     window.removeEventListener("touchend", handleMicTouchEnd);
     window.removeEventListener("touchmove", handleMicTouchMove);
   };
@@ -315,9 +351,15 @@ export default function PunchyPage() {
     if (!micButtonRef.current) return;
     const touch = e.touches[0];
     const rect = micButtonRef.current.getBoundingClientRect();
-    setIsCancelled(
+    // If touch leaves button while held, cancel recording
+    if (
       touch.clientX < rect.left || touch.clientX > rect.right || touch.clientY < rect.top || touch.clientY > rect.bottom
-    );
+    ) {
+      setIsCancelled(true);
+      cancelRecording();
+    } else {
+      setIsCancelled(false);
+    }
   };
 
   // Ajustement automatique textarea + gestion affichage micro
@@ -400,26 +442,6 @@ export default function PunchyPage() {
         </div>
       </header>
 
-      <div className="h-6" />
-                {/* Animation centrale d'enregistrement façon ChatGPT */}
-                {micState === 'recording' && (
-                  <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: [0.9, 1.1, 0.9] }}
-                      transition={{ repeat: Infinity, duration: 1.2 }}
-                      className="relative flex flex-col items-center justify-center"
-                    >
-                      <span className="absolute w-32 h-32 rounded-full bg-indigo-400/30 blur-2xl animate-pulse" />
-                      <span className="absolute w-48 h-48 rounded-full bg-violet-400/20 blur-3xl animate-pulse" />
-                      <span className="absolute w-64 h-64 rounded-full bg-indigo-500/10 blur-2xl animate-pulse" />
-                      <div className="relative z-10 flex flex-col items-center">
-                        <ChatGPTMicIcon className="h-16 w-16 text-white drop-shadow-lg animate-pulse" />
-                        <span className="mt-4 text-lg font-bold text-white drop-shadow tracking-wide animate-fade-in">Enregistrement en cours...</span>
-                      </div>
-                    </motion.div>
-                  </div>
-                )}
       <div className="container mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row gap-4 items-center mb-6">
           <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }} className="w-24 h-24 md:w-32 md:h-32">
@@ -440,17 +462,37 @@ export default function PunchyPage() {
             <form onSubmit={handleSubmit} className="space-y-3">
               <div className="relative flex items-center">
                 <div className="relative w-full">
-                  <textarea
-                    ref={textareaRef}
-                    value={userInput}
-                    onChange={(e) => setUserInput(e.target.value)}
-                    placeholder={isRecording ? '' : "Écrivez ou enregistrez une phrase banale à transformer..."}
-                    className={`w-full h-[120px] bg-indigo-900/50 text-white placeholder-indigo-300 rounded-lg p-3 border border-indigo-600/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none resize-none transition-all duration-200 text-sm pr-12 select-none touch-none ${isRecording ? 'bg-gray-400 text-gray-700 opacity-70 cursor-not-allowed' : ''}`}
-                    rows={4}
-                    disabled={isRecording}
-                    onContextMenu={e => e.preventDefault()}
-                    style={{ WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none' }}
-                  />
+                  <div className="relative w-full">
+                    <textarea
+                      ref={textareaRef}
+                      value={userInput}
+                      onChange={(e) => setUserInput(e.target.value)}
+                      placeholder={isRecording ? '' : "Écrivez ou enregistrez une phrase banale à transformer..."}
+                      className={`w-full h-[120px] bg-indigo-900/50 text-white placeholder-indigo-300 rounded-lg p-3 border border-indigo-600/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none resize-none transition-all duration-200 text-sm pr-12 select-none touch-none ${isRecording ? 'bg-gray-300 text-gray-500 opacity-80 cursor-not-allowed' : ''}`}
+                      rows={4}
+                      disabled={isRecording}
+                      onContextMenu={e => e.preventDefault()}
+                      style={{ WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none', background: isRecording ? '#e5e7eb' : undefined, color: isRecording ? '#6b7280' : undefined, opacity: isRecording ? 0.8 : 1, cursor: isRecording ? 'not-allowed' : 'auto' }}
+                    />
+                    {/* Animation d'enregistrement en overlay réduite dans la zone de saisie */}
+                    {micState === 'recording' && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: [0.8, 1.05, 0.8] }}
+                        transition={{ repeat: Infinity, duration: 1.2 }}
+                        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center z-30"
+                        style={{ pointerEvents: 'none' }}
+                      >
+                        <span className="absolute w-16 h-16 rounded-full bg-indigo-400/30 blur-2xl animate-pulse" />
+                        <span className="absolute w-28 h-28 rounded-full bg-violet-400/20 blur-3xl animate-pulse" />
+                        <span className="absolute w-40 h-40 rounded-full bg-indigo-500/10 blur-2xl animate-pulse" />
+                        <div className="relative z-10 flex flex-col items-center">
+                          <ChatGPTMicIcon className="h-8 w-8 text-white drop-shadow-lg animate-pulse" />
+                          <span className="mt-2 text-base font-bold text-white drop-shadow tracking-wide animate-fade-in">Enregistrement en cours...</span>
+                        </div>
+                      </motion.div>
+                    )}
+                  </div>
                   {showMic && (
                     <div className="absolute top-2 right-2 flex items-center justify-end" style={{ minWidth: 48 }}>
                       <motion.button
@@ -460,6 +502,7 @@ export default function PunchyPage() {
                         onTouchStart={startMicRecording}
                         onMouseUp={stopMicRecording}
                         onTouchEnd={stopMicRecording}
+                        onClick={e => e.preventDefault()} // Désactive le simple clic/tap
                         onContextMenu={e => e.preventDefault()}
                         className={`bg-gradient-to-br from-indigo-500 via-violet-400 to-indigo-400 text-white rounded-full p-2 shadow-lg transition-all duration-200 select-none touch-none border-2 border-indigo-300/60 ${micButtonActive ? 'scale-125 ring-4 ring-violet-300/60 shadow-violet-400/40' : ''} ${micState === 'recording' ? 'opacity-80' : ''} ${micState === 'loading' ? 'opacity-60 cursor-wait' : ''} ${isCancelled ? 'bg-red-600/80 ring-red-400/40' : ''}`}
                         aria-label={micState === 'idle' ? 'Appuyez et maintenez pour parler' : micState === 'recording' ? 'Relâchez pour envoyer' : 'Micro en cours'}
