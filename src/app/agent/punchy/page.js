@@ -528,24 +528,46 @@ export default function PunchyPage() {
               <div className="relative flex items-center">
                 <div className="relative w-full">
                   <div className="relative w-full" ref={resultRef}>
-                    <textarea
-                      ref={textareaRef}
-                      value={userInput}
-                      onChange={(e) => setUserInput(e.target.value)}
-                      placeholder={micState === 'transcribing' ? '' : micState === 'recording' ? '' : "Écrivez ou enregistrez une phrase banale à transformer..."}
-                      className={`w-full h-[120px] ${micState === 'transcribing' ? 'bg-gray-300 text-gray-500 opacity-80 cursor-not-allowed' : 'bg-indigo-900/50 text-white'} placeholder-indigo-300 rounded-lg p-3 border border-indigo-600/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none resize-none transition-all duration-200 text-sm pr-12 select-none touch-none`}
-                      rows={4}
-                      disabled={micState === 'recording' || micState === 'transcribing'}
-                      onContextMenu={e => e.preventDefault()}
-                      style={{ WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none', background: micState === 'transcribing' ? '#e5e7eb' : micState === 'recording' ? '#e5e7eb' : undefined, color: micState === 'transcribing' ? '#6b7280' : micState === 'recording' ? '#6b7280' : undefined, opacity: micState === 'transcribing' ? 0.8 : micState === 'recording' ? 0.8 : 1, cursor: micState === 'transcribing' ? 'not-allowed' : micState === 'recording' ? 'not-allowed' : 'auto' }}
-                    />
-                    {/* Animation d'enregistrement/transcription façon ChatGPT */}
-                    {(micState === 'recording' || micState === 'transcribing') && (
-                      <ChatGPTMicAnimation text={micState === 'recording' ? "Enregistrement..." : "Transcription..."} />
-                    )}
+                    <div className="relative w-full flex items-center justify-center">
+                      <textarea
+                        ref={textareaRef}
+                        value={userInput}
+                        onChange={(e) => setUserInput(e.target.value)}
+                        placeholder={micState === 'transcribing' ? '' : micState === 'recording' ? '' : "Écrivez ou enregistrez une phrase banale à transformer..."}
+                        className={`w-full h-[120px] ${micState === 'transcribing' ? 'bg-gray-300 text-gray-500 opacity-80 cursor-not-allowed' : 'bg-indigo-900/50 text-white'} placeholder-indigo-300 rounded-lg p-3 border border-indigo-600/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none resize-none transition-all duration-200 text-sm pr-12 select-none touch-none`}
+                        rows={4}
+                        disabled={micState === 'recording' || micState === 'transcribing'}
+                        onContextMenu={e => e.preventDefault()}
+                        style={{ WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none', background: micState === 'transcribing' ? '#e5e7eb' : micState === 'recording' ? '#e5e7eb' : undefined, color: micState === 'transcribing' ? '#6b7280' : micState === 'recording' ? '#6b7280' : undefined, opacity: micState === 'transcribing' ? 0.8 : micState === 'recording' ? 0.8 : 1, cursor: micState === 'transcribing' ? 'not-allowed' : micState === 'recording' ? 'not-allowed' : 'auto' }}
+                      />
+                      {/* Animation d'enregistrement/transcription façon ChatGPT centrée */}
+                      {(micState === 'recording' || micState === 'transcribing') && (
+                        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                          <ChatGPTMicAnimation text={micState === 'recording' ? "Enregistrement..." : "Transcription..."} />
+                        </div>
+                      )}
+                    </div>
                   </div>
                   {showMic && (
-                    <div className="absolute top-2 right-2 flex items-center justify-end" style={{ minWidth: 48 }}>
+                    <div className="absolute top-2 right-2 flex items-center justify-end gap-2" style={{ minWidth: 48 }}>
+                      {micState === 'recording' && (
+                        <motion.button
+                          type="button"
+                          onClick={() => {
+                            // Annule l'enregistrement
+                            if (mediaRecorderRef.current && micState === 'recording') {
+                              mediaRecorderRef.current.stop();
+                              setMicState('idle');
+                              setMicError('');
+                            }
+                          }}
+                          className="bg-gradient-to-br from-gray-400 via-gray-500 to-gray-600 text-white rounded-full p-2 shadow-lg transition-all duration-200 select-none touch-none border-2 border-gray-300/60 opacity-80"
+                          aria-label="Annuler l'enregistrement"
+                          style={{ marginRight: 4 }}
+                        >
+                          <svg className="h-7 w-7 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="6" y1="6" x2="18" y2="18" /><line x1="6" y1="18" x2="18" y2="6" /></svg>
+                        </motion.button>
+                      )}
                       <motion.button
                         type="button"
                         onClick={handleMicClick}
