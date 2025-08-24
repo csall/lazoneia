@@ -15,12 +15,26 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 
 export default function PunchyPage() {
-  // Nouvelle gestion audio : toggle au clic
-  const mediaRecorderRef = useRef(null);
-  const audioChunksRef = useRef([]);
+  const responseRef = useRef(null);
   const [micState, setMicState] = useState("idle"); // idle | recording | transcribing | error
   const [micError, setMicError] = useState("");
   const [showMic, setShowMic] = useState(true);
+  const [userInput, setUserInput] = useState("");
+  const [response, setResponse] = useState("");
+  const resultRef = useRef(null);
+  useEffect(() => {
+    if (responseRef.current && response) {
+      responseRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [response]);
+  useEffect(() => {
+    if (resultRef.current && (userInput || micState === 'transcribing')) {
+      resultRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [userInput, micState]);
+  // Nouvelle gestion audio : toggle au clic
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
 
   // Démarre ou arrête l'enregistrement selon l'état
   const handleMicClick = async () => {
@@ -200,8 +214,6 @@ export default function PunchyPage() {
     }
   };
 
-  const [userInput, setUserInput] = useState("");
-  const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
 
@@ -422,8 +434,36 @@ export default function PunchyPage() {
         }
       }
       setResponse(resultText);
+      setTimeout(() => {
+        if (responseRef.current) {
+          // Mobile-friendly scroll
+          try {
+            responseRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } catch {
+            // Fallback for older mobile browsers
+            const rect = responseRef.current.getBoundingClientRect();
+            window.scrollTo({
+              top: rect.top + window.scrollY - 40,
+              behavior: 'smooth'
+            });
+          }
+        }
+      }, 150);
     } catch (err) {
       setResponse("Erreur lors de la requête : " + err.message);
+      setTimeout(() => {
+        if (responseRef.current) {
+          try {
+            responseRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } catch {
+            const rect = responseRef.current.getBoundingClientRect();
+            window.scrollTo({
+              top: rect.top + window.scrollY - 40,
+              behavior: 'smooth'
+            });
+          }
+        }
+      }, 150);
     }
     setIsLoading(false);
   };
@@ -487,7 +527,7 @@ export default function PunchyPage() {
             <form onSubmit={handleSubmit} className="space-y-3">
               <div className="relative flex items-center">
                 <div className="relative w-full">
-                  <div className="relative w-full">
+                  <div className="relative w-full" ref={resultRef}>
                     <textarea
                       ref={textareaRef}
                       value={userInput}
@@ -553,7 +593,7 @@ export default function PunchyPage() {
                 <p className="mt-2 text-indigo-200 text-sm">Punchy prépare une punchline...</p>
               </div>
             ) : response ? (
-              <div className="bg-indigo-900/30 rounded-lg p-3 border border-indigo-700/30 h-full relative">
+              <div ref={responseRef} className="bg-indigo-900/30 rounded-lg p-3 border border-indigo-700/30 h-full relative">
                 <p className="whitespace-pre-wrap text-indigo-100 text-sm mb-8">{response}</p>
                 <button
                   onClick={copyToClipboard}
