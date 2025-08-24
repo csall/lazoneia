@@ -532,16 +532,16 @@ export default function PunchyPage() {
                       ref={textareaRef}
                       value={userInput}
                       onChange={(e) => setUserInput(e.target.value)}
-                      placeholder={micState === 'recording' ? '' : "Écrivez ou enregistrez une phrase banale à transformer..."}
-                      className={`w-full h-[120px] bg-indigo-900/50 text-white placeholder-indigo-300 rounded-lg p-3 border border-indigo-600/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none resize-none transition-all duration-200 text-sm pr-12 select-none touch-none ${micState === 'recording' ? 'bg-gray-300 text-gray-500 opacity-80 cursor-not-allowed' : ''}`}
+                      placeholder={micState === 'transcribing' ? '' : micState === 'recording' ? '' : "Écrivez ou enregistrez une phrase banale à transformer..."}
+                      className={`w-full h-[120px] ${micState === 'transcribing' ? 'bg-gray-300 text-gray-500 opacity-80 cursor-not-allowed' : 'bg-indigo-900/50 text-white'} placeholder-indigo-300 rounded-lg p-3 border border-indigo-600/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none resize-none transition-all duration-200 text-sm pr-12 select-none touch-none`}
                       rows={4}
                       disabled={micState === 'recording' || micState === 'transcribing'}
                       onContextMenu={e => e.preventDefault()}
-                      style={{ WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none', background: micState === 'recording' ? '#e5e7eb' : undefined, color: micState === 'recording' ? '#6b7280' : undefined, opacity: micState === 'recording' ? 0.8 : 1, cursor: micState === 'recording' ? 'not-allowed' : 'auto' }}
+                      style={{ WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none', background: micState === 'transcribing' ? '#e5e7eb' : micState === 'recording' ? '#e5e7eb' : undefined, color: micState === 'transcribing' ? '#6b7280' : micState === 'recording' ? '#6b7280' : undefined, opacity: micState === 'transcribing' ? 0.8 : micState === 'recording' ? 0.8 : 1, cursor: micState === 'transcribing' ? 'not-allowed' : micState === 'recording' ? 'not-allowed' : 'auto' }}
                     />
                     {/* Animation d'enregistrement/transcription façon ChatGPT */}
                     {(micState === 'recording' || micState === 'transcribing') && (
-                      <ChatGPTMicAnimation text={micState === 'recording' ? "Enregistrement en cours..." : "Transcription en cours..."} />
+                      <ChatGPTMicAnimation text={micState === 'recording' ? "Enregistrement..." : "Transcription..."} />
                     )}
                   </div>
                   {showMic && (
@@ -550,11 +550,15 @@ export default function PunchyPage() {
                         type="button"
                         onClick={handleMicClick}
                         className={`bg-gradient-to-br from-indigo-500 via-violet-400 to-indigo-400 text-white rounded-full p-2 shadow-lg transition-all duration-200 select-none touch-none border-2 border-indigo-300/60 ${micState === 'recording' ? 'scale-125 ring-4 ring-violet-300/60 shadow-violet-400/40 opacity-80' : ''} ${micState === 'transcribing' ? 'opacity-60 cursor-wait' : ''}`}
-                        aria-label={micState === 'idle' ? 'Démarrer l\'enregistrement' : micState === 'recording' ? 'Arrêter et transcrire' : 'Transcription en cours'}
+                        aria-label={micState === 'idle' ? 'Démarrer l\'enregistrement' : micState === 'recording' ? 'Valider' : 'Transcription en cours'}
                         style={{ touchAction: 'none', WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none', background: micState === 'recording' ? 'linear-gradient(90deg, #6366f1 60%, #a78bfa 100%)' : undefined, opacity: micState === 'transcribing' ? 0.6 : 1, cursor: micState === 'transcribing' ? 'wait' : 'pointer', marginRight: 0 }}
                         disabled={micState === 'transcribing'}
                       >
-                        <ChatGPTMicIcon className="h-7 w-7 opacity-80" />
+                        {micState === 'recording' ? (
+                          <svg className="h-7 w-7 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                        ) : micState === 'transcribing' ? null : (
+                          <ChatGPTMicIcon className="h-7 w-7 opacity-80" />
+                        )}
                       </motion.button>
                     </div>
                   )}
