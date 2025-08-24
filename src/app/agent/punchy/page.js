@@ -1,5 +1,3 @@
-
-
 "use client";
 // Vérifie si l'API SpeechRecognition est supportée
 const isSpeechRecognitionSupported = typeof window !== 'undefined' && (
@@ -22,6 +20,7 @@ export default function PunchyPage() {
   const [userInput, setUserInput] = useState("");
   const [response, setResponse] = useState("");
   const resultRef = useRef(null);
+  const [micAmplitude, setMicAmplitude] = useState([]);
   useEffect(() => {
     if (responseRef.current && response) {
       responseRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -46,10 +45,37 @@ export default function PunchyPage() {
         const recorder = new window.MediaRecorder(stream);
         mediaRecorderRef.current = recorder;
         audioChunksRef.current = [];
+        // --- Ajout analyseur audio ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioCtx.createMediaStreamSource(stream);
+        const analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 32;
+        source.connect(analyser);
+        let animationFrame;
+        const updateAmplitude = () => {
+          const data = new Uint8Array(analyser.frequencyBinCount);
+          analyser.getByteFrequencyData(data);
+          // Découpe en 7 barres (train) et augmente la sensibilité
+          const bars = Array.from({length: 7}, (_, i) => {
+            const start = Math.floor(i * data.length / 7);
+            const end = Math.floor((i+1) * data.length / 7);
+            const avg = Math.max(...data.slice(start, end));
+            // Sensibilité augmentée x1.5, max 40
+            return Math.min(40, 8 + Math.round((avg/255)*24*1.5));
+          });
+          setMicAmplitude(bars);
+          animationFrame = requestAnimationFrame(updateAmplitude);
+        };
+        updateAmplitude();
         recorder.ondataavailable = (e) => {
           if (e.data.size > 0) audioChunksRef.current.push(e.data);
         };
-        recorder.onstop = () => handleAudioStop(stream);
+        recorder.onstop = () => {
+          handleAudioStop(stream);
+          setMicAmplitude([]);
+          if (animationFrame) cancelAnimationFrame(animationFrame);
+          audioCtx.close();
+        };
         recorder.start();
       } catch (err) {
         setMicError("Impossible d'accéder au micro");
@@ -529,23 +555,45 @@ export default function PunchyPage() {
                 <div className="relative w-full">
                   <div className="relative w-full" ref={resultRef}>
                     <div className="relative w-full flex items-center justify-center">
-                      <textarea
-                        ref={textareaRef}
-                        value={userInput}
-                        onChange={(e) => setUserInput(e.target.value)}
-                        placeholder={micState === 'transcribing' ? '' : micState === 'recording' ? '' : "Écrivez ou enregistrez une phrase banale à transformer..."}
-                        className={`w-full h-[120px] ${micState === 'transcribing' ? 'bg-gray-300 text-gray-500 opacity-80 cursor-not-allowed' : 'bg-indigo-900/50 text-white'} placeholder-indigo-300 rounded-lg p-3 border border-indigo-600/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none resize-none transition-all duration-200 text-sm pr-12 select-none touch-none`}
-                        rows={4}
-                        disabled={micState === 'recording' || micState === 'transcribing'}
-                        onContextMenu={e => e.preventDefault()}
-                        style={{ WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none', background: micState === 'transcribing' ? '#e5e7eb' : micState === 'recording' ? '#e5e7eb' : undefined, color: micState === 'transcribing' ? '#6b7280' : micState === 'recording' ? '#6b7280' : undefined, opacity: micState === 'transcribing' ? 0.8 : micState === 'recording' ? 0.8 : 1, cursor: micState === 'transcribing' ? 'not-allowed' : micState === 'recording' ? 'not-allowed' : 'auto' }}
-                      />
-                      {/* Animation d'enregistrement/transcription façon ChatGPT centrée */}
-                      {(micState === 'recording' || micState === 'transcribing') && (
-                        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                          <ChatGPTMicAnimation text={micState === 'recording' ? "Enregistrement..." : "Transcription..."} />
-                        </div>
-                      )}
+                      <div className="relative w-full">
+                        <textarea
+                          ref={textareaRef}
+                          value={userInput}
+                          onChange={(e) => setUserInput(e.target.value)}
+                          placeholder={micState === 'transcribing' ? '' : micState === 'recording' ? '' : "Écrivez ou enregistrez une phrase banale à transformer..."}
+                          className={`w-full h-[120px] ${micState === 'transcribing' ? 'bg-gray-300 text-gray-500 opacity-80 cursor-not-allowed' : 'bg-indigo-900/50 text-white'} placeholder-indigo-300 rounded-lg p-3 border border-indigo-600/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none resize-none transition-all duration-200 text-sm pr-12 select-none touch-none`}
+                          rows={4}
+                          disabled={micState === 'recording' || micState === 'transcribing'}
+                          onContextMenu={e => e.preventDefault()}
+                          style={{ WebkitUserSelect: 'none', userSelect: 'none', WebkitTouchCallout: 'none', background: micState === 'transcribing' ? '#e5e7eb' : micState === 'recording' ? '#e5e7eb' : undefined, color: micState === 'transcribing' ? '#6b7280' : micState === 'recording' ? '#6b7280' : undefined, opacity: micState === 'transcribing' ? 0.8 : micState === 'recording' ? 0.8 : 1, cursor: micState === 'transcribing' ? 'not-allowed' : micState === 'recording' ? 'not-allowed' : 'auto' }}
+                        />
+                        {/* Animation d'enregistrement (amplitude) uniquement pendant l'enregistrement, texte centré pendant la transcription */}
+                        {micState === 'recording' && (
+                          <div
+                            className="pointer-events-none z-20"
+                            style={{
+                              position: 'absolute',
+                              left: '50%',
+                              top: '50%',
+                              transform: 'translate(-50%, -50%)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              width: 'fit-content',
+                              height: 'fit-content',
+                              pointerEvents: 'none'
+                            }}
+                          >
+                            {/* Seule l'animation vocale, pas d'icône micro */}
+                            <ChatGPTMicAnimation text="" amplitude={micAmplitude} />
+                          </div>
+                        )}
+                        {micState === 'transcribing' && (
+                          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-20">
+                            <span className="text-indigo-200 font-semibold text-base">Transcription...</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                   {showMic && (
