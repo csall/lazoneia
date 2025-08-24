@@ -1,8 +1,5 @@
 "use client";
 // Vérifie si l'API SpeechRecognition est supportée
-const isSpeechRecognitionSupported = typeof window !== 'undefined' && (
-  'SpeechRecognition' in window || 'webkitSpeechRecognition' in window
-);
 
 import GoogleMenu from "@/components/navigation/GoogleMenu";
 import { useState, useRef, useEffect } from "react";
@@ -118,131 +115,8 @@ export default function PunchyPage() {
       setMicState("error");
     }
   };
-  // Micro façon ChatGPT : maintien = enregistrement, relâchement = transcription
-  const startMicRecording = async () => {
-    if (micState !== "idle" && micState !== "error") return;
-   // setMicError("");
-    if (!micReady) {
-      setMicState("loading");
-      try {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error("Micro non disponible");
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        if (!stream || !stream.active) {
-        //  setMicError("Permission micro refusée");
-          setMicState("error");
-          return;
-        }
-        setMicReady(true);
-        setMicState("idle");
-     //   setMicError("Micro prêt. Appuyez à nouveau pour enregistrer.");
-      } catch (err) {
-      //  setMicError("Impossible d'accéder au micro");
-        setMicState("error");
-      }
-      return;
-    }
-    // Permission déjà accordée, démarre l'enregistrement avec un nouveau stream
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      if (!stream || !stream.active) {
-       // setMicError("Impossible d'obtenir le flux audio");
-        setMicState("error");
-        return;
-      }
-      setMicError("");
-      setMicState("recording");
-      const recorder = new window.MediaRecorder(stream);
-      mediaRecorderRef.current = recorder;
-      audioChunksRef.current = [];
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) audioChunksRef.current.push(e.data);
-      };
-      recorder.onstop = () => handleAudioStop(stream);
-      recorder.start();
-      // Ajoute un listener pour stopper sur mouseup/touchend et annuler sur touchmove
-      const stopOnMicRelease = () => {
-        stopMicRecording();
-        window.removeEventListener("mouseup", stopOnMicRelease);
-        window.removeEventListener("touchend", stopOnMicRelease);
-        window.removeEventListener("touchmove", cancelOnMove);
-        window.removeEventListener("mousemove", cancelOnMove);
-      };
-      window.addEventListener("mouseup", stopOnMicRelease);
-      window.addEventListener("touchend", stopOnMicRelease);
-      // Annule si le doigt quitte le bouton
-      const cancelOnMove = (e) => {
-        let x, y;
-        if (e.type === "mousemove") {
-          x = e.clientX; y = e.clientY;
-        } else if (e.type === "touchmove") {
-          x = e.touches[0].clientX; y = e.touches[0].clientY;
-        }
-        if (micButtonRef.current) {
-          const rect = micButtonRef.current.getBoundingClientRect();
-          if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
-            stopMicRecording();
-            window.removeEventListener("touchmove", cancelOnMove);
-            window.removeEventListener("mousemove", cancelOnMove);
-            window.removeEventListener("mouseup", stopOnMicRelease);
-            window.removeEventListener("touchend", stopOnMicRelease);
-          }
-        }
-      };
-      window.addEventListener("touchmove", cancelOnMove);
-      window.addEventListener("mousemove", cancelOnMove);
-    } catch (err) {
-      //setMicError("Impossible d'obtenir le flux audio");
-      setMicState("error");
-    }
-  };
-
-  const stopMicRecording = () => {
-    // Always stop MediaRecorder if active, regardless of state
-    if (mediaRecorderRef.current && (micState === "recording" || micState === "transcribing" || micState === "loading")) {
-      try {
-        mediaRecorderRef.current.stop();
-      } catch {}
-    }
-    if (micState === "recording") {
-      setMicState("loading");
-    }
-    if (micState === "error") {
-      setMicState("idle");
-      setMicError("");
-    }
-  };
-
-  // Envoi backend et gestion état
-  // ...existing code...
-  // Démarrer l'enregistrement audio
-  const startAudioRecording = async () => {
-    setMicError("");
-    setIsMicLoading(true);
-    try {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error("Micro non disponible");
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new window.MediaRecorder(stream);
-      mediaRecorderRef.current = recorder;
-      audioChunksRef.current = [];
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) audioChunksRef.current.push(e.data);
-      };
-      recorder.onstop = () => handleAudioStop(stream);
-      recorder.start();
-      setIsAudioRecording(true);
-    } catch (err) {
-     // setMicError("Impossible d'accéder au micro");
-    }
-    setIsMicLoading(false);
-  };
 
   // Arrêter l'enregistrement audio
-  const stopAudioRecording = () => {
-    if (mediaRecorderRef.current && isAudioRecording) {
-      mediaRecorderRef.current.stop();
-      setIsAudioRecording(false);
-    }
-  };
 
   const [isLoading, setIsLoading] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
@@ -310,15 +184,6 @@ export default function PunchyPage() {
   }, []);
 
   // Démarrage / arrêt / annulation dictée
-  const startRecording = () => {
-  if (!recognitionRef.current) return;
-  if (isRecording || recordingActiveRef.current) return; // Empêche le double démarrage
-  tempTranscriptRef.current = "";
-  setIsCancelled(false);
-  setMicButtonActive(true);
-  recordingActiveRef.current = true;
-  recognitionRef.current.start();
-  };
 
   const stopRecording = () => {
     if (!recognitionRef.current) return;
@@ -342,15 +207,6 @@ export default function PunchyPage() {
     tempTranscriptRef.current = "";
   };
 
-  // Gestion souris (WhatsApp-like)
-  const handleMicMouseDown = (e) => {
-  e.preventDefault();
-  startRecording();
-  // Track if mouse is held
-  recordingActiveRef.current = true;
-  window.addEventListener("mouseup", handleMicMouseUp);
-  window.addEventListener("mousemove", handleMicMouseMove);
-  };
 
   const handleMicMouseUp = (e) => {
     // Always stop/cancel recording immediately when mouse is released
@@ -386,13 +242,6 @@ export default function PunchyPage() {
   };
 
   // Gestion tactile
-  const handleMicTouchStart = (e) => {
-  e.preventDefault();
-  startRecording();
-  recordingActiveRef.current = true;
-  window.addEventListener("touchend", handleMicTouchEnd);
-  window.addEventListener("touchmove", handleMicTouchMove);
-  };
 
   const handleMicTouchEnd = (e) => {
     // Always stop/cancel recording immediately when touch is released
