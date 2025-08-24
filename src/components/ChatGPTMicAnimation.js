@@ -39,14 +39,7 @@ export default function ChatGPTMicAnimation({ text = "Enregistrement...", amplit
           transition={{ repeat: Infinity, duration: 2 }}
         />
         {/* Micro SVG stylisé */}
-        <div className="relative z-10 flex flex-col items-center">
-          <svg className="h-10 w-10 text-white drop-shadow-lg animate-pulse" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="9" y="3" width="6" height="12" rx="3" fill="currentColor" />
-            <rect x="7" y="15" width="10" height="2" rx="1" fill="currentColor" />
-            <rect x="10" y="17" width="4" height="2" rx="1" fill="currentColor" />
-          </svg>
-          <span className="mt-2 text-base font-bold text-white drop-shadow tracking-wide animate-fade-in">{text}</span>
-        </div>
+  {/* Micro SVG et texte supprimés, seule l'animation d'amplitude est affichée */}
         {/* Ondes animées */}
         <motion.div
           className="absolute left-1/2 top-1/2 w-32 h-32 rounded-full border-2 border-indigo-300/40"
@@ -61,7 +54,7 @@ export default function ChatGPTMicAnimation({ text = "Enregistrement...", amplit
           transition={{ repeat: Infinity, duration: 2.2 }}
         />
         {/* Animation de la voix façon ChatGPT */}
-        <div className="absolute left-1/2 top-full mt-6 -translate-x-1/2 flex gap-1 items-end h-8 w-32">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-2/3 flex gap-1 items-end h-8 w-32">
           {levels.map((lvl, i) => (
             <motion.div
               key={i}
