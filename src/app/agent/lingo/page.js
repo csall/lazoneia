@@ -135,8 +135,15 @@ export default function LingoPage() {
   };
 
   const stopMicRecording = () => {
-    if (micState === "recording" && mediaRecorderRef.current) {
-      mediaRecorderRef.current.stop();
+    // Always stop MediaRecorder if active, regardless of state
+    if (mediaRecorderRef.current && (micState === "recording" || micState === "transcribing" || micState === "loading")) {
+      try {
+        mediaRecorderRef.current.stop();
+      } catch {}
+      if (amplitudeAnimationFrame) cancelAnimationFrame(amplitudeAnimationFrame);
+      if (audioContext) audioContext.close();
+    }
+    if (micState === "recording") {
       setMicState("loading");
     }
     if (micState === "error") {

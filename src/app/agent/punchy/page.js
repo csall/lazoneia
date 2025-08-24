@@ -197,11 +197,15 @@ export default function PunchyPage() {
   };
 
   const stopMicRecording = () => {
-    if (micState === "recording" && mediaRecorderRef.current) {
-      mediaRecorderRef.current.stop();
+    // Always stop MediaRecorder if active, regardless of state
+    if (mediaRecorderRef.current && (micState === "recording" || micState === "transcribing" || micState === "loading")) {
+      try {
+        mediaRecorderRef.current.stop();
+      } catch {}
+    }
+    if (micState === "recording") {
       setMicState("loading");
     }
-    // Si on relâche le bouton alors qu'on est en erreur, on repasse en idle
     if (micState === "error") {
       setMicState("idle");
       setMicError("");
