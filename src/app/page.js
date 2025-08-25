@@ -2,24 +2,17 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
 // Cette configuration est nécessaire pour éviter les erreurs de prérendu
 export const dynamic = "force-dynamic";
 
 // Import du hook pour les chemins d'images et de la fonction utilitaire
-import { useImagePath, normalizeImagePath } from "@/hooks/useImagePath";
+import { normalizeImagePath } from "@/hooks/useImagePath";
 import FilterBar from "@/components/agents/FilterBar";
 import GoogleMenu from "@/components/navigation/GoogleMenu";
 
-// Import des images des agents
-import punchyBot from "@/app/punchy-bot.svg";
-import replyBot from "@/app/reply-bot.svg";
-import scriboBot from "@/app/scribo-bot.svg";
-import lingoBot from "@/app/lingo-bot.svg";
-import glowBot from "@/app/glow-bot.svg";
-import fitzyBot from "@/app/fitzy-bot.svg";
 
 // Composant pour chaque carte d'agent
 const AgentCard = ({
@@ -101,6 +94,42 @@ const AgentCard = ({
       mesh: "from-teal-500/40 via-cyan-600/30 to-teal-500/40",
     },
     fitzy: {
+      bg: "bg-gradient-to-br from-green-900/60 to-teal-900/60",
+      border: "border-green-500/20",
+      glow: "from-green-500 to-teal-600",
+      button: "from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700",
+      hover: "group-hover:text-green-200",
+      accent: "bg-green-500",
+      mesh: "from-green-500/40 via-teal-600/30 to-green-500/40",
+    },
+    psyco: {
+      bg: "bg-gradient-to-br from-blue-900/60 to-sky-900/60",
+      border: "border-blue-500/20",
+      glow: "from-blue-500 to-sky-600",
+      button: "from-blue-500 to-sky-600 hover:from-blue-600 hover:to-sky-700",
+      hover: "group-hover:text-blue-200",
+      accent: "bg-blue-500",
+      mesh: "from-blue-500/40 via-sky-600/30 to-blue-500/40",
+    },
+    foody: {
+      bg: "bg-gradient-to-br from-yellow-900/60 to-amber-900/60",
+      border: "border-yellow-500/20",
+      glow: "from-yellow-500 to-amber-600",
+      button: "from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700",
+      hover: "group-hover:text-yellow-200",
+      accent: "bg-yellow-500",
+      mesh: "from-yellow-500/40 via-amber-600/30 to-yellow-500/40",
+    },
+    globo: {
+      bg: "bg-gradient-to-br from-red-900/60 to-orange-900/60",
+      border: "border-orange-500/20",
+      glow: "from-orange-500 to-red-600",
+      button: "from-red-500 to-orange-600 hover:from-red-600 hover:to-orange-700",
+      hover: "group-hover:text-red-200",
+      accent: "bg-red-500",
+      mesh: "from-red-500/40 via-orange-600/30 to-red-500/40",
+    },
+    newsly: {
       bg: "bg-gradient-to-br from-green-900/60 to-teal-900/60",
       border: "border-green-500/20",
       glow: "from-green-500 to-teal-600",
@@ -572,6 +601,41 @@ export default function AgentsPage() {
       color: "fitzy",
       link: "/agent/fitzy",
       tagline: "Coach Sport & Bien-être",
+    },
+    {
+      name: "Psyco",
+      description:
+        "Votre psychologue virtuel pour un soutien émotionnel et des conseils personnalisés.",
+      image: "/psyco-bot.svg",
+      color: "psyco",
+      link: "/agent/psyco",
+      tagline: "Soutien émotionnel",
+    },
+    {
+      name: "Foody",
+      description:
+        "Votre expert culinaire pour des recettes, conseils nutritionnels et astuces de cuisine.",
+      image: "/foody-bot.svg",
+      color: "foody",
+      link: "/agent/foody",
+      tagline: "Expert culinaire",
+    },
+    {
+      name: "Globo",
+      description:
+        "Votre expert en organisation de voyages pour des itinéraires personnalisés, conseils et astuces.",
+      image: "/globo-bot.svg",
+      color: "globo",
+      link: "/agent/globo",
+      tagline: "Expert en voyages",
+    },
+    {
+      name: "newsly",
+      description:"Votre nouvel expert en actualités et informations fiables",
+      image: "/newsly-bot.svg",
+      color: "newsly",
+      link: "/agent/newsly",
+      tagline: "Expert actualites",
     },
   ];
 

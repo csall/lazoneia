@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Face background with gradient -->
+  <circle cx="120" cy="120" r="100" fill="url(#faceGradient)"/>
+  <defs>
+    <radialGradient id="faceGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#FEF08A"/>
+      <stop offset="100%" stop-color="#FACC15"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Eyes -->
+  <circle cx="90" cy="100" r="10" fill="white"/>
+  <circle cx="150" cy="100" r="10" fill="white"/>
+  <circle cx="90" cy="100" r="5" fill="#FDE68A"/>
+  <circle cx="150" cy="100" r="5" fill="#FDE68A"/>
+
+  <!-- Smile -->
+  <path d="M80 140C100 160 140 160 160 140" stroke="white" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Chef Hat -->
+  <rect x="80" y="50" width="80" height="30" rx="15" fill="#FFFBEB"/>
+  <circle cx="90" cy="50" r="10" fill="#FFFBEB"/>
+  <circle cx="150" cy="50" r="10" fill="#FFFBEB"/>
+
+  <!-- Fork and Spoon -->
+  <rect x="50" y="180" width="10" height="40" rx="2" fill="#FEF08A"/>
+  <circle cx="55" cy="175" r="5" fill="#FEF08A"/>
+  <rect x="180" y="180" width="10" height="40" rx="2" fill="#FEF08A"/>
+  <path d="M185 175C187 175 190 178 190 180C190 182 187 185 185 185C183 185 180 182 180 180C180 178 183 175 185 175Z" fill="#FEF08A"/>
+</svg>

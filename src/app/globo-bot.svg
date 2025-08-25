@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Face background with gradient -->
+  <circle cx="120" cy="120" r="100" fill="url(#faceGradient)"/>
+  <defs>
+    <radialGradient id="faceGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#0EA5E9"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Eyes -->
+  <circle cx="90" cy="100" r="10" fill="white"/>
+  <circle cx="150" cy="100" r="10" fill="white"/>
+  <circle cx="90" cy="100" r="5" fill="#7DD3FC"/>
+  <circle cx="150" cy="100" r="5" fill="#7DD3FC"/>
+
+  <!-- Smile -->
+  <path d="M80 140C100 160 140 160 160 140" stroke="white" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Airplane -->
+  <path d="M120 70L130 90H110L120 70Z" fill="#E0F2FE"/>
+  <rect x="118" y="90" width="4" height="40" fill="#E0F2FE"/>
+  <path d="M115 110H125V120H115V110Z" fill="#E0F2FE"/>
+
+  <!-- Globe -->
+  <circle cx="120" cy="170" r="20" stroke="#E0F2FE" stroke-width="2"/>
+  <path d="M100 170H140" stroke="#E0F2FE" stroke-width="2"/>
+  <path d="M120 150V190" stroke="#E0F2FE" stroke-width="2"/>
+</svg>
