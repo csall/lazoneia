@@ -12,12 +12,7 @@ export default function AgentAudioWorkflow({
   endpoint,
   placeholder,
   botImage,
-  tones = [
-    { label: "Professionnel", value: "pro" },
-    { label: "Amical", value: "amical" },
-    { label: "Séduisant", value: "seduisant" },
-    { label: "Humoristique", value: "humoristique" },
-  ],
+  tones=[],
   sendButtonLabel = "Envoyer", // Default label for the submit button
   defaultLang = "français", // New prop for default language
   colors = {

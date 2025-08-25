@@ -13,6 +13,14 @@ import { useImagePath, normalizeImagePath } from "@/hooks/useImagePath";
 import FilterBar from "@/components/agents/FilterBar";
 import GoogleMenu from "@/components/navigation/GoogleMenu";
 
+// Import des images des agents
+import punchyBot from "@/app/punchy-bot.svg";
+import replyBot from "@/app/reply-bot.svg";
+import scriboBot from "@/app/scribo-bot.svg";
+import lingoBot from "@/app/lingo-bot.svg";
+import glowBot from "@/app/glow-bot.svg";
+import fitzyBot from "@/app/fitzy-bot.svg";
+
 // Composant pour chaque carte d'agent
 const AgentCard = ({
   name,
@@ -91,6 +99,15 @@ const AgentCard = ({
       hover: "group-hover:text-teal-200",
       accent: "bg-teal-500",
       mesh: "from-teal-500/40 via-cyan-600/30 to-teal-500/40",
+    },
+    fitzy: {
+      bg: "bg-gradient-to-br from-green-900/60 to-teal-900/60",
+      border: "border-green-500/20",
+      glow: "from-green-500 to-teal-600",
+      button: "from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700",
+      hover: "group-hover:text-green-200",
+      accent: "bg-green-500",
+      mesh: "from-green-500/40 via-teal-600/30 to-green-500/40",
     },
   };
 
@@ -546,6 +563,15 @@ export default function AgentsPage() {
       link: "/agent/glow",
       tagline: "Séduction garantie",
       category: "marketing",
+    },
+    {
+      name: "Fitzy",
+      description:
+        "Votre coach personnel pour le sport et le bien-être. Transforme vos objectifs en actions concrètes.",
+      image: "/fitzy-bot.svg",
+      color: "fitzy",
+      link: "/agent/fitzy",
+      tagline: "Coach Sport & Bien-être",
     },
   ];
 

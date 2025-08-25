@@ -61,8 +61,10 @@ export default function AnimatedCard({ title, description, icon, animationData, 
       return getImagePath("/glow-bot.svg");
     } else if (botType === "pitchy" || title.toLowerCase().includes("pitchy")) {
       return getImagePath("/pitchy-bot.svg");
-    // Les anciens agents ont été remplacés par les nouveaux
+    } else if (botType === "fitzy" || title.toLowerCase().includes("fitzy")) {
+      return getImagePath("/fitzy-bot.svg");
     }
+    // Les anciens agents ont été remplacés par les nouveaux
     return null;
   };
 
