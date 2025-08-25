@@ -694,7 +694,7 @@ export default function AgentAudioWorkflow({
                   <option value="allemand">Allemand</option>
                   <option value="italien">Italien</option>
                   <option value="wolof">Wolof</option>
-                  <option value="pt">Portugais</option>
+                  <option value="portuguais">Portugais</option>
                 </select>
               </div>
             </div>
