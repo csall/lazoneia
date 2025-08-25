@@ -284,6 +284,11 @@ export default function AgentAudioWorkflow({
 		// Removed automatic submission logic
 	};
 	const textareaBackground = micState === 'recording' || micState === 'transcribing' ? 'bg-black/50 text-white' : colors.responseBg;
+	const [targetLang, setTargetLang] = useState("fr"); // Default language is French
+
+	const handleLanguageChange = (e) => {
+		setTargetLang(e.target.value);
+	};
 	const handleSubmit = async (e, overrideInput) => {
 		if (e && e.preventDefault) e.preventDefault();
 		const input = overrideInput !== undefined ? overrideInput : userInput;
@@ -294,7 +299,7 @@ export default function AgentAudioWorkflow({
 			const res = await fetch(endpoint, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ message: input, tone: selectedTone }),
+				body: JSON.stringify({ message: input, tone: selectedTone, lang: targetLang }),
 			});
 			let resultText = "";
 			if (!res.ok) {
@@ -399,23 +404,13 @@ export default function AgentAudioWorkflow({
 					</motion.div>
 				</div>
 				<div className="grid md:grid-cols-2 gap-8">
-					<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }} className={`bg-gradient-to-br ${colors.gradientFrom}/50 ${colors.gradientTo}/50 backdrop-blur-md p-4 rounded-xl shadow-lg border ${colors.borderColor}`}>
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.5, delay: 0.4 }}
+						className={`bg-gradient-to-br ${colors.gradientFrom}/50 ${colors.gradientTo}/50 backdrop-blur-md p-4 rounded-xl shadow-lg border ${colors.borderColor}`}
+					>
 						<h2 className="text-lg font-bold mb-2">Votre texte</h2>
-						<div className="flex flex-wrap gap-2 mb-4">
-							{tones?.map((tone) => (
-								<button
-									key={tone.value}
-									onClick={() => handleToneSelection(tone.value)}
-									className={`px-4 py-2 rounded-lg border ${colors.borderColor} text-sm transition-all transform ${
-										selectedTone === tone.value
-											? `bg-gradient-to-r ${colors.buttonGradientFrom} ${colors.buttonGradientTo} text-white scale-105 shadow-lg`
-											: `hover:${colors.buttonHoverFrom} hover:${colors.buttonHoverTo} text-gray-300`
-									}`}
-								>
-									{tone.label}
-								</button>
-							))}
-						</div>
 						<form onSubmit={handleSubmit} className="space-y-3">
 							<div className="relative flex items-center">
 								<div className="relative w-full">
@@ -491,8 +486,40 @@ export default function AgentAudioWorkflow({
 								</div>
 							</form>
 						</motion.div>
-					<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className={`bg-gradient-to-br ${colors.gradientFrom}/50 ${colors.gradientTo}/50 backdrop-blur-md p-4 rounded-xl shadow-lg border ${colors.borderColor} min-h-[240px] flex flex-col`}>
-						<h2 className="text-lg font-bold mb-2">Réponse</h2>
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.5, delay: 0.6 }}
+						className={`bg-gradient-to-br ${colors.gradientFrom}/50 ${colors.gradientTo}/50 backdrop-blur-md p-4 rounded-xl shadow-lg border ${colors.borderColor} min-h-[240px] flex flex-col`}
+					>
+						<div className="flex justify-between items-center mb-4">
+							<h2 className="text-lg font-bold">Réponse</h2>
+							<div className="flex items-center gap-2">
+								<label htmlFor="language-select" className="text-sm font-medium text-gray-300">
+									Langue :
+								</label>
+								<select
+									id="language-select"
+									value={targetLang}
+									onChange={handleLanguageChange}
+									className={`px-4 py-2 rounded-lg border ${colors.borderColor} bg-gradient-to-br ${colors.gradientFrom} ${colors.gradientTo}  focus:ring focus:ring-${colors.ringColor} focus:outline-none transition-all`}
+									style={{
+										background: `linear-gradient(to bottom, var(--tw-gradient-stops))`,
+										'--tw-gradient-from': `var(--${colors.gradientFrom.replace('from-', '')})`,
+										'--tw-gradient-to': `var(--${colors.gradientTo.replace('to-', '')})`,
+										'--tw-gradient-stops': `var(--tw-gradient-from), var(--tw-gradient-to)`
+									}}
+								>
+									<option value="fr">Français</option>
+									<option value="en">Anglais</option>
+									<option value="es">Espagnol</option>
+									<option value="de">Allemand</option>
+									<option value="it">Italien</option>
+									<option value="wo">Wolof</option>
+									<option value="pt">Portugais</option>
+								</select>
+							</div>
+						</div>
 						{isLoading ? (
 							<div className="flex-1 flex flex-col items-center justify-center">
 								<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
