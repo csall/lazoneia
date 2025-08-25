@@ -279,6 +279,11 @@ export default function AgentAudioWorkflow({
 		setShowMic(!userInput || userInput.trim().length === 0);
 	}, [userInput]);
 	const [selectedTone, setSelectedTone] = useState(null);
+	const handleToneSelection = (tone) => {
+		setSelectedTone(tone);
+		// Removed automatic submission logic
+	};
+	const textareaBackground = micState === 'recording' || micState === 'transcribing' ? 'bg-black/50 text-white' : colors.responseBg;
 	const handleSubmit = async (e, overrideInput) => {
 		if (e && e.preventDefault) e.preventDefault();
 		const input = overrideInput !== undefined ? overrideInput : userInput;
@@ -396,30 +401,35 @@ export default function AgentAudioWorkflow({
 				<div className="grid md:grid-cols-2 gap-8">
 					<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }} className={`bg-gradient-to-br ${colors.gradientFrom}/50 ${colors.gradientTo}/50 backdrop-blur-md p-4 rounded-xl shadow-lg border ${colors.borderColor}`}>
 						<h2 className="text-lg font-bold mb-2">Votre texte</h2>
+						<div className="flex flex-wrap gap-2 mb-4">
+							{tones?.map((tone) => (
+								<button
+									key={tone.value}
+									onClick={() => handleToneSelection(tone.value)}
+									className={`px-4 py-2 rounded-lg border ${colors.borderColor} text-sm transition-all transform ${
+										selectedTone === tone.value
+											? `bg-gradient-to-r ${colors.buttonGradientFrom} ${colors.buttonGradientTo} text-white scale-105 shadow-lg`
+											: `hover:${colors.buttonHoverFrom} hover:${colors.buttonHoverTo} text-gray-300`
+									}`}
+								>
+									{tone.label}
+								</button>
+							))}
+						</div>
 						<form onSubmit={handleSubmit} className="space-y-3">
 							<div className="relative flex items-center">
 								<div className="relative w-full">
 									<div className="relative w-full" ref={resultRef}>
 										<div className="relative w-full flex items-center justify-center">
 											<div className="relative w-full">
-												<div className="flex flex-wrap gap-2 mb-4">
-													{tones?.map((tone) => (
-														<button
-															key={tone.value}
-															onClick={() => setSelectedTone(tone.value)}
-															className={`px-4 py-2 rounded-lg border ${colors.borderColor} hover:${colors.buttonHoverFrom} text-sm transition-all ${selectedTone === tone.value ? 'bg-opacity-50' : ''}`}
-														>
-															{tone.label}
-														</button>
-													))}
-												</div>
+												
 												<div className="relative">
 													<textarea
 														ref={textareaRef}
 														value={userInput}
 														onChange={(e) => setUserInput(e.target.value)}
 														placeholder={micState === 'recording' || micState === 'transcribing' ? '' : placeholder}
-														className={`w-full h-[120px] ${colors.responseBg} ${colors.textColor} rounded-lg p-3 border ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none resize-none transition-all duration-200 text-sm ${micState === 'recording' || micState === 'transcribing' ? 'opacity-50' : ''}`}
+														className={`w-full h-[120px] ${textareaBackground} ${colors.textColor} rounded-lg p-3 border ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none resize-none transition-all duration-200 text-sm ${micState === 'recording' || micState === 'transcribing' ? 'opacity-50' : ''}`}
 														rows={4}
 														disabled={micState === 'recording' || micState === 'transcribing'}
 													/>
