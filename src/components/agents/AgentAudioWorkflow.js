@@ -3,6 +3,7 @@ import GoogleMenu from "@/components/navigation/GoogleMenu";
 import { useState, useRef, useEffect } from "react";
 import ChatGPTMicIcon from "../../components/ChatGPTMicIcon";
 import ChatGPTMicAnimation from "../../components/ChatGPTMicAnimation";
+import TranscribingDotsAnimation from "../../components/TranscribingDotsAnimation";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -52,19 +53,17 @@ export default function AgentAudioWorkflow({
   }, [userInput, micState]);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
+  // Nouvelle gestion du micro façon ChatGPT
   const handleMicClick = async () => {
     if (micState === "idle" || micState === "error") {
       setMicError("");
       setMicState("recording");
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-        });
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const recorder = new window.MediaRecorder(stream);
         mediaRecorderRef.current = recorder;
         audioChunksRef.current = [];
-        const audioCtx = new (window.AudioContext ||
-          window.webkitAudioContext)();
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const source = audioCtx.createMediaStreamSource(stream);
         const analyser = audioCtx.createAnalyser();
         analyser.fftSize = 32;
@@ -86,11 +85,35 @@ export default function AgentAudioWorkflow({
         recorder.ondataavailable = (e) => {
           if (e.data.size > 0) audioChunksRef.current.push(e.data);
         };
-        recorder.onstop = () => {
-          handleAudioStop(stream);
+        recorder.onstop = async () => {
+          stream.getTracks().forEach((track) => track.stop());
           setMicAmplitude([]);
           if (animationFrame) cancelAnimationFrame(animationFrame);
           audioCtx.close();
+          const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+          if (audioBlob.size < 1000) {
+            setMicError("Aucun son détecté. Veuillez parler plus fort ou plus longtemps.");
+            setMicState("error");
+            return;
+          }
+          setMicState("transcribing");
+          try {
+            const formData = new FormData();
+            formData.append("audio", audioBlob, "recording.webm");
+            const res = await fetch("/api/whisper-transcribe", { method: "POST", body: formData });
+            const data = await res.json();
+            if (data.text) {
+              setMicState("idle");
+              setUserInput("");
+              setMessages((prev) => [...prev, { role: "user", text: data.text }]);
+              handleSubmit({ preventDefault: () => {} }, data.text);
+            } else {
+              setMicState("error");
+            }
+          } catch {
+            setMicError("Erreur réseau ou backend");
+            setMicState("error");
+          }
         };
         recorder.start();
       } catch (err) {
@@ -310,12 +333,17 @@ export default function AgentAudioWorkflow({
   const handleLanguageChange = (e) => {
     setTargetLang(e.target.value);
   };
+  // Nouveau : historique des messages
+  const [messages, setMessages] = useState([]);
+
+  // Ajout d'un message utilisateur et bot dans l'historique
   const handleSubmit = async (e, overrideInput) => {
     if (e && e.preventDefault) e.preventDefault();
     const input = overrideInput !== undefined ? overrideInput : userInput;
     if (!input.trim()) return;
     setIsLoading(true);
     setIsCopied(false);
+    setMessages((prev) => [...prev, { role: "user", text: input }]);
     try {
       const res = await fetch(endpoint, {
         method: "POST",
@@ -339,42 +367,18 @@ export default function AgentAudioWorkflow({
         }
       }
       setResponse(resultText);
+      setMessages((prev) => [...prev, { role: "bot", text: resultText }]);
       setTimeout(() => {
         if (responseRef.current) {
-          try {
-            responseRef.current.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          } catch {
-            const rect = responseRef.current.getBoundingClientRect();
-            window.scrollTo({
-              top: rect.top + window.scrollY - 40,
-              behavior: "smooth",
-            });
-          }
+          responseRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
         }
       }, 150);
     } catch (err) {
       setResponse("Erreur lors de la requête : " + err.message);
-      setTimeout(() => {
-        if (responseRef.current) {
-          try {
-            responseRef.current.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          } catch {
-            const rect = responseRef.current.getBoundingClientRect();
-            window.scrollTo({
-              top: rect.top + window.scrollY - 40,
-              behavior: "smooth",
-            });
-          }
-        }
-      }, 150);
+      setMessages((prev) => [...prev, { role: "bot", text: "Erreur lors de la requête : " + err.message }]);
     }
     setIsLoading(false);
+    setUserInput("");
   };
   const handleClear = () => {
     setUserInput("");
@@ -405,12 +409,10 @@ export default function AgentAudioWorkflow({
     }
   }, [micState, isCancelled]);
   return (
-    <main
-      className={`min-h-screen bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} ${colors.textColor}`}
-    >
-      {/* Header */}
-      <header className="py-3 px-4">
-        <div className="container mx-auto flex justify-between items-center">
+    <main className={`min-h-screen bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} ${colors.textColor}`}>
+      {/* Header with agent image and name */}
+      <header className="sticky top-0 z-40 py-3 px-4 bg-gradient-to-r from-black/60 to-transparent backdrop-blur-md">
+        <div className="container mx-auto flex justify-between items-center gap-4">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -440,348 +442,104 @@ export default function AgentAudioWorkflow({
               </motion.button>
             </Link>
           </motion.div>
-          <GoogleMenu />
-        </div>
-      </header>
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex flex-col md:flex-row gap-4 items-center mb-6">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="w-24 h-24 md:w-32 md:h-32"
-          >
+          {/* Header agent centré entre la flèche et le menu */}
+          <div className="flex items-center gap-4 flex-1 justify-center">
             <Image
               src={branding?.botImage || botImage}
               alt={branding?.name}
-              width={128}
-              height={128}
-              className="w-full h-full drop-shadow-[0_0_20px_rgba(139,92,246,0.5)]"
+              width={48}
+              height={48}
+              className="w-12 h-12 rounded-full drop-shadow-[0_0_20px_rgba(139,92,246,0.5)] border-2 border-white/30"
               priority
             />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-center md:text-left"
-          >
-            <h1 className="text-3xl md:text-4xl font-extrabold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-white to-white drop-shadow-lg">
-              {branding?.name}
-            </h1>
-            <p
-              className={`text-sm md:text-base ${colors.textColor} max-w-xl drop-shadow-md`}
-            >
-              {branding?.description}
-            </p>
-          </motion.div>
+            <div>
+              <div className="text-lg font-bold text-white drop-shadow-lg">{branding?.name}</div>
+              <div className="text-xs text-white/80 max-w-xs">{branding?.description}</div>
+            </div>
+          </div>
+          <GoogleMenu />
         </div>
-        <div className="grid md:grid-cols-2 gap-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className={`bg-gradient-to-br ${colors.gradientFrom}/50 ${colors.gradientTo}/50 backdrop-blur-md p-4 rounded-xl shadow-lg border ${colors.borderColor}`}
-          >
-            <h2 className="text-lg font-bold mb-2">Votre texte</h2>
-            <form onSubmit={handleSubmit} className="space-y-3">
-              <div className="flex flex-wrap gap-3 mb-4">
-                {tones.map((tone) => (
-                  <motion.button
-                    key={tone.value}
-                    onClick={() => handleToneSelection(tone.value)}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`px-3 py-1 rounded-md text-xs font-medium shadow-sm transition-all duration-300 ${
-                      selectedTone === tone.value
-                        ? `bg-gradient-to-r ${colors.buttonGradientFrom} ${colors.buttonGradientTo} text-white`
-                        : `bg-gray-100 text-gray-800 hover:bg-gray-200`
-                    }`}
-                  >
-                    {tone.label}
-                  </motion.button>
-                ))}
-              </div>
-              <div className="relative">
-                <div className="relative w-full">
-                  <div className="relative w-full" ref={resultRef}>
-                    <div className="relative w-full flex items-center justify-center">
-                      <div className="relative w-full">
-                        <div className="relative">
-                          <textarea
-                            ref={textareaRef}
-                            value={userInput}
-                            onChange={(e) => setUserInput(e.target.value)}
-                            placeholder={
-                              micState === "recording" ||
-                              micState === "transcribing"
-                                ? ""
-                                : placeholder
-                            }
-                            className={`w-full h-[120px] ${textareaBackground} ${
-                              colors.textColor
-                            } rounded-lg p-3 border ${
-                              colors.responseBorder
-                            } focus:${colors.buttonHoverFrom} focus:${
-                              colors.buttonHoverTo
-                            } focus:ring ${
-                              colors.buttonHoverFrom
-                            }/50 focus:outline-none resize-none transition-all duration-200 text-sm ${
-                              micState === "recording" ||
-                              micState === "transcribing"
-                                ? "opacity-50"
-                                : ""
-                            }`}
-                            rows={4}
-                            disabled={
-                              micState === "recording" ||
-                              micState === "transcribing"
-                            }
-                          />
-                          {micState === "recording" && (
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <ChatGPTMicAnimation
-                                text="Recording..."
-                                amplitude={micAmplitude}
-                                color={`bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo}`}
-                              />
-                            </div>
-                          )}
-                          {micState === "transcribing" && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-white font-bold text-lg">
-                              Transcription en cours...
-                            </div>
-                          )}
-                          {showMic && (
-                            <motion.button
-                              type="button"
-                              onClick={handleMicClick}
-                              className={`absolute top-2 right-2 bg-gradient-to-br ${
-                                colors.buttonGradientFrom
-                              } ${colors.buttonGradientTo} ${
-                                colors.buttonHoverFrom
-                              } ${
-                                colors.buttonHoverTo
-                              } text-white rounded-full p-2 shadow-lg transition-all duration-200 select-none touch-none border-2 border-${colors.buttonGradientFrom.replace(
-                                "from-",
-                                ""
-                              )}/60 ${
-                                micState === "recording"
-                                  ? `scale-125 ring-4 ${colors.ringColor} ${colors.shadowColor} opacity-80`
-                                  : ""
-                              } ${
-                                micState === "transcribing"
-                                  ? "opacity-60 cursor-wait"
-                                  : ""
-                              }`}
-                              aria-label={
-                                micState === "idle"
-                                  ? "Démarrer l'enregistrement"
-                                  : micState === "recording"
-                                  ? "Valider"
-                                  : "Transcription en cours"
-                              }
-                              style={{
-                                touchAction: "none",
-                                WebkitUserSelect: "none",
-                                userSelect: "none",
-                                WebkitTouchCallout: "none",
-                                background:
-                                  micState === "recording"
-                                    ? `linear-gradient(90deg, ${colors.buttonGradientFrom.replace(
-                                        "from-",
-                                        ""
-                                      )} 60%, ${colors.buttonGradientTo.replace(
-                                        "to-",
-                                        ""
-                                      )} 100%)`
-                                    : undefined,
-                                opacity: micState === "transcribing" ? 0.6 : 1,
-                                cursor:
-                                  micState === "transcribing"
-                                    ? "wait"
-                                    : "pointer",
-                              }}
-                              disabled={micState === "transcribing"}
-                            >
-                              {micState === "recording" ? (
-                                <svg
-                                  className="h-7 w-7 opacity-80 text-white"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                >
-                                  <polyline points="20 6 9 17 4 12" />
-                                </svg>
-                              ) : micState === "transcribing" ? null : (
-                                <ChatGPTMicIcon className="h-7 w-7 opacity-80" />
-                              )}
-                            </motion.button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {micState === "error" && micError && (
-                <div className="absolute right-2 top-24 bg-red-700/80 text-white rounded-lg px-3 py-2 text-xs shadow-lg border border-red-400/40 z-30">
-                  {micError}
-                </div>
-              )}
-              {isRecording && tempTranscriptRef.current && (
-                <p className="mt-2 text-indigo-300 text-xs italic">
-                  {tempTranscriptRef.current}
-                </p>
-              )}
-              <div className="flex gap-2 mt-4">
-                <button
-                  type="submit"
-                  disabled={isLoading || !userInput.trim()}
-                  className={`flex-1 bg-gradient-to-r ${colors.buttonGradientFrom} ${colors.buttonGradientTo} ${colors.buttonHoverFrom} ${colors.buttonHoverTo} text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 flex justify-center items-center text-sm`}
-                >
-                  {isLoading ? (
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  ) : (
-                    sendButtonLabel
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleClear}
-                  className={`bg-transparent border ${colors.borderColor} hover:${colors.buttonHoverFrom} text-white py-2 px-4 rounded-lg transition-all duration-300 text-sm`}
-                >
-                  Effacer
-                </button>
-              </div>
-            </form>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-            className={`bg-gradient-to-br ${colors.gradientFrom}/50 ${colors.gradientTo}/50 backdrop-blur-md p-4 rounded-xl shadow-lg border ${colors.borderColor} min-h-[240px] flex flex-col`}
-          >
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-bold">Réponse</h2>
-              <div className="flex items-center gap-2">
-                <label
-                  htmlFor="language-select"
-                  className="text-sm font-medium text-gray-300"
-                >
-                  Langue :
-                </label>
+      </header>
+      <div className="container mx-auto px-4 py-4 flex flex-col h-[calc(100vh-80px)]">
+        {/* Zone de chat */}
+        <div className="flex-1 overflow-y-auto pb-32">
+          {messages.length === 0 && (
+            <div className="flex flex-col items-center justify-center h-full text-gray-300">
+              <svg className="h-10 w-10 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8z" /></svg>
+              <p className="text-sm">La conversation apparaîtra ici.</p>
+            </div>
+          )}
+          {messages.map((msg, idx) => (
+            <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} mb-2`}>
+              <div className={`max-w-[70%] px-4 py-2 rounded-2xl shadow-md text-sm ${msg.role === "user" ? "bg-white text-gray-900" : `${colors.responseBg} text-white border ${colors.responseBorder}`}`}>{msg.text}</div>
+            </div>
+          ))}
+          <div ref={responseRef}></div>
+        </div>
+      </div>
+      {/* Barre d'input toujours visible en bas */}
+        <form onSubmit={handleSubmit} className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent px-4 py-4 flex items-center gap-2 z-50">
+          {/* Animation micro pendant l'enregistrement uniquement */}
+          {micState === "recording" && (
+            <ChatGPTMicAnimation amplitude={micAmplitude} text="Enregistrement..." color="bg-violet-400/80" />
+          )}
+        <div className="flex-1 relative">
+          <div className="relative w-full max-w-xl mx-auto">
+            <textarea
+              ref={textareaRef}
+              value={micState === "transcribing" ? "Transcription en cours..." : userInput}
+              onChange={e => setUserInput(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit(e);
+                }
+              }}
+              placeholder={(micState === "recording" || micState === "transcribing") ? "" : placeholder}
+              className={`w-full min-h-[36px] max-h-[80px] resize-none rounded-xl p-2 pr-24 border ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none transition-all duration-200 text-base shadow-lg ${(micState === "recording" || micState === "transcribing") ? "bg-gray-300 text-gray-500" : "bg-white/80 text-gray-900"} ${micState === "transcribing" ? "text-center font-semibold" : ""}`}
+              rows={1}
+              disabled={isLoading || micState === "recording" || micState === "transcribing"}
+              style={{overflowY: 'auto', textAlign: micState === "transcribing" ? "center" : undefined, whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden"}}
+            />
+            {/* Micro, bouton d'envoi et sélecteur de langue à droite de l'input */}
+            <div className="absolute inset-y-0 right-2 flex items-center gap-2">
+              <motion.button type="button" onClick={handleMicClick} className={`bg-transparent hover:bg-white/20 text-gray-700 rounded-full p-1 shadow-none border-none flex items-center justify-center transition-all duration-200 ${micState === "transcribing" ? "opacity-60 cursor-wait" : ""}`} aria-label={micState === "idle" ? "Démarrer l'enregistrement" : micState === "recording" ? "Valider" : "Transcription en cours"} disabled={micState === "transcribing"} style={{ width: 28, height: 28 }}>
+                <ChatGPTMicIcon className="h-5 w-5 opacity-80" />
+              </motion.button>
+              {/* Sélecteur de langue avec icône à droite */}
+              <div className="flex items-center gap-1 ml-2">
                 <select
                   id="language-select"
                   value={targetLang}
                   onChange={handleLanguageChange}
-                  className={`px-4 py-2 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:ring-${colors.ringColor} focus:outline-none transition-all`}
-                  style={{
-                    background: `#E3DEDE`, // Dark gray for a sleek and readable dropdown
-                  }}
+                  className={`px-2 py-1 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:ring-${colors.ringColor} focus:outline-none transition-all text-xs`}
+                  style={{ background: `#E3DEDE` }}
                 >
-                  <option value="français">Français</option>
-                  <option value="anglais">Anglais</option>
-                  <option value="espagnol">Espagnol</option>
-                  <option value="allemand">Allemand</option>
-                  <option value="italien">Italien</option>
-                  <option value="wolof">Wolof</option>
-                  <option value="portuguais">Portugais</option>
+                  <option value="français">FR</option>
+                  <option value="anglais">EN</option>
+                  <option value="espagnol">ES</option>
+                  <option value="allemand">DE</option>
+                  <option value="italien">IT</option>
+                  <option value="wolof">WO</option>
+                  <option value="portuguais">PT</option>
                 </select>
               </div>
+              <button
+                type="submit"
+                disabled={isLoading || !userInput.trim()}
+                className={`ml-1 bg-gradient-to-r ${colors.buttonGradientFrom} ${colors.buttonGradientTo} ${colors.buttonHoverFrom} ${colors.buttonHoverTo} text-white font-bold p-2 rounded-full shadow-lg flex items-center justify-center text-lg transition-all duration-300`}
+                style={{ width: 32, height: 32 }}
+              >
+                {isLoading ? (
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 19V5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M5 12L12 5L19 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+                )}
+              </button>
             </div>
-            {isLoading ? (
-              <div className="flex-1 flex flex-col items-center justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                <p className={`mt-2 ${colors.textColor} text-sm`}>
-                  Préparation de la réponse...
-                </p>
-              </div>
-            ) : response ? (
-              <div
-                ref={responseRef}
-                className={`${colors.responseBg} rounded-lg p-3 border ${colors.responseBorder} h-full relative`}
-              >
-                <p className="whitespace-pre-wrap text-indigo-100 text-sm mb-8">
-                  {response}
-                </p>
-                <button
-                  onClick={copyToClipboard}
-                  disabled={isRecording}
-                  className={`absolute bottom-3 right-3 flex items-center gap-1.5 ${
-                    isCopied
-                      ? "bg-green-600/70 hover:bg-green-600/90"
-                      : isRecording
-                      ? "bg-gray-400/60 cursor-not-allowed"
-                      : `${colors.buttonGradientFrom}/60 hover:${colors.buttonGradientTo}/80`
-                  } text-white text-xs py-1.5 px-3 rounded-lg transition-all duration-300`}
-                >
-                  {isCopied ? (
-                    <>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-3.5 w-3.5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      Copié!
-                    </>
-                  ) : (
-                    <>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-3.5 w-3.5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                        />
-                      </svg>
-                      Copier
-                    </>
-                  )}
-                </button>
-              </div>
-            ) : (
-              <div
-                className={`flex-1 flex flex-col items-center justify-center ${colors.textColor}/70`}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-10 w-10 mb-3 opacity-50"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8z"
-                  />
-                </svg>
-                <p className="text-sm">La réponse apparaîtra ici.</p>
-              </div>
-            )}
-          </motion.div>
+          </div>
         </div>
-      </div>
+      </form>
     </main>
   );
 }
