@@ -546,23 +546,25 @@ export default function AgentAudioWorkflow({
                         <ChatGPTMicIcon className="h-5 w-5 opacity-80" />
                       </motion.button>
                       {/* Sélecteur de langue avec icône à droite */}
-                      <div className="flex items-center gap-1 ml-2">
-                        <select
-                          id="language-select"
-                          value={targetLang}
-                          onChange={handleLanguageChange}
-                          className={`px-2 py-1 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:ring-${colors.ringColor} focus:outline-none transition-all text-xs`}
-                          style={{ background: `#E3DEDE` }}
-                        >
-                          <option value="français">FR</option>
-                          <option value="anglais">EN</option>
-                          <option value="espagnol">ES</option>
-                          <option value="allemand">DE</option>
-                          <option value="italien">IT</option>
-                          <option value="wolof">WO</option>
-                          <option value="portuguais">PT</option>
-                        </select>
-                      </div>
+                      {!isLoading && (
+                        <div className="flex items-center gap-1 ml-2">
+                          <select
+                            id="language-select"
+                            value={targetLang}
+                            onChange={handleLanguageChange}
+                            className={`px-2 py-1 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:ring-${colors.ringColor} focus:outline-none transition-all text-xs`}
+                            style={{ background: `#E3DEDE` }}
+                          >
+                            <option value="français">FR</option>
+                            <option value="anglais">EN</option>
+                            <option value="espagnol">ES</option>
+                            <option value="allemand">DE</option>
+                            <option value="italien">IT</option>
+                            <option value="wolof">WO</option>
+                            <option value="portuguais">PT</option>
+                          </select>
+                        </div>
+                      )}
                       <button
                         type="submit"
                         disabled={isLoading || !userInput.trim()}
