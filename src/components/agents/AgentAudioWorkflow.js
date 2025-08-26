@@ -510,7 +510,7 @@ export default function AgentAudioWorkflow({
                 }
               }}
               placeholder={(micState === "recording" || micState === "transcribing") ? "" : "Poser une question"}
-              className={`w-full min-h-[36px] max-h-[80px] resize-none rounded-xl p-2 pr-24 border ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none transition-all duration-200 text-base shadow-lg ${(micState === "recording" || micState === "transcribing") ? "bg-gray-300 text-gray-500" : "bg-white/80 text-gray-900"} ${micState === "transcribing" ? "text-center font-semibold" : ""}`}
+              className={`w-full min-h-[36px] max-h-[80px] resize-none rounded-xl p-2 pr-24 border ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none transition-all duration-200 text-base shadow-lg ${(micState === "recording" || micState === "transcribing") ? "bg-gray-300 text-gray-500" : isLoading ? `${colors.responseBg} text-gray-400` : "bg-white/80 text-gray-900"} ${micState === "transcribing" ? "text-center font-semibold" : ""}`}
               rows={1}
               disabled={isLoading || micState === "recording" || micState === "transcribing"}
               style={{overflowY: 'auto', textAlign: micState === "transcribing" ? "center" : undefined, whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden"}}
