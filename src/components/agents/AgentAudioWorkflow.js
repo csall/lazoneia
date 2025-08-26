@@ -517,53 +517,55 @@ export default function AgentAudioWorkflow({
             />
             {/* Micro, bouton d'envoi et sélecteur de langue à droite de l'input */}
             <div className="absolute inset-y-0 right-2 flex items-center gap-2">
-              {micState === "recording" ? (
-                <>
-                  {/* Annuler (croix) */}
-                  <button type="button" onClick={cancelRecording} className="bg-white/80 hover:bg-red-200 text-red-600 rounded-full p-1 shadow border border-red-200 flex items-center justify-center transition-all duration-200" aria-label="Annuler" style={{ width: 28, height: 28 }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                  </button>
-                  {/* Valider (check) */}
-                  <button type="button" onClick={() => { setIsCancelled(false); setMicState('transcribing'); if (mediaRecorderRef.current) mediaRecorderRef.current.stop(); }} className="bg-white/80 hover:bg-green-200 text-green-600 rounded-full p-1 shadow border border-green-200 flex items-center justify-center transition-all duration-200 ml-1" aria-label="Valider" style={{ width: 28, height: 28 }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                  </button>
-                </>
-              ) : (
-                <>
-                  <motion.button type="button" onClick={handleMicClick} className={`bg-transparent hover:bg-white/20 text-gray-700 rounded-full p-1 shadow-none border-none flex items-center justify-center transition-all duration-200 ${micState === "transcribing" ? "opacity-60 cursor-wait" : ""}`} aria-label={micState === "idle" ? "Démarrer l'enregistrement" : micState === "recording" ? "Valider" : "Transcription en cours"} disabled={micState === "transcribing"} style={{ width: 28, height: 28 }}>
-                    <ChatGPTMicIcon className="h-5 w-5 opacity-80" />
-                  </motion.button>
-                  {/* Sélecteur de langue avec icône à droite */}
-                  <div className="flex items-center gap-1 ml-2">
-                    <select
-                      id="language-select"
-                      value={targetLang}
-                      onChange={handleLanguageChange}
-                      className={`px-2 py-1 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:ring-${colors.ringColor} focus:outline-none transition-all text-xs`}
-                      style={{ background: `#E3DEDE` }}
+              {micState === "transcribing" ? null : (
+                micState === "recording" ? (
+                  <>
+                    {/* Annuler (croix) */}
+                    <button type="button" onClick={cancelRecording} className="bg-white/80 hover:bg-red-200 text-red-600 rounded-full p-1 shadow border border-red-200 flex items-center justify-center transition-all duration-200" aria-label="Annuler" style={{ width: 28, height: 28 }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                    {/* Valider (check) */}
+                    <button type="button" onClick={() => { setIsCancelled(false); setMicState('transcribing'); if (mediaRecorderRef.current) mediaRecorderRef.current.stop(); }} className="bg-white/80 hover:bg-green-200 text-green-600 rounded-full p-1 shadow border border-green-200 flex items-center justify-center transition-all duration-200 ml-1" aria-label="Valider" style={{ width: 28, height: 28 }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <motion.button type="button" onClick={handleMicClick} className={`bg-transparent hover:bg-white/20 text-gray-700 rounded-full p-1 shadow-none border-none flex items-center justify-center transition-all duration-200 ${micState === "transcribing" ? "opacity-60 cursor-wait" : ""}`} aria-label={micState === "idle" ? "Démarrer l'enregistrement" : micState === "recording" ? "Valider" : "Transcription en cours"} disabled={micState === "transcribing"} style={{ width: 28, height: 28 }}>
+                      <ChatGPTMicIcon className="h-5 w-5 opacity-80" />
+                    </motion.button>
+                    {/* Sélecteur de langue avec icône à droite */}
+                    <div className="flex items-center gap-1 ml-2">
+                      <select
+                        id="language-select"
+                        value={targetLang}
+                        onChange={handleLanguageChange}
+                        className={`px-2 py-1 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:ring-${colors.ringColor} focus:outline-none transition-all text-xs`}
+                        style={{ background: `#E3DEDE` }}
+                      >
+                        <option value="français">FR</option>
+                        <option value="anglais">EN</option>
+                        <option value="espagnol">ES</option>
+                        <option value="allemand">DE</option>
+                        <option value="italien">IT</option>
+                        <option value="wolof">WO</option>
+                        <option value="portuguais">PT</option>
+                      </select>
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={isLoading || !userInput.trim()}
+                      className={`ml-1 bg-gradient-to-r ${colors.buttonGradientFrom} ${colors.buttonGradientTo} ${colors.buttonHoverFrom} ${colors.buttonHoverTo} text-white font-bold p-2 rounded-full shadow-lg flex items-center justify-center text-lg transition-all duration-300`}
+                      style={{ width: 32, height: 32 }}
                     >
-                      <option value="français">FR</option>
-                      <option value="anglais">EN</option>
-                      <option value="espagnol">ES</option>
-                      <option value="allemand">DE</option>
-                      <option value="italien">IT</option>
-                      <option value="wolof">WO</option>
-                      <option value="portuguais">PT</option>
-                    </select>
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={isLoading || !userInput.trim()}
-                    className={`ml-1 bg-gradient-to-r ${colors.buttonGradientFrom} ${colors.buttonGradientTo} ${colors.buttonHoverFrom} ${colors.buttonHoverTo} text-white font-bold p-2 rounded-full shadow-lg flex items-center justify-center text-lg transition-all duration-300`}
-                    style={{ width: 32, height: 32 }}
-                  >
-                    {isLoading ? (
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 19V5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M5 12L12 5L19 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
-                    )}
-                  </button>
-                </>
+                      {isLoading ? (
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 19V5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M5 12L12 5L19 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+                      )}
+                    </button>
+                  </>
+                )
               )}
             </div>
           </div>
