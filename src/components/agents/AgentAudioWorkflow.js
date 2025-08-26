@@ -515,6 +515,12 @@ export default function AgentAudioWorkflow({
               disabled={isLoading || micState === "recording" || micState === "transcribing"}
               style={{overflowY: 'auto', textAlign: micState === "transcribing" ? "center" : undefined, whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden"}}
             />
+            {/* Croix à l'intérieur du textarea à gauche lors de l'enregistrement */}
+            {micState === "recording" && (
+              <button type="button" onClick={cancelRecording} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-red-200 text-red-600 rounded-full p-1 shadow border border-red-200 flex items-center justify-center transition-all duration-200" aria-label="Annuler" style={{ width: 28, height: 28 }}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            )}
             {/* Micro, bouton d'envoi et sélecteur de langue à droite de l'input */}
             <div className="absolute inset-y-0 right-2 flex items-center gap-2">
               {micState === "transcribing"
@@ -531,10 +537,6 @@ export default function AgentAudioWorkflow({
                 : (
                   micState === "recording" ? (
                     <>
-                      {/* Annuler (croix) */}
-                      <button type="button" onClick={cancelRecording} className="bg-white/80 hover:bg-red-200 text-red-600 rounded-full p-1 shadow border border-red-200 flex items-center justify-center transition-all duration-200" aria-label="Annuler" style={{ width: 28, height: 28 }}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                      </button>
                       {/* Valider (check) */}
                       <button type="button" onClick={() => { setIsCancelled(false); setMicState('transcribing'); if (mediaRecorderRef.current) mediaRecorderRef.current.stop(); }} className="bg-white/80 hover:bg-green-200 text-green-600 rounded-full p-1 shadow border border-green-200 flex items-center justify-center transition-all duration-200 ml-1" aria-label="Valider" style={{ width: 28, height: 28 }}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
