@@ -90,6 +90,11 @@ export default function AgentAudioWorkflow({
           setMicAmplitude([]);
           if (animationFrame) cancelAnimationFrame(animationFrame);
           audioCtx.close();
+          // Ne pas lancer la transcription si annulation
+          if (isCancelled) {
+            setMicState("idle");
+            return;
+          }
           const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
           if (audioBlob.size < 1000) {
             setMicError("Aucun son détecté. Veuillez parler plus fort ou plus longtemps.");
@@ -207,10 +212,9 @@ export default function AgentAudioWorkflow({
       recordingActiveRef.current = true;
     };
     recognitionRef.current.onend = () => {
-      setIsRecording(false);
-      setMicButtonActive(false);
-      setIsCancelled(false);
-      recordingActiveRef.current = false;
+  setIsRecording(false);
+  setMicButtonActive(false);
+  recordingActiveRef.current = false;
     };
     recognitionRef.current.onerror = () => {
       setIsRecording(false);
@@ -230,6 +234,7 @@ export default function AgentAudioWorkflow({
     if (!recognitionRef.current) return;
     recordingActiveRef.current = false;
     recognitionRef.current.stop();
+    // N'envoie la transcription que si l'annulation n'a pas été demandée
     if (!isCancelled && tempTranscriptRef.current) {
       const newInput = userInput
         ? userInput + " " + tempTranscriptRef.current
@@ -238,14 +243,23 @@ export default function AgentAudioWorkflow({
       handleSubmit({ preventDefault: () => {} }, newInput);
     }
     tempTranscriptRef.current = "";
+    // Réinitialise isCancelled après coup
+    setIsCancelled(false);
   };
   const cancelRecording = () => {
     setIsCancelled(true);
     recordingActiveRef.current = false;
+    // Stop MediaRecorder if active
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
+      mediaRecorderRef.current.stop();
+    }
+    // Stop SpeechRecognition if active
     if (recognitionRef.current && recognitionRef.current.state !== "inactive") {
       recognitionRef.current.stop();
     }
     tempTranscriptRef.current = "";
+    setMicState("idle");
+    setUserInput("");
   };
   const handleMicMouseUp = (e) => {
     if (!micButtonRef.current) return;
@@ -503,9 +517,22 @@ export default function AgentAudioWorkflow({
             />
             {/* Micro, bouton d'envoi et sélecteur de langue à droite de l'input */}
             <div className="absolute inset-y-0 right-2 flex items-center gap-2">
-              <motion.button type="button" onClick={handleMicClick} className={`bg-transparent hover:bg-white/20 text-gray-700 rounded-full p-1 shadow-none border-none flex items-center justify-center transition-all duration-200 ${micState === "transcribing" ? "opacity-60 cursor-wait" : ""}`} aria-label={micState === "idle" ? "Démarrer l'enregistrement" : micState === "recording" ? "Valider" : "Transcription en cours"} disabled={micState === "transcribing"} style={{ width: 28, height: 28 }}>
-                <ChatGPTMicIcon className="h-5 w-5 opacity-80" />
-              </motion.button>
+              {micState === "recording" ? (
+                <>
+                  {/* Annuler (croix) */}
+                  <button type="button" onClick={cancelRecording} className="bg-white/80 hover:bg-red-200 text-red-600 rounded-full p-1 shadow border border-red-200 flex items-center justify-center transition-all duration-200" aria-label="Annuler" style={{ width: 28, height: 28 }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                  </button>
+                  {/* Valider (check) */}
+                  <button type="button" onClick={() => { setIsCancelled(false); setMicState('transcribing'); if (mediaRecorderRef.current) mediaRecorderRef.current.stop(); }} className="bg-white/80 hover:bg-green-200 text-green-600 rounded-full p-1 shadow border border-green-200 flex items-center justify-center transition-all duration-200 ml-1" aria-label="Valider" style={{ width: 28, height: 28 }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  </button>
+                </>
+              ) : (
+                <motion.button type="button" onClick={handleMicClick} className={`bg-transparent hover:bg-white/20 text-gray-700 rounded-full p-1 shadow-none border-none flex items-center justify-center transition-all duration-200 ${micState === "transcribing" ? "opacity-60 cursor-wait" : ""}`} aria-label={micState === "idle" ? "Démarrer l'enregistrement" : micState === "recording" ? "Valider" : "Transcription en cours"} disabled={micState === "transcribing"} style={{ width: 28, height: 28 }}>
+                  <ChatGPTMicIcon className="h-5 w-5 opacity-80" />
+                </motion.button>
+              )}
               {/* Sélecteur de langue avec icône à droite */}
               <div className="flex items-center gap-1 ml-2">
                 <select
