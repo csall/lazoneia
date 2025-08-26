@@ -481,7 +481,7 @@ export default function AgentAudioWorkflow({
         <form onSubmit={handleSubmit} className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent px-4 py-4 flex items-center gap-2 z-50">
           {/* Animation micro pendant l'enregistrement uniquement */}
           {micState === "recording" && (
-            <ChatGPTMicAnimation amplitude={micAmplitude} text="Enregistrement..." color="bg-violet-400/80" />
+            <ChatGPTMicAnimation amplitude={micAmplitude} text="Enregistrement..." color={colors.responseBg} />
           )}
         <div className="flex-1 relative">
           <div className="relative w-full max-w-xl mx-auto">
