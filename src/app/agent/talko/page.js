@@ -15,7 +15,7 @@ export default function talkoPage() {
       endpoint="https://cheikh06000.app.n8n.cloud/webhook/talko"
       placeholder="Écrivez ou enregistrez vos questions..."
       botImage="/talko-bot.svg"
-      sendButtonLabel="Obtenir des actus"
+      sendButtonLabel="Discuter"
       colors={{
         gradientFrom: "from-purple-900",
         gradientTo: "to-magenta-800",
