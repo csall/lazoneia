@@ -586,7 +586,7 @@ export default function AgentsPage() {
       image: "/talko-bot.svg",
       color: "talko",
       link: "/agent/talko",
-      tagline: "Expert actualites",
+      tagline: "Expert communication",
     },
     {
       name: "Reply",
