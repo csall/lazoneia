@@ -55,44 +55,7 @@ const AgentCard = ({
       accent: "bg-indigo-500",
       mesh: "from-violet-500/40 via-indigo-600/30 to-violet-500/40",
     },
-    pitchy: {
-      bg: "bg-gradient-to-br from-emerald-900/60 to-green-900/60",
-      border: "border-emerald-500/20",
-      glow: "from-emerald-500 to-green-600",
-      button:
-        "from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700",
-      hover: "group-hover:text-emerald-200",
-      accent: "bg-emerald-500",
-      mesh: "from-emerald-500/40 via-green-600/30 to-emerald-500/40",
-    },
-    reply: {
-      bg: "bg-gradient-to-br from-blue-900/60 to-sky-900/60",
-      border: "border-blue-500/20",
-      glow: "from-blue-500 to-sky-600",
-      button: "from-blue-500 to-sky-600 hover:from-blue-600 hover:to-sky-700",
-      hover: "group-hover:text-blue-200",
-      accent: "bg-blue-500",
-      mesh: "from-blue-500/40 via-sky-600/30 to-blue-500/40",
-    },
-    lingo: {
-      bg: "bg-gradient-to-br from-amber-900/60 to-yellow-900/60",
-      border: "border-amber-500/20",
-      glow: "from-amber-500 to-yellow-600",
-      button:
-        "from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700",
-      hover: "group-hover:text-amber-200",
-      accent: "bg-amber-500",
-      mesh: "from-amber-500/40 via-yellow-600/30 to-amber-500/40",
-    },
-    scribo: {
-      bg: "bg-gradient-to-br from-teal-900/60 to-cyan-900/60",
-      border: "border-teal-500/20",
-      glow: "from-teal-500 to-cyan-600",
-      button: "from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700",
-      hover: "group-hover:text-teal-200",
-      accent: "bg-teal-500",
-      mesh: "from-teal-500/40 via-cyan-600/30 to-teal-500/40",
-    },
+    
     fitzy: {
       bg: "bg-gradient-to-br from-green-900/60 to-teal-900/60",
       border: "border-green-500/20",
@@ -129,14 +92,42 @@ const AgentCard = ({
       accent: "bg-blue-500",
       mesh: "from-blue-500/40 via-sky-600/30 to-blue-500/40",
     },
-    newsly: {
-      bg: "bg-gradient-to-br from-orange-900/60 to-red-900/60",
-      border: "border-orange-500/20",
-      glow: "from-orange-500 to-red-600",
-      button: "from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700",
-      hover: "group-hover:text-orange-200",
-      accent: "bg-orange-500",
-      mesh: "from-orange-500/40 via-red-600/30 to-orange-500/40",
+    talko: {
+      bg: "bg-gradient-to-br from-purple-900/60 to-magenta-900/60",
+      border: "border-purple-500/20",
+      glow: "from-purple-500 to-magenta-600",
+      button: "from-purple-500 to-magenta-600 hover:from-purple-600 hover:to-magenta-700",
+      hover: "group-hover:text-purple-200",
+      accent: "bg-purple-500",
+      mesh: "from-purple-500/40 via-magenta-600/30 to-purple-500/40",
+    },
+    reply: {
+      bg: "bg-gradient-to-br from-blue-900/60 to-sky-900/60",
+      border: "border-blue-500/20",
+      glow: "from-blue-500 to-sky-600",
+      button: "from-blue-500 to-sky-600 hover:from-blue-600 hover:to-sky-700",
+      hover: "group-hover:text-blue-200",
+      accent: "bg-blue-500",
+      mesh: "from-blue-500/40 via-sky-600/30 to-blue-500/40",
+    },
+    lingo: {
+      bg: "bg-gradient-to-br from-amber-900/60 to-yellow-900/60",
+      border: "border-amber-500/20",
+      glow: "from-amber-500 to-yellow-600",
+      button:
+        "from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700",
+      hover: "group-hover:text-amber-200",
+      accent: "bg-amber-500",
+      mesh: "from-amber-500/40 via-yellow-600/30 to-amber-500/40",
+    },
+    scribo: {
+      bg: "bg-gradient-to-br from-teal-900/60 to-cyan-900/60",
+      border: "border-teal-500/20",
+      glow: "from-teal-500 to-cyan-600",
+      button: "from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700",
+      hover: "group-hover:text-teal-200",
+      accent: "bg-teal-500",
+      mesh: "from-teal-500/40 via-cyan-600/30 to-teal-500/40",
     },
   };
 
@@ -554,6 +545,50 @@ export default function AgentsPage() {
       category: "communication",
     },
     {
+      name: "Fitzy",
+      description:
+        "Votre coach personnel pour le sport et le bien-être. Transforme vos objectifs en actions concrètes.",
+      image: "/fitzy-bot.svg",
+      color: "fitzy",
+      link: "/agent/fitzy",
+      tagline: "Coach Sport & Bien-être",
+    },
+    {
+      name: "Psyco",
+      description:
+        "Votre psychologue virtuel pour un soutien émotionnel et des conseils personnalisés.",
+      image: "/psyco-bot.svg",
+      color: "psyco",
+      link: "/agent/psyco",
+      tagline: "Soutien émotionnel",
+    },
+    {
+      name: "Foody",
+      description:
+        "Votre expert culinaire pour des recettes, conseils nutritionnels et astuces de cuisine.",
+      image: "/foody-bot.svg",
+      color: "foody",
+      link: "/agent/foody",
+      tagline: "Expert culinaire",
+    },
+    {
+      name: "Globo",
+      description:
+        "Votre expert en organisation de voyages pour des itinéraires personnalisés, conseils et astuces.",
+      image: "/globo-bot.svg",
+      color: "globo",
+      link: "/agent/globo",
+      tagline: "Expert en voyages",
+    },
+    {
+      name: "talko",
+      description:"Votre nouvel expert en actualités et informations fiables",
+      image: "/talko-bot.svg",
+      color: "talko",
+      link: "/agent/talko",
+      tagline: "Expert actualites",
+    },
+    {
       name: "Reply",
       description:
         "Le génie des réponses parfaites. Suggère plusieurs options adaptées à chaque situation, du ton pro au ton cool ou humoristique. Idéal pour relations pro, séduction ou service client.",
@@ -592,50 +627,6 @@ export default function AgentsPage() {
       link: "/agent/glow",
       tagline: "Séduction garantie",
       category: "marketing",
-    },
-    {
-      name: "Fitzy",
-      description:
-        "Votre coach personnel pour le sport et le bien-être. Transforme vos objectifs en actions concrètes.",
-      image: "/fitzy-bot.svg",
-      color: "fitzy",
-      link: "/agent/fitzy",
-      tagline: "Coach Sport & Bien-être",
-    },
-    {
-      name: "Psyco",
-      description:
-        "Votre psychologue virtuel pour un soutien émotionnel et des conseils personnalisés.",
-      image: "/psyco-bot.svg",
-      color: "psyco",
-      link: "/agent/psyco",
-      tagline: "Soutien émotionnel",
-    },
-    {
-      name: "Foody",
-      description:
-        "Votre expert culinaire pour des recettes, conseils nutritionnels et astuces de cuisine.",
-      image: "/foody-bot.svg",
-      color: "foody",
-      link: "/agent/foody",
-      tagline: "Expert culinaire",
-    },
-    {
-      name: "Globo",
-      description:
-        "Votre expert en organisation de voyages pour des itinéraires personnalisés, conseils et astuces.",
-      image: "/globo-bot.svg",
-      color: "globo",
-      link: "/agent/globo",
-      tagline: "Expert en voyages",
-    },
-    {
-      name: "newsly",
-      description:"Votre nouvel expert en actualités et informations fiables",
-      image: "/newsly-bot.svg",
-      color: "newsly",
-      link: "/agent/newsly",
-      tagline: "Expert actualites",
     },
   ];
 

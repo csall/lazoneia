@@ -1,20 +1,20 @@
 "use client";
 import AgentAudioWorkflow from "@/components/agents/AgentAudioWorkflow";
 
-export default function NewSlyPage() {
+export default function talkoPage() {
   return (
     <AgentAudioWorkflow
       branding={{
-        name: "Newsly",
-        gradient: "from-red-900 to-orange-800",
+        name: "talko",
+        gradient: "from-purple-900 to-magenta-800",
         textColor: "text-white",
-        headerGradient: "from-red-200 to-orange-300",
-        botImage: "/newsly-bot.svg",
-        description: "Votre nouvel expert en actualités et informations fiables"
+        headerGradient: "from-purple-200 to-magenta-300",
+        botImage: "/talko-bot.svg",
+        description: "Ton compagnon de discussion sans limites : que tu aies envie de rire, de réfléchir, de rêver ou juste de parler, il est toujours là pour t’écouter et te répondre. Avec lui, aucune question n’est trop folle et aucun sujet n’est interdit."
       }}
-      endpoint="https://cheikh06000.app.n8n.cloud/webhook/newsly"
+      endpoint="https://cheikh06000.app.n8n.cloud/webhook/talko"
       placeholder="Écrivez ou enregistrez vos questions..."
-      botImage="/newsly-bot.svg"
+      botImage="/talko-bot.svg"
       sendButtonLabel="Obtenir des actus"
       colors={{
         gradientFrom: "from-red-900",
