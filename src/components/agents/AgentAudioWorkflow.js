@@ -542,7 +542,7 @@ export default function AgentAudioWorkflow({
             </div>
         </div>
       </header>
-      <div className="container mx-auto px-4 py-4 flex flex-col h-[calc(100vh-80px)]">
+      <div className="container mx-auto px-4 py-4 flex mb-1 flex-col h-[calc(100vh-80px)]">
         {/* Zone de chat */}
         <div className="flex-1 overflow-y-auto pb-32">
           {messages.length === 0 && (
@@ -558,6 +558,7 @@ export default function AgentAudioWorkflow({
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
                 <div className={`max-w-[70%] px-4 py-2 rounded-2xl shadow-md text-sm relative ${msg.role === "user" ? "bg-white text-gray-900" : `${colors.responseBg} text-white border ${colors.responseBorder}`}`}>{msg.text}
+                  <span dangerouslySetInnerHTML={{ __html: msg.text }} />
                   {msg.role === "bot" && (
                     <div className="flex justify-end mt-1">
                       <button
@@ -591,12 +592,11 @@ export default function AgentAudioWorkflow({
             </div>
           ))}
           <div ref={responseRef}></div>
-          <div className="mb-1" />
         </div>
         {/* Bouton pour supprimer tout l'historique */}
       </div>
       {/* Barre d'input toujours visible en bas */}
-  <form onSubmit={handleSubmit} className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent px-4 py-4 flex items-center gap-2 z-50 mb-2">
+  <form onSubmit={handleSubmit} className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent px-4 py-4 flex items-center gap-2 z-50">
           {/* Animation micro pendant l'enregistrement uniquement */}
           {micState === "recording" && (
             <ChatGPTMicAnimation amplitude={micAmplitude} text="Enregistrement..." color={colors.responseBg} />
