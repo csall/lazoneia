@@ -17,10 +17,13 @@ const agents = [
       description: "L'ami qui trouve toujours la blague qui tombe juste. Transforme une phrase banale en punchline et répond avec humour dans n'importe quelle conversation. Idéal pour taquineries, posts réseaux et icebreakers."
     },
     tones: [
-      { value: "pro", label: "Professionnel" },
-      { value: "cool", label: "Décontracté" },
-      { value: "humoristique", label: "Humoristique" },
-      { value: "seduisant", label: "Séduisant" }
+      { value: "blague", label: "Blague classique" },
+      { value: "noir", label: "Humour noir" },
+      { value: "absurde", label: "Absurd" },
+      { value: "seconddegre", label: "Second degré" },
+      { value: "ironique", label: "Ironique" },
+      { value: "sarcastique", label: "Sarcastique" },
+      { value: "auto-derision", label: "Auto-dérision" },
     ],
     colors: {
       gradientFrom: "from-indigo-900",
