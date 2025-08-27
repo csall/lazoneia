@@ -571,7 +571,7 @@ export default function AgentAudioWorkflow({
                         type="button"
                         onClick={() => handleCopy(msg.text, idx)}
                         aria-label="Copier le message"
-                        className={`relative p-1 rounded focus:outline-none focus:ring text-xs transition ${copiedIdx === idx ? 'bg-green-100 text-green-700' : 'text-gray-400 hover:text-indigo-600'}`}
+                        className={`relative p-1 rounded focus:outline-none focus:ring text-xs transition cursor-pointer ${copiedIdx === idx ? 'bg-green-100 text-green-700' : 'text-gray-400 hover:text-indigo-600'}`}
                         onMouseEnter={e => {
                           const tooltip = document.createElement('span');
                           tooltip.textContent = 'Copier';
@@ -668,7 +668,7 @@ export default function AgentAudioWorkflow({
                               id="tone-select"
                               value={selectedTone}
                               onChange={e => setSelectedTone(e.target.value)}
-                              className="px-2 py-1 rounded-lg border border-indigo-300 bg-white text-indigo-900 shadow text-xs"
+                              className="px-2 py-1 rounded-lg border border-indigo-300 bg-white text-indigo-900 shadow text-xs cursor-pointer"
                               style={{ minWidth: 80 }}
                             >
                               {tones.map(tone => (
@@ -680,7 +680,7 @@ export default function AgentAudioWorkflow({
                             id="language-select"
                             value={targetLang}
                             onChange={handleLanguageChange}
-                            className={`px-2 py-1 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:outline-none transition-all text-xs`}
+                            className={`px-2 py-1 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:outline-none transition-all text-xs cursor-pointer`}
                             style={{ background: `#E3DEDE` }}
                           >
                             <option value="français">FR</option>
