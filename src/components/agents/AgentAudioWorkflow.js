@@ -233,16 +233,15 @@ export default function AgentAudioWorkflow({
     if (!recognitionRef.current) return;
     recordingActiveRef.current = false;
     recognitionRef.current.stop();
-    // N'envoie la transcription que si l'annulation n'a pas été demandée
+    // N'envoie plus la transcription ici pour éviter le doublon
     if (!isCancelled && tempTranscriptRef.current) {
       const newInput = userInput
         ? userInput + " " + tempTranscriptRef.current
         : tempTranscriptRef.current;
       setUserInput(newInput);
-      handleSubmit({ preventDefault: () => {} }, newInput);
+      // handleSubmit({ preventDefault: () => {} }, newInput); // SUPPRIMÉ pour éviter le doublon
     }
     tempTranscriptRef.current = "";
-    // Réinitialise isCancelled après coup
     setIsCancelled(false);
   };
   const cancelRecording = () => {
@@ -557,7 +556,7 @@ export default function AgentAudioWorkflow({
                 <button onClick={() => deleteMessage(idx)} className="mr-2 mt-1 text-gray-400 hover:text-red-500 transition" title="Supprimer">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
-                <div className={`max-w-[70%] px-4 py-2 rounded-2xl shadow-md text-sm relative ${msg.role === "user" ? "bg-white text-gray-900" : `${colors.responseBg} text-white border ${colors.responseBorder}`}`}>{msg.text}
+                <div className={`max-w-[70%] px-4 py-2 rounded-2xl shadow-md text-sm relative ${msg.role === "user" ? "bg-white text-gray-900" : `${colors.responseBg} text-white border ${colors.responseBorder}`}`}>
                   <span dangerouslySetInnerHTML={{ __html: msg.text }} />
                   {msg.role === "bot" && (
                     <div className="flex justify-end mt-1">

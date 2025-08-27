@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import agents from "@/config/agents";
 
 // Cette configuration est nécessaire pour éviter les erreurs de prérendu
 export const dynamic = "force-dynamic";
@@ -12,7 +13,6 @@ export const dynamic = "force-dynamic";
 import { normalizeImagePath } from "@/hooks/useImagePath";
 import FilterBar from "@/components/agents/FilterBar";
 import GoogleMenu from "@/components/navigation/GoogleMenu";
-
 
 // Composant pour chaque carte d'agent
 const AgentCard = ({
@@ -533,102 +533,7 @@ export default function AgentsPage() {
     });
   };
 
-  const agents = [
-    {
-      name: "Punchy",
-      description:
-        "L'ami qui trouve toujours la blague qui tombe juste. Transforme une phrase banale en punchline et répond avec humour dans n'importe quelle conversation. Idéal pour taquineries, posts réseaux et icebreakers.",
-      image: "punchy-bot.svg", // Image spécifique à Punchy
-      color: "punchy",
-      link: "/agent/punchy",
-      tagline: "Humour instantané",
-      category: "communication",
-    },
-    {
-      name: "Fitzy",
-      description:
-        "Votre coach personnel pour le sport et le bien-être. Transforme vos objectifs en actions concrètes.",
-      image: "/fitzy-bot.svg",
-      color: "fitzy",
-      link: "/agent/fitzy",
-      tagline: "Coach Sport & Bien-être",
-    },
-    {
-      name: "Psyco",
-      description:
-        "Votre psychologue virtuel pour un soutien émotionnel et des conseils personnalisés.",
-      image: "/psyco-bot.svg",
-      color: "psyco",
-      link: "/agent/psyco",
-      tagline: "Soutien émotionnel",
-    },
-    {
-      name: "Foody",
-      description:
-        "Votre expert culinaire pour des recettes, conseils nutritionnels et astuces de cuisine.",
-      image: "/foody-bot.svg",
-      color: "foody",
-      link: "/agent/foody",
-      tagline: "Expert culinaire",
-    },
-    {
-      name: "Globo",
-      description:
-        "Votre expert en organisation de voyages pour des itinéraires personnalisés, conseils et astuces.",
-      image: "/globo-bot.svg",
-      color: "globo",
-      link: "/agent/globo",
-      tagline: "Expert en voyages",
-    },
-    {
-      name: "talko",
-      description:"Votre nouvel expert en actualités et informations fiables",
-      image: "/talko-bot.svg",
-      color: "talko",
-      link: "/agent/talko",
-      tagline: "Expert communication",
-    },
-    {
-      name: "Reply",
-      description:
-        "Le génie des réponses parfaites. Suggère plusieurs options adaptées à chaque situation, du ton pro au ton cool ou humoristique. Idéal pour relations pro, séduction ou service client.",
-      image: "reply-bot.svg", // Image spécifique à Reply
-      color: "reply",
-      link: "/agent/reply",
-      tagline: "Messages parfaits",
-      category: "communication",
-    },
-    {
-      name: "Scribo",
-      description:
-        "Ton assistant personnel d'écriture et de style. Transforme tes phrases brutes en messages clairs, fluides et impactants. Corrige orthographe, grammaire et ponctuation tout en proposant des reformulations adaptées à ton style et au contexte.",
-      image: "scribo-bot.svg", // Image spécifique à Scribo
-      color: "scribo",
-      link: "/agent/scribo",
-      tagline: "Style d'écriture parfait",
-      category: "marketing",
-    },
-    {
-      name: "Lingo",
-      description:
-        "Le globe-trotteur des langues. Traduit tout en conservant le ton voulu (pro, amical, séduisant, humoristique). Parfait pour conversations internationales, réseaux sociaux ou voyages.",
-      image: "lingo-bot.svg", // Image spécifique à Lingo
-      color: "lingo",
-      link: "/agent/lingo",
-      tagline: "Traduction parfaite",
-      category: "communication",
-    },
-    {
-      name: "Glow",
-      description:
-        "Le maître des mots qui font chavirer. Propose des réponses séduisantes adaptées à la situation et au ton voulu (gentleman, joueur, mystérieux). Parfait pour applis de rencontre ou flirt léger au quotidien.",
-      image: "glow-bot.svg", // Image spécifique à Glow
-      color: "glow",
-      link: "/agent/glow",
-      tagline: "Séduction garantie",
-      category: "marketing",
-    },
-  ];
+
 
   return (
     <main className="min-h-screen bg-gradient-to-r from-blue-900 to-purple-900 animate-gradient-x text-white font-sans">
