@@ -617,7 +617,7 @@ export default function AgentAudioWorkflow({
           boxSizing: 'border-box', 
           pointerEvents: 'auto', 
           background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)', 
-          padding: 'env(safe-area-inset-bottom, 16px) 8px 8px 8px', 
+          padding: 'env(safe-area-inset-bottom, 0px) 0px 0px 0px', 
           minHeight: '64px', 
         }}
       >
