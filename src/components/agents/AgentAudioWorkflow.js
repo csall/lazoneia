@@ -489,104 +489,104 @@ export default function AgentAudioWorkflow({
           ))}
           <div ref={responseRef}></div>
         </div>
-      </div>
-      {/* Barre d'input toujours visible en bas */}
-  <form onSubmit={handleSubmit} className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent px-4 py-4 flex items-center gap-2 z-50 mb-2">
+        {/* Barre d'input collée au dernier message */}
+        <form onSubmit={handleSubmit} className="w-full bg-gradient-to-t from-black/60 to-transparent px-4 py-4 flex items-center gap-2 mt-2">
           {/* Animation micro pendant l'enregistrement uniquement */}
           {micState === "recording" && (
             <ChatGPTMicAnimation amplitude={micAmplitude} text="Enregistrement..." color={colors.responseBg} />
           )}
-        <div className="flex-1 relative">
-          <div className="relative w-full max-w-xl mx-auto">
-            <textarea
-              ref={textareaRef}
-              value={isLoading ? "" : (micState === "transcribing" ? "Transcription en cours..." : userInput)}
-              onChange={e => setUserInput(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSubmit(e);
-                }
-              }}
-              placeholder={isLoading ? "" : ((micState === "recording" || micState === "transcribing") ? "" : "Poser une question")}
-              className={`w-full min-h-[36px] max-h-[80px] resize-none rounded-xl p-2 pr-24 border ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none transition-all duration-200 text-base shadow-lg ${(micState === "recording" || micState === "transcribing") ? "bg-gray-300 text-gray-500" : isLoading ? `${colors.responseBg} text-gray-400` : "bg-white/80 text-gray-900"} ${micState === "transcribing" ? "text-center font-semibold" : ""}`}
-              rows={1}
-              disabled={isLoading || micState === "recording" || micState === "transcribing"}
-              style={{overflowY: 'auto', textAlign: micState === "transcribing" ? "center" : undefined, whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden"}}
-            />
-            {/* Croix à l'intérieur du textarea à gauche lors de l'enregistrement */}
-            {micState === "recording" && (
-              <button type="button" onClick={cancelRecording} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-red-200 text-red-600 rounded-full p-1 shadow border border-red-200 flex items-center justify-center transition-all duration-200" aria-label="Annuler" style={{ width: 28, height: 28 }}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-              </button>
-            )}
-            {/* Micro, bouton d'envoi et sélecteur de langue à droite de l'input */}
-            <div className="absolute inset-y-0 right-2 flex items-center gap-2">
-              {micState === "transcribing"
-                ? (
-                  <button
-                    type="submit"
-                    disabled
-                    className={`ml-1 bg-gray-300 text-gray-400 font-bold p-2 rounded-full shadow-lg flex items-center justify-center text-lg transition-all duration-300 cursor-not-allowed`}
-                    style={{ width: 32, height: 32 }}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 19V5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M5 12L12 5L19 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
-                  </button>
-                )
-                : (
-                  micState === "recording" ? (
-                    <>
-                      {/* Valider (check) */}
-                      <button type="button" onClick={() => { setIsCancelled(false); setMicState('transcribing'); if (mediaRecorderRef.current) mediaRecorderRef.current.stop(); }} className="bg-white/80 hover:bg-green-200 text-green-600 rounded-full p-1 shadow border border-green-200 flex items-center justify-center transition-all duration-200 ml-1" aria-label="Valider" style={{ width: 28, height: 28 }}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      {(!userInput || userInput.trim().length === 0) && (
-                        <motion.button type="button" onClick={handleMicClick} className={`bg-transparent hover:bg-white/20 text-gray-700 rounded-full p-1 shadow-none border-none flex items-center justify-center transition-all duration-200 ${micState === "transcribing" ? "opacity-60 cursor-wait" : ""}`} aria-label={micState === "idle" ? "Démarrer l'enregistrement" : micState === "recording" ? "Valider" : "Transcription en cours"} disabled={micState === "transcribing"} style={{ width: 28, height: 28 }}>
-                          <ChatGPTMicIcon className="h-5 w-5 opacity-80" />
-                        </motion.button>
-                      )}
-                      {/* Sélecteur de langue avec icône à droite */}
-                      {!isLoading && (
-                        <div className="flex items-center gap-1 ml-2">
-                          <select
-                            id="language-select"
-                            value={targetLang}
-                            onChange={handleLanguageChange}
-                            className={`px-2 py-1 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:ring-${colors.ringColor} focus:outline-none transition-all text-xs`}
-                            style={{ background: `#E3DEDE` }}
-                          >
-                            <option value="français">FR</option>
-                            <option value="anglais">EN</option>
-                            <option value="espagnol">ES</option>
-                            <option value="allemand">DE</option>
-                            <option value="italien">IT</option>
-                            <option value="wolof">WO</option>
-                            <option value="portuguais">PT</option>
-                          </select>
-                        </div>
-                      )}
-                      <button
-                        type="submit"
-                        disabled={isLoading || !userInput.trim()}
-                        className={`ml-1 bg-gradient-to-r ${colors.buttonGradientFrom} ${colors.buttonGradientTo} ${colors.buttonHoverFrom} ${colors.buttonHoverTo} text-white font-bold p-2 rounded-full shadow-lg flex items-center justify-center text-lg transition-all duration-300`}
-                        style={{ width: 32, height: 32 }}
-                      >
-                        {isLoading ? (
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                        ) : (
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 19V5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M5 12L12 5L19 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
-                        )}
-                      </button>
-                    </>
+          <div className="flex-1 relative">
+            <div className="relative w-full max-w-xl mx-auto">
+              <textarea
+                ref={textareaRef}
+                value={isLoading ? "" : (micState === "transcribing" ? "Transcription en cours..." : userInput)}
+                onChange={e => setUserInput(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSubmit(e);
+                  }
+                }}
+                placeholder={isLoading ? "" : ((micState === "recording" || micState === "transcribing") ? "" : "Poser une question")}
+                className={`w-full min-h-[36px] max-h-[80px] resize-none rounded-xl p-2 pr-24 border ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none transition-all duration-200 text-base shadow-lg ${(micState === "recording" || micState === "transcribing") ? "bg-gray-300 text-gray-500" : isLoading ? `${colors.responseBg} text-gray-400` : "bg-white/80 text-gray-900"} ${micState === "transcribing" ? "text-center font-semibold" : ""}`}
+                rows={1}
+                disabled={isLoading || micState === "recording" || micState === "transcribing"}
+                style={{overflowY: 'auto', textAlign: micState === "transcribing" ? "center" : undefined, whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden"}}
+              />
+              {/* Croix à l'intérieur du textarea à gauche lors de l'enregistrement */}
+              {micState === "recording" && (
+                <button type="button" onClick={cancelRecording} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-red-200 text-red-600 rounded-full p-1 shadow border border-red-200 flex items-center justify-center transition-all duration-200" aria-label="Annuler" style={{ width: 28, height: 28 }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              )}
+              {/* Micro, bouton d'envoi et sélecteur de langue à droite de l'input */}
+              <div className="absolute inset-y-0 right-2 flex items-center gap-2">
+                {micState === "transcribing"
+                  ? (
+                    <button
+                      type="submit"
+                      disabled
+                      className={`ml-1 bg-gray-300 text-gray-400 font-bold p-2 rounded-full shadow-lg flex items-center justify-center text-lg transition-all duration-300 cursor-not-allowed`}
+                      style={{ width: 32, height: 32 }}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 19V5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M5 12L12 5L19 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+                    </button>
                   )
-                )}
+                  : (
+                    micState === "recording" ? (
+                      <>
+                        {/* Valider (check) */}
+                        <button type="button" onClick={() => { setIsCancelled(false); setMicState('transcribing'); if (mediaRecorderRef.current) mediaRecorderRef.current.stop(); }} className="bg-white/80 hover:bg-green-200 text-green-600 rounded-full p-1 shadow border border-green-200 flex items-center justify-center transition-all duration-200 ml-1" aria-label="Valider" style={{ width: 28, height: 28 }}>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        {(!userInput || userInput.trim().length === 0) && (
+                          <motion.button type="button" onClick={handleMicClick} className={`bg-transparent hover:bg-white/20 text-gray-700 rounded-full p-1 shadow-none border-none flex items-center justify-center transition-all duration-200 ${micState === "transcribing" ? "opacity-60 cursor-wait" : ""}`} aria-label={micState === "idle" ? "Démarrer l'enregistrement" : micState === "recording" ? "Valider" : "Transcription en cours"} disabled={micState === "transcribing"} style={{ width: 28, height: 28 }}>
+                            <ChatGPTMicIcon className="h-5 w-5 opacity-80" />
+                          </motion.button>
+                        )}
+                        {/* Sélecteur de langue avec icône à droite */}
+                        {!isLoading && (
+                          <div className="flex items-center gap-1 ml-2">
+                            <select
+                              id="language-select"
+                              value={targetLang}
+                              onChange={handleLanguageChange}
+                              className={`px-2 py-1 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:ring-${colors.ringColor} focus:outline-none transition-all text-xs`}
+                              style={{ background: `#E3DEDE` }}
+                            >
+                              <option value="français">FR</option>
+                              <option value="anglais">EN</option>
+                              <option value="espagnol">ES</option>
+                              <option value="allemand">DE</option>
+                              <option value="italien">IT</option>
+                              <option value="wolof">WO</option>
+                              <option value="portuguais">PT</option>
+                            </select>
+                          </div>
+                        )}
+                        <button
+                          type="submit"
+                          disabled={isLoading || !userInput.trim()}
+                          className={`ml-1 bg-gradient-to-r ${colors.buttonGradientFrom} ${colors.buttonGradientTo} ${colors.buttonHoverFrom} ${colors.buttonHoverTo} text-white font-bold p-2 rounded-full shadow-lg flex items-center justify-center text-lg transition-all duration-300`}
+                          style={{ width: 32, height: 32 }}
+                        >
+                          {isLoading ? (
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                          ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 19V5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M5 12L12 5L19 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+                          )}
+                        </button>
+                      </>
+                    )
+                  )}
+              </div>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </main>
-  );
+);
 }
