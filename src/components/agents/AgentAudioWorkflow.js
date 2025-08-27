@@ -497,6 +497,11 @@ export default function AgentAudioWorkflow({
           )}
           <div className="flex-1 relative">
             <div className="relative w-full max-w-xl mx-auto">
+              <div className="absolute left-0 right-0 top-0 flex items-center justify-center pointer-events-none" style={{height: '100%', zIndex: 2}}>
+                {micState === "recording" && (
+                  <ChatGPTMicAnimation amplitude={micAmplitude} text="" color={colors.responseBg} />
+                )}
+              </div>
               <textarea
                 ref={textareaRef}
                 value={isLoading ? "" : (micState === "transcribing" ? "Transcription en cours..." : userInput)}
