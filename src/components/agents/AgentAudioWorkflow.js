@@ -543,9 +543,11 @@ export default function AgentAudioWorkflow({
                     </>
                   ) : (
                     <>
-                      <motion.button type="button" onClick={handleMicClick} className={`bg-transparent hover:bg-white/20 text-gray-700 rounded-full p-1 shadow-none border-none flex items-center justify-center transition-all duration-200 ${micState === "transcribing" ? "opacity-60 cursor-wait" : ""}`} aria-label={micState === "idle" ? "Démarrer l'enregistrement" : micState === "recording" ? "Valider" : "Transcription en cours"} disabled={micState === "transcribing"} style={{ width: 28, height: 28 }}>
-                        <ChatGPTMicIcon className="h-5 w-5 opacity-80" />
-                      </motion.button>
+                      {(!userInput || userInput.trim().length === 0) && (
+                        <motion.button type="button" onClick={handleMicClick} className={`bg-transparent hover:bg-white/20 text-gray-700 rounded-full p-1 shadow-none border-none flex items-center justify-center transition-all duration-200 ${micState === "transcribing" ? "opacity-60 cursor-wait" : ""}`} aria-label={micState === "idle" ? "Démarrer l'enregistrement" : micState === "recording" ? "Valider" : "Transcription en cours"} disabled={micState === "transcribing"} style={{ width: 28, height: 28 }}>
+                          <ChatGPTMicIcon className="h-5 w-5 opacity-80" />
+                        </motion.button>
+                      )}
                       {/* Sélecteur de langue avec icône à droite */}
                       {!isLoading && (
                         <div className="flex items-center gap-1 ml-2">
