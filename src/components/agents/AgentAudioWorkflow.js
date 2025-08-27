@@ -333,7 +333,8 @@ export default function AgentAudioWorkflow({
     }
     setShowMic(!userInput || userInput.trim().length === 0);
   }, [userInput]);
-  const [selectedTone, setSelectedTone] = useState(null);
+  // Sélecteur de ton comme pour la langue
+  const [selectedTone, setSelectedTone] = useState(tones.length > 0 ? tones[0].value : "");
   const handleToneSelection = (tone) => {
     setSelectedTone(tone);
   };
@@ -509,7 +510,7 @@ export default function AgentAudioWorkflow({
                   handleSubmit(e);
                 }
               }}
-              placeholder={isLoading ? "" : ((micState === "recording" || micState === "transcribing") ? "" : "Poser une question")}
+              placeholder={isLoading ? "" : ((micState === "recording" || micState === "transcribing") ? "" : "")}
               className={`w-full min-h-[36px] max-h-[80px] resize-none rounded-xl p-2 pr-24 border ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none transition-all duration-200 text-base shadow-lg ${(micState === "recording" || micState === "transcribing") ? "bg-gray-300 text-gray-500" : isLoading ? `${colors.responseBg} text-gray-400` : "bg-white/80 text-gray-900"} ${micState === "transcribing" ? "text-center font-semibold" : ""}`}
               rows={1}
               disabled={isLoading || micState === "recording" || micState === "transcribing"}
@@ -549,14 +550,28 @@ export default function AgentAudioWorkflow({
                           <ChatGPTMicIcon className="h-5 w-5 opacity-80" />
                         </motion.button>
                       )}
-                      {/* Sélecteur de langue avec icône à droite */}
+                      {/* Sélecteur de langue et de ton */}
                       {!isLoading && (
                         <div className="flex items-center gap-1 ml-2">
+                          {/* Icône et sélecteur de ton si au moins un ton */}
+                          {tones.length > 0 && (
+                            <select
+                              id="tone-select"
+                              value={selectedTone}
+                              onChange={e => setSelectedTone(e.target.value)}
+                              className="px-2 py-1 rounded-lg border border-indigo-300 bg-white text-indigo-900 shadow text-xs"
+                              style={{ minWidth: 80 }}
+                            >
+                              {tones.map(tone => (
+                                <option key={tone.value} value={tone.value}>{tone.label}</option>
+                              ))}
+                            </select>
+                          )}
                           <select
                             id="language-select"
                             value={targetLang}
                             onChange={handleLanguageChange}
-                            className={`px-2 py-1 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:ring-${colors.ringColor} focus:outline-none transition-all text-xs`}
+                            className={`px-2 py-1 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:outline-none transition-all text-xs`}
                             style={{ background: `#E3DEDE` }}
                           >
                             <option value="français">FR</option>
