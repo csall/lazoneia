@@ -550,7 +550,7 @@ export default function AgentAudioWorkflow({
       </header>
   <div className="container mx-auto px-2 py-2 flex flex-col h-screen md:px-4 md:py-4">
         {/* Zone de chat */}
-  <div className="flex-1 overflow-y-auto pb-0 min-h-0" style={{paddingBottom: '0', marginBottom: 0}}>
+  <div className="w-full overflow-y-auto touch-pan-y" style={{ maxHeight: "calc(100vh - 110px)", minHeight: "200px", paddingBottom: "8px" }}>
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full text-gray-300">
               <svg className="h-10 w-10 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8z" /></svg>
@@ -598,6 +598,8 @@ export default function AgentAudioWorkflow({
             </div>
           ))}
           <div ref={responseRef}></div>
+    {/* Spacer imaginaire pour éviter le chevauchement avec l'input */}
+    <div style={{ minHeight: "100px" }} aria-hidden="true"></div>
         </div>
         {/* Spacer imaginaire pour éviter le chevauchement avec l'input */}
         <div style={{ minHeight: "100px" }} aria-hidden="true"></div>
