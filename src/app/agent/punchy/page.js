@@ -14,7 +14,7 @@ export default function PunchyPage() {
       sendButtonLabel={agent.sendButtonLabel}
       colors={agent.colors}
       tones={agent.tones}
-      tagLine={agent.tagline}
+      tagline={agent.tagline}
     />
   );
 }

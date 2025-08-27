@@ -12,6 +12,7 @@ export default function AgentAudioWorkflow({
   branding,
   endpoint,
   placeholder,
+  tagline,
   botImage,
   tones=[],
   sendButtonLabel = "Envoyer", // Default label for the submit button
@@ -38,6 +39,7 @@ export default function AgentAudioWorkflow({
   const [response, setResponse] = useState("");
   const resultRef = useRef(null);
   const [micAmplitude, setMicAmplitude] = useState([]);
+
   useEffect(() => {
     if (responseRef.current && response) {
       responseRef.current.scrollIntoView({
@@ -519,9 +521,14 @@ export default function AgentAudioWorkflow({
                 priority
               />
               <div className="flex flex-col gap-1">
-                <div className="text-lg font-bold text-white drop-shadow-lg">{branding?.name}</div>
+                  <div className="flex items-center gap-2">
+                    <div className="text-lg font-bold text-white drop-shadow-lg">{branding?.name}</div>
+                    {tagline && (
+                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-700/80 text-indigo-100 ml-2 drop-shadow">{tagline}</span>
+                    )}
+                  </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-white/80 max-w-xs">{branding?.description}</span>
+                  <span className="text-xs text-white/80 max-w-xs">{branding?.description}</span> 
                   {messages.length > 0 && (
                     <button
                       onClick={clearHistory}
