@@ -376,6 +376,32 @@ export default function AgentAudioWorkflow({
       return updated;
     });
   };
+  // Fonction de copie fiable
+  const handleCopy = async (text, idx) => {
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(text);
+    setCopiedIdx(idx);
+    setTimeout(() => setCopiedIdx(null), 2000);
+      } catch {}
+    } else {
+      // Fallback pour vieux navigateurs
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.style.position = "fixed";
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      try {
+        document.execCommand("copy");
+    setCopiedIdx(idx);
+    setTimeout(() => setCopiedIdx(null), 2000);
+      } catch {}
+      document.body.removeChild(textarea);
+    }
+  };
+  // Indique quel message a été copié
+  const [copiedIdx, setCopiedIdx] = useState(null);
 
   // Ajout d'un message utilisateur et bot dans l'historique
   const handleSubmit = async (e, overrideInput) => {
@@ -485,20 +511,35 @@ export default function AgentAudioWorkflow({
           </motion.div>
           {/* Header agent centré entre la flèche et le menu */}
           <div className="flex items-center gap-4 flex-1 justify-center">
-            <Image
-              src={branding?.botImage || botImage}
-              alt={branding?.name}
-              width={48}
-              height={48}
-              className="w-12 h-12 rounded-full drop-shadow-[0_0_20px_rgba(139,92,246,0.5)] border-2 border-white/30"
-              priority
-            />
-            <div>
-              <div className="text-lg font-bold text-white drop-shadow-lg">{branding?.name}</div>
-              <div className="text-xs text-white/80 max-w-xs">{branding?.description}</div>
-            </div>
+              <Image
+                src={branding?.botImage || botImage}
+                alt={branding?.name}
+                width={48}
+                height={48}
+                className="w-12 h-12 rounded-full drop-shadow-[0_0_20px_rgba(139,92,246,0.5)] border-2 border-white/30"
+                priority
+              />
+              <div className="flex flex-col gap-1">
+                <div className="text-lg font-bold text-white drop-shadow-lg">{branding?.name}</div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-white/80 max-w-xs">{branding?.description}</span>
+                  {messages.length > 0 && (
+                    <button
+                      onClick={clearHistory}
+                      className="p-2 rounded-full bg-gray-200 text-gray-500 hover:bg-gray-300 hover:text-red-600 transition"
+                      title="Supprimer tout l'historique"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m2 0v14a2 2 0 01-2 2H8a2 2 0 01-2-2V6m5 10v-6" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              </div>
           </div>
-          <GoogleMenu />
+            <div className="flex items-center gap-2">
+              <GoogleMenu />
+            </div>
         </div>
       </header>
       <div className="container mx-auto px-4 py-4 flex flex-col h-[calc(100vh-80px)]">
@@ -512,14 +553,47 @@ export default function AgentAudioWorkflow({
           )}
           {messages.map((msg, idx) => (
             <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} mb-2 group`}>
-              <div className={`max-w-[70%] px-4 py-2 rounded-2xl shadow-md text-sm relative ${msg.role === "user" ? "bg-white text-gray-900" : `${colors.responseBg} text-white border ${colors.responseBorder}`}`}>{msg.text}
-                <button onClick={() => deleteMessage(idx)} className="absolute top-1 right-1 text-xs text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity" title="Supprimer">×</button>
+              <div className="flex items-start">
+                <button onClick={() => deleteMessage(idx)} className="mr-2 mt-1 text-gray-400 hover:text-red-500 transition" title="Supprimer">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+                <div className={`max-w-[70%] px-4 py-2 rounded-2xl shadow-md text-sm relative ${msg.role === "user" ? "bg-white text-gray-900" : `${colors.responseBg} text-white border ${colors.responseBorder}`}`}>{msg.text}
+                  {msg.role === "bot" && (
+                    <div className="flex justify-end mt-1">
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(msg.text, idx)}
+                        aria-label="Copier le message"
+                        className={`relative p-1 rounded focus:outline-none focus:ring text-xs transition ${copiedIdx === idx ? 'bg-green-100 text-green-700' : 'text-gray-400 hover:text-indigo-600'}`}
+                        onMouseEnter={e => {
+                          const tooltip = document.createElement('span');
+                          tooltip.textContent = 'Copier';
+                          tooltip.className = 'absolute left-1/2 -translate-x-1/2 bottom-full mb-1 px-2 py-1 rounded bg-black text-white text-xs whitespace-nowrap z-10';
+                          tooltip.style.pointerEvents = 'none';
+                          tooltip.setAttribute('id', 'copy-tooltip-' + idx);
+                          e.currentTarget.appendChild(tooltip);
+                        }}
+                        onMouseLeave={e => {
+                          const tooltip = e.currentTarget.querySelector('#copy-tooltip-' + idx);
+                          if (tooltip) e.currentTarget.removeChild(tooltip);
+                        }}
+                      >
+                        {copiedIdx === idx ? (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2"/><rect x="3" y="3" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2"/></svg>
+                        )}
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           ))}
           <div ref={responseRef}></div>
           <div className="mb-1" />
         </div>
+        {/* Bouton pour supprimer tout l'historique */}
       </div>
       {/* Barre d'input toujours visible en bas */}
   <form onSubmit={handleSubmit} className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent px-4 py-4 flex items-center gap-2 z-50 mb-2">
