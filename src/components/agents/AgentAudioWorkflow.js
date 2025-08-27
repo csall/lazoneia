@@ -548,9 +548,9 @@ export default function AgentAudioWorkflow({
             </div>
         </div>
       </header>
-      <div className="container mx-auto px-4 py-4 flex mb-1 flex-col h-[calc(100vh-80px)]">
+  <div className="container mx-auto px-2 py-2 flex flex-col h-screen md:px-4 md:py-4">
         {/* Zone de chat */}
-        <div className="flex-1 overflow-y-auto pb-32">
+  <div className="flex-1 overflow-y-auto pb-0 min-h-0" style={{paddingBottom: '0', marginBottom: 0}}>
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full text-gray-300">
               <svg className="h-10 w-10 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8z" /></svg>
@@ -560,7 +560,7 @@ export default function AgentAudioWorkflow({
           {messages.map((msg, idx) => (
             <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} mb-2 group`}>
               <div className="flex items-start">
-                <button onClick={() => deleteMessage(idx)} className="mr-2 mt-1 text-gray-400 hover:text-red-500 transition" title="Supprimer">
+                <button onClick={() => deleteMessage(idx)} className="mr-2 mt-1 text-gray-400 hover:text-red-500 transition cursor-pointer" title="Supprimer">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
                 <div className={`max-w-[70%] px-4 py-2 rounded-2xl shadow-md text-sm relative ${msg.role === "user" ? "bg-white text-gray-900" : `${colors.responseBg} text-white border ${colors.responseBorder}`}`}>
@@ -602,7 +602,7 @@ export default function AgentAudioWorkflow({
         {/* Bouton pour supprimer tout l'historique */}
       </div>
       {/* Barre d'input toujours visible en bas */}
-  <form onSubmit={handleSubmit} className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent px-4 py-4 flex items-center gap-2 z-50">
+  <form onSubmit={handleSubmit} className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent px-2 py-2 flex items-center gap-2 z-50 md:px-4 md:py-4">
           {/* Animation micro pendant l'enregistrement uniquement */}
           {micState === "recording" && (
             <ChatGPTMicAnimation amplitude={micAmplitude} text="Enregistrement..." color={colors.responseBg} />
@@ -627,7 +627,7 @@ export default function AgentAudioWorkflow({
             />
             {/* Croix à l'intérieur du textarea à gauche lors de l'enregistrement */}
             {micState === "recording" && (
-              <button type="button" onClick={cancelRecording} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-red-200 text-red-600 rounded-full p-1 shadow border border-red-200 flex items-center justify-center transition-all duration-200" aria-label="Annuler" style={{ width: 28, height: 28 }}>
+              <button type="button" onClick={cancelRecording} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-red-200 text-red-600 rounded-full p-1 shadow border border-red-200 flex items-center justify-center transition-all duration-200 cursor-pointer" aria-label="Annuler" style={{ width: 28, height: 28 }}>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             )}
@@ -648,14 +648,14 @@ export default function AgentAudioWorkflow({
                   micState === "recording" ? (
                     <>
                       {/* Valider (check) */}
-                      <button type="button" onClick={() => { setIsCancelled(false); setMicState('transcribing'); if (mediaRecorderRef.current) mediaRecorderRef.current.stop(); }} className="bg-white/80 hover:bg-green-200 text-green-600 rounded-full p-1 shadow border border-green-200 flex items-center justify-center transition-all duration-200 ml-1" aria-label="Valider" style={{ width: 28, height: 28 }}>
+                      <button type="button" onClick={() => { setIsCancelled(false); setMicState('transcribing'); if (mediaRecorderRef.current) mediaRecorderRef.current.stop(); }} className="bg-white/80 hover:bg-green-200 text-green-600 rounded-full p-1 shadow border border-green-200 flex items-center justify-center transition-all duration-200 ml-1 cursor-pointer" aria-label="Valider" style={{ width: 28, height: 28 }}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                       </button>
                     </>
                   ) : (
                     <>
                       {(!userInput || userInput.trim().length === 0) && (
-                        <motion.button type="button" onClick={handleMicClick} className={`bg-transparent hover:bg-white/20 text-gray-700 rounded-full p-1 shadow-none border-none flex items-center justify-center transition-all duration-200 ${micState === "transcribing" ? "opacity-60 cursor-wait" : ""}`} aria-label={micState === "idle" ? "Démarrer l'enregistrement" : micState === "recording" ? "Valider" : "Transcription en cours"} disabled={micState === "transcribing"} style={{ width: 28, height: 28 }}>
+                        <motion.button type="button" onClick={handleMicClick} className={`bg-transparent hover:bg-white/20 text-gray-700 rounded-full p-1 shadow-none border-none flex items-center justify-center transition-all duration-200 cursor-pointer ${micState === "transcribing" ? "opacity-60 cursor-wait" : ""}`} aria-label={micState === "idle" ? "Démarrer l'enregistrement" : micState === "recording" ? "Valider" : "Transcription en cours"} disabled={micState === "transcribing"} style={{ width: 28, height: 28 }}>
                           <ChatGPTMicIcon className="h-5 w-5 opacity-80" />
                         </motion.button>
                       )}
