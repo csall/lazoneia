@@ -606,7 +606,21 @@ export default function AgentAudioWorkflow({
         {/* Bouton pour supprimer tout l'historique */}
       </div>
       {/* Barre d'input toujours visible en bas */}
-  <form onSubmit={handleSubmit} className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent px-2 py-2 flex items-center gap-2 z-50 md:px-4 md:py-4">
+      <form 
+        onSubmit={handleSubmit} 
+        className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent flex items-center gap-2 z-50 md:px-4 md:py-4"
+        style={{ 
+          position: 'fixed', 
+          left: 0, 
+          bottom: 0, 
+          width: '100%', 
+          boxSizing: 'border-box', 
+          pointerEvents: 'auto', 
+          background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)', 
+          padding: 'env(safe-area-inset-bottom, 16px) 8px 8px 8px', 
+          minHeight: '64px', 
+        }}
+      >
           {/* Animation micro pendant l'enregistrement uniquement */}
           {micState === "recording" && (
             <ChatGPTMicAnimation amplitude={micAmplitude} text="Enregistrement..." color={colors.responseBg} />
