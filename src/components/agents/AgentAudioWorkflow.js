@@ -348,7 +348,34 @@ export default function AgentAudioWorkflow({
     setTargetLang(e.target.value);
   };
   // Nouveau : historique des messages
+  const HISTORY_KEY = "agent_chat_history";
   const [messages, setMessages] = useState([]);
+  // Charger l'historique au montage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem(HISTORY_KEY);
+      if (saved) setMessages(JSON.parse(saved));
+    }
+  }, []);
+  // Sauvegarder l'historique à chaque changement
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(messages));
+    }
+  }, [messages]);
+  // Vider l'historique
+  const clearHistory = () => {
+    setMessages([]);
+    localStorage.removeItem(HISTORY_KEY);
+  };
+  // Supprimer un message individuel
+  const deleteMessage = (idx) => {
+    setMessages((prev) => {
+      const updated = [...prev];
+      updated.splice(idx, 1);
+      return updated;
+    });
+  };
 
   // Ajout d'un message utilisateur et bot dans l'historique
   const handleSubmit = async (e, overrideInput) => {
@@ -484,8 +511,10 @@ export default function AgentAudioWorkflow({
             </div>
           )}
           {messages.map((msg, idx) => (
-            <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} mb-2`}>
-              <div className={`max-w-[70%] px-4 py-2 rounded-2xl shadow-md text-sm ${msg.role === "user" ? "bg-white text-gray-900" : `${colors.responseBg} text-white border ${colors.responseBorder}`}`}>{msg.text}</div>
+            <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} mb-2 group`}>
+              <div className={`max-w-[70%] px-4 py-2 rounded-2xl shadow-md text-sm relative ${msg.role === "user" ? "bg-white text-gray-900" : `${colors.responseBg} text-white border ${colors.responseBorder}`}`}>{msg.text}
+                <button onClick={() => deleteMessage(idx)} className="absolute top-1 right-1 text-xs text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity" title="Supprimer">×</button>
+              </div>
             </div>
           ))}
           <div ref={responseRef}></div>
