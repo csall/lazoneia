@@ -488,7 +488,7 @@ export default function AgentAudioWorkflow({
             </div>
           ))}
           <div ref={responseRef}></div>
-          <div className="h-1" />
+          <div className="mb-1" />
         </div>
       </div>
       {/* Barre d'input toujours visible en bas */}
