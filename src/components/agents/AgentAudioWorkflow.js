@@ -422,7 +422,7 @@ export default function AgentAudioWorkflow({
     }
   }, [micState, isCancelled]);
   return (
-    <main className={`min-h-screen bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} ${colors.textColor}`}>
+  <main className={`min-h-screen h-full w-full bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} ${colors.textColor}`} style={{ minHeight: '100vh', height: '100%', width: '100vw', position: 'fixed', top: 0, left: 0, zIndex: -1 }}>
       {/* Header with agent image and name */}
       <header className="sticky top-0 z-40 py-3 px-4 bg-gradient-to-r from-black/60 to-transparent backdrop-blur-md">
         <div className="container mx-auto flex justify-between items-center gap-4">
