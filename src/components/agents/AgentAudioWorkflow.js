@@ -599,6 +599,8 @@ export default function AgentAudioWorkflow({
           ))}
           <div ref={responseRef}></div>
         </div>
+        {/* Spacer imaginaire pour éviter le chevauchement avec l'input */}
+        <div style={{ minHeight: "100px" }} aria-hidden="true"></div>
         {/* Bouton pour supprimer tout l'historique */}
       </div>
       {/* Barre d'input toujours visible en bas */}
