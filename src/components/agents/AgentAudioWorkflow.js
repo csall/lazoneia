@@ -110,7 +110,6 @@ export default function AgentAudioWorkflow({
             if (data.text) {
               setMicState("idle");
               setUserInput("");
-              setMessages((prev) => [...prev, { role: "user", text: data.text }]);
               handleSubmit({ preventDefault: () => {} }, data.text);
             } else {
               setMicState("error");
@@ -492,7 +491,7 @@ export default function AgentAudioWorkflow({
         </div>
       </div>
       {/* Barre d'input toujours visible en bas */}
-        <form onSubmit={handleSubmit} className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent px-4 py-4 flex items-center gap-2 z-50">
+  <form onSubmit={handleSubmit} className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent px-4 py-4 flex items-center gap-2 z-50 mb-2">
           {/* Animation micro pendant l'enregistrement uniquement */}
           {micState === "recording" && (
             <ChatGPTMicAnimation amplitude={micAmplitude} text="Enregistrement..." color={colors.responseBg} />
