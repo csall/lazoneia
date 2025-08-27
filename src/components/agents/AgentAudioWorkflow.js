@@ -532,7 +532,7 @@ export default function AgentAudioWorkflow({
                   {messages.length > 0 && (
                     <button
                       onClick={clearHistory}
-                      className="p-2 rounded-full bg-gray-200 text-gray-500 hover:bg-gray-300 hover:text-red-600 transition"
+                      className="p-2 rounded-full bg-gray-200 text-gray-500 hover:bg-gray-300 hover:text-red-600 transition cursor-pointer"
                       title="Supprimer tout l'historique"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -696,7 +696,7 @@ export default function AgentAudioWorkflow({
                       <button
                         type="submit"
                         disabled={isLoading || !userInput.trim()}
-                        className={`ml-1 bg-gradient-to-r ${colors.buttonGradientFrom} ${colors.buttonGradientTo} ${colors.buttonHoverFrom} ${colors.buttonHoverTo} text-white font-bold p-2 rounded-full shadow-lg flex items-center justify-center text-lg transition-all duration-300`}
+                        className={`ml-1 bg-gradient-to-r ${colors.buttonGradientFrom} ${colors.buttonGradientTo} ${colors.buttonHoverFrom} ${colors.buttonHoverTo} text-white font-bold p-2 rounded-full shadow-lg flex items-center justify-center text-lg transition-all duration-300 cursor-pointer`}
                         style={{ width: 32, height: 32 }}
                       >
                         {isLoading ? (
