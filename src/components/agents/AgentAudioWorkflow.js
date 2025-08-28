@@ -478,7 +478,7 @@ export default function AgentAudioWorkflow({
   }, [messages]);
 
   return (
-  <div className={`flex flex-col h-screen bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} ${colors.textColor}`}>
+  <main className={`flex flex-col h-screen bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} ${colors.textColor}`}>
       {/* Header with agent image and name */}
       <header className="z-40 py-3 px-4 bg-gradient-to-r from-black/60 to-transparent backdrop-blur-md">
         <div className="container mx-auto flex justify-between items-center gap-4">
@@ -704,6 +704,6 @@ export default function AgentAudioWorkflow({
             </button>
           </div>
       </form>
-    </div>
+    </main>
   );
 }
