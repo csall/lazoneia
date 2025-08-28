@@ -515,14 +515,17 @@ useEffect(() => {
     window.removeEventListener('focusout', handleFocusOut);
   };
 }, []);
-// Scroll tout en bas à l'ouverture de la page
+// Scroll tout en bas à l'ouverture de la page (après le rendu des messages)
 useEffect(() => {
-  if (resultRef.current) {
-    const inputBar = document.querySelector('form');
-    const inputHeight = inputBar && inputBar.offsetHeight ? inputBar.offsetHeight : 110;
-    resultRef.current.scrollTop = resultRef.current.scrollHeight - inputHeight;
-  }
-}, []);
+  const timer = setTimeout(() => {
+    if (resultRef.current) {
+      const inputBar = document.querySelector('form');
+      const inputHeight = inputBar && inputBar.offsetHeight ? inputBar.offsetHeight : 110;
+      resultRef.current.scrollTop = resultRef.current.scrollHeight - inputHeight;
+    }
+  }, 100);
+  return () => clearTimeout(timer);
+}, [messages]);
 
   return (
 
