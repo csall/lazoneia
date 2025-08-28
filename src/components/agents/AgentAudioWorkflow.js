@@ -466,7 +466,7 @@ export default function AgentAudioWorkflow({
   return (
   <main className={`flex flex-col h-screen bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} ${colors.textColor}`}>
       {/* Header with agent image and name */}
-      <header className="z-40 py-3 px-4 bg-gradient-to-r from-black/60 to-transparent backdrop-blur-md">
+  <header className="sticky top-0 z-40 py-3 px-4 bg-gradient-to-r from-black/60 to-transparent backdrop-blur-md">
         <div className="container mx-auto flex justify-between items-center gap-4">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
