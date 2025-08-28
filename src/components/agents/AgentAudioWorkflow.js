@@ -477,7 +477,9 @@ useEffect(() => {
   const handleResize = () => {
     if (resultRef.current) {
       // Sur mobile, si le clavier est fermé, on enlève le padding-bottom
-      resultRef.current.style.paddingBottom = '0px';
+      if (window.innerWidth <= 768) {
+        resultRef.current.style.paddingBottom = '0px';
+      }
     }
   };
   window.addEventListener('resize', handleResize);
