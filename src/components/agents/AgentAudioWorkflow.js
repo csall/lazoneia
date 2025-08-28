@@ -1,4 +1,3 @@
-
 "use client";
 import GoogleMenu from "@/components/navigation/GoogleMenu";
 import { useState, useRef, useEffect } from "react";
@@ -10,6 +9,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 
 export default function AgentAudioWorkflow({
+  // ...hooks principaux...
   branding,
   endpoint,
   placeholder,
@@ -152,21 +152,6 @@ export default function AgentAudioWorkflow({
       setMicState("error");
     }
   };
-  useEffect(() => {
-    if (transcriptionCompleted) {
-      console.log(
-        "Transcription completed, attempting to click the submit button."
-      );
-      const submitButton = document.querySelector('button[type="submit"]');
-      if (submitButton) {
-        console.log("Submit button found, clicking it.");
-        submitButton.click();
-      } else {
-        console.error("Submit button not found.");
-      }
-      setTranscriptionCompleted(false); // Reset the state after clicking
-    }
-  }, [transcriptionCompleted]);
   const [isLoading, setIsLoading] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const textareaRef = useRef(null);
@@ -178,6 +163,22 @@ export default function AgentAudioWorkflow({
   const micButtonRef = useRef(null);
   const tempTranscriptRef = useRef("");
   const recordingActiveRef = useRef(false);
+  // Corrige l'espace blanc en bas quand le clavier mobile se ferme
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    const handleBlur = () => {
+      // Réinitialise le padding-bottom du parent
+      const parent = textarea.parentElement;
+      if (parent) {
+        parent.style.paddingBottom = '';
+      }
+    };
+    textarea.addEventListener('blur', handleBlur);
+    return () => {
+      textarea.removeEventListener('blur', handleBlur);
+    };
+  }, []);
   useEffect(() => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -513,6 +514,21 @@ export default function AgentAudioWorkflow({
                     {tagline && (
                       <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-700/80 text-indigo-100 ml-2 drop-shadow">{tagline}</span>
                     )}
+                    <select
+                      id="language-select-header"
+                      value={targetLang}
+                      onChange={handleLanguageChange}
+                      className={`px-2 py-1 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-2`}
+                      style={{ background: `#E3DEDE` }}
+                    >
+                      <option value="français">FR</option>
+                      <option value="anglais">EN</option>
+                      <option value="espagnol">ES</option>
+                      <option value="allemand">DE</option>
+                      <option value="italien">IT</option>
+                      <option value="wolof">WO</option>
+                      <option value="portuguais">PT</option>
+                    </select>
                   </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-white/80 max-w-xs">{branding?.description}</span> 
@@ -653,21 +669,7 @@ export default function AgentAudioWorkflow({
               }
             </div>
             <div className="flex items-center ml-2">
-              <select
-                id="language-select"
-                value={targetLang}
-                onChange={handleLanguageChange}
-                className={`px-3 py-2 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:outline-none transition-all text-sm cursor-pointer`}
-                style={{ background: `#E3DEDE` }}
-              >
-                <option value="français">FR</option>
-                <option value="anglais">EN</option>
-                <option value="espagnol">ES</option>
-                <option value="allemand">DE</option>
-                <option value="italien">IT</option>
-                <option value="wolof">WO</option>
-                <option value="portuguais">PT</option>
-              </select>
+              {/* Sélecteur de langue retiré de la zone d'input */}
               <button
                 type="submit"
                 disabled={isLoading || !userInput.trim()}
