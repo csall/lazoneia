@@ -574,7 +574,8 @@ export default function AgentAudioWorkflow({
             <button onClick={() => deleteMessage(idx)} className="mr-2 mt-1 text-gray-400 hover:text-red-500 transition cursor-pointer" title="Supprimer">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
-            <div className={`max-w-[70%] px-4 py-2 rounded-2xl shadow-md text-sm relative ${msg.role === "user" ? "bg-white text-gray-900" : `${colors.responseBg} text-white border ${colors.responseBorder}`}`}>
+            <div className={`max-w-[70%] px-4 py-2 rounded-2xl shadow-md text-sm relative ${msg.role === "user" ? "bg-white text-gray-900" : `${colors.responseBg} text-white border ${colors.responseBorder}`}`}
+              style={msg.role === "user" ? {whiteSpace: 'pre-wrap', wordBreak: 'break-word'} : {}}>
               <span dangerouslySetInnerHTML={{ __html: msg.text }} />
               {msg.role === "bot" && (
                 <div className="flex justify-end mt-1">
@@ -637,7 +638,6 @@ export default function AgentAudioWorkflow({
                   textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
                 }
               }}
-              style={{resize: "none", overflow: "hidden", minHeight: "40px", maxHeight: "160px", width: '100vw', maxWidth: '100vw', boxSizing: 'border-box', paddingBottom: 'env(safe-area-inset-bottom, 16px)', textAlign: micState === "transcribing" ? "center" : undefined}}
               onKeyDown={e => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
