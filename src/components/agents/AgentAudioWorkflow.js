@@ -186,6 +186,8 @@ useEffect(() => {
   const handleBlur = () => {
     if (window.innerWidth <= 768 && resultRef.current) {
       resultRef.current.style.paddingBottom = '0px';
+      // Force le scroll tout en bas pour éviter l'espace
+      resultRef.current.scrollTop = resultRef.current.scrollHeight;
     }
   };
   textarea.addEventListener('blur', handleBlur);
