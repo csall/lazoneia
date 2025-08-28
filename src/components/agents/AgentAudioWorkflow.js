@@ -179,6 +179,47 @@ export default function AgentAudioWorkflow({
       textarea.removeEventListener('blur', handleBlur);
     };
   }, []);
+
+  // fix clavier
+
+  useEffect(() => {
+  const fixKeyboardGap = () => {
+    if (resultRef.current && window.innerWidth <= 768) {
+      resultRef.current.style.paddingBottom = "0px";
+      resultRef.current.scrollTop = resultRef.current.scrollHeight;
+    }
+  };
+
+  window.addEventListener("resize", fixKeyboardGap);
+  window.addEventListener("focusout", fixKeyboardGap);
+
+  return () => {
+    window.removeEventListener("resize", fixKeyboardGap);
+    window.removeEventListener("focusout", fixKeyboardGap);
+  };
+}, []);
+
+  useEffect(() => {
+  if (!window.visualViewport) return;
+
+  const handleViewportChange = () => {
+    if (resultRef.current) {
+      const vh = window.visualViewport.height;
+      resultRef.current.style.height = vh + "px";
+      resultRef.current.scrollTop = resultRef.current.scrollHeight;
+    }
+  };
+
+  window.visualViewport.addEventListener("resize", handleViewportChange);
+  window.visualViewport.addEventListener("scroll", handleViewportChange);
+
+  return () => {
+    window.visualViewport.removeEventListener("resize", handleViewportChange);
+    window.visualViewport.removeEventListener("scroll", handleViewportChange);
+  };
+}, []);
+
+
   // Gère l'espace blanc laissé par le clavier mobile en surveillant le focus du textarea
 useEffect(() => {
   const textarea = textareaRef.current;
