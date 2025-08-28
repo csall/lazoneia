@@ -606,13 +606,16 @@ export default function AgentAudioWorkflow({
           )}
       
           <div className="relative flex items-end">
-            <div className="flex-1 relative">
+            <div className="relative w-full">
               <textarea
                 ref={textareaRef}
                 value={isLoading ? "" : (micState === "transcribing" ? "Transcription en cours..." : userInput)}
                 onChange={e => {
                   setUserInput(e.target.value);
-                  
+                  if (textareaRef.current) {
+                    textareaRef.current.style.height = "auto";
+                    textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+                  }
                 }}
                 onKeyDown={e => {
                   if (e.key === "Enter" && !e.shiftKey) {
@@ -629,67 +632,57 @@ export default function AgentAudioWorkflow({
                 disabled={isLoading || micState === "recording" || micState === "transcribing"}
                 style={{resize: "none", overflow: "hidden", minHeight: "44px", maxHeight: "160px", boxSizing: 'border-box', paddingBottom: 'env(safe-area-inset-bottom, 20px)', textAlign: micState === "transcribing" ? "center" : undefined, fontSize: '1rem'}}
               />
-              {/* Micro déplacé avec les autres icônes */}
-              {/* Boutons annuler et valider lors de l'enregistrement */}
-              {micState === "recording" && (
-                <>
-                  <button type="button" onClick={cancelRecording} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-red-200 text-red-600 rounded-full p-1 shadow border border-red-200 flex items-center justify-center transition-all duration-200 cursor-pointer" aria-label="Annuler" style={{ width: 28, height: 28 }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              {/* Micro à l'intérieur du textarea à droite */}
+              {micState === "recording" ? (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
+                  <button type="button" onClick={cancelRecording} className="bg-red-100 hover:bg-red-200 text-red-700 rounded-full p-2 shadow border border-red-200 flex items-center justify-center transition-all duration-200 cursor-pointer" aria-label="Annuler" style={{ width: 40, height: 40 }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                   </button>
-                  <button type="button" onClick={() => { setIsCancelled(false); setMicState('transcribing'); if (mediaRecorderRef.current) mediaRecorderRef.current.stop(); }} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-green-200 text-green-600 rounded-full p-1 shadow border border-green-200 flex items-center justify-center transition-all duration-200 cursor-pointer" aria-label="Valider" style={{ width: 28, height: 28 }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  <button type="button" onClick={handleMicClick} className="bg-green-100 hover:bg-green-200 text-green-700 rounded-full p-2 shadow border border-green-200 flex items-center justify-center transition-all duration-200 cursor-pointer" aria-label="Valider" style={{ width: 40, height: 40 }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                   </button>
-                </>
-              )}
+                </div>
+              ) :
+                (!userInput || userInput.trim().length === 0) && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <motion.button type="button" onClick={handleMicClick} className="bg-white/80 hover:bg-indigo-100 text-indigo-700 rounded-full p-2 shadow border border-indigo-200 flex items-center justify-center transition-all duration-200 cursor-pointer" aria-label={micState === "idle" ? "Démarrer l'enregistrement" : micState === "recording" ? "Valider" : "Transcription en cours"} disabled={micState === "transcribing"} style={{ width: 40, height: 40 }}>
+                      <ChatGPTMicIcon className="h-6 w-6 opacity-80" />
+                    </motion.button>
+                  </div>
+                )
+              }
             </div>
-          </div>
-          {/* Boutons et sélecteurs en dehors du champ input */}
-          <div className="flex items-center gap-2 mt-2">
-            <motion.button type="button" onClick={handleMicClick} className={`bg-white/80 hover:bg-indigo-100 text-indigo-700 rounded-full p-2 shadow border border-indigo-200 flex items-center justify-center transition-all duration-200 cursor-pointer ${micState === "transcribing" ? "opacity-60 cursor-wait" : ""}`} aria-label={micState === "idle" ? "Démarrer l'enregistrement" : micState === "recording" ? "Valider" : "Transcription en cours"} disabled={micState === "transcribing"} style={{ width: 40, height: 40 }}>
-              <ChatGPTMicIcon className="h-6 w-6 opacity-80" />
-            </motion.button>
-            {tones.length > 0 && (
+            <div className="flex items-center ml-2">
               <select
-                id="tone-select"
-                value={selectedTone}
-                onChange={e => setSelectedTone(e.target.value)}
-                className="px-3 py-2 rounded-lg border border-indigo-300 bg-white text-indigo-900 shadow text-sm cursor-pointer"
-                style={{ minWidth: 90 }}
+                id="language-select"
+                value={targetLang}
+                onChange={handleLanguageChange}
+                className={`px-3 py-2 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:outline-none transition-all text-sm cursor-pointer`}
+                style={{ background: `#E3DEDE` }}
               >
-                {tones.map(tone => (
-                  <option key={tone.value} value={tone.value}>{tone.label}</option>
-                ))}
+                <option value="français">FR</option>
+                <option value="anglais">EN</option>
+                <option value="espagnol">ES</option>
+                <option value="allemand">DE</option>
+                <option value="italien">IT</option>
+                <option value="wolof">WO</option>
+                <option value="portuguais">PT</option>
               </select>
-            )}
-            <select
-              id="language-select"
-              value={targetLang}
-              onChange={handleLanguageChange}
-              className={`px-3 py-2 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:outline-none transition-all text-sm cursor-pointer`}
-              style={{ background: `#E3DEDE` }}
-            >
-              <option value="français">FR</option>
-              <option value="anglais">EN</option>
-              <option value="espagnol">ES</option>
-              <option value="allemand">DE</option>
-              <option value="italien">IT</option>
-              <option value="wolof">WO</option>
-              <option value="portuguais">PT</option>
-            </select>
-            <button
-              type="submit"
-              disabled={isLoading || !userInput.trim()}
-              className={`ml-2 bg-gradient-to-r ${colors.buttonGradientFrom} ${colors.buttonGradientTo} ${colors.buttonHoverFrom} ${colors.buttonHoverTo} text-white font-bold p-3 rounded-full shadow-lg flex items-center justify-center text-xl transition-all duration-300 cursor-pointer`}
-              style={{ width: 44, height: 44 }}
-            >
-              {isLoading ? (
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 19V5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M5 12L12 5L19 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
-              )}
-            </button>
-          </div>
-      </form>
+              <button
+                type="submit"
+                disabled={isLoading || !userInput.trim()}
+                className={`ml-2 bg-gradient-to-r ${colors.buttonGradientFrom} ${colors.buttonGradientTo} ${colors.buttonHoverFrom} ${colors.buttonHoverTo} text-white font-bold p-3 rounded-full shadow-lg flex items-center justify-center text-xl transition-all duration-300 cursor-pointer`}
+                style={{ width: 44, height: 44 }}
+              >
+                {isLoading ? (
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 19V5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M5 12L12 5L19 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+                )}
+              </button>
+            </div>
+      </div>
+    </form>
     </main>
   );
 }
