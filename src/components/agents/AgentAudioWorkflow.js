@@ -459,9 +459,8 @@ export default function AgentAudioWorkflow({
 
   useEffect(() => {
   if (!isLoading && messages.length > 0) {
-    // Cherche le dernier message du bot
-    const lastBotIdx = [...messages].reverse().findIndex(m => m.role === "bot");
-    if (lastBotIdx !== -1 && lastBotMsgRef.current) {
+    // Scroll sur la fin du dernier message du bot
+    if (lastBotMsgRef.current) {
       lastBotMsgRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
     }
   }
