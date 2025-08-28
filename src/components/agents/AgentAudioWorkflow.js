@@ -649,6 +649,10 @@ useEffect(() => {
           </div>
         </div>
       ))}
+      {/* Ajoute un espace imaginaire à la fin de la dernière réponse du bot */}
+      {messages.length > 0 && messages[messages.length-1].role === 'bot' && (
+        <div style={{height: '60px'}}></div>
+      )}
     </div>
     {/* Barre d'input toujours visible en bas */}
     {!isLoading && (
