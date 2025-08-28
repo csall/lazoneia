@@ -467,9 +467,9 @@ export default function AgentAudioWorkflow({
 useEffect(() => {
   if (resultRef.current) {
     const inputBar = document.querySelector('form');
-    const inputHeight = inputBar ? inputBar.offsetHeight : 110;
-    resultRef.current.scrollTop = resultRef.current.scrollHeight - inputHeight;
+    const inputHeight = inputBar && inputBar.offsetHeight ? inputBar.offsetHeight : 110;
     resultRef.current.style.paddingBottom = inputHeight + 'px';
+    resultRef.current.scrollTop = resultRef.current.scrollHeight - inputHeight;
   }
 }, [isLoading, messages]);
 // Supprime l'espace du clavier mobile quand il est fermé
