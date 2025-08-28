@@ -626,10 +626,7 @@ export default function AgentAudioWorkflow({
                 value={isLoading ? "" : (micState === "transcribing" ? "Transcription en cours..." : userInput)}
                 onChange={e => {
                   setUserInput(e.target.value);
-                  if (textareaRef.current) {
-                    textareaRef.current.style.height = "auto";
-                    textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-                  }
+                  
                 }}
                 onKeyDown={e => {
                   if (e.key === "Enter" && !e.shiftKey) {
