@@ -1,3 +1,4 @@
+
 "use client";
 import GoogleMenu from "@/components/navigation/GoogleMenu";
 import { useState, useRef, useEffect } from "react";
@@ -40,14 +41,16 @@ export default function AgentAudioWorkflow({
   const resultRef = useRef(null);
   const [micAmplitude, setMicAmplitude] = useState([]);
 
+  // Scroll to input on mount (mobile)
   useEffect(() => {
-    if (responseRef.current && response) {
-      responseRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-    }
-  }, [response]);
+    setTimeout(() => {
+      if (textareaRef?.current) {
+        textareaRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }, 100);
+  }, []);
+
   useEffect(() => {
     if (resultRef.current && (userInput || micState === "transcribing")) {
       resultRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
