@@ -637,9 +637,10 @@ export default function AgentAudioWorkflow({
               onFocus={e => {
                 setTimeout(() => {
                   if (textareaRef.current) {
-                    textareaRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    textareaRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                   }
-                }, 200);
+                  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                }, 100);
               }}
               inputMode="text"
               autoComplete="off"
