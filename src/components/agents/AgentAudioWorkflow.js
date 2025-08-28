@@ -179,6 +179,20 @@ export default function AgentAudioWorkflow({
       textarea.removeEventListener('blur', handleBlur);
     };
   }, []);
+  // Gère l'espace blanc laissé par le clavier mobile en surveillant le focus du textarea
+useEffect(() => {
+  const textarea = textareaRef.current;
+  if (!textarea) return;
+  const handleBlur = () => {
+    if (window.innerWidth <= 768 && resultRef.current) {
+      resultRef.current.style.paddingBottom = '0px';
+    }
+  };
+  textarea.addEventListener('blur', handleBlur);
+  return () => {
+    textarea.removeEventListener('blur', handleBlur);
+  };
+}, []);
   useEffect(() => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
