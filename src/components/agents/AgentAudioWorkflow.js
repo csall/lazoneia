@@ -475,6 +475,19 @@ useEffect(() => {
     }
   }
 }, [isLoading, messages]);
+// Supprime l'espace du clavier mobile quand il est fermé
+useEffect(() => {
+  const handleResize = () => {
+    if (resultRef.current) {
+      // Sur mobile, si le clavier est fermé, on enlève le padding-bottom
+      resultRef.current.style.paddingBottom = '0px';
+    }
+  };
+  window.addEventListener('resize', handleResize);
+  return () => {
+    window.removeEventListener('resize', handleResize);
+  };
+}, []);
 
   return (
 
