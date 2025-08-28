@@ -642,9 +642,9 @@ export default function AgentAudioWorkflow({
                 autoComplete="off"
                 autoCorrect="off"
                 spellCheck={false}
-                className={`min-h-[36px] max-h-[160px] resize-none rounded-xl p-2 pr-24 border ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none transition-all duration-200 text-base shadow-lg ${(micState === "recording" || micState === "transcribing") ? "bg-gray-300 text-gray-500" : isLoading ? `${colors.responseBg} text-gray-400` : "bg-white/80 text-gray-900"} ${micState === "transcribing" ? "text-center font-semibold" : ""}`}
+                className={`min-h-[36px] max-h-[160px] resize-none rounded-xl p-2 pr-24 border w-full sm:w-[500px] mx-auto ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none transition-all duration-200 text-base shadow-lg ${(micState === "recording" || micState === "transcribing") ? "bg-gray-300 text-gray-500" : isLoading ? `${colors.responseBg} text-gray-400` : "bg-white/80 text-gray-900"} ${micState === "transcribing" ? "text-center font-semibold" : ""}`}
                 disabled={isLoading || micState === "recording" || micState === "transcribing"}
-                style={{resize: "none", overflow: "hidden", minHeight: "40px", maxHeight: "160px", width: '90vw', maxWidth: '90vw', boxSizing: 'border-box', margin: '0 auto', paddingBottom: 'env(safe-area-inset-bottom, 16px)', textAlign: micState === "transcribing" ? "center" : undefined}}
+                style={{resize: "none", overflow: "hidden", minHeight: "40px", maxHeight: "160px", boxSizing: 'border-box', paddingBottom: 'env(safe-area-inset-bottom, 16px)', textAlign: micState === "transcribing" ? "center" : undefined}}
               />
               {/* Micro déplacé avec les autres icônes */}
               {/* Croix à l'intérieur du textarea à gauche lors de l'enregistrement */}
