@@ -488,6 +488,20 @@ useEffect(() => {
     window.removeEventListener('resize', handleResize);
   };
 }, []);
+// Supprime l'espace blanc après validation du clavier mobile
+useEffect(() => {
+  const handleFocusOut = () => {
+    setTimeout(() => {
+      if (resultRef.current) {
+        resultRef.current.style.paddingBottom = '0px';
+      }
+    }, 100); // délai pour laisser le clavier se fermer
+  };
+  window.addEventListener('focusout', handleFocusOut);
+  return () => {
+    window.removeEventListener('focusout', handleFocusOut);
+  };
+}, []);
 
   return (
 
