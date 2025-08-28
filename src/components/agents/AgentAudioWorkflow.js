@@ -483,7 +483,7 @@ export default function AgentAudioWorkflow({
   }, [messages]);
 
   return (
-  <main className={`min-h-screen h-full w-full bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} ${colors.textColor}`} style={{ minHeight: '100vh', height: '100%', width: '100vw', position: 'fixed', top: 0, left: 0, zIndex: -1 }}>
+  <div className={`flex flex-col h-screen bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} ${colors.textColor}`}>
       {/* Header with agent image and name */}
       <header className="sticky top-0 z-40 py-3 px-4 bg-gradient-to-r from-black/60 to-transparent backdrop-blur-md">
         <div className="container mx-auto flex justify-between items-center gap-4">
@@ -554,8 +554,11 @@ export default function AgentAudioWorkflow({
             </div>
         </div>
       </header>
-  <div className="flex flex-col h-screen w-full">
-  <div className="flex-1 overflow-y-auto touch-pan-y px-2 md:px-4" style={{paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 80px)"}} ref={resultRef}>
+
+<div
+        ref={resultRef}
+        className={`flex-1 overflow-y-auto px-4 py-3`}
+      >
       {messages.length === 0 && (
         <div className="flex flex-col items-center justify-center h-full text-gray-300">
           <svg className="h-10 w-10 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8z" /></svg>
@@ -603,29 +606,17 @@ export default function AgentAudioWorkflow({
         </div>
       ))}
     </div>
-      {/* Barre d'input toujours visible en bas */}
-    </div>
+    {/* Barre d'input toujours visible en bas */}
     <form 
       onSubmit={handleSubmit} 
-      className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent flex items-center gap-2 z-50 md:px-4 md:py-4"
-      style={{ 
-        position: 'fixed',
-        left: 0,
-        bottom: 0,
-        width: '100%', 
-        boxSizing: 'border-box', 
-        pointerEvents: 'auto', 
-        background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)', 
-        padding: 'env(safe-area-inset-bottom, 16px) 8px 8px 8px', 
-        minHeight: '64px', 
-      }}
+      className={`p-3 border-t bg-white relative ${colors.textColor}`}
     >
           {/* Animation micro pendant l'enregistrement uniquement */}
           {micState === "recording" && (
             <ChatGPTMicAnimation amplitude={micAmplitude} text="Enregistrement..." color={colors.responseBg} />
           )}
-        <div className="flex-1 relative">
-          <div className="relative w-full max-w-xl mx-auto">
+      
+          <div className="relative flex items-end">
             <textarea
               ref={textareaRef}
               value={isLoading ? "" : (micState === "transcribing" ? "Transcription en cours..." : userInput)}
@@ -727,8 +718,8 @@ export default function AgentAudioWorkflow({
                 )}
             </div>
           </div>
-        </div>
+        
       </form>
-    </main>
+    </div>
   );
 }
