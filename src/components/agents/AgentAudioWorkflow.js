@@ -609,10 +609,13 @@ export default function AgentAudioWorkflow({
     {/* Barre d'input toujours visible en bas */}
     <form 
       onSubmit={handleSubmit} 
-      className={`p-3 border-t bg-white relative ${colors.textColor} fixed bottom-0 left-0 w-full z-50`}
+  className={`p-3 border-t bg-white/80 backdrop-blur-md shadow-lg sticky bottom-0 left-0 w-full z-50 ${colors.textColor}`}
       style={{
         width: '100vw',
         zIndex: 100,
+        position: 'sticky',
+        bottom: 0,
+        left: 0,
       }}
     >
           {/* Animation micro pendant l'enregistrement uniquement */}
