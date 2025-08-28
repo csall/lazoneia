@@ -642,9 +642,9 @@ export default function AgentAudioWorkflow({
                 autoComplete="off"
                 autoCorrect="off"
                 spellCheck={false}
-                className={`min-h-[36px] max-h-[160px] resize-none rounded-xl p-2 pr-24 border w-full sm:w-[500px] mx-auto ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none transition-all duration-200 text-base shadow-lg ${(micState === "recording" || micState === "transcribing") ? "bg-gray-300 text-gray-500" : isLoading ? `${colors.responseBg} text-gray-400` : "bg-white/80 text-gray-900"} ${micState === "transcribing" ? "text-center font-semibold" : ""}`}
+                className={`min-h-[44px] max-h-[160px] resize-none rounded-xl p-3 pr-20 border w-full sm:w-[500px] mx-auto text-base sm:text-lg ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none transition-all duration-200 shadow-lg ${(micState === "recording" || micState === "transcribing") ? "bg-gray-300 text-gray-500" : isLoading ? `${colors.responseBg} text-gray-400` : "bg-white/80 text-gray-900"} ${micState === "transcribing" ? "text-center font-semibold" : ""}`}
                 disabled={isLoading || micState === "recording" || micState === "transcribing"}
-                style={{resize: "none", overflow: "hidden", minHeight: "40px", maxHeight: "160px", boxSizing: 'border-box', paddingBottom: 'env(safe-area-inset-bottom, 16px)', textAlign: micState === "transcribing" ? "center" : undefined}}
+                style={{resize: "none", overflow: "hidden", minHeight: "44px", maxHeight: "160px", boxSizing: 'border-box', paddingBottom: 'env(safe-area-inset-bottom, 20px)', textAlign: micState === "transcribing" ? "center" : undefined, fontSize: '1rem'}}
               />
               {/* Micro déplacé avec les autres icônes */}
               {/* Croix à l'intérieur du textarea à gauche lors de l'enregistrement */}
@@ -657,16 +657,16 @@ export default function AgentAudioWorkflow({
           </div>
           {/* Boutons et sélecteurs en dehors du champ input */}
           <div className="flex items-center gap-2 mt-2">
-            <motion.button type="button" onClick={handleMicClick} className={`bg-transparent hover:bg-white/20 text-gray-700 rounded-full p-1 shadow-none border-none flex items-center justify-center transition-all duration-200 cursor-pointer ${micState === "transcribing" ? "opacity-60 cursor-wait" : ""}`} aria-label={micState === "idle" ? "Démarrer l'enregistrement" : micState === "recording" ? "Valider" : "Transcription en cours"} disabled={micState === "transcribing"} style={{ width: 28, height: 28 }}>
-              <ChatGPTMicIcon className="h-5 w-5 opacity-80" />
+            <motion.button type="button" onClick={handleMicClick} className={`bg-white/80 hover:bg-indigo-100 text-indigo-700 rounded-full p-2 shadow border border-indigo-200 flex items-center justify-center transition-all duration-200 cursor-pointer ${micState === "transcribing" ? "opacity-60 cursor-wait" : ""}`} aria-label={micState === "idle" ? "Démarrer l'enregistrement" : micState === "recording" ? "Valider" : "Transcription en cours"} disabled={micState === "transcribing"} style={{ width: 40, height: 40 }}>
+              <ChatGPTMicIcon className="h-6 w-6 opacity-80" />
             </motion.button>
             {tones.length > 0 && (
               <select
                 id="tone-select"
                 value={selectedTone}
                 onChange={e => setSelectedTone(e.target.value)}
-                className="px-2 py-1 rounded-lg border border-indigo-300 bg-white text-indigo-900 shadow text-xs cursor-pointer"
-                style={{ minWidth: 80 }}
+                className="px-3 py-2 rounded-lg border border-indigo-300 bg-white text-indigo-900 shadow text-sm cursor-pointer"
+                style={{ minWidth: 90 }}
               >
                 {tones.map(tone => (
                   <option key={tone.value} value={tone.value}>{tone.label}</option>
@@ -677,7 +677,7 @@ export default function AgentAudioWorkflow({
               id="language-select"
               value={targetLang}
               onChange={handleLanguageChange}
-              className={`px-2 py-1 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:outline-none transition-all text-xs cursor-pointer`}
+              className={`px-3 py-2 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:outline-none transition-all text-sm cursor-pointer`}
               style={{ background: `#E3DEDE` }}
             >
               <option value="français">FR</option>
@@ -691,13 +691,13 @@ export default function AgentAudioWorkflow({
             <button
               type="submit"
               disabled={isLoading || !userInput.trim()}
-              className={`ml-1 bg-gradient-to-r ${colors.buttonGradientFrom} ${colors.buttonGradientTo} ${colors.buttonHoverFrom} ${colors.buttonHoverTo} text-white font-bold p-2 rounded-full shadow-lg flex items-center justify-center text-lg transition-all duration-300 cursor-pointer`}
-              style={{ width: 32, height: 32 }}
+              className={`ml-2 bg-gradient-to-r ${colors.buttonGradientFrom} ${colors.buttonGradientTo} ${colors.buttonHoverFrom} ${colors.buttonHoverTo} text-white font-bold p-3 rounded-full shadow-lg flex items-center justify-center text-xl transition-all duration-300 cursor-pointer`}
+              style={{ width: 44, height: 44 }}
             >
               {isLoading ? (
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 19V5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M5 12L12 5L19 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 19V5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M5 12L12 5L19 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
               )}
             </button>
           </div>
