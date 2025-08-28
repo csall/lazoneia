@@ -331,26 +331,34 @@ export default function AgentAudioWorkflow({
     setTargetLang(e.target.value);
   };
   // Nouveau : historique des messages
-  const HISTORY_KEY = branding?.name ? `agent_chat_history_${branding.name}` : "agent_chat_history";
+  const [historyKey, setHistoryKey] = useState(null);
   const [messages, setMessages] = useState([]);
-  // Charger l'historique au montage
+  // Mémorise la clé d'agent dès que branding.name est disponible
   useEffect(() => {
-    if (typeof window !== "undefined" && HISTORY_KEY) {
-      const saved = localStorage.getItem(HISTORY_KEY);
+    if (branding?.name) {
+      setHistoryKey(`agent_chat_history_${branding.name}`);
+    }
+  }, [branding?.name]);
+
+  // Charge l'historique uniquement quand la clé est stable
+  useEffect(() => {
+    if (typeof window !== "undefined" && historyKey) {
+      const saved = localStorage.getItem(historyKey);
       if (saved) setMessages(JSON.parse(saved));
     }
-  }, [HISTORY_KEY]);
-  // Sauvegarder l'historique à chaque changement
+  }, [historyKey]);
+
+  // Sauvegarde l'historique à chaque changement
   useEffect(() => {
-    if (typeof window !== "undefined" && HISTORY_KEY) {
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(messages));
+    if (typeof window !== "undefined" && historyKey) {
+      localStorage.setItem(historyKey, JSON.stringify(messages));
     }
-  }, [messages, HISTORY_KEY]);
+  }, [messages, historyKey]);
   // Vider l'historique
   const clearHistory = () => {
     setMessages([]);
-    if (typeof window !== "undefined" && HISTORY_KEY) {
-      localStorage.removeItem(HISTORY_KEY);
+    if (typeof window !== "undefined" && historyKey) {
+      localStorage.removeItem(historyKey);
     }
   };
   // Supprimer un message individuel
