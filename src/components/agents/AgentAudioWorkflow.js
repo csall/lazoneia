@@ -428,11 +428,6 @@ export default function AgentAudioWorkflow({
       }
       setResponse(resultText);
       setMessages((prev) => [...prev, { role: "bot", text: resultText }]);
-      setTimeout(() => {
-        if (responseRef.current) {
-          responseRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
-        }
-      }, 150);
     } catch (err) {
       setResponse("Erreur lors de la requête : " + err.message);
       setMessages((prev) => [...prev, { role: "bot", text: "Erreur lors de la requête : " + err.message }]);
@@ -455,11 +450,6 @@ export default function AgentAudioWorkflow({
     }
   };
   const lastBotMsgRef = useRef(null);
-  useEffect(() => {
-    if (lastBotMsgRef.current) {
-      lastBotMsgRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
-    }
-  }, [messages]);
 
   return (
 
