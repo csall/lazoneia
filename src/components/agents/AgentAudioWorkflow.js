@@ -649,10 +649,15 @@ useEffect(() => {
           </div>
         </div>
       ))}
-      {/* Ajoute un espace imaginaire à la fin de la dernière réponse du bot */}
-      {messages.length > 0 && messages[messages.length-1].role === 'bot' && (
-        <div style={{height: '60px'}}></div>
-      )}
+      {/* Ajoute un espace imaginaire à la fin de la dernière réponse du bot, égal à la hauteur de l'input */}
+      {(() => {
+  if (messages.length > 0 && messages[messages.length-1].role === 'bot') {
+    const inputBar = document.querySelector('form');
+    const inputHeight = inputBar && inputBar.offsetHeight ? inputBar.offsetHeight : 110;
+    return <div style={{height: inputHeight + 'px'}}></div>;
+  }
+  return null;
+})()}
     </div>
     {/* Barre d'input toujours visible en bas */}
     {!isLoading && (
