@@ -331,25 +331,27 @@ export default function AgentAudioWorkflow({
     setTargetLang(e.target.value);
   };
   // Nouveau : historique des messages
-  const HISTORY_KEY = "agent_chat_history";
+  const HISTORY_KEY = branding?.name ? `agent_chat_history_${branding.name}` : "agent_chat_history";
   const [messages, setMessages] = useState([]);
   // Charger l'historique au montage
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && HISTORY_KEY) {
       const saved = localStorage.getItem(HISTORY_KEY);
       if (saved) setMessages(JSON.parse(saved));
     }
-  }, []);
+  }, [HISTORY_KEY]);
   // Sauvegarder l'historique à chaque changement
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && HISTORY_KEY) {
       localStorage.setItem(HISTORY_KEY, JSON.stringify(messages));
     }
-  }, [messages]);
+  }, [messages, HISTORY_KEY]);
   // Vider l'historique
   const clearHistory = () => {
     setMessages([]);
-    localStorage.removeItem(HISTORY_KEY);
+    if (typeof window !== "undefined" && HISTORY_KEY) {
+      localStorage.removeItem(HISTORY_KEY);
+    }
   };
   // Supprimer un message individuel
   const deleteMessage = (idx) => {
