@@ -41,15 +41,7 @@ export default function AgentAudioWorkflow({
   const resultRef = useRef(null);
   const [micAmplitude, setMicAmplitude] = useState([]);
 
-  // Scroll to input on mount (mobile)
-  useEffect(() => {
-    setTimeout(() => {
-      if (textareaRef?.current) {
-        textareaRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    }, 100);
-  }, []);
+  // Suppression du scroll automatique sur mobile
 
   useEffect(() => {
     if (resultRef.current && (userInput || micState === "transcribing")) {
