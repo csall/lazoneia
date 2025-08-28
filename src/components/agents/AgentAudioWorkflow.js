@@ -41,13 +41,6 @@ export default function AgentAudioWorkflow({
   const resultRef = useRef(null);
   const [micAmplitude, setMicAmplitude] = useState([]);
 
-  // Suppression du scroll automatique sur mobile
-
-  useEffect(() => {
-    if (resultRef.current && (userInput || micState === "transcribing")) {
-      resultRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  }, [userInput, micState]);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   // Nouvelle gestion du micro façon ChatGPT
@@ -322,13 +315,6 @@ export default function AgentAudioWorkflow({
       setIsCancelled(false);
     }
   };
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-    setShowMic(!userInput || userInput.trim().length === 0);
-  }, [userInput]);
   // Sélecteur de ton comme pour la langue
   const [selectedTone, setSelectedTone] = useState(tones.length > 0 ? tones[0].value : "");
   const handleToneSelection = (tone) => {
