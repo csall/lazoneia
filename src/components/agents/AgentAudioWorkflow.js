@@ -455,20 +455,6 @@ export default function AgentAudioWorkflow({
     }
   };
   useEffect(() => {
-    if (micState === "transcribing" && !isCancelled) {
-      console.log(
-        "Transcription completed, attempting to click the submit button."
-      );
-      const submitButton = document.querySelector('button[type="submit"]');
-      if (submitButton) {
-        console.log("Submit button found, clicking it.");
-        submitButton.click();
-      } else {
-        console.error("Submit button not found.");
-      }
-    }
-  }, [micState, isCancelled]);
-  useEffect(() => {
     if (resultRef.current) {
       resultRef.current.scrollTop = resultRef.current.scrollHeight;
     }
@@ -552,7 +538,7 @@ export default function AgentAudioWorkflow({
                     )}
                   </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-white/80 max-w-xs">{branding?.description}</span> 
+                  <span className="text-[10px] text-white/80 max-w-xs">{branding?.description}</span> 
                   {/* Suppression déplacée à côté du select langue */}
                 </div>
               </div>
@@ -618,7 +604,7 @@ export default function AgentAudioWorkflow({
     {/* Barre d'input toujours visible en bas */}
     <form 
       onSubmit={handleSubmit} 
-  className={`p-3 border-t bg-white/80 backdrop-blur-md shadow-lg sticky bottom-0 left-0 w-full z-50 ${colors.textColor}`}
+  className={`p-3 border-t bg-gradient-to-r from-black/60 to-transparent backdrop-blur-md shadow-lg sticky bottom-0 left-0 w-full z-50 ${colors.textColor}`}
       style={{
         width: '100vw',
         zIndex: 100,
