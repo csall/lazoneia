@@ -556,7 +556,7 @@ export default function AgentAudioWorkflow({
       </header>
   <div className="container mx-auto px-2 py-2 flex flex-col h-screen md:px-4 md:py-4">
         {/* Zone de chat façon ChatGPT mobile */}
-        <div className="flex-1 w-full overflow-y-auto touch-pan-y flex flex-col" style={{paddingBottom: "env(safe-area-inset-bottom, 16px)"}} ref={resultRef}>
+  <div className="flex-1 w-full overflow-y-auto touch-pan-y flex flex-col" style={{paddingBottom: "calc(env(safe-area-inset-bottom, 16px) + 80px)"}} ref={resultRef}>
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full text-gray-300">
               <svg className="h-10 w-10 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8z" /></svg>
@@ -608,21 +608,21 @@ export default function AgentAudioWorkflow({
   </div>
       {/* Barre d'input toujours visible en bas */}
     </div>
-      <form 
-        onSubmit={handleSubmit} 
-        className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent flex items-center gap-2 z-50 md:px-4 md:py-4"
-        style={{ 
-          position: 'fixed', 
-          left: 0, 
-          bottom: 0, 
-          width: '100%', 
-          boxSizing: 'border-box', 
-          pointerEvents: 'auto', 
-          background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)', 
-          padding: 'env(safe-area-inset-bottom, 16px) 8px 8px 8px', 
-          minHeight: '64px', 
-        }}
-      >
+    <form 
+      onSubmit={handleSubmit} 
+      className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent flex items-center gap-2 z-50 md:px-4 md:py-4"
+      style={{ 
+        position: 'fixed',
+        left: 0,
+        bottom: 0,
+        width: '100%', 
+        boxSizing: 'border-box', 
+        pointerEvents: 'auto', 
+        background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)', 
+        padding: 'env(safe-area-inset-bottom, 16px) 8px 8px 8px', 
+        minHeight: '64px', 
+      }}
+    >
           {/* Animation micro pendant l'enregistrement uniquement */}
           {micState === "recording" && (
             <ChatGPTMicAnimation amplitude={micAmplitude} text="Enregistrement..." color={colors.responseBg} />
