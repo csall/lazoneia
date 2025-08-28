@@ -639,7 +639,7 @@ export default function AgentAudioWorkflow({
                 autoComplete="off"
                 autoCorrect="off"
                 spellCheck={false}
-                className={`min-h-[44px] max-h-[160px] resize-none rounded-xl p-3 pr-20 border w-full sm:w-[500px] mx-auto text-base sm:text-lg ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none transition-all duration-200 shadow-lg ${(micState === "recording" || micState === "transcribing") ? "bg-gray-300 text-gray-500" : isLoading ? `${colors.responseBg} text-gray-400` : "bg-white/80 text-gray-900"} ${micState === "transcribing" ? "text-center font-semibold" : ""}`}
+                className={`min-h-[44px] max-h-[160px] resize-none rounded-xl p-3 pr-20 border w-full max-w-[500px] mx-auto text-base sm:text-lg ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none transition-all duration-200 shadow-lg ${(micState === "recording" || micState === "transcribing") ? "bg-gray-300 text-gray-500" : isLoading ? `${colors.responseBg} text-gray-400` : "bg-white/80 text-gray-900"} ${micState === "transcribing" ? "text-center font-semibold" : ""}`}
                 disabled={isLoading || micState === "recording" || micState === "transcribing"}
                 style={{resize: "none", overflow: "hidden", minHeight: "44px", maxHeight: "160px", boxSizing: 'border-box', paddingBottom: 'env(safe-area-inset-bottom, 20px)', textAlign: micState === "transcribing" ? "center" : undefined, fontSize: '1rem'}}
               />
