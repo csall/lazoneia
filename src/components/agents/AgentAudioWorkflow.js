@@ -466,13 +466,10 @@ export default function AgentAudioWorkflow({
 // Pour éviter que l'input ne superpose le dernier message sur mobile, ajoute un padding-bottom dynamique à la zone scrollable
 useEffect(() => {
   if (resultRef.current) {
-    // Hauteur de l'input (form)
     const inputBar = document.querySelector('form');
-    if (inputBar) {
-      resultRef.current.style.paddingBottom = inputBar.offsetHeight + 'px';
-    } else {
-      resultRef.current.style.paddingBottom = '110px'; // fallback
-    }
+    const inputHeight = inputBar ? inputBar.offsetHeight : 110;
+    resultRef.current.scrollTop = resultRef.current.scrollHeight - inputHeight;
+    resultRef.current.style.paddingBottom = inputHeight + 'px';
   }
 }, [isLoading, messages]);
 // Supprime l'espace du clavier mobile quand il est fermé
@@ -495,7 +492,7 @@ useEffect(() => {
       if (resultRef.current) {
         resultRef.current.style.paddingBottom = '0px';
       }
-    }, 100); // délai pour laisser le clavier se fermer
+    }, 0); // délai pour laisser le clavier se fermer
   };
   window.addEventListener('focusout', handleFocusOut);
   return () => {
