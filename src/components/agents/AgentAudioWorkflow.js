@@ -460,8 +460,14 @@ export default function AgentAudioWorkflow({
   useEffect(() => {
   if (!isLoading && messages.length > 0) {
     // Scroll sur la fin du dernier message du bot
-    if (lastBotMsgRef.current) {
-      lastBotMsgRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    // Trouve l'index du dernier message du bot
+    const lastBotIdx = messages.map(m => m.role).lastIndexOf("bot");
+    if (lastBotIdx !== -1) {
+      const botMsgElements = document.querySelectorAll('[data-botmsg]');
+      const el = botMsgElements[lastBotIdx];
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "end" });
+      }
     }
   }
 }, [isLoading, messages]);
@@ -573,6 +579,7 @@ export default function AgentAudioWorkflow({
           key={idx}
           className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} mb-2 group"}`}
           ref={msg.role === "bot" && idx === messages.length - 1 ? lastBotMsgRef : null}
+          {...(msg.role === "bot" ? { 'data-botmsg': true } : {})}
         >
           <div className="flex items-start">
             <button onClick={() => deleteMessage(idx)} className="mr-2 mt-1 text-gray-400 hover:text-red-500 transition cursor-pointer" title="Supprimer">
