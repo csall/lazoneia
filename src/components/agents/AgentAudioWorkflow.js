@@ -451,6 +451,12 @@ export default function AgentAudioWorkflow({
   };
   const lastBotMsgRef = useRef(null);
 
+  useEffect(() => {
+    if (lastBotMsgRef.current) {
+      lastBotMsgRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+  }, [messages]);
+
   return (
 
   <main className={`flex flex-col h-screen bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} ${colors.textColor}`}>
