@@ -631,11 +631,21 @@ export default function AgentAudioWorkflow({
                   handleSubmit(e);
                 }
               }}
-              placeholder={isLoading ? "" : ((micState === "recording" || micState === "transcribing") ? "" : "")}
+              onFocus={e => {
+                setTimeout(() => {
+                  if (textareaRef.current) {
+                    textareaRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                  }
+                }, 200);
+              }}
+              inputMode="text"
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck={false}
               className={`w-full min-h-[36px] max-h-[80px] resize-none rounded-xl p-2 pr-24 border ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none transition-all duration-200 text-base shadow-lg ${(micState === "recording" || micState === "transcribing") ? "bg-gray-300 text-gray-500" : isLoading ? `${colors.responseBg} text-gray-400` : "bg-white/80 text-gray-900"} ${micState === "transcribing" ? "text-center font-semibold" : ""}`}
               rows={1}
               disabled={isLoading || micState === "recording" || micState === "transcribing"}
-              style={{overflowY: 'auto', textAlign: micState === "transcribing" ? "center" : undefined, whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden"}}
+              style={{overflowY: 'auto', textAlign: micState === "transcribing" ? "center" : undefined, whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden", width: '100vw', maxWidth: '100vw', boxSizing: 'border-box', paddingBottom: 'env(safe-area-inset-bottom, 16px)'}}
             />
             {/* Croix à l'intérieur du textarea à gauche lors de l'enregistrement */}
             {micState === "recording" && (
