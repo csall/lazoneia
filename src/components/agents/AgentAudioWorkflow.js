@@ -555,7 +555,7 @@ export default function AgentAudioWorkflow({
         </div>
       </header>
   <div className="flex flex-col h-screen w-full">
-  <div className="flex-1 overflow-y-auto touch-pan-y px-2 md:px-4" style={{paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 180px)"}} ref={resultRef}>
+  <div className="flex-1 overflow-y-auto touch-pan-y px-2 md:px-4" style={{paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 220px)"}} ref={resultRef}>
       {messages.length === 0 && (
         <div className="flex flex-col items-center justify-center h-full text-gray-300">
           <svg className="h-10 w-10 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8z" /></svg>
