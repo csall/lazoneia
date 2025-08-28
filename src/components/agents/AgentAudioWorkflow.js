@@ -463,6 +463,19 @@ export default function AgentAudioWorkflow({
   }
 }, [isLoading, messages]);
 
+// Pour éviter que l'input ne superpose le dernier message sur mobile, ajoute un padding-bottom dynamique à la zone scrollable
+useEffect(() => {
+  if (resultRef.current) {
+    // Hauteur de l'input (form)
+    const inputBar = document.querySelector('form');
+    if (inputBar) {
+      resultRef.current.style.paddingBottom = inputBar.offsetHeight + 'px';
+    } else {
+      resultRef.current.style.paddingBottom = '110px'; // fallback
+    }
+  }
+}, [isLoading, messages]);
+
   return (
 
   <main className={`flex flex-col h-screen bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} ${colors.textColor}`}>
