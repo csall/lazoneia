@@ -596,6 +596,16 @@ useEffect(() => {
       className={`flex-1 overflow-y-auto px-4 py-3 pt-[80px] pb-[110px]`}
       style={{ WebkitOverflowScrolling: "touch" }}
     >
+      {/* Ajoute un espace imaginaire en haut pour le scroll sur mobile, égal à la hauteur du header */}
+      {(() => {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+  if (isMobile) {
+    const headerBar = document.querySelector('header');
+    const headerHeight = headerBar && headerBar.offsetHeight ? headerBar.offsetHeight : 80;
+    return <div style={{height: headerHeight + 'px'}}></div>;
+  }
+  return null;
+})()}
       {messages.length === 0 && (
         <div className="flex flex-col items-center justify-center h-full text-gray-300">
           <svg className="h-10 w-10 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8z" /></svg>
@@ -649,9 +659,10 @@ useEffect(() => {
           </div>
         </div>
       ))}
-      {/* Ajoute un espace imaginaire à la fin de la dernière réponse du bot, égal à la hauteur de l'input */}
+      {/* Ajoute un espace imaginaire à la fin de la dernière réponse du bot, égal à la hauteur de l'input, uniquement sur mobile */}
       {(() => {
-  if (messages.length > 0 && messages[messages.length-1].role === 'bot') {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+  if (isMobile && messages.length > 0 && messages[messages.length-1].role === 'bot') {
     const inputBar = document.querySelector('form');
     const inputHeight = inputBar && inputBar.offsetHeight ? inputBar.offsetHeight : 110;
     return <div style={{height: inputHeight + 'px'}}></div>;
