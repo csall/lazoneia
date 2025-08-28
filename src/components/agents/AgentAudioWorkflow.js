@@ -163,39 +163,9 @@ export default function AgentAudioWorkflow({
   const micButtonRef = useRef(null);
   const tempTranscriptRef = useRef("");
   const recordingActiveRef = useRef(false);
-  // Corrige l'espace blanc en bas quand le clavier mobile se ferme
-  useEffect(() => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-    const handleBlur = () => {
-      // Réinitialise le padding-bottom du parent
-      const parent = textarea.parentElement;
-      if (parent) {
-        parent.style.paddingBottom = '';
-      }
-    };
-    textarea.addEventListener('blur', handleBlur);
-    return () => {
-      textarea.removeEventListener('blur', handleBlur);
-    };
-  }, []);
 
-  // Gère l'espace blanc laissé par le clavier mobile en surveillant le focus du textarea
-useEffect(() => {
-  const textarea = textareaRef.current;
-  if (!textarea) return;
-  const handleBlur = () => {
-    if (window.innerWidth <= 768 && resultRef.current) {
-      resultRef.current.style.paddingBottom = '0px';
-      // Force le scroll tout en bas pour éviter l'espace
-      resultRef.current.scrollTop = resultRef.current.scrollHeight;
-    }
-  };
-  textarea.addEventListener('blur', handleBlur);
-  return () => {
-    textarea.removeEventListener('blur', handleBlur);
-  };
-}, []);
+  // Gestion avancée du clavier mobile : focus, blur, resize
+
   useEffect(() => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -348,8 +318,60 @@ useEffect(() => {
     setTargetLang(e.target.value);
   };
   // Nouveau : historique des messages
-  const [historyKey, setHistoryKey] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [historyKey, setHistoryKey] = useState(null);
+    useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea || !resultRef.current) return;
+    let lastWindowHeight = window.innerHeight;
+    let keyboardOpen = false;
+
+    const adjustPaddingAndScroll = () => {
+      if (window.innerWidth > 768) return;
+      const inputBar = document.querySelector('form');
+      const inputHeight = inputBar && inputBar.offsetHeight ? inputBar.offsetHeight : 110;
+      // Si le clavier est ouvert, on garde le padding
+      if (keyboardOpen) {
+        resultRef.current.style.paddingBottom = inputHeight + 'px';
+        resultRef.current.scrollTop = resultRef.current.scrollHeight - inputHeight;
+      } else {
+        // Si le clavier est fermé, on retire le padding
+        resultRef.current.style.paddingBottom = '0px';
+        resultRef.current.scrollTop = resultRef.current.scrollHeight;
+      }
+    };
+
+    const handleFocus = () => {
+      keyboardOpen = true;
+      setTimeout(adjustPaddingAndScroll, 100);
+    };
+    const handleBlur = () => {
+      keyboardOpen = false;
+      setTimeout(adjustPaddingAndScroll, 100);
+    };
+    const handleResize = () => {
+      // Si la hauteur de la fenêtre diminue, le clavier s'ouvre
+      if (window.innerWidth <= 768) {
+        if (window.innerHeight < lastWindowHeight) {
+          keyboardOpen = true;
+        } else {
+          keyboardOpen = false;
+        }
+        setTimeout(adjustPaddingAndScroll, 100);
+        lastWindowHeight = window.innerHeight;
+      }
+    };
+
+    textarea.addEventListener('focus', handleFocus);
+    textarea.addEventListener('blur', handleBlur);
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      textarea.removeEventListener('focus', handleFocus);
+      textarea.removeEventListener('blur', handleBlur);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [isLoading, messages]);
   // Mémorise la clé d'agent dès que branding.name est disponible
   useEffect(() => {
     if (branding?.name) {
