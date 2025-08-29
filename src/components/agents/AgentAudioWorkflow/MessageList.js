@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 export default function MessageList({ messages, colors, lastBotMsgRef, resultRef, handleCopy, copiedIdx, deleteMessage }) {
   // Header et input height fixes (à ajuster si besoin)
@@ -102,25 +103,35 @@ export default function MessageList({ messages, colors, lastBotMsgRef, resultRef
               {/* Actions bot en bas à gauche, animées */}
               {msg.role === "bot" && msg.text !== "__loading__" && (
                 <div className="flex gap-2 mt-4">
-                  <button type="button" onClick={() => handleCopy(msg.text, idx)} aria-label="Copier le message"
+                  <motion.button
+                    type="button"
+                    onClick={() => handleCopy(msg.text, idx)}
+                    aria-label="Copier le message"
                     className={`p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-200 cursor-pointer bg-white/80 hover:bg-indigo-100 text-indigo-600 shadow-lg border border-indigo-200 ${copiedIdx === idx ? 'animate-pulse bg-green-100 text-green-700' : ''}`}
                     style={{ minWidth: '38px', minHeight: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', zIndex: 10 }}
+                    whileTap={{ scale: 0.85 }}
+                    whileHover={{ scale: 1.08, boxShadow: '0 0 0 4px #6366f1' }}
                   >
                     {copiedIdx === idx ? (
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                     ) : (
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2"/><rect x="3" y="3" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2"/></svg>
                     )}
-                  </button>
-                  <button type="button" onClick={() => deleteMessage(idx)} aria-label="Supprimer le message"
+                  </motion.button>
+                  <motion.button
+                    type="button"
+                    onClick={() => deleteMessage(idx)}
+                    aria-label="Supprimer le message"
                     className="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200 cursor-pointer bg-white/80 hover:bg-gray-100 text-gray-500 shadow-lg border border-gray-200"
                     style={{ minWidth: '38px', minHeight: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', zIndex: 10 }}
+                    whileTap={{ scale: 0.85 }}
+                    whileHover={{ scale: 1.08, boxShadow: '0 0 0 4px #6b7280' }}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <line x1="6" y1="6" x2="18" y2="18" stroke="#6b7280" strokeWidth="2" strokeLinecap="round"/>
                       <line x1="6" y1="18" x2="18" y2="6" stroke="#6b7280" strokeWidth="2" strokeLinecap="round"/>
                     </svg>
-                  </button>
+                  </motion.button>
                 </div>
               )}
             </div>
