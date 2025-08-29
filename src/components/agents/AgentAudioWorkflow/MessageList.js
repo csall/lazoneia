@@ -10,6 +10,13 @@ export default function MessageList({ messages, colors, lastBotMsgRef, resultRef
       }
     }
   }, []);
+  // Remet le focus sur l'input après chaque réponse du bot
+  React.useEffect(() => {
+    if (messages.length > 0 && messages[messages.length - 1].role === 'bot') {
+      const textarea = document.querySelector('form textarea');
+      if (textarea) textarea.focus();
+    }
+  }, [messages]);
   return (
     <div ref={resultRef} className={`flex-1 overflow-y-auto px-4 py-3 pt-[80px] pb-[110px]`} style={{ WebkitOverflowScrolling: "touch" }}>
       {/* Espace imaginaire en haut pour le scroll, égal à la hauteur du header */}
