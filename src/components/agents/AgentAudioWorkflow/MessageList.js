@@ -1,26 +1,43 @@
 import React from "react";
 
 export default function MessageList({ messages, colors, lastBotMsgRef, resultRef, handleCopy, copiedIdx, deleteMessage }) {
-  const [headerHeight, setHeaderHeight] = React.useState(80);
+  // Header et input height fixes (à ajuster si besoin)
+  const headerHeight = 80;
+  const inputHeight = 80;
+
+  // Scroll automatique sur le dernier message du bot
   React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const headerBar = document.querySelector('header');
-      if (headerBar && headerBar.offsetHeight) {
-        setHeaderHeight(headerBar.offsetHeight);
-      }
+    if (lastBotMsgRef && lastBotMsgRef.current) {
+      lastBotMsgRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
-  }, []);
-  // Remet le focus sur l'input après chaque réponse du bot
+  }, [messages, lastBotMsgRef]);
+
+  // Focus automatique sur l'input après chaque réponse du bot
   React.useEffect(() => {
     if (messages.length > 0 && messages[messages.length - 1].role === 'bot') {
       const textarea = document.querySelector('form textarea');
       if (textarea) textarea.focus();
     }
   }, [messages]);
+
   return (
-    <div ref={resultRef} className={`flex-1 overflow-y-auto px-4 py-3 pt-[80px] pb-[110px]`} style={{ WebkitOverflowScrolling: "touch" }}>
-      {/* Espace imaginaire en haut pour le scroll, égal à la hauteur du header */}
-      <div style={{height: headerHeight + 'px'}}></div>
+    <div
+      ref={resultRef}
+      className="w-full"
+      style={{
+        position: 'absolute',
+        top: headerHeight,
+        bottom: inputHeight,
+        left: 0,
+        right: 0,
+        overflowY: 'auto',
+        WebkitOverflowScrolling: 'touch',
+        overscrollBehavior: 'contain',
+        background: 'transparent',
+      }}
+    >
+      {/* Espace imaginaire en haut */}
+      <div style={{height: 24}}></div>
       {messages.length === 0 && (
         <div className="flex flex-col items-center justify-center h-full text-gray-300">
           <svg className="h-10 w-10 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8z" /></svg>
@@ -28,8 +45,15 @@ export default function MessageList({ messages, colors, lastBotMsgRef, resultRef
         </div>
       )}
       {messages.map((msg, idx) => (
-        <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} mb-2 group"}`}>
-          <div className="flex items-start">
+        <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} mb-6 group"}`}
+          style={{
+            marginLeft: msg.role === "user" ? "auto" : 0,
+            marginRight: msg.role === "bot" ? "auto" : 0,
+            maxWidth: '100%',
+            width: '100%',
+          }}
+        >
+          <div className="flex items-start w-full">
             <button onClick={() => deleteMessage(idx)} className="mr-2 mt-1 text-gray-400 hover:text-red-500 transition cursor-pointer" title="Supprimer">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
@@ -83,15 +107,12 @@ export default function MessageList({ messages, colors, lastBotMsgRef, resultRef
           </div>
         </div>
       ))}
-      {/* Ajoute un espace imaginaire à la fin de la dernière réponse du bot, égal à la hauteur de l'input */}
-      {(() => {
-        if (messages.length > 0 && messages[messages.length-1].role === 'bot') {
-          const inputBar = typeof window !== 'undefined' ? document.querySelector('form') : null;
-          const inputHeight = inputBar && inputBar.offsetHeight ? inputBar.offsetHeight : 110;
-          return <div style={{height: inputHeight + 'px'}}></div>;
-        }
-        return null;
-      })()}
+      {/* Grand espace imaginaire sous le dernier message du bot */}
+      {messages.length > 0 && messages[messages.length - 1].role === 'bot' && (
+        <div style={{height: '20vh'}}></div>
+      )}
+      {/* Espace imaginaire en bas */}
+      <div style={{height: 24}}></div>
     </div>
   );
 }
