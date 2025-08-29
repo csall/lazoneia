@@ -69,7 +69,7 @@ export default function MessageList({ messages, colors, lastBotMsgRef, resultRef
           <div className="flex items-start w-full">
             <div
               ref={msg.role === 'bot' && idx === messages.length - 1 ? lastBotMsgRef : null}
-              className={`max-w-[90vw] sm:max-w-[55vw] px-5 py-4 rounded-3xl shadow-xl text-base sm:text-lg relative font-sans message-bubble ${msg.role === "user" ? "bg-white text-gray-900 border border-gray-200" : "bg-gradient-to-br from-indigo-500 via-purple-500 to-blue-400 text-white border-0"}`}
+              className={`max-w-[90vw] sm:max-w-[55vw] px-5 py-4 rounded-3xl shadow-xl text-base sm:text-lg relative font-sans message-bubble ${msg.role === "user" ? "bg-white text-gray-900 border border-gray-200" : "bg-indigo-100 text-indigo-900 border border-indigo-200"}`}
               style={{
                 whiteSpace: 'pre-wrap',
                 wordBreak: 'break-word',
@@ -82,7 +82,7 @@ export default function MessageList({ messages, colors, lastBotMsgRef, resultRef
                 lineHeight: '1.6',
                 maxWidth: '90vw',
                 width: '100%',
-                background: msg.role === "user" ? "#fff" : undefined,
+                background: msg.role === "user" ? "#fff" : (msg.role === "bot" ? "#e0e7ff" : undefined),
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'flex-end',
