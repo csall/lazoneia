@@ -29,14 +29,16 @@ export default function InputBar({
       }}
     >
       <motion.div
-        className="flex items-center w-full max-w-full mx-auto rounded-2xl px-3 py-2 sm:max-w-2xl sm:px-4 sm:py-3 bg-white shadow-lg"
-        initial={{ y: 40, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
+        className="flex items-center w-full max-w-full mx-auto rounded-3xl px-2 py-2 sm:max-w-2xl sm:px-4 sm:py-3 bg-white/60 backdrop-blur-lg shadow-2xl border border-indigo-200"
+        initial={{ y: 40, opacity: 0, scale: 0.98 }}
+        animate={{ y: 0, opacity: 1, scale: 1 }}
+        whileFocus={{ boxShadow: '0 0 0 4px #6366f1' }}
         transition={{ type: "spring", stiffness: 220, damping: 22 }}
         style={{
-          boxShadow: "0 2px 16px rgba(60,60,120,0.10)",
-          background: "#fff",
-          borderRadius: 18,
+          boxShadow: "0 8px 32px rgba(80,80,180,0.10)",
+          background: "rgba(255,255,255,0.7)",
+          borderRadius: 24,
+          border: '1.5px solid #c7d2fe',
         }}
       >
         {/* Annuler enregistrement */}
@@ -107,22 +109,25 @@ export default function InputBar({
               micState === "transcribing"
             }
             rows={1}
-            className={`w-full min-h-[44px] max-h-[120px] resize-none rounded-xl px-4 pr-12 py-3 text-base bg-white text-gray-900 shadow-none border border-indigo-400/80 focus:ring-2 focus:ring-indigo-400/80 transition-all duration-300 scrollbar-hide ${
+            className={`w-full min-h-[44px] max-h-[120px] resize-none rounded-2xl px-4 pr-12 py-3 text-base bg-white/80 text-gray-900 shadow-none border-2 border-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400/80 transition-all duration-300 scrollbar-hide placeholder:italic placeholder:text-indigo-400 placeholder:opacity-80 ${
               micState === "transcribing" ? "text-center font-semibold" : ""
             } sm:text-lg sm:px-5 sm:pr-20 sm:py-4`}
             style={{
               boxSizing: "border-box",
-              fontSize: "1.08rem",
+              fontSize: "1.12rem",
               letterSpacing: "0.01em",
               scrollbarWidth: "none",
               fontFamily: 'Inter, ui-sans-serif, system-ui',
               outline: 'none',
+              background: 'rgba(255,255,255,0.85)',
+              transition: 'all 0.3s cubic-bezier(.4,2,.3,1)',
             }}
             inputMode="text"
             autoComplete="off"
             autoCorrect="off"
             spellCheck={false}
-            placeholder=""
+            placeholder={isFocused ? "Écrivez votre message..." : "Message..."}
+            animate={{ boxShadow: isFocused ? '0 0 0 2px #6366f1' : '0 2px 16px rgba(60,60,120,0.10)' }}
           />
           {/* Animation amplitude micro en overlay dans le textarea */}
           {micState === "recording" && micAmplitude && (
