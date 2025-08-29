@@ -197,56 +197,34 @@ export default function AgentAudioWorkflow({
   // Nouveau : historique des messages
   const [messages, setMessages] = useState([]);
   const [historyKey, setHistoryKey] = useState(null);
-    useEffect(() => {
+  // Gestion du padding pour le clavier mobile façon ChatGPT
+  useEffect(() => {
     const textarea = textareaRef.current;
     if (!textarea || !resultRef.current) return;
-    let lastWindowHeight = window.innerHeight;
-    let keyboardOpen = false;
-
-    const adjustPaddingAndScroll = () => {
-      if (window.innerWidth > 768) return;
-      const inputBar = document.querySelector('form');
-      const inputHeight = inputBar && inputBar.offsetHeight ? inputBar.offsetHeight : 110;
-      // Si le clavier est ouvert, on garde le padding
-      if (keyboardOpen) {
-        resultRef.current.style.paddingBottom = inputHeight + 'px';
-        resultRef.current.scrollTop = resultRef.current.scrollHeight - inputHeight;
-      } else {
-        // Si le clavier est fermé, on retire le padding
-        resultRef.current.style.paddingBottom = '0px';
-        resultRef.current.scrollTop = resultRef.current.scrollHeight;
-      }
-    };
-
+    const inputBar = document.querySelector('form');
+    const inputHeight = inputBar && inputBar.offsetHeight ? inputBar.offsetHeight : 72;
+    // Ajoute le padding uniquement quand l'input est focus
     const handleFocus = () => {
-      keyboardOpen = true;
-      setTimeout(adjustPaddingAndScroll, 100);
+      if (window.innerWidth <= 768) {
+        resultRef.current.style.paddingBottom = inputHeight + 'px';
+        setTimeout(() => {
+          resultRef.current.scrollTop = resultRef.current.scrollHeight;
+        }, 100);
+      }
     };
     const handleBlur = () => {
-      keyboardOpen = false;
-      setTimeout(adjustPaddingAndScroll, 100);
-    };
-    const handleResize = () => {
-      // Si la hauteur de la fenêtre diminue, le clavier s'ouvre
       if (window.innerWidth <= 768) {
-        if (window.innerHeight < lastWindowHeight) {
-          keyboardOpen = true;
-        } else {
-          keyboardOpen = false;
-        }
-        setTimeout(adjustPaddingAndScroll, 100);
-        lastWindowHeight = window.innerHeight;
+        resultRef.current.style.paddingBottom = '0px';
+        setTimeout(() => {
+          resultRef.current.scrollTop = resultRef.current.scrollHeight;
+        }, 100);
       }
     };
-
     textarea.addEventListener('focus', handleFocus);
     textarea.addEventListener('blur', handleBlur);
-    window.addEventListener('resize', handleResize);
-
     return () => {
       textarea.removeEventListener('focus', handleFocus);
       textarea.removeEventListener('blur', handleBlur);
-      window.removeEventListener('resize', handleResize);
     };
   }, [isLoading, messages]);
   // Mémorise la clé d'agent dès que branding.name est disponible
@@ -393,44 +371,9 @@ export default function AgentAudioWorkflow({
   }
 }, [isLoading, messages]);
 
-// Pour éviter que l'input ne superpose le dernier message sur mobile, ajoute un padding-bottom dynamique à la zone scrollable
-useEffect(() => {
-  if (resultRef.current) {
-    const inputBar = document.querySelector('form');
-    const inputHeight = inputBar && inputBar.offsetHeight ? inputBar.offsetHeight : 110;
-    resultRef.current.style.paddingBottom = inputHeight + 'px';
-    resultRef.current.scrollTop = resultRef.current.scrollHeight - inputHeight;
-  }
-}, [isLoading, messages]);
-// Supprime l'espace du clavier mobile quand il est fermé
-useEffect(() => {
-  const handleResize = () => {
-    if (resultRef.current) {
-      // Sur mobile, si le clavier est fermé, on enlève le padding-bottom
-      if (window.innerWidth <= 768) {
-        resultRef.current.style.paddingBottom = '0px';
-      }
-    }
-  };
-  window.addEventListener('resize', handleResize);
-  return () => {
-    window.removeEventListener('resize', handleResize);
-  };
-}, []);
-// Supprime l'espace blanc après validation du clavier mobile
-useEffect(() => {
-  const handleFocusOut = () => {
-    setTimeout(() => {
-      if (resultRef.current) {
-        resultRef.current.style.paddingBottom = '0px';
-      }
-    }, 0); // délai pour laisser le clavier se fermer
-  };
-  window.addEventListener('focusout', handleFocusOut);
-  return () => {
-    window.removeEventListener('focusout', handleFocusOut);
-  };
-}, []);
+// ...supprimé, géré par le focus/blur ci-dessus...
+// ...supprimé, géré par le focus/blur ci-dessus...
+// ...supprimé, géré par le blur ci-dessus...
 // Scroll tout en bas à l'ouverture de la page (après le rendu des messages)
 useEffect(() => {
   const timer = setTimeout(() => {
