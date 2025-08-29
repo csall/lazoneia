@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export default function InputBar({ micState, micAmplitude, isLoading, textareaRef, userInput, setUserInput, handleSubmit, cancelRecording, handleMicClick, colors }) {
   return (
-    <form onSubmit={handleSubmit} className={`p-3 border-t bg-gradient-to-r from-black/60 to-transparent backdrop-blur-md shadow-lg fixed bottom-0 left-0 w-full z-50 ${colors.textColor}`} style={{ width: '100vw', zIndex: 100, position: 'fixed', bottom: 0, left: 0, boxShadow: '0 -2px 16px rgba(0,0,0,0.08)', paddingBottom: 'env(safe-area-inset-bottom, 20px)' }}>
+    <form onSubmit={handleSubmit} className={`p-3 bg-gradient-to-r from-black/60 to-transparent backdrop-blur-md shadow-lg fixed bottom-0 left-0 w-full z-50 ${colors.textColor}`} style={{ width: '100vw', zIndex: 100, position: 'fixed', bottom: 0, left: 0, boxShadow: '0 -2px 16px rgba(0,0,0,0.08)', paddingBottom: 'env(safe-area-inset-bottom, 20px)' }}>
       {micState === "recording" && (
         <ChatGPTMicAnimation amplitude={micAmplitude} text="Enregistrement..." color={colors.responseBg} />
       )}
