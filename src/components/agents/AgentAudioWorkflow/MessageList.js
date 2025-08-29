@@ -33,8 +33,23 @@ export default function MessageList({ messages, colors, lastBotMsgRef, resultRef
             <button onClick={() => deleteMessage(idx)} className="mr-2 mt-1 text-gray-400 hover:text-red-500 transition cursor-pointer" title="Supprimer">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
-            <div className={`max-w-[70%] px-4 py-2 rounded-2xl shadow-md text-sm relative ${msg.role === "user" ? "bg-white text-gray-900" : `${colors.responseBg} text-white border ${colors.responseBorder}`}`}
-              style={msg.role === "user" ? {whiteSpace: 'pre-wrap', wordBreak: 'break-word'} : {}}>
+            <div
+              ref={msg.role === 'bot' && idx === messages.length - 1 ? lastBotMsgRef : null}
+              className={`max-w-[90vw] sm:max-w-[70%] px-4 py-2 rounded-2xl shadow-md text-sm sm:text-base relative ${msg.role === "user" ? "bg-white text-gray-900" : `${colors.responseBg} text-white border ${colors.responseBorder}`}`}
+              style={{
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word',
+                marginLeft: msg.role === "user" ? "auto" : 0,
+                marginRight: msg.role === "bot" ? "auto" : 0,
+                borderRadius: 18,
+                boxShadow: '0 2px 16px rgba(0,0,0,0.08)',
+                padding: '14px 18px',
+                fontSize: '1.08rem',
+                lineHeight: '1.6',
+                maxWidth: '90vw',
+                background: msg.role === "user" ? "#fff" : undefined,
+              }}
+            >
               {msg.role === "bot" && msg.text === "__loading__" ? (
                 <span className="inline-block animate-pulse text-2xl">•</span>
               ) : (
