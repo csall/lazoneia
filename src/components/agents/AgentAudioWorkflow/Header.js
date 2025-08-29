@@ -7,6 +7,16 @@ export default function Header({ branding, botImage, tagline, targetLang, handle
   return (
     <header className="z-50 py-3 px-4 bg-gradient-to-r from-black/60 to-transparent backdrop-blur-md fixed top-0 left-0 w-full">
       <div className="container mx-auto flex justify-between items-center gap-4">
+        {/* Flèche retour en haut à droite, visible uniquement sur desktop */}
+        <div className="hidden md:flex items-center justify-end w-16">
+          <Link href="/" replace>
+            <motion.button className={`w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 shadow-lg hover:bg-white/20 transition-colors`} whileHover={{ scale: 1.05, x: 3 }} whileTap={{ scale: 0.95 }} aria-label="Retour à l'accueil">
+              <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${colors.textColor}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+            </motion.button>
+          </Link>
+        </div>
         <div className="flex items-center gap-4 flex-1 justify-center">
           <Image src={branding?.botImage || botImage} alt={branding?.name} width={48} height={48} className="w-12 h-12 rounded-full drop-shadow-[0_0_20px_rgba(139,92,246,0.5)] border-2 border-white/30" priority />
           <div className="flex flex-col gap-1">
