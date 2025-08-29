@@ -109,7 +109,7 @@ export default function InputBar({
               micState === "transcribing"
             }
             rows={1}
-            className={`w-full min-h-[44px] max-h-[120px] resize-none rounded-2xl px-3 pr-16 py-3 text-base bg-white/40 text-gray-900 border border-white/20 shadow-xl focus:ring-2 focus:ring-indigo-400/80 focus:border-indigo-500 transition-all duration-300 scrollbar-hide ${
+            className={`w-full min-h-[44px] max-h-[120px] resize-none rounded-2xl px-3 pr-16 py-3 text-base bg-white/40 text-white border border-white/20 shadow-xl focus:ring-2 focus:ring-indigo-400/80 focus:border-indigo-500 transition-all duration-300 scrollbar-hide ${
               micState === "transcribing" ? "text-center font-semibold" : ""
             } sm:text-lg sm:px-5 sm:pr-20 sm:py-4`}
             style={{
