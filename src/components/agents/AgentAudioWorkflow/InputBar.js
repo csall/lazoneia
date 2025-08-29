@@ -107,7 +107,7 @@ export default function InputBar({
               micState === "transcribing"
             }
             rows={1}
-            className={`w-full min-h-[44px] max-h-[120px] resize-none rounded-xl px-4 pr-16 py-3 text-base bg-white text-gray-900 shadow-none focus:ring-2 focus:ring-indigo-400/80 transition-all duration-300 scrollbar-hide ${
+            className={`w-full min-h-[44px] max-h-[120px] resize-none rounded-xl px-4 pr-12 py-3 text-base bg-white text-gray-900 shadow-none border border-indigo-400/80 focus:ring-2 focus:ring-indigo-400/80 transition-all duration-300 scrollbar-hide ${
               micState === "transcribing" ? "text-center font-semibold" : ""
             } sm:text-lg sm:px-5 sm:pr-20 sm:py-4`}
             style={{
@@ -116,7 +116,6 @@ export default function InputBar({
               letterSpacing: "0.01em",
               scrollbarWidth: "none",
               fontFamily: 'Inter, ui-sans-serif, system-ui',
-              border: 'none',
               outline: 'none',
             }}
             inputMode="text"
@@ -151,7 +150,7 @@ export default function InputBar({
             <motion.button
               type="button"
               onClick={handleMicClick}
-              className={`ml-2 bg-gradient-to-br from-indigo-500 to-violet-600 text-white rounded-full p-3 shadow-xl border border-indigo-300 flex items-center justify-center transition-all duration-300 cursor-pointer ${
+              className={`ml-3 bg-gradient-to-br from-indigo-500 to-violet-600 text-white rounded-full p-3 shadow-xl border border-indigo-300 flex items-center justify-center transition-all duration-300 cursor-pointer ${
                 micState === "recording" ? "animate-pulse" : ""
               } sm:ml-2 sm:p-2`}
               whileTap={{ scale: 0.85 }}
