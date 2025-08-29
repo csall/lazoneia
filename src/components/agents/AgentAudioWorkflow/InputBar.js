@@ -16,7 +16,7 @@ export default function InputBar({ micState, micAmplitude, isLoading, textareaRe
             </button>
           )}
           <textarea
-            className={`pl-12 min-h-[44px] max-h-[160px] resize-none rounded-xl p-3 pr-20 border w-full mx-auto text-base sm:text-lg ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none transition-all duration-200 shadow-lg ${(micState === "recording" || micState === "transcribing") ? "bg-gray-300 text-gray-500" : isLoading ? `${colors.responseBg} text-gray-400` : "bg-white/80 text-gray-900"} ${micState === "transcribing" ? "text-center font-semibold" : ""}`}
+            className={`${micState === "recording" ? "pl-12" : ""} min-h-[44px] max-h-[160px] resize-none rounded-xl p-3 pr-20 border w-full mx-auto text-base sm:text-lg ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none transition-all duration-200 shadow-lg ${(micState === "recording" || micState === "transcribing") ? "bg-gray-300 text-gray-500" : isLoading ? `${colors.responseBg} text-gray-400` : "bg-white/80 text-gray-900"} ${micState === "transcribing" ? "text-center font-semibold" : ""}`}
             ref={textareaRef}
             value={isLoading ? "" : (micState === "transcribing" ? "Transcription en cours..." : userInput)}
             onChange={e => {
