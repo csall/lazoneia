@@ -10,10 +10,13 @@ export default function InputBar({ micState, micAmplitude, isLoading, textareaRe
       )}
       <div className="relative flex items-end">
         <div className="relative w-full">
+          {/* Bouton Annuler dans le flux flex pour compatibilité mobile */}
           {micState === "recording" && (
-            <button type="button" onClick={cancelRecording} className="bg-gray-200 hover:bg-gray-300 text-gray-600 rounded-full p-2 shadow border border-gray-300 flex items-center justify-center transition-all duration-200 cursor-pointer absolute left-2 top-1/2 -translate-y-1/2" aria-label="Annuler" style={{ width: 36, height: 36, zIndex: 10 }}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
+            <div className="flex items-center mb-2">
+              <button type="button" onClick={cancelRecording} className="bg-gray-200 hover:bg-gray-300 text-gray-600 rounded-full p-2 shadow border border-gray-300 flex items-center justify-center transition-all duration-200 cursor-pointer" aria-label="Annuler" style={{ width: 36, height: 36 }}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
           )}
           <textarea
             className={`${micState === "recording" ? "pl-12" : ""} min-h-[44px] max-h-[160px] resize-none rounded-xl p-3 pr-20 border w-full mx-auto text-base sm:text-lg ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none transition-all duration-200 shadow-lg ${(micState === "recording" || micState === "transcribing") ? "bg-gray-300 text-gray-500" : "bg-white/80 text-gray-900"} ${micState === "transcribing" ? "text-center font-semibold" : ""}`}
