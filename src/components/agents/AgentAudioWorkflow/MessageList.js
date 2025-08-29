@@ -27,7 +27,7 @@ export default function MessageList({ messages, colors, lastBotMsgRef, resultRef
       style={{
         position: 'absolute',
         top: headerHeight+20,
-        bottom: inputHeight+350,
+        bottom: inputHeight+150,
         left: 0,
         right: 0,
         overflowY: 'auto',
