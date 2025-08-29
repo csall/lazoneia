@@ -8,7 +8,7 @@ export default function MessageList({ messages, colors, lastBotMsgRef, resultRef
   // Scroll automatique sur le dernier message du bot
   React.useEffect(() => {
     if (lastBotMsgRef && lastBotMsgRef.current) {
-      lastBotMsgRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      lastBotMsgRef.current.scrollIntoView({ behavior: 'smooth', block: 'top' });
     }
   }, [messages, lastBotMsgRef]);
 
