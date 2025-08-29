@@ -126,7 +126,7 @@ export default function InputBar({
             autoComplete="off"
             autoCorrect="off"
             spellCheck={false}
-            placeholder={isFocused ? "Écrivez votre message..." : "Message..."}
+            placeholder=''
             animate={{ boxShadow: isFocused ? '0 0 0 2px #6366f1' : '0 2px 16px rgba(60,60,120,0.10)' }}
           />
           {/* Animation amplitude micro en overlay dans le textarea */}
