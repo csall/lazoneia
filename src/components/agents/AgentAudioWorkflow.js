@@ -446,9 +446,9 @@ export default function AgentAudioWorkflow({
     if (e && e.preventDefault) e.preventDefault();
     const input = overrideInput !== undefined ? overrideInput : userInput;
     if (!input.trim()) return;
-    setIsLoading(true);
-    setIsCopied(false);
-    setMessages((prev) => [...prev, { role: "user", text: input }]);
+  setIsLoading(true);
+  setIsCopied(false);
+  setMessages((prev) => [...prev, { role: "user", text: input }, { role: "bot", text: "__loading__" }]);
     try {
       const res = await fetch(endpoint, {
         method: "POST",
@@ -472,10 +472,24 @@ export default function AgentAudioWorkflow({
         }
       }
       setResponse(resultText);
-      setMessages((prev) => [...prev, { role: "bot", text: resultText }]);
+      setMessages((prev) => {
+        // Remplace le dernier message bot '__loading__' par la vraie réponse
+        const lastIdx = prev.length - 1;
+        if (lastIdx >= 0 && prev[lastIdx].role === "bot" && prev[lastIdx].text === "__loading__") {
+          return [...prev.slice(0, lastIdx), { role: "bot", text: resultText }];
+        }
+        return [...prev, { role: "bot", text: resultText }];
+      });
     } catch (err) {
       setResponse("Erreur lors de la requête : " + err.message);
-      setMessages((prev) => [...prev, { role: "bot", text: "Erreur lors de la requête : " + err.message }]);
+      setMessages((prev) => {
+        // Remplace le dernier message bot '__loading__' par l'erreur
+        const lastIdx = prev.length - 1;
+        if (lastIdx >= 0 && prev[lastIdx].role === "bot" && prev[lastIdx].text === "__loading__") {
+          return [...prev.slice(0, lastIdx), { role: "bot", text: "Erreur lors de la requête : " + err.message }];
+        }
+        return [...prev, { role: "bot", text: "Erreur lors de la requête : " + err.message }];
+      });
     }
     setIsLoading(false);
     setUserInput("");

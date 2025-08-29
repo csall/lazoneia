@@ -28,8 +28,12 @@ export default function MessageList({ messages, colors, lastBotMsgRef, resultRef
             </button>
             <div className={`max-w-[70%] px-4 py-2 rounded-2xl shadow-md text-sm relative ${msg.role === "user" ? "bg-white text-gray-900" : `${colors.responseBg} text-white border ${colors.responseBorder}`}`}
               style={msg.role === "user" ? {whiteSpace: 'pre-wrap', wordBreak: 'break-word'} : {}}>
-              <span dangerouslySetInnerHTML={{ __html: msg.text }} />
-              {msg.role === "bot" && (
+              {msg.role === "bot" && msg.text === "__loading__" ? (
+                <span className="inline-block animate-pulse text-2xl">•</span>
+              ) : (
+                <span dangerouslySetInnerHTML={{ __html: msg.text }} />
+              )}
+              {msg.role === "bot" && msg.text !== "__loading__" && (
                 <div className="flex justify-end mt-1">
                   <button type="button" onClick={() => handleCopy(msg.text, idx)} aria-label="Copier le message" className={`relative p-1 rounded focus:outline-none focus:ring text-xs transition cursor-pointer ${copiedIdx === idx ? 'bg-green-100 text-green-700' : 'text-gray-400 hover:text-indigo-600'}`}
                     onMouseEnter={e => {
