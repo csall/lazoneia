@@ -9,6 +9,11 @@ export default function InputBar({ micState, micAmplitude, isLoading, textareaRe
         <ChatGPTMicAnimation amplitude={micAmplitude} text="Enregistrement..." color={colors.responseBg} />
       )}
       <div className="relative flex items-end">
+        {micState === "recording" && (
+          <button type="button" onClick={cancelRecording} className="bg-gray-200 hover:bg-gray-300 text-gray-600 rounded-full p-2 shadow border border-gray-300 flex items-center justify-center transition-all duration-200 cursor-pointer absolute left-0 top-1/2 -translate-y-1/2" aria-label="Annuler" style={{ width: 40, height: 40, zIndex: 10 }}>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        )}
         <div className="relative w-full">
           <textarea
             ref={textareaRef}
@@ -38,9 +43,6 @@ export default function InputBar({ micState, micAmplitude, isLoading, textareaRe
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
             {micState === "recording" ? (
               <>
-                <button type="button" onClick={cancelRecording} className="bg-red-100 hover:bg-red-200 text-red-700 rounded-full p-2 shadow border border-red-200 flex items-center justify-center transition-all duration-200 cursor-pointer" aria-label="Annuler" style={{ width: 40, height: 40 }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                </button>
                 <button type="button" onClick={handleMicClick} className="bg-green-100 hover:bg-green-200 text-green-700 rounded-full p-2 shadow border border-green-200 flex items-center justify-center transition-all duration-200 cursor-pointer" aria-label="Valider" style={{ width: 40, height: 40 }}>
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                 </button>
