@@ -123,7 +123,7 @@ export default function InputBar({
             autoComplete="off"
             autoCorrect="off"
             spellCheck={false}
-            placeholder="Message ChatGPT…"
+            placeholder=""
           />
           {/* Animation amplitude micro en overlay dans le textarea */}
           {micState === "recording" && micAmplitude && (
