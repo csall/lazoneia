@@ -132,7 +132,7 @@ export default function InputBar({
           {/* Animation amplitude micro en overlay dans le textarea */}
           {micState === "recording" && micAmplitude && (
             <div className="absolute left-0 right-0 top-0 bottom-0 flex items-center justify-center pointer-events-none">
-              <div className="flex items-end gap-1 h-8 w-full px-6">
+              <div className="flex items-end gap-1 h-8 mx-auto" style={{ width: 'fit-content' }}>
                 {micAmplitude.map((amp, i) => (
                   <motion.div
                     key={i}
