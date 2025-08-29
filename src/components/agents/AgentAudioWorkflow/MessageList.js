@@ -23,11 +23,11 @@ export default function MessageList({ messages, colors, lastBotMsgRef, resultRef
   return (
     <div
       ref={resultRef}
-      className="w-full relative"
+      className="w-full relative px-3 sm:px-8"
       style={{
         position: 'absolute',
         top: headerHeight+20,
-        bottom: inputHeight+200,
+        bottom: inputHeight+350,
         left: 0,
         right: 0,
         overflowY: 'auto',
@@ -57,7 +57,7 @@ export default function MessageList({ messages, colors, lastBotMsgRef, resultRef
       )}
       {/* Affiche les messages du plus ancien au plus récent */}
       {messages.map((msg, idx) => (
-        <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} mb-6 group"}`}
+        <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} mb-10 group"}`}
           style={{
             marginLeft: msg.role === "user" ? "auto" : 0,
             marginRight: msg.role === "bot" ? "auto" : 0,
@@ -66,50 +66,54 @@ export default function MessageList({ messages, colors, lastBotMsgRef, resultRef
             position: 'relative',
           }}
         >
-          <div className="flex items-start w-full">
+          <div className="flex items-end w-full">
+            {/* Avatar supprimé pour un look épuré */}
+            {/* Bulle glassmorphism + anim */}
             <div
               ref={msg.role === 'bot' && idx === messages.length - 1 ? lastBotMsgRef : null}
-              className={`max-w-[90vw] sm:max-w-[55vw] px-5 py-4 rounded-3xl shadow-xl text-base sm:text-lg relative font-sans message-bubble ${msg.role === "user" ? "bg-white text-gray-900 border border-gray-200" : "bg-indigo-100 text-indigo-900 border border-indigo-200"}`}
+              className={`inline-block px-4 py-2 rounded-xl shadow-md text-base sm:text-lg relative font-sans message-bubble backdrop-blur-lg bg-white/60 border border-white/30 transition-all duration-300 ${msg.role === "user" ? "text-gray-900 bg-white/95 border border-gray-200 ml-auto" : "text-indigo-900 bg-indigo-50 border border-indigo-100"}`}
               style={{
                 whiteSpace: 'pre-wrap',
                 wordBreak: 'break-word',
-                marginLeft: msg.role === "user" ? "auto" : 0,
-                marginRight: msg.role === "bot" ? "auto" : 0,
-                borderRadius: 24,
-                boxShadow: '0 6px 32px rgba(60,60,120,0.10)',
-                padding: '18px 14px',
-                fontSize: '0.92rem',
+                borderRadius: 16,
+                boxShadow: msg.role === "user" ? '0 2px 8px rgba(80,80,180,0.07)' : '0 2px 8px rgba(120,120,255,0.08)',
+                padding: msg.role === "user" ? '8px 14px' : '10px 14px',
+                fontSize: '1.01rem',
                 lineHeight: '1.6',
-                maxWidth: '90vw',
-                width: '100%',
-                background: msg.role === "user" ? "#fff" : (msg.role === "bot" ? "#e0e7ff" : undefined),
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-end',
-                minHeight: '44px',
-                fontFamily: 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif',
-                marginBottom: '2rem',
+                maxWidth: '80vw',
+                background: msg.role === "user" ? "rgba(255,255,255,0.98)" : "rgba(224,231,255,0.98)",
+                marginBottom: '1.2rem',
+                border: msg.role === "user" ? '1px solid #e5e7eb' : '1px solid #c7d2fe',
+                transition: 'all 0.2s cubic-bezier(.4,2,.3,1)',
+                marginLeft: msg.role === "user" ? 'auto' : 0,
+                marginRight: msg.role === "bot" ? 'auto' : 0,
+                minWidth: 0,
+                width: 'fit-content',
+                display: 'inline-block',
               }}
             >
-              <span style={{flex: 1, width: '100%'}}>
+              <span style={{flex: 1, width: '100%', transition: 'all 0.3s'}}>
                 {msg.role === "bot" && msg.text === "__loading__" ? (
                   <span className="inline-block animate-pulse text-2xl">•</span>
                 ) : (
                   <span dangerouslySetInnerHTML={{ __html: msg.text }} />
                 )}
               </span>
-              {/* Bouton copier moderne, animé, en bas à droite pour bot */}
+              {/* Actions bot en bas à gauche, animées */}
               {msg.role === "bot" && msg.text !== "__loading__" && (
-                <button type="button" onClick={() => handleCopy(msg.text, idx)} aria-label="Copier le message"
-                  className={`absolute bottom-3 right-3 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-200 cursor-pointer bg-white/80 hover:bg-indigo-100 text-indigo-600 shadow-lg border border-indigo-200 ${copiedIdx === idx ? 'animate-pulse bg-green-100 text-green-700' : ''}`}
-                  style={{ minWidth: '38px', minHeight: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', zIndex: 10 }}
-                >
-                  {copiedIdx === idx ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2"/><rect x="3" y="3" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2"/></svg>
-                  )}
-                </button>
+                <div className="flex gap-2 mt-4">
+                  <button type="button" onClick={() => handleCopy(msg.text, idx)} aria-label="Copier le message"
+                    className={`p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-200 cursor-pointer bg-white/80 hover:bg-indigo-100 text-indigo-600 shadow-lg border border-indigo-200 ${copiedIdx === idx ? 'animate-pulse bg-green-100 text-green-700' : ''}`}
+                    style={{ minWidth: '38px', minHeight: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', zIndex: 10 }}
+                  >
+                    {copiedIdx === idx ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2"/><rect x="3" y="3" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2"/></svg>
+                    )}
+                  </button>
+                  {/* Ajoute ici d'autres icônes si besoin (ex: supprimer) */}
+                </div>
               )}
             </div>
           </div>

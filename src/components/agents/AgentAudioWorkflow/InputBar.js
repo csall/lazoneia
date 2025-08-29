@@ -20,25 +20,23 @@ export default function InputBar({
   return (
     <form
       onSubmit={handleSubmit}
-      className="fixed bottom-0 left-0 w-full z-50 flex justify-center items-end px-1 pb-2 sm:px-4 sm:pb-4"
+      className="fixed bottom-0 left-0 w-full z-50 flex justify-center items-end px-2 pb-3 sm:px-0 sm:pb-4"
       style={{
         background: "none",
         boxShadow: "none",
-        borderTopLeftRadius: 0,
-        borderTopRightRadius: 0,
         border: "none",
         minHeight: "72px",
       }}
     >
       <motion.div
-        className="flex items-center w-full max-w-full mx-auto rounded-3xl px-2 py-2 sm:max-w-2xl sm:px-4 sm:py-3"
+        className="flex items-center w-full max-w-full mx-auto rounded-2xl px-3 py-2 sm:max-w-2xl sm:px-4 sm:py-3 bg-white shadow-lg"
         initial={{ y: 40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 220, damping: 22 }}
         style={{
-          boxShadow: "none",
-          background: "none",
-          borderRadius: 24,
+          boxShadow: "0 2px 16px rgba(60,60,120,0.10)",
+          background: "#fff",
+          borderRadius: 18,
         }}
       >
         {/* Annuler enregistrement */}
@@ -109,20 +107,23 @@ export default function InputBar({
               micState === "transcribing"
             }
             rows={1}
-            className={`w-full min-h-[44px] max-h-[120px] resize-none rounded-2xl px-3 pr-16 py-3 text-base bg-white/40 text-white border border-white/20 shadow-xl focus:ring-2 focus:ring-indigo-400/80 focus:border-indigo-500 transition-all duration-300 scrollbar-hide ${
+            className={`w-full min-h-[44px] max-h-[120px] resize-none rounded-xl px-4 pr-16 py-3 text-base bg-white text-gray-900 shadow-none focus:ring-2 focus:ring-indigo-400/80 transition-all duration-300 scrollbar-hide ${
               micState === "transcribing" ? "text-center font-semibold" : ""
             } sm:text-lg sm:px-5 sm:pr-20 sm:py-4`}
             style={{
               boxSizing: "border-box",
-              fontSize: "1.05rem",
-              backdropFilter: "blur(6px)",
+              fontSize: "1.08rem",
               letterSpacing: "0.01em",
               scrollbarWidth: "none",
+              fontFamily: 'Inter, ui-sans-serif, system-ui',
+              border: 'none',
+              outline: 'none',
             }}
             inputMode="text"
             autoComplete="off"
             autoCorrect="off"
             spellCheck={false}
+            placeholder="Message ChatGPT…"
           />
           {/* Animation amplitude micro en overlay dans le textarea */}
           {micState === "recording" && micAmplitude && (
@@ -142,19 +143,7 @@ export default function InputBar({
             </div>
           )}
           {/* Placeholder animé */}
-          <AnimatePresence>
-            {!userInput && !micState && (
-              <motion.span
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-300 pointer-events-none select-none text-base font-medium drop-shadow sm:left-6 sm:text-lg"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.5 }}
-              >
-                Tapez votre message ou utilisez le micro…
-              </motion.span>
-            )}
-          </AnimatePresence>
+          {/* Placeholder natif utilisé, pas d'animation custom */}
         </div>
         {/* Micro animé : affiché uniquement si pas d'enregistrement et input vide */}
         {micState !== "recording" &&
