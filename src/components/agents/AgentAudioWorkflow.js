@@ -165,150 +165,21 @@ export default function AgentAudioWorkflow({
   const [isCancelled, setIsCancelled] = useState(false);
   const [micButtonActive, setMicButtonActive] = useState(false);
   const [micSupported, setMicSupported] = useState(true);
-  const recognitionRef = useRef(null);
   const micButtonRef = useRef(null);
-  const tempTranscriptRef = useRef("");
-  const recordingActiveRef = useRef(false);
 
   // Gestion avancée du clavier mobile : focus, blur, resize
 
-  useEffect(() => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      setMicSupported(false);
-      return;
-    }
-    recognitionRef.current = new SpeechRecognition();
-    recognitionRef.current.lang = "fr-FR";
-    recognitionRef.current.continuous = false;
-    recognitionRef.current.interimResults = true;
-    recognitionRef.current.onresult = (event) => {
-      if (!recordingActiveRef.current) return;
-      const transcript = Array.from(event.results)
-        .map((result) => result[0].transcript)
-        .join("");
-      tempTranscriptRef.current = transcript;
-    };
-    recognitionRef.current.onstart = () => {
-      setIsRecording(true);
-      recordingActiveRef.current = true;
-    };
-    recognitionRef.current.onend = () => {
-  setIsRecording(false);
-  setMicButtonActive(false);
-  recordingActiveRef.current = false;
-    };
-    recognitionRef.current.onerror = () => {
-      setIsRecording(false);
-      setMicButtonActive(false);
-      recordingActiveRef.current = false;
-    };
-    return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.onresult = null;
-        recognitionRef.current.onstart = null;
-        recognitionRef.current.onend = null;
-        recognitionRef.current.onerror = null;
-      }
-    };
-  }, []);
-  const stopRecording = () => {
-    if (!recognitionRef.current) return;
-    recordingActiveRef.current = false;
-    recognitionRef.current.stop();
-    // N'envoie plus la transcription ici pour éviter le doublon
-    if (!isCancelled && tempTranscriptRef.current) {
-      const newInput = userInput
-        ? userInput + " " + tempTranscriptRef.current
-        : tempTranscriptRef.current;
-      setUserInput(newInput);
-      // handleSubmit({ preventDefault: () => {} }, newInput); // SUPPRIMÉ pour éviter le doublon
-    }
-    tempTranscriptRef.current = "";
-    setIsCancelled(false);
-  };
+  // Remove stopRecording, only MediaRecorder workflow is used
   const cancelRecording = () => {
     setIsCancelled(true);
-    recordingActiveRef.current = false;
     // Stop MediaRecorder if active
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
       mediaRecorderRef.current.stop();
     }
-    // Stop SpeechRecognition if active
-    if (recognitionRef.current && recognitionRef.current.state !== "inactive") {
-      recognitionRef.current.stop();
-    }
-    tempTranscriptRef.current = "";
     setMicState("idle");
     setUserInput("");
   };
-  const handleMicMouseUp = (e) => {
-    if (!micButtonRef.current) return;
-    const rect = micButtonRef.current.getBoundingClientRect();
-    if (
-      e.clientX < rect.left ||
-      e.clientX > rect.right ||
-      e.clientY < rect.top ||
-      e.clientY > rect.bottom
-    ) {
-      cancelRecording();
-    } else {
-      stopRecording();
-    }
-    recordingActiveRef.current = false;
-    window.removeEventListener("mouseup", handleMicMouseUp);
-    window.removeEventListener("mousemove", handleMicMouseMove);
-  };
-  const handleMicMouseMove = (e) => {
-    if (!micButtonRef.current) return;
-    const rect = micButtonRef.current.getBoundingClientRect();
-    if (
-      e.clientX < rect.left ||
-      e.clientX > rect.right ||
-      e.clientY < rect.top ||
-      e.clientY > rect.bottom
-    ) {
-      setIsCancelled(true);
-      cancelRecording();
-    } else {
-      setIsCancelled(false);
-    }
-  };
-  const handleMicTouchEnd = (e) => {
-    if (!micButtonRef.current) return;
-    const touch = e.changedTouches[0];
-    const rect = micButtonRef.current.getBoundingClientRect();
-    if (
-      touch.clientX < rect.left ||
-      touch.clientX > rect.right ||
-      touch.clientY < rect.top ||
-      touch.clientY > rect.bottom
-    ) {
-      cancelRecording();
-    } else {
-      stopRecording();
-    }
-    recordingActiveRef.current = false;
-    window.removeEventListener("touchend", handleMicTouchEnd);
-    window.removeEventListener("touchmove", handleMicTouchMove);
-  };
-  const handleMicTouchMove = (e) => {
-    if (!micButtonRef.current) return;
-    const touch = e.touches[0];
-    const rect = micButtonRef.current.getBoundingClientRect();
-    if (
-      touch.clientX < rect.left ||
-      touch.clientX > rect.right ||
-      touch.clientY < rect.top ||
-      touch.clientY > rect.bottom
-    ) {
-      setIsCancelled(true);
-      cancelRecording();
-    } else {
-      setIsCancelled(false);
-    }
-  };
+  // Remove mouse/touch handlers for SpeechRecognition
   // Sélecteur de ton comme pour la langue
   const [selectedTone, setSelectedTone] = useState(tones.length > 0 ? tones[0].value : "");
   const handleToneSelection = (tone) => {
@@ -531,35 +402,8 @@ useEffect(() => {
     resultRef.current.scrollTop = resultRef.current.scrollHeight - inputHeight;
   }
 }, [isLoading, messages]);
-// Supprime l'espace du clavier mobile quand il est fermé
-useEffect(() => {
-  const handleResize = () => {
-    if (resultRef.current) {
-      // Sur mobile, si le clavier est fermé, on enlève le padding-bottom
-      if (window.innerWidth <= 768) {
-        resultRef.current.style.paddingBottom = '0px';
-      }
-    }
-  };
-  window.addEventListener('resize', handleResize);
-  return () => {
-    window.removeEventListener('resize', handleResize);
-  };
-}, []);
-// Supprime l'espace blanc après validation du clavier mobile
-useEffect(() => {
-  const handleFocusOut = () => {
-    setTimeout(() => {
-      if (resultRef.current) {
-        resultRef.current.style.paddingBottom = '0px';
-      }
-    }, 0); // délai pour laisser le clavier se fermer
-  };
-  window.addEventListener('focusout', handleFocusOut);
-  return () => {
-    window.removeEventListener('focusout', handleFocusOut);
-  };
-}, []);
+
+
 // Scroll tout en bas à l'ouverture de la page (après le rendu des messages)
 useEffect(() => {
   const timer = setTimeout(() => {
