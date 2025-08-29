@@ -26,7 +26,7 @@ export default function MessageList({ messages, colors, lastBotMsgRef, resultRef
       className="w-full relative px-3 sm:px-8"
       style={{
         position: 'absolute',
-        top: headerHeight+20,
+        top: headerHeight+50,
         bottom: inputHeight+150,
         left: 0,
         right: 0,
