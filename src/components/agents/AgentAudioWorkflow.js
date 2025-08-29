@@ -1,12 +1,8 @@
 "use client";
-import GoogleMenu from "@/components/navigation/GoogleMenu";
 import { useState, useRef, useEffect } from "react";
-import ChatGPTMicIcon from "../../components/ChatGPTMicIcon";
-import ChatGPTMicAnimation from "../../components/ChatGPTMicAnimation";
-import TranscribingDotsAnimation from "../../components/TranscribingDotsAnimation";
-import Link from "next/link";
-import Image from "next/image";
-import { motion } from "framer-motion";
+import Header from "./AgentAudioWorkflow/Header";
+import MessageList from "./AgentAudioWorkflow/MessageList";
+import InputBar from "./AgentAudioWorkflow/InputBar";
 
 export default function AgentAudioWorkflow({
   // ...hooks principaux...
@@ -16,8 +12,8 @@ export default function AgentAudioWorkflow({
   tagline,
   botImage,
   tones=[],
-  sendButtonLabel = "Envoyer", // Default label for the submit button
-  defaultLang = "français", // New prop for default language
+  sendButtonLabel = "Envoyer",
+  defaultLang = "français",
   colors = {
     gradientFrom: "from-indigo-900",
     gradientTo: "to-violet-800",
@@ -32,6 +28,16 @@ export default function AgentAudioWorkflow({
     responseBorder: "border-indigo-700/30",
   },
 }) {
+  // Détection mobile/desktop côté client
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(typeof window !== 'undefined' ? window.innerWidth <= 768 : false);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   const responseRef = useRef(null);
   const [micState, setMicState] = useState("idle");
   const [micError, setMicError] = useState("");
@@ -554,252 +560,46 @@ useEffect(() => {
 
   return (
 
-  <main className={`flex flex-col h-screen bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} ${colors.textColor}`}>
-    {/* Fixed header for mobile */}
-    <header className="z-50 py-3 px-4 bg-gradient-to-r from-black/60 to-transparent backdrop-blur-md fixed top-0 left-0 w-full">
-      <div className="container mx-auto flex justify-between items-center gap-4">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <Link href="/" replace>
-            <motion.button
-              className={`w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 shadow-lg hover:bg-white/20 transition-colors`}
-              whileHover={{ scale: 1.05, x: -3 }}
-              whileTap={{ scale: 0.95 }}
-              aria-label="Retour à l'accueil"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className={`h-5 w-5 ${colors.textColor}`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                />
-              </svg>
-            </motion.button>
-          </Link>
-        </motion.div>
-        {/* Header agent centré entre la flèche et le menu */}
-        <div className="flex items-center gap-4 flex-1 justify-center">
-          <Image
-            src={branding?.botImage || botImage}
-            alt={branding?.name}
-            width={48}
-            height={48}
-            className="w-12 h-12 rounded-full drop-shadow-[0_0_20px_rgba(139,92,246,0.5)] border-2 border-white/30"
-            priority
-          />
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
-              <div className="text-lg font-bold text-white drop-shadow-lg">{branding?.name}</div>
-              {tagline && (
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-700/80 text-indigo-100 ml-2 drop-shadow">{tagline}</span>
-              )}
-              <select
-                id="language-select-header"
-                value={targetLang}
-                onChange={handleLanguageChange}
-                className={`px-2 py-1 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-2`}
-                style={{ background: `#E3DEDE` }}
-              >
-                <option value="français">FR</option>
-                <option value="anglais">EN</option>
-                <option value="espagnol">ES</option>
-                <option value="allemand">DE</option>
-                <option value="italien">IT</option>
-                <option value="wolof">WO</option>
-                <option value="portuguais">PT</option>
-              </select>
-              {messages.length > 0 && (
-                <button
-                  onClick={clearHistory}
-                  className="p-2 rounded-full bg-gray-200 text-gray-500 hover:bg-gray-300 hover:text-red-600 transition cursor-pointer ml-2"
-                  title="Supprimer tout l'historique"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m2 0v14a2 2 0 01-2 2H8a2 2 0 01-2-2V6m5 10v-6" />
-                  </svg>
-                </button>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] text-white/80 max-w-xs">{branding?.description}</span>
-              {/* Suppression déplacée à côté du select langue */}
-            </div>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <GoogleMenu />
-        </div>
-      </div>
-    </header>
-
-    {/* Scrollable messages area with padding for header and input */}
-    <div
-      ref={resultRef}
-      className={`flex-1 overflow-y-auto px-4 py-3 pt-[80px] pb-[110px]`}
-      style={{ WebkitOverflowScrolling: "touch" }}
-    >
-      {/* Ajoute un espace imaginaire en haut pour le scroll, égal à la hauteur du header */}
-      {(() => {
-        const headerBar = typeof window !== 'undefined' ? document.querySelector('header') : null;
-        const headerHeight = headerBar && headerBar.offsetHeight ? headerBar.offsetHeight : 80;
-        return <div style={{height: headerHeight + 'px'}}></div>;
-      })()}
-      {messages.length === 0 && (
-        <div className="flex flex-col items-center justify-center h-full text-gray-300">
-          <svg className="h-10 w-10 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8z" /></svg>
-          <p className="text-sm">La conversation apparaîtra ici.</p>
-        </div>
-      )}
-      {messages.map((msg, idx) => (
-        <div
-          key={idx}
-          className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} mb-2 group"}`}
-          ref={msg.role === "bot" && idx === messages.length - 1 ? lastBotMsgRef : null}
-          {...(msg.role === "bot" ? { 'data-botmsg': true } : {})}
-          {...(msg.role === "user" ? { 'data-usermsg': true } : {})}
-        >
-          <div className="flex items-start">
-            <button onClick={() => deleteMessage(idx)} className="mr-2 mt-1 text-gray-400 hover:text-red-500 transition cursor-pointer" title="Supprimer">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
-            <div className={`max-w-[70%] px-4 py-2 rounded-2xl shadow-md text-sm relative ${msg.role === "user" ? "bg-white text-gray-900" : `${colors.responseBg} text-white border ${colors.responseBorder}`}`}
-              style={msg.role === "user" ? {whiteSpace: 'pre-wrap', wordBreak: 'break-word'} : {}}>
-              <span dangerouslySetInnerHTML={{ __html: msg.text }} />
-              {msg.role === "bot" && (
-                <div className="flex justify-end mt-1">
-                  <button
-                    type="button"
-                    onClick={() => handleCopy(msg.text, idx)}
-                    aria-label="Copier le message"
-                    className={`relative p-1 rounded focus:outline-none focus:ring text-xs transition cursor-pointer ${copiedIdx === idx ? 'bg-green-100 text-green-700' : 'text-gray-400 hover:text-indigo-600'}`}
-                    onMouseEnter={e => {
-                      const tooltip = document.createElement('span');
-                      tooltip.textContent = 'Copier';
-                      tooltip.className = 'absolute left-1/2 -translate-x-1/2 bottom-full mb-1 px-2 py-1 rounded bg-black text-white text-xs whitespace-nowrap z-10';
-                      tooltip.style.pointerEvents = 'none';
-                      tooltip.setAttribute('id', 'copy-tooltip-' + idx);
-                      e.currentTarget.appendChild(tooltip);
-                    }}
-                    onMouseLeave={e => {
-                      const tooltip = e.currentTarget.querySelector('#copy-tooltip-' + idx);
-                      if (tooltip) e.currentTarget.removeChild(tooltip);
-                    }}
-                  >
-                    {copiedIdx === idx ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2"/><rect x="3" y="3" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2"/></svg>
-                    )}
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      ))}
-      {/* Ajoute un espace imaginaire à la fin de la dernière réponse du bot, égal à la hauteur de l'input */}
-      {(() => {
-        if (messages.length > 0 && messages[messages.length-1].role === 'bot') {
-          const inputBar = typeof window !== 'undefined' ? document.querySelector('form') : null;
-          const inputHeight = inputBar && inputBar.offsetHeight ? inputBar.offsetHeight : 110;
-          return <div style={{height: inputHeight + 'px'}}></div>;
-        }
-        return null;
-      })()}
-    </div>
-    {/* Barre d'input toujours visible en bas */}
-    <form 
-      onSubmit={handleSubmit}
-      className={`p-3 border-t bg-gradient-to-r from-black/60 to-transparent backdrop-blur-md shadow-lg fixed bottom-0 left-0 w-full z-50 ${colors.textColor}`}
-      style={{
-        width: '100vw',
-        zIndex: 100,
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        boxShadow: '0 -2px 16px rgba(0,0,0,0.08)',
-        paddingBottom: 'env(safe-area-inset-bottom, 20px)',
-      }}
-    >
-      {/* Animation micro pendant l'enregistrement uniquement */}
-      {micState === "recording" && (
-        <ChatGPTMicAnimation amplitude={micAmplitude} text="Enregistrement..." color={colors.responseBg} />
-      )}
-      <div className="relative flex items-end">
-        <div className="relative w-full">
-          <textarea
-            ref={textareaRef}
-            value={isLoading ? "" : (micState === "transcribing" ? "Transcription en cours..." : userInput)}
-            onChange={e => {
-              setUserInput(e.target.value);
-              if (textareaRef.current) {
-                textareaRef.current.style.height = "auto";
-                textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-              }
-            }}
-            onKeyDown={e => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleSubmit(e);
-              }
-            }}
-            onFocus={() => {}}
-            inputMode="text"
-            autoComplete="off"
-            autoCorrect="off"
-            spellCheck={false}
-            className={`min-h-[44px] max-h-[160px] resize-none rounded-xl p-3 pr-20 border w-full mx-auto text-base sm:text-lg ${colors.responseBorder} focus:${colors.buttonHoverFrom} focus:${colors.buttonHoverTo} focus:ring ${colors.buttonHoverFrom}/50 focus:outline-none transition-all duration-200 shadow-lg ${(micState === "recording" || micState === "transcribing") ? "bg-gray-300 text-gray-500" : isLoading ? `${colors.responseBg} text-gray-400` : "bg-white/80 text-gray-900"} ${micState === "transcribing" ? "text-center font-semibold" : ""}`}
-            disabled={isLoading || micState === "recording" || micState === "transcribing"}
-            style={{resize: "none", overflow: "hidden", minHeight: "44px", maxHeight: "160px", boxSizing: 'border-box', paddingBottom: 'env(safe-area-inset-bottom, 20px)', textAlign: micState === "transcribing" ? "center" : undefined, fontSize: '1rem'}}
-          />
-          {/* Micro et bouton d'envoi à l'intérieur du textarea à droite */}
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
-            {micState === "recording" ? (
-              <>
-                <button type="button" onClick={cancelRecording} className="bg-red-100 hover:bg-red-200 text-red-700 rounded-full p-2 shadow border border-red-200 flex items-center justify-center transition-all duration-200 cursor-pointer" aria-label="Annuler" style={{ width: 40, height: 40 }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                </button>
-                <button type="button" onClick={handleMicClick} className="bg-green-100 hover:bg-green-200 text-green-700 rounded-full p-2 shadow border border-green-200 flex items-center justify-center transition-all duration-200 cursor-pointer" aria-label="Valider" style={{ width: 40, height: 40 }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                </button>
-              </>
-            ) :
-              (!userInput || userInput.trim().length === 0) ? (
-                <motion.button type="button" onClick={handleMicClick} className="bg-white/80 hover:bg-indigo-100 text-indigo-700 rounded-full p-2 shadow border border-indigo-200 flex items-center justify-center transition-all duration-200 cursor-pointer" aria-label={micState === "idle" ? "Démarrer l'enregistrement" : micState === "recording" ? "Valider" : "Transcription en cours"} disabled={micState === "transcribing"} style={{ width: 40, height: 40 }}>
-                  <ChatGPTMicIcon className="h-6 w-6 opacity-80" />
-                </motion.button>
-              ) : null
-            }
-            <button
-              type="submit"
-              disabled={isLoading || !userInput.trim()}
-              className={`bg-gradient-to-r ${colors.buttonGradientFrom} ${colors.buttonGradientTo} ${colors.buttonHoverFrom} ${colors.buttonHoverTo} text-white font-bold p-2 rounded-full shadow-lg flex items-center justify-center text-xl transition-all duration-300 cursor-pointer align-middle`}
-              style={{ width: 40, height: 40, marginTop: 0, alignSelf: 'center' }}
-            >
-              {isLoading ? (
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 19V5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M5 12L12 5L19 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
-              )}
-            </button>
-          </div>
-        </div>
-        <div className="flex items-center ml-2">
-          {/* Sélecteur de langue retiré de la zone d'input */}
-
-        </div>
-    </div>
-  </form>
+  <>
+    {/* Background illimité, adapté mobile/desktop */}
+    {isMobile ? (
+      <div className={`fixed top-0 left-0 w-full min-h-[100vh] h-auto bg-gradient-to-b ${colors.gradientFrom} ${colors.gradientTo}`} style={{zIndex:-1}}></div>
+    ) : (
+      <div className={`fixed top-0 left-0 w-full min-h-[100vh] h-auto bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo}`} style={{zIndex:-1}}></div>
+    )}
+    <main className={`relative flex flex-col h-screen ${colors.textColor}`}>
+      <Header
+        branding={branding}
+        botImage={botImage}
+        tagline={tagline}
+        targetLang={targetLang}
+        handleLanguageChange={handleLanguageChange}
+        colors={colors}
+        messages={messages}
+        clearHistory={clearHistory}
+      />
+      <MessageList
+  messages={messages}
+  colors={colors}
+  lastBotMsgRef={lastBotMsgRef}
+  resultRef={resultRef}
+  handleCopy={handleCopy}
+  copiedIdx={copiedIdx}
+  deleteMessage={deleteMessage}
+      />
+      <InputBar
+        micState={micState}
+        micAmplitude={micAmplitude}
+        isLoading={isLoading}
+        textareaRef={textareaRef}
+        userInput={userInput}
+        setUserInput={setUserInput}
+        handleSubmit={handleSubmit}
+        cancelRecording={cancelRecording}
+        handleMicClick={handleMicClick}
+        colors={colors}
+      />
     </main>
+  </>
   );
 }
