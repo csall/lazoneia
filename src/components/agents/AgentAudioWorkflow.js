@@ -402,8 +402,35 @@ useEffect(() => {
     resultRef.current.scrollTop = resultRef.current.scrollHeight - inputHeight;
   }
 }, [isLoading, messages]);
-
-
+// Supprime l'espace du clavier mobile quand il est fermé
+useEffect(() => {
+  const handleResize = () => {
+    if (resultRef.current) {
+      // Sur mobile, si le clavier est fermé, on enlève le padding-bottom
+      if (window.innerWidth <= 768) {
+        resultRef.current.style.paddingBottom = '0px';
+      }
+    }
+  };
+  window.addEventListener('resize', handleResize);
+  return () => {
+    window.removeEventListener('resize', handleResize);
+  };
+}, []);
+// Supprime l'espace blanc après validation du clavier mobile
+useEffect(() => {
+  const handleFocusOut = () => {
+    setTimeout(() => {
+      if (resultRef.current) {
+        resultRef.current.style.paddingBottom = '0px';
+      }
+    }, 0); // délai pour laisser le clavier se fermer
+  };
+  window.addEventListener('focusout', handleFocusOut);
+  return () => {
+    window.removeEventListener('focusout', handleFocusOut);
+  };
+}, []);
 // Scroll tout en bas à l'ouverture de la page (après le rendu des messages)
 useEffect(() => {
   const timer = setTimeout(() => {
