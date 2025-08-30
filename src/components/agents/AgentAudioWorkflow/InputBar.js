@@ -172,11 +172,28 @@ export default function InputBar({
                   <option value="wolof">WO</option>
                   <option value="portuguais">PT</option>
                 </motion.select>
-                {/* Sélecteur de ton */}
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-pink-400 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v18m9-9H3" />
+                {/* Sélecteur de ton moderne */}
+                {/* Icône haut-parleur pour le ton */}
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" fill={colors.bg || '#6366f1'} />
+                  <rect x="9" y="10" width="3" height="4" rx="1" fill="#fff" />
+                  <rect x="13" y="10" width="2" height="4" rx="1" fill="#fff" />
+                  <path d="M16 12c0-1.1-.9-2-2-2" stroke="#fff" strokeWidth="1.5" fill="none" />
+                  <path d="M16 12c0 1.1-.9 2-2 2" stroke="#fff" strokeWidth="1.5" fill="none" />
                 </svg>
-                <motion.select id="tone-select-inputbar" value={selectedTone} onChange={e => handleToneSelection(e.target.value)} className={`px-2 py-1 rounded-lg border border-pink-300 bg-gray-900 text-pink-700 focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`} style={{ background: `#FDE8F3` }} whileFocus={{ scale: 1.05, boxShadow: '0 0 0 4px #ec4899' }} whileHover={{ scale: 1.04 }}>
+                <motion.select
+                  id="tone-select-inputbar"
+                  value={selectedTone}
+                  onChange={e => handleToneSelection(e.target.value)}
+                  className={`px-2 py-1 rounded-lg border ${colors.border || 'border-indigo-300'} focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`}
+                  style={{
+                    background: colors.bg || '#6366f1',
+                    color: colors.textColor || '#fff',
+                    borderColor: colors.border || '#6366f1',
+                  }}
+                  whileFocus={{ scale: 1.05, boxShadow: `0 0 0 4px ${colors.bg || '#6366f1'}` }}
+                  whileHover={{ scale: 1.04 }}
+                >
                   {tones && tones.length > 0 && tones.map(tone => (
                     <option key={tone.value} value={tone.value}>{tone.label}</option>
                   ))}
