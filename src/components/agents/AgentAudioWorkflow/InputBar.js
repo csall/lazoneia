@@ -297,7 +297,15 @@ export default function InputBar({
             {micState !== "recording" && (
               <>
                 <span className="flex items-center gap-1 ml-2 mt-1">
-                  {/* Custom select avec drapeau et texte */}
+                  {/* Icône du drapeau à gauche du select natif */}
+                  <span className="flex items-center justify-center w-6 h-6 rounded overflow-hidden border border-indigo-300 bg-white/80 mr-1">
+                    <img
+                      src={`https://flagcdn.com/${languages.find(l => l.value === targetLang)?.flag}.svg`}
+                      alt={targetLang + " flag"}
+                      className="w-full h-full object-cover"
+                      style={{ minWidth: 20, minHeight: 20, maxWidth: 24, maxHeight: 24 }}
+                    />
+                  </span>
                   <select
                     id="language-select-inputbar"
                     value={targetLang}
@@ -313,7 +321,6 @@ export default function InputBar({
                       <option key={lang.value} value={lang.value}>{lang.label}</option>
                     ))}
                   </select>
-                  {/* Drapeau selon la langue sélectionnée supprimé pour éviter la redondance, tout est géré dans le bouton custom */}
                   {/* Sélecteur de ton moderne */}
                   <motion.select
                     id="tone-select-inputbar"
