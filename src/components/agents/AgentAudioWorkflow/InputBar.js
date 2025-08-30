@@ -167,67 +167,12 @@ export default function InputBar({
                       viewBox="0 0 24 24"
                       className="h-7 w-7 drop-shadow-lg"
                     >
-                      <defs>
-                        <radialGradient id="micGlass" cx="50%" cy="50%" r="70%">
-                          <stop offset="0%" stopColor="#fff" stopOpacity="1" />
-                          <stop
-                            offset="50%"
-                            stopColor="#6366f1"
-                            stopOpacity="0.95"
-                          />
-                          <stop
-                            offset="100%"
-                            stopColor="#7c3aed"
-                            stopOpacity="1"
-                          />
-                        </radialGradient>
-                      </defs>
-                      <rect
-                        x="9"
-                        y="4"
-                        width="6"
-                        height="12"
-                        rx="3"
-                        fill="url(#micGlass)"
-                        stroke="#6366f1"
-                        strokeWidth="1.5"
-                      />
-                      <rect
-                        x="9"
-                        y="4"
-                        width="6"
-                        height="12"
-                        rx="3"
-                        fill="#fff"
-                        fillOpacity="0.22"
-                      />
-                      <path
-                        d="M12 18c2.21 0 4-1.79 4-4V8a4 4 0 10-8 0v6c0 2.21 1.79 4 4 4z"
-                        fill="url(#micGlass)"
-                        stroke="#6366f1"
-                        strokeWidth="1.2"
-                      />
-                      <path
-                        d="M19 11v2a7 7 0 01-14 0v-2"
-                        stroke="#6366f1"
-                        strokeWidth="2"
-                        fill="none"
-                      />
-                      <path
-                        d="M12 22v-2"
-                        stroke="#6366f1"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                      <circle cx="12" cy="22" r="1.5" fill="#6366f1" />
-                      <ellipse
-                        cx="12"
-                        cy="8"
-                        rx="2.5"
-                        ry="1.2"
-                        fill="#fff"
-                        fillOpacity="0.35"
-                      />
+                      <rect x="9" y="4" width="6" height="12" rx="3" fill="#fff" />
+                      <path d="M12 18c2.21 0 4-1.79 4-4V8a4 4 0 10-8 0v6c0 2.21 1.79 4 4 4z" fill="#fff" />
+                      <path d="M19 11v2a7 7 0 01-14 0v-2" stroke="#fff" strokeWidth="2" fill="none" />
+                      <path d="M12 22v-2" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+                      <circle cx="12" cy="22" r="1.5" fill="#fff" />
+                      <ellipse cx="12" cy="8" rx="2.5" ry="1.2" fill="#fff" fillOpacity="0.5" />
                     </svg>
                   </motion.button>
                 )}
@@ -284,33 +229,16 @@ export default function InputBar({
                             </defs>
                             <path
                               d="M4 12L20 12"
-                              stroke="url(#arrowGradient)"
+                              stroke="#fff"
                               strokeWidth="3.2"
                               strokeLinecap="round"
-                              filter="drop-shadow(0px 1px 2px #6366f1)"
-                            />
-                            <path
-                              d="M14 6L20 12L14 18"
-                              stroke="url(#arrowGradient)"
-                              strokeWidth="3.2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              filter="drop-shadow(0px 1px 2px #6366f1)"
                             />
                             <path
                               d="M14 6L20 12L14 18"
                               stroke="#fff"
-                              strokeWidth="1.2"
+                              strokeWidth="3.2"
                               strokeLinecap="round"
                               strokeLinejoin="round"
-                              opacity="0.7"
-                            />
-                            <circle
-                              cx="20"
-                              cy="12"
-                              r="1.5"
-                              fill="#fff"
-                              fillOpacity="0.45"
                             />
                           </motion.svg>
                         </span>
