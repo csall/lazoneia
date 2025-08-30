@@ -35,19 +35,21 @@ export default function InputBar({
         minHeight: "72px",
       }}
     >
-      <motion.div
-        className="flex flex-col items-center w-full max-w-full mx-auto rounded-3xl px-2 py-2 sm:max-w-2xl sm:px-4 sm:py-3 bg-white/60 backdrop-blur-lg shadow-2xl border border-indigo-200"
-        initial={{ y: 40, opacity: 0, scale: 0.98 }}
-        animate={{ y: 0, opacity: 1, scale: 1 }}
-        whileFocus={{ boxShadow: '0 0 0 4px #6366f1' }}
-        transition={{ type: "spring", stiffness: 220, damping: 22 }}
-        style={{
-          boxShadow: "0 8px 32px rgba(80,80,180,0.10)",
-          background: "rgba(255,255,255,0.7)",
-          borderRadius: 24,
-          border: '1.5px solid #c7d2fe',
-        }}
-      >
+      <AnimatePresence>
+        <motion.div
+          className="flex flex-col items-center w-full max-w-full mx-auto rounded-3xl px-2 py-2 sm:max-w-2xl sm:px-4 sm:py-3 bg-white/60 backdrop-blur-lg shadow-2xl border border-indigo-200"
+          initial={{ y: 64, opacity: 0, scale: 0.98 }}
+          animate={{ y: 0, opacity: 1, scale: 1 }}
+          exit={{ y: 64, opacity: 0, scale: 0.98 }}
+          whileFocus={{ boxShadow: '0 0 0 4px #6366f1' }}
+          transition={{ type: "spring", stiffness: 220, damping: 22 }}
+          style={{
+            boxShadow: "0 8px 32px rgba(80,80,180,0.10)",
+            background: "rgba(255,255,255,0.7)",
+            borderRadius: 24,
+            border: '1.5px solid #c7d2fe',
+          }}
+        >
         {/* Input animé avec bouton envoyer à l'intérieur */}
         <div className="relative w-full">
           <motion.textarea
@@ -309,7 +311,8 @@ export default function InputBar({
         )}
       </div>
            
-      </motion.div>
+        </motion.div>
+      </AnimatePresence>
     </form>
   );
 }
