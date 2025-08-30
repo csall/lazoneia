@@ -299,11 +299,14 @@ export default function InputBar({
                 <span className="flex items-center gap-1 ml-2 mt-1">
                   {/* Icône du drapeau à gauche du select natif */}
                   <span className="flex items-center justify-center w-6 h-6 rounded overflow-hidden border border-indigo-300 bg-white/80 mr-1">
-                    <img
+                    <Image
                       src={`https://flagcdn.com/${languages.find(l => l.value === targetLang)?.flag}.svg`}
                       alt={targetLang + " flag"}
+                      width={24}
+                      height={24}
                       className="w-full h-full object-cover"
                       style={{ minWidth: 20, minHeight: 20, maxWidth: 24, maxHeight: 24 }}
+                      unoptimized
                     />
                   </span>
                   <select
@@ -318,7 +321,7 @@ export default function InputBar({
                     }}
                   >
                     {languages.map(lang => (
-                      <option key={lang.value} value={lang.value}>{lang.label}</option>
+                      <option key={lang.value} value={lang.value}>{lang.value.charAt(0).toUpperCase() + lang.value.slice(1)}</option>
                     ))}
                   </select>
                   {/* Sélecteur de ton moderne */}
