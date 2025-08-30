@@ -138,7 +138,7 @@ export default function InputBar({
           />
           {/* Boutons micro et envoyer positionnés à droite dans le textarea */}
           {micState !== "recording" && (
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center space-x-3">
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2 items-center">
               {userInput.trim().length === 0 && (
                 <motion.button
                   type="button"
@@ -168,48 +168,50 @@ export default function InputBar({
                   </svg>
                 </motion.button>
               )}
-              <motion.button
-                type="submit"
-                disabled={isLoading || !userInput.trim()}
-                className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold p-3 rounded-full shadow-2xl flex items-center justify-center text-xl transition-all duration-300 cursor-pointer align-middle"
-                whileTap={{ scale: 0.9 }}
-                style={{ width: 44, height: 44, minWidth: 36, minHeight: 36, boxShadow: "0 0 0 4px rgba(120,120,255,0.08)" }}
-              >
-                <AnimatePresence>
-                  {isLoading ? (
-                    <motion.div
-                      className="animate-spin rounded-full h-7 w-7 sm:h-6 sm:w-6 border-b-2 border-white border-t-2 border-indigo-400"
-                      initial={{ rotate: 0 }}
-                      animate={{ rotate: 360 }}
-                      transition={{ repeat: Infinity, duration: 1 }}
-                    />
-                  ) : (
-                    <motion.svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6 sm:h-5 sm:w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      initial={{ x: 0 }}
-                      animate={{ x: isFocused ? 4 : 0 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    >
-                      <path
-                        d="M12 19V5"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
+              {userInput.trim().length > 0 && (
+                <motion.button
+                  type="submit"
+                  disabled={isLoading}
+                  className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold p-3 rounded-full shadow-2xl flex items-center justify-center text-xl transition-all duration-300 cursor-pointer align-middle"
+                  whileTap={{ scale: 0.9 }}
+                  style={{ width: 44, height: 44, minWidth: 36, minHeight: 36, boxShadow: "0 0 0 4px rgba(120,120,255,0.08)" }}
+                >
+                  <AnimatePresence>
+                    {isLoading ? (
+                      <motion.div
+                        className="animate-spin rounded-full h-7 w-7 sm:h-6 sm:w-6 border-b-2 border-white border-t-2 border-indigo-400"
+                        initial={{ rotate: 0 }}
+                        animate={{ rotate: 360 }}
+                        transition={{ repeat: Infinity, duration: 1 }}
                       />
-                      <path
-                        d="M5 12L12 5L19 12"
+                    ) : (
+                      <motion.svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 sm:h-5 sm:w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
                         stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                    </motion.svg>
-                  )}
-                </AnimatePresence>
-              </motion.button>
+                        initial={{ x: 0 }}
+                        animate={{ x: isFocused ? 4 : 0 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                      >
+                        <path
+                          d="M12 19V5"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M5 12L12 5L19 12"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                      </motion.svg>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
+              )}
             </div>
           )}
   </div>
