@@ -403,15 +403,15 @@ export default function InputBar({
                     type="button"
                     onClick={clearHistory}
                     className="bg-[#948D8D] text-white rounded-full p-2 shadow-xl border border-[#948D8D] flex items-center justify-center transition-all duration-300 cursor-pointer ml-2 backdrop-blur-md"
-                    whileTap={{ scale: 0.92, rotate: 8 }}
-                    whileHover={{ scale: 1.08, boxShadow: "0 0 0 6px #948D8D" }}
+                    whileTap={{ scale: 0.94, rotate: 8 }}
+                    whileHover={{ scale: 1.08, boxShadow: "0 0 0 4px #948D8D" }}
                     aria-label="Supprimer tout l'historique"
                     style={{
-                      width: 32,
                       height: 32,
-                      minWidth: 28,
-                      minHeight: 28,
-                      boxShadow: "0 0 0 4px rgba(148,141,141,0.12)",
+                      minHeight: 32,
+                      width: 32,
+                      minWidth: 32,
+                      boxShadow: "0 0 0 2px rgba(148,141,141,0.12)",
                     }}
                   >
                     <svg
