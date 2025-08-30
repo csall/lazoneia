@@ -20,6 +20,27 @@ export default function InputBar({
   tones,
   clearHistory, // Ajout de la prop
 }) {
+  const [showLangMenu, setShowLangMenu] = useState(false);
+    const languages = [
+    {value:"français",label:"FR",flag:"fr"},
+    {value:"anglais",label:"EN",flag:"gb"},
+    {value:"espagnol",label:"ES",flag:"es"},
+    {value:"allemand",label:"DE",flag:"de"},
+    {value:"italien",label:"IT",flag:"it"},
+    {value:"wolof",label:"WO",flag:"sn"},
+    {value:"portuguais",label:"PT",flag:"pt"},
+    {value:"arabe",label:"AR",flag:"sa"},
+    {value:"chinois",label:"ZH",flag:"cn"},
+    {value:"russe",label:"RU",flag:"ru"},
+    {value:"japonais",label:"JA",flag:"jp"},
+    {value:"turc",label:"TR",flag:"tr"},
+    {value:"néerlandais",label:"NL",flag:"nl"},
+    {value:"polonais",label:"PL",flag:"pl"},
+    {value:"suédois",label:"SV",flag:"se"},
+    {value:"grec",label:"EL",flag:"gr"},
+    {value:"coréen",label:"KO",flag:"kr"},
+    {value:"hindi",label:"HI",flag:"in"}
+  ];
   const [isFocused, setIsFocused] = useState(false);
   const [placeholderAnim, setPlaceholderAnim] = useState(false);
   const inputRef = textareaRef;
@@ -276,101 +297,23 @@ export default function InputBar({
             {micState !== "recording" && (
               <>
                 <span className="flex items-center gap-1 ml-2 mt-1">
-                  <motion.select
+                  {/* Custom select avec drapeau et texte */}
+                  <select
                     id="language-select-inputbar"
                     value={targetLang}
                     onChange={handleLanguageChange}
-                    className={`px-2 py-1 rounded-lg border border-[#948D8D] bg-[#948D8D] text-white focus:ring focus:outline-none transition-all text-xs cursor-pointer`}
-                    style={{ background: '#948D8D', color: '#fff', borderColor: '#948D8D' }}
-                    whileFocus={{ scale: 1.05, boxShadow: "0 0 0 4px #6366f1" }}
-                    whileHover={{ scale: 1.04 }}
+                    className={`px-2 py-1 rounded-lg border ${colors.border || 'border-indigo-300'} focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`}
+                    style={{
+                      background: colors.bg || '#6366f1',
+                      color: colors.textColor || '#fff',
+                      borderColor: colors.border || '#6366f1',
+                    }}
                   >
-                    <option value="français">FR</option>
-                    <option value="anglais">EN</option>
-                    <option value="espagnol">ES</option>
-                    <option value="allemand">DE</option>
-                    <option value="italien">IT</option>
-                    <option value="wolof">WO</option>
-                    <option value="portuguais">PT</option>
-                  </motion.select>
-                  {/* Drapeau selon la langue sélectionnée */}
-                  {targetLang === "français" && (
-                    <span className="inline-block w-5 h-5 mr-1 align-middle">
-                      <Image
-                        src="https://flagcdn.com/fr.svg"
-                        alt="FR"
-                        width={20}
-                        height={20}
-                        className="w-full h-full rounded-sm shadow"
-                      />
-                    </span>
-                  )}
-                  {targetLang === "anglais" && (
-                    <span className="inline-block w-5 h-5 mr-1 align-middle">
-                      <Image
-                        src="https://flagcdn.com/gb.svg"
-                        alt="EN"
-                        width={20}
-                        height={20}
-                        className="w-full h-full rounded-sm shadow"
-                      />
-                    </span>
-                  )}
-                  {targetLang === "espagnol" && (
-                    <span className="inline-block w-5 h-5 mr-1 align-middle">
-                      <Image
-                        src="https://flagcdn.com/es.svg"
-                        alt="ES"
-                        width={20}
-                        height={20}
-                        className="w-full h-full rounded-sm shadow"
-                      />
-                    </span>
-                  )}
-                  {targetLang === "allemand" && (
-                    <span className="inline-block w-5 h-5 mr-1 align-middle">
-                      <Image
-                        src="https://flagcdn.com/de.svg"
-                        alt="DE"
-                        width={20}
-                        height={20}
-                        className="w-full h-full rounded-sm shadow"
-                      />
-                    </span>
-                  )}
-                  {targetLang === "italien" && (
-                    <span className="inline-block w-5 h-5 mr-1 align-middle">
-                      <Image
-                        src="https://flagcdn.com/it.svg"
-                        alt="IT"
-                        width={20}
-                        height={20}
-                        className="w-full h-full rounded-sm shadow"
-                      />
-                    </span>
-                  )}
-                  {targetLang === "wolof" && (
-                    <span className="inline-block w-5 h-5 mr-1 align-middle">
-                      <Image
-                        src="https://flagcdn.com/sn.svg"
-                        alt="WO"
-                        width={20}
-                        height={20}
-                        className="w-full h-full rounded-sm shadow"
-                      />
-                    </span>
-                  )}
-                  {targetLang === "portuguais" && (
-                    <span className="inline-block w-5 h-5 mr-1 align-middle">
-                      <Image
-                        src="https://flagcdn.com/pt.svg"
-                        alt="PT"
-                        width={20}
-                        height={20}
-                        className="w-full h-full rounded-sm shadow"
-                      />
-                    </span>
-                  )}
+                    {languages.map(lang => (
+                      <option key={lang.value} value={lang.value}>{lang.label}</option>
+                    ))}
+                  </select>
+                  {/* Drapeau selon la langue sélectionnée supprimé pour éviter la redondance, tout est géré dans le bouton custom */}
                   {/* Sélecteur de ton moderne */}
                   <motion.select
                     id="tone-select-inputbar"
