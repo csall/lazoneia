@@ -302,37 +302,6 @@ export default function InputBar({
                       <option key={tone.value} value={tone.value}>{tone.label}</option>
                     ))}
                   </motion.select>
-                  {/* Bouton supprimer l'historique après le bouton ton */}
-                  <motion.button
-                    type="button"
-                    onClick={clearHistory}
-                    className="p-3 rounded-full bg-gray-200 text-gray-500 hover:bg-gray-300 hover:text-red-600 transition cursor-pointer mr-2 ml-3 relative overflow-hidden"
-                    title="Supprimer tout l'historique"
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.7, opacity: 0 }}
-                    whileTap={{ scale: 0.85, rotate: 12 }}
-                    whileHover={{ scale: 1.12, boxShadow: '0 0 0 6px #ef4444' }}
-                    aria-label="Supprimer tout l'historique"
-                    style={{ minWidth: 44, minHeight: 44 }}
-                  >
-                    <span className="absolute inset-0 pointer-events-none">
-                      <motion.span
-                        className="block w-full h-full bg-gradient-to-br from-red-400/30 to-red-600/30 rounded-full blur-xl opacity-0"
-                        initial={{ opacity: 0 }}
-                        whileHover={{ opacity: 0.18 }}
-                        transition={{ duration: 0.4 }}
-                      />
-                    </span>
-                    <motion.svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                      initial={{ rotate: 0 }}
-                      animate={{ rotate: 0 }}
-                      whileTap={{ rotate: 24 }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                    >
-                      <motion.path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m2 0v14a2 2 0 01-2 2H8a2 2 0 01-2-2V6m5 10v-6" initial={{ y: 0 }} animate={{ y: 0 }} whileHover={{ y: -2 }} />
-                    </motion.svg>
-                  </motion.button>
            
               </span>
               <div className="flex-1" />
