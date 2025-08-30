@@ -72,31 +72,6 @@ export default function InputBar({
           }}
         >
           {/* Annuler enregistrement */}
-          {micState === "recording" && (
-            <motion.button
-              type="button"
-              onClick={cancelRecording}
-              className="mr-2 bg-gray-300 mb-2  hover:bg-gray-400 text-gray-700 rounded-full p-3 shadow border border-gray-400 flex items-center justify-center transition-all duration-200 cursor-pointer"
-              whileTap={{ scale: 0.9 }}
-              aria-label="Annuler l'enregistrement"
-              style={{ width: 56, height: 56, minWidth: 44, minHeight: 44 }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-7 w-7"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </motion.button>
-          )}
           {/* Input animé avec bouton envoyer à l'intérieur */}
           <div className="relative w-full">
             <motion.textarea
@@ -272,21 +247,73 @@ export default function InputBar({
           </div>
           {/* Animation amplitude micro en overlay dans le textarea */}
           {micState === "recording" && micAmplitude && (
-            <div className="absolute left-0 right-0 top-0 bottom-0 flex items-center justify-center pointer-events-none">
-              <div
-                className="flex items-end gap-1 h-8 mx-auto"
-                style={{ width: "fit-content" }}
-              >
-                {micAmplitude.map((amp, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ height: 8 }}
-                    animate={{ height: amp }}
-                    transition={{ type: "spring", stiffness: 180, damping: 18 }}
-                    className="w-1.5 rounded bg-indigo-400/80"
-                    style={{ minHeight: 8, maxHeight: 40 }}
-                  />
-                ))}
+            <div className="absolute inset-0 flex items-center" style={{ pointerEvents: 'none' }}>
+              <div className="flex items-center w-full justify-center relative">
+                {/* Bouton annuler à gauche */}
+                <div className="absolute left-3 top-1/2" style={{ transform: 'translateY(-50%)', pointerEvents: 'auto' }}>
+                  <motion.button
+                    type="button"
+                    onClick={cancelRecording}
+                    className="bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-full p-3 shadow border border-gray-400 flex items-center justify-center transition-all duration-200 cursor-pointer"
+                    whileTap={{ scale: 0.9 }}
+                    aria-label="Annuler l'enregistrement"
+                    style={{ width: 44, height: 44, minWidth: 36, minHeight: 36 }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </motion.button>
+                </div>
+                {/* Animation amplitude au centre */}
+                <div className="flex items-end gap-1 h-8 mx-auto" style={{ width: "fit-content" }}>
+                  {micAmplitude.map((amp, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ height: 8 }}
+                      animate={{ height: amp }}
+                      transition={{ type: "spring", stiffness: 180, damping: 18 }}
+                      className="w-1.5 rounded bg-indigo-400/80"
+                      style={{ minHeight: 8, maxHeight: 40 }}
+                    />
+                  ))}
+                </div>
+                {/* Bouton check à droite */}
+                <div className="absolute right-3 top-1/2" style={{ transform: 'translateY(-50%)', pointerEvents: 'auto' }}>
+                  <motion.button
+                    type="button"
+                    onClick={handleMicClick}
+                    className="bg-green-500 hover:bg-green-600 text-white rounded-full p-3 shadow border border-green-300 flex items-center justify-center transition-all duration-200 cursor-pointer"
+                    whileTap={{ scale: 0.9 }}
+                    aria-label="Valider l'enregistrement"
+                    style={{ width: 44, height: 44, minWidth: 36, minHeight: 36 }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </motion.button>
+                </div>
               </div>
             </div>
           )}
@@ -417,33 +444,6 @@ export default function InputBar({
           {/* Bouton envoyer animé : affiché uniquement si pas d'enregistrement */}
           {/* (supprimé le doublon, le bouton est dans la barre d'input) */}
           {/* Boutons check et annuler pendant l'enregistrement */}
-          {micState === "recording" && (
-            <div className="flex gap-2 ml-2 mt-2">
-              <motion.button
-                type="button"
-                onClick={handleMicClick}
-                className="bg-green-500 hover:bg-green-600 text-white rounded-full p-3 shadow border border-green-300 flex items-center justify-center transition-all duration-200 cursor-pointer"
-                whileTap={{ scale: 0.9 }}
-                aria-label="Valider l'enregistrement"
-                style={{ width: 56, height: 56, minWidth: 44, minHeight: 44 }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-7 w-7"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-              </motion.button>
-            </div>
-          )}
         </motion.div>
       </AnimatePresence>
     </form>
