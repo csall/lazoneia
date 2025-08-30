@@ -250,7 +250,7 @@ export default function InputBar({
             <div className="absolute inset-0 flex items-center" style={{ pointerEvents: 'none' }}>
               <div className="flex items-center w-full justify-center relative">
                 {/* Bouton annuler à gauche */}
-                <div className="absolute left-3 top-1/2" style={{ transform: 'translateY(-50%)', pointerEvents: 'auto' }}>
+                <div className="absolute left-3 top-1/2" style={{ transform: 'translateY(-50%)', pointerEvents: 'auto', marginLeft: '6px' }}>
                   <motion.button
                     type="button"
                     onClick={cancelRecording}
@@ -289,7 +289,7 @@ export default function InputBar({
                   ))}
                 </div>
                 {/* Bouton check à droite */}
-                <div className="absolute right-3 top-1/2" style={{ transform: 'translateY(-50%)', pointerEvents: 'auto' }}>
+                <div className="absolute right-3 top-1/2" style={{ transform: 'translateY(-50%)', pointerEvents: 'auto', marginRight: '6px' }}>
                   <motion.button
                     type="button"
                     onClick={handleMicClick}
