@@ -74,8 +74,8 @@ export default function InputBar({
             </svg>
           </motion.button>
         )}
-        {/* Input animé */}
-  <div className="relative w-full">
+        {/* Input animé avec bouton envoyer à l'intérieur */}
+        <div className="relative w-full">
           <motion.textarea
             ref={inputRef}
             value={
@@ -116,7 +116,7 @@ export default function InputBar({
               micState === "transcribing"
             }
             rows={1}
-            className={`w-full min-h-[44px] max-h-[120px] resize-none rounded-2xl px-4 pr-12 py-3 text-base bg-white/80 text-gray-900 shadow-none border-2 border-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400/80 transition-all duration-300 scrollbar-hide placeholder:italic placeholder:text-indigo-400 placeholder:opacity-80 ${
+            className={`w-full min-h-[44px] max-h-[120px] resize-none rounded-2xl px-4 pr-16 py-3 text-base bg-white/80 text-gray-900 shadow-none border-2 border-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400/80 transition-all duration-300 scrollbar-hide placeholder:italic placeholder:text-indigo-400 placeholder:opacity-80 ${
               micState === "transcribing" ? "text-center font-semibold" : ""
             } sm:text-lg sm:px-5 sm:pr-20 sm:py-4`}
             style={{
@@ -136,6 +136,81 @@ export default function InputBar({
             placeholder=''
             animate={{ boxShadow: isFocused ? '0 0 0 2px #6366f1' : '0 2px 16px rgba(60,60,120,0.10)' }}
           />
+          {/* Boutons micro et envoyer positionnés à droite dans le textarea */}
+          {micState !== "recording" && (
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2 items-center">
+              <motion.button
+                type="button"
+                onClick={handleMicClick}
+                disabled={isLoading}
+                className="bg-gradient-to-br from-blue-500 to-violet-600 text-white rounded-full p-3 shadow-xl border border-indigo-300 flex items-center justify-center transition-all duration-300 cursor-pointer"
+                whileTap={{ scale: 0.9 }}
+                aria-label="Démarrer l'enregistrement"
+                style={{ width: 44, height: 44, minWidth: 36, minHeight: 36, boxShadow: '0 0 0 4px rgba(120,120,255,0.10)' }}
+              >
+                {/* Icône micro Material Filled, arrondie, glassy */}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-7 w-7 drop-shadow-lg">
+                  <defs>
+                    <radialGradient id="micGlass" cx="50%" cy="50%" r="70%">
+                      <stop offset="0%" stopColor="#fff" stopOpacity="1" />
+                      <stop offset="50%" stopColor="#6366f1" stopOpacity="0.95" />
+                      <stop offset="100%" stopColor="#7c3aed" stopOpacity="1" />
+                    </radialGradient>
+                  </defs>
+                  <rect x="9" y="4" width="6" height="12" rx="3" fill="url(#micGlass)" stroke="#6366f1" strokeWidth="1.5" />
+                  <rect x="9" y="4" width="6" height="12" rx="3" fill="#fff" fillOpacity="0.22" />
+                  <path d="M12 18c2.21 0 4-1.79 4-4V8a4 4 0 10-8 0v6c0 2.21 1.79 4 4 4z" fill="url(#micGlass)" stroke="#6366f1" strokeWidth="1.2" />
+                  <path d="M19 11v2a7 7 0 01-14 0v-2" stroke="#6366f1" strokeWidth="2" fill="none" />
+                  <path d="M12 22v-2" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" />
+                  <circle cx="12" cy="22" r="1.5" fill="#6366f1" />
+                  <ellipse cx="12" cy="8" rx="2.5" ry="1.2" fill="#fff" fillOpacity="0.35" />
+                </svg>
+              </motion.button>
+              <motion.button
+                type="submit"
+                disabled={isLoading || !userInput.trim()}
+                className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold p-3 rounded-full shadow-2xl flex items-center justify-center text-xl transition-all duration-300 cursor-pointer align-middle"
+                whileTap={{ scale: 0.9 }}
+                style={{ width: 44, height: 44, minWidth: 36, minHeight: 36, boxShadow: "0 0 0 4px rgba(120,120,255,0.08)" }}
+              >
+                <AnimatePresence>
+                  {isLoading ? (
+                    <motion.div
+                      className="animate-spin rounded-full h-7 w-7 sm:h-6 sm:w-6 border-b-2 border-white border-t-2 border-indigo-400"
+                      initial={{ rotate: 0 }}
+                      animate={{ rotate: 360 }}
+                      transition={{ repeat: Infinity, duration: 1 }}
+                    />
+                  ) : (
+                    <motion.svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6 sm:h-5 sm:w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      initial={{ x: 0 }}
+                      animate={{ x: isFocused ? 4 : 0 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    >
+                      <path
+                        d="M12 19V5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M5 12L12 5L19 12"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                    </motion.svg>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+            </div>
+          )}
+  </div>
           {/* Animation amplitude micro en overlay dans le textarea */}
           {micState === "recording" && micAmplitude && (
             <div className="absolute left-0 right-0 top-0 bottom-0 flex items-center justify-center pointer-events-none">
@@ -155,7 +230,6 @@ export default function InputBar({
           )}
           {/* Placeholder animé */}
           {/* Placeholder natif utilisé, pas d'animation custom */}
-        </div>
         {/* Boutons micro et envoyer à droite du textarea, dans la barre d'input */}
   <div className="flex items-center ml-2 w-full">
           {micState !== "recording" && (
@@ -258,91 +332,6 @@ export default function InputBar({
            
               </span>
               <div className="flex-1" />
-              
-              {/* Micro à côté du bouton envoyer */}
-              <motion.button
-                type="button"
-                onClick={handleMicClick}
-                className={`bg-gradient-to-br from-indigo-500 to-violet-600 text-white rounded-full p-3 shadow-xl border border-indigo-300 flex items-center justify-center transition-all duration-300 cursor-pointer mr-2 ${
-                  micState === "recording" ? "animate-pulse" : ""
-                }`}
-                whileTap={{ scale: 0.85 }}
-                aria-label={
-                  micState === "idle"
-                    ? "Démarrer l'enregistrement"
-                    : micState === "recording"
-                    ? "Valider"
-                    : "Transcription en cours"
-                }
-                disabled={micState === "transcribing"}
-                style={{
-                  width: 56,
-                  height: 56,
-                  minWidth: 44,
-                  minHeight: 44,
-                  boxShadow: "0 0 0 4px rgba(120,120,255,0.08)",
-                }}
-              >
-                {/* Icône micro Material Design arrondie */}
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7 text-indigo-500">
-                  <rect x="9" y="3" width="6" height="12" rx="3" />
-                  <path d="M5 10v2a7 7 0 0 0 14 0v-2" stroke="#6366f1" strokeWidth="1.5" fill="none" />
-                  <path d="M12 21v-2" stroke="#6366f1" strokeWidth="1.5" strokeLinecap="round" />
-                  <circle cx="12" cy="21" r="1.5" fill="#6366f1" />
-                </svg>
-              </motion.button>
-            
-          
-          {micState !== "recording" && (
-            <motion.button
-              type="submit"
-              disabled={isLoading || !userInput.trim()}
-              className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold p-3 rounded-full shadow-2xl flex items-center justify-center text-xl transition-all duration-300 cursor-pointer align-middle ml-auto"
-              whileTap={{ scale: 0.9 }}
-              style={{
-                width: 56,
-                height: 56,
-                minWidth: 44,
-                minHeight: 44,
-                boxShadow: "0 0 0 4px rgba(120,120,255,0.08)",
-              }}
-            >
-              <AnimatePresence>
-                {isLoading ? (
-                  <motion.div
-                    className="animate-spin rounded-full h-7 w-7 sm:h-6 sm:w-6 border-b-2 border-white border-t-2 border-indigo-400"
-                    initial={{ rotate: 0 }}
-                    animate={{ rotate: 360 }}
-                    transition={{ repeat: Infinity, duration: 1 }}
-                  />
-                ) : (
-                  <motion.svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-7 w-7 sm:h-6 sm:w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    initial={{ x: 0 }}
-                    animate={{ x: isFocused ? 4 : 0 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  >
-                    <path
-                      d="M12 19V5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M5 12L12 5L19 12"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  </motion.svg>
-                )}
-              </AnimatePresence>
-            </motion.button>
-          )}
         </>
         )}
       </div>
