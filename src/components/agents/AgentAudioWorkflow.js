@@ -431,6 +431,7 @@ useEffect(() => {
         selectedTone={selectedTone}
         handleToneSelection={handleToneSelection}
         tones={tones}
+        clearHistory={clearHistory}
       />
     </main>
   </>

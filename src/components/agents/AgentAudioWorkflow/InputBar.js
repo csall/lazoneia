@@ -17,6 +17,7 @@ export default function InputBar({
   selectedTone,
   handleToneSelection,
   tones,
+  clearHistory, // Ajout de la prop
 }) {
   const [isFocused, setIsFocused] = useState(false);
   const [placeholderAnim, setPlaceholderAnim] = useState(false);
@@ -159,10 +160,6 @@ export default function InputBar({
           {micState !== "recording" && (
               <>
               <span className="flex items-center gap-1 ml-2">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
-                  <path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" />
-                </svg>
                 <motion.select id="language-select-inputbar" value={targetLang} onChange={handleLanguageChange} className={`px-2 py-1 rounded-lg border ${colors.border || colors.borderColor || 'border-indigo-500/30'} bg-gray-900 ${colors.textColor || 'text-white'} focus:ring focus:outline-none transition-all text-xs cursor-pointer`} style={{ background: `#E3DEDE` }} whileFocus={{ scale: 1.05, boxShadow: '0 0 0 4px #6366f1' }} whileHover={{ scale: 1.04 }}>
                   <option value="français">FR</option>
                   <option value="anglais">EN</option>
@@ -173,31 +170,55 @@ export default function InputBar({
                   <option value="portuguais">PT</option>
                 </motion.select>
                 {/* Sélecteur de ton moderne */}
-                {/* Icône haut-parleur pour le ton */}
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="10" fill={colors.bg || '#6366f1'} />
-                  <rect x="9" y="10" width="3" height="4" rx="1" fill="#fff" />
-                  <rect x="13" y="10" width="2" height="4" rx="1" fill="#fff" />
-                  <path d="M16 12c0-1.1-.9-2-2-2" stroke="#fff" strokeWidth="1.5" fill="none" />
-                  <path d="M16 12c0 1.1-.9 2-2 2" stroke="#fff" strokeWidth="1.5" fill="none" />
-                </svg>
-                <motion.select
-                  id="tone-select-inputbar"
-                  value={selectedTone}
-                  onChange={e => handleToneSelection(e.target.value)}
-                  className={`px-2 py-1 rounded-lg border ${colors.border || 'border-indigo-300'} focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`}
-                  style={{
-                    background: colors.bg || '#6366f1',
-                    color: colors.textColor || '#fff',
-                    borderColor: colors.border || '#6366f1',
-                  }}
-                  whileFocus={{ scale: 1.05, boxShadow: `0 0 0 4px ${colors.bg || '#6366f1'}` }}
-                  whileHover={{ scale: 1.04 }}
-                >
-                  {tones && tones.length > 0 && tones.map(tone => (
-                    <option key={tone.value} value={tone.value}>{tone.label}</option>
-                  ))}
-                </motion.select>
+                  <motion.select
+                    id="tone-select-inputbar"
+                    value={selectedTone}
+                    onChange={e => handleToneSelection(e.target.value)}
+                    className={`px-2 py-1 rounded-lg border ${colors.border || 'border-indigo-300'} focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`}
+                    style={{
+                      background: colors.bg || '#6366f1',
+                      color: colors.textColor || '#fff',
+                      borderColor: colors.border || '#6366f1',
+                    }}
+                    whileFocus={{ scale: 1.05, boxShadow: `0 0 0 4px ${colors.bg || '#6366f1'}` }}
+                    whileHover={{ scale: 1.04 }}
+                  >
+                    {tones && tones.length > 0 && tones.map(tone => (
+                      <option key={tone.value} value={tone.value}>{tone.label}</option>
+                    ))}
+                  </motion.select>
+                  {/* Bouton supprimer l'historique après le bouton ton */}
+                  <motion.button
+                    type="button"
+                    onClick={clearHistory}
+                    className="p-3 rounded-full bg-gray-200 text-gray-500 hover:bg-gray-300 hover:text-red-600 transition cursor-pointer mr-2 ml-3 relative overflow-hidden"
+                    title="Supprimer tout l'historique"
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.7, opacity: 0 }}
+                    whileTap={{ scale: 0.85, rotate: 12 }}
+                    whileHover={{ scale: 1.12, boxShadow: '0 0 0 6px #ef4444' }}
+                    aria-label="Supprimer tout l'historique"
+                    style={{ minWidth: 44, minHeight: 44 }}
+                  >
+                    <span className="absolute inset-0 pointer-events-none">
+                      <motion.span
+                        className="block w-full h-full bg-gradient-to-br from-red-400/30 to-red-600/30 rounded-full blur-xl opacity-0"
+                        initial={{ opacity: 0 }}
+                        whileHover={{ opacity: 0.18 }}
+                        transition={{ duration: 0.4 }}
+                      />
+                    </span>
+                    <motion.svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                      initial={{ rotate: 0 }}
+                      animate={{ rotate: 0 }}
+                      whileTap={{ rotate: 24 }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                    >
+                      <motion.path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m2 0v14a2 2 0 01-2 2H8a2 2 0 01-2-2V6m5 10v-6" initial={{ y: 0 }} animate={{ y: 0 }} whileHover={{ y: -2 }} />
+                    </motion.svg>
+                  </motion.button>
+           
               </span>
               <div className="flex-1" />
               

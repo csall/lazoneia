@@ -34,50 +34,25 @@ export default function Header({ branding, botImage, tagline, targetLang, handle
           </Link>
         </div>
   <div className="flex items-center gap-4 flex-1 justify-center">
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 180, damping: 18 }}
-            className="relative"
-          >
-            <Image src={branding?.botImage || botImage} alt={branding?.name} width={48} height={48} className={`w-12 h-12 rounded-full drop-shadow-[0_0_20px_rgba(139,92,246,0.5)] border-2 ${colors.border || 'border-white/30'} ${colors.bg ? '' : 'bg-gradient-to-br from-indigo-500/30 to-violet-500/30'}`} priority />
-            <motion.div className="absolute inset-0 rounded-full pointer-events-none" initial={{ opacity: 0 }} whileHover={{ opacity: 0.18 }} transition={{ duration: 0.4 }} style={{ background: 'radial-gradient(circle, #a5b4fc 0%, #c4b5fd 100%)', filter: 'blur(8px)' }} />
-          </motion.div>
+          <Link href="/" replace>
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              whileHover={{ scale: 1.08, boxShadow: '0 0 0 8px #6366f1' }}
+              whileTap={{ scale: 0.92, rotate: -8 }}
+              transition={{ type: 'spring', stiffness: 180, damping: 18 }}
+              className="relative cursor-pointer"
+              aria-label="Retour à l'accueil"
+            >
+              <Image src={branding?.botImage || botImage} alt={branding?.name} width={48} height={48} className={`w-12 h-12 rounded-full drop-shadow-[0_0_20px_rgba(139,92,246,0.5)] border-2 ${colors.border || 'border-white/30'} ${colors.bg ? '' : 'bg-gradient-to-br from-indigo-500/30 to-violet-500/30'}`} priority />
+              <motion.div className="absolute inset-0 rounded-full pointer-events-none" initial={{ opacity: 0 }} whileHover={{ opacity: 0.18 }} transition={{ duration: 0.4 }} style={{ background: 'radial-gradient(circle, #a5b4fc 0%, #c4b5fd 100%)', filter: 'blur(8px)' }} />
+            </motion.div>
+          </Link>
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
               <div className={`text-lg font-bold ${colors.textColor || 'text-white'} drop-shadow-lg`}>{branding?.name}</div>
               {tagline && (<motion.span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${colors.button || 'bg-indigo-700/80'} ${colors.textColor || 'text-indigo-100'} ml-2 drop-shadow animate-gradient-move`} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 180, damping: 18 }}>{tagline}</motion.span>)}
-              <AnimatePresence>
-                {messages.length > 0 && (
-                  <motion.button
-                    onClick={clearHistory}
-                    className="p-2 rounded-full bg-gray-200 text-gray-500 hover:bg-gray-300 hover:text-red-600 transition cursor-pointer ml-2 relative overflow-hidden"
-                    title="Supprimer tout l'historique"
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.7, opacity: 0 }}
-                    whileTap={{ scale: 0.85, rotate: 12 }}
-                    whileHover={{ scale: 1.12, boxShadow: '0 0 0 6px #ef4444' }}
-                  >
-                    <span className="absolute inset-0 pointer-events-none">
-                      <motion.span
-                        className="block w-full h-full bg-gradient-to-br from-red-400/30 to-red-600/30 rounded-full blur-xl opacity-0"
-                        initial={{ opacity: 0 }}
-                        whileHover={{ opacity: 0.18 }}
-                        transition={{ duration: 0.4 }}
-                      />
-                    </span>
-                    <motion.svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                      initial={{ rotate: 0 }}
-                      animate={{ rotate: 0 }}
-                      whileTap={{ rotate: 24 }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                    >
-                      <motion.path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m2 0v14a2 2 0 01-2 2H8a2 2 0 01-2-2V6m5 10v-6" initial={{ y: 0 }} animate={{ y: 0 }} whileHover={{ y: -2 }} />
-                    </motion.svg>
-                  </motion.button>
-                )}
-              </AnimatePresence>
+              {/* ...bouton supprimer l'historique supprimé... */}
             </div>
             <div className="flex items-center gap-2">
               <motion.span className="text-[10px] text-white/80 max-w-xs" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 180, damping: 18 }}>{branding?.description}</motion.span>
