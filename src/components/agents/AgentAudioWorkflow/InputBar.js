@@ -138,7 +138,7 @@ export default function InputBar({
           />
           {/* Boutons micro et envoyer positionnés à droite dans le textarea */}
           {micState !== "recording" && (
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2 items-center">
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center space-x-3">
               {userInput.trim().length === 0 && (
                 <motion.button
                   type="button"
@@ -237,7 +237,7 @@ export default function InputBar({
           {micState !== "recording" && (
               <>
               <span className="flex items-center gap-1 ml-2">
-                <motion.select id="language-select-inputbar" value={targetLang} onChange={handleLanguageChange} className={`px-2 py-1 rounded-lg border ${colors.border || colors.borderColor || 'border-indigo-500/30'} bg-gray-900 ${colors.textColor || 'text-white'} focus:ring focus:outline-none transition-all text-xs cursor-pointer`} style={{ background: `#E3DEDE` }} whileFocus={{ scale: 1.05, boxShadow: '0 0 0 4px #6366f1' }} whileHover={{ scale: 1.04 }}>
+                <select id="language-select-inputbar" value={targetLang} onChange={handleLanguageChange} className={`px-2 py-1 rounded-lg border ${colors.border || colors.borderColor || 'border-indigo-500/30'} bg-gray-900 ${colors.textColor || 'text-white'} focus:ring focus:outline-none transition-all text-xs cursor-pointer`} style={{ background: `#E3DEDE` }}>
                   <option value="français">FR</option>
                   <option value="anglais">EN</option>
                   <option value="espagnol">ES</option>
@@ -245,7 +245,7 @@ export default function InputBar({
                   <option value="italien">IT</option>
                   <option value="wolof">WO</option>
                   <option value="portuguais">PT</option>
-                </motion.select>
+                </select>
                   {/* Drapeau selon la langue sélectionnée */}
                   {targetLang === "français" && (
                     <span className="inline-block w-5 h-5 mr-1 align-middle">
@@ -283,7 +283,7 @@ export default function InputBar({
                     </span>
                   )}
                 {/* Sélecteur de ton moderne */}
-                  <motion.select
+                  <select
                     id="tone-select-inputbar"
                     value={selectedTone}
                     onChange={e => handleToneSelection(e.target.value)}
@@ -293,13 +293,11 @@ export default function InputBar({
                       color: colors.textColor || '#fff',
                       borderColor: colors.border || '#6366f1',
                     }}
-                    whileFocus={{ scale: 1.05, boxShadow: `0 0 0 4px ${colors.bg || '#6366f1'}` }}
-                    whileHover={{ scale: 1.04 }}
                   >
                     {tones && tones.length > 0 && tones.map(tone => (
                       <option key={tone.value} value={tone.value}>{tone.label}</option>
                     ))}
-                  </motion.select>
+                  </select>
                   {/* Bouton supprimer l'historique après le bouton ton */}
                   <motion.button
                     type="button"
