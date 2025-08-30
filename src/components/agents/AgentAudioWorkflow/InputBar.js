@@ -139,33 +139,35 @@ export default function InputBar({
           {/* Boutons micro et envoyer positionnés à droite dans le textarea */}
           {micState !== "recording" && (
             <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2 items-center">
-              <motion.button
-                type="button"
-                onClick={handleMicClick}
-                disabled={isLoading}
-                className="bg-gradient-to-br from-blue-500 to-violet-600 text-white rounded-full p-3 shadow-xl border border-indigo-300 flex items-center justify-center transition-all duration-300 cursor-pointer"
-                whileTap={{ scale: 0.9 }}
-                aria-label="Démarrer l'enregistrement"
-                style={{ width: 44, height: 44, minWidth: 36, minHeight: 36, boxShadow: '0 0 0 4px rgba(120,120,255,0.10)' }}
-              >
-                {/* Icône micro Material Filled, arrondie, glassy */}
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-7 w-7 drop-shadow-lg">
-                  <defs>
-                    <radialGradient id="micGlass" cx="50%" cy="50%" r="70%">
-                      <stop offset="0%" stopColor="#fff" stopOpacity="1" />
-                      <stop offset="50%" stopColor="#6366f1" stopOpacity="0.95" />
-                      <stop offset="100%" stopColor="#7c3aed" stopOpacity="1" />
-                    </radialGradient>
-                  </defs>
-                  <rect x="9" y="4" width="6" height="12" rx="3" fill="url(#micGlass)" stroke="#6366f1" strokeWidth="1.5" />
-                  <rect x="9" y="4" width="6" height="12" rx="3" fill="#fff" fillOpacity="0.22" />
-                  <path d="M12 18c2.21 0 4-1.79 4-4V8a4 4 0 10-8 0v6c0 2.21 1.79 4 4 4z" fill="url(#micGlass)" stroke="#6366f1" strokeWidth="1.2" />
-                  <path d="M19 11v2a7 7 0 01-14 0v-2" stroke="#6366f1" strokeWidth="2" fill="none" />
-                  <path d="M12 22v-2" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" />
-                  <circle cx="12" cy="22" r="1.5" fill="#6366f1" />
-                  <ellipse cx="12" cy="8" rx="2.5" ry="1.2" fill="#fff" fillOpacity="0.35" />
-                </svg>
-              </motion.button>
+              {userInput.trim().length === 0 && (
+                <motion.button
+                  type="button"
+                  onClick={handleMicClick}
+                  disabled={isLoading}
+                  className="bg-gradient-to-br from-blue-500 to-violet-600 text-white rounded-full p-3 shadow-xl border border-indigo-300 flex items-center justify-center transition-all duration-300 cursor-pointer"
+                  whileTap={{ scale: 0.9 }}
+                  aria-label="Démarrer l'enregistrement"
+                  style={{ width: 44, height: 44, minWidth: 36, minHeight: 36, boxShadow: '0 0 0 4px rgba(120,120,255,0.10)' }}
+                >
+                  {/* Icône micro Material Filled, arrondie, glassy */}
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-7 w-7 drop-shadow-lg">
+                    <defs>
+                      <radialGradient id="micGlass" cx="50%" cy="50%" r="70%">
+                        <stop offset="0%" stopColor="#fff" stopOpacity="1" />
+                        <stop offset="50%" stopColor="#6366f1" stopOpacity="0.95" />
+                        <stop offset="100%" stopColor="#7c3aed" stopOpacity="1" />
+                      </radialGradient>
+                    </defs>
+                    <rect x="9" y="4" width="6" height="12" rx="3" fill="url(#micGlass)" stroke="#6366f1" strokeWidth="1.5" />
+                    <rect x="9" y="4" width="6" height="12" rx="3" fill="#fff" fillOpacity="0.22" />
+                    <path d="M12 18c2.21 0 4-1.79 4-4V8a4 4 0 10-8 0v6c0 2.21 1.79 4 4 4z" fill="url(#micGlass)" stroke="#6366f1" strokeWidth="1.2" />
+                    <path d="M19 11v2a7 7 0 01-14 0v-2" stroke="#6366f1" strokeWidth="2" fill="none" />
+                    <path d="M12 22v-2" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" />
+                    <circle cx="12" cy="22" r="1.5" fill="#6366f1" />
+                    <ellipse cx="12" cy="8" rx="2.5" ry="1.2" fill="#fff" fillOpacity="0.35" />
+                  </svg>
+                </motion.button>
+              )}
               <motion.button
                 type="submit"
                 disabled={isLoading || !userInput.trim()}
