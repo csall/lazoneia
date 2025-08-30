@@ -154,11 +154,11 @@ export default function InputBar({
                     whileTap={{ scale: 0.9 }}
                     aria-label="Démarrer l'enregistrement"
                     style={{
-                      width: 44,
-                      height: 44,
-                      minWidth: 36,
-                      minHeight: 36,
-                      boxShadow: "0 0 0 4px rgba(120,120,255,0.10)",
+                      width: 36,
+                      height: 36,
+                      minWidth: 28,
+                      minHeight: 28,
+                      boxShadow: "0 0 0 3px rgba(120,120,255,0.10)",
                     }}
                   >
                     {/* Icône micro Material Filled, arrondie, glassy */}
@@ -183,11 +183,11 @@ export default function InputBar({
                     className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold p-3 rounded-full shadow-2xl flex items-center justify-center text-xl transition-all duration-300 cursor-pointer align-middle"
                     whileTap={{ scale: 0.9 }}
                     style={{
-                      width: 44,
-                      height: 44,
-                      minWidth: 36,
-                      minHeight: 36,
-                      boxShadow: "0 0 0 4px rgba(120,120,255,0.08)",
+                      width: 36,
+                      height: 36,
+                      minWidth: 28,
+                      minHeight: 28,
+                      boxShadow: "0 0 0 3px rgba(120,120,255,0.08)",
                     }}
                   >
                     <AnimatePresence>
@@ -280,14 +280,8 @@ export default function InputBar({
                     id="language-select-inputbar"
                     value={targetLang}
                     onChange={handleLanguageChange}
-                    className={`px-2 py-1 rounded-lg border ${
-                      colors.border ||
-                      colors.borderColor ||
-                      "border-indigo-500/30"
-                    } bg-gray-900 ${
-                      colors.textColor || "text-white"
-                    } focus:ring focus:outline-none transition-all text-xs cursor-pointer`}
-                    style={{ background: `#E3DEDE` }}
+                    className={`px-2 py-1 rounded-lg border border-[#948D8D] bg-[#948D8D] text-white focus:ring focus:outline-none transition-all text-xs cursor-pointer`}
+                    style={{ background: '#948D8D', color: '#fff', borderColor: '#948D8D' }}
                     whileFocus={{ scale: 1.05, boxShadow: "0 0 0 4px #6366f1" }}
                     whileHover={{ scale: 1.04 }}
                   >
