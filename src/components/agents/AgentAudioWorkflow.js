@@ -426,6 +426,11 @@ useEffect(() => {
         cancelRecording={cancelRecording}
         handleMicClick={handleMicClick}
         colors={colors}
+        targetLang={targetLang}
+        handleLanguageChange={handleLanguageChange}
+        selectedTone={selectedTone}
+        handleToneSelection={handleToneSelection}
+        tones={tones}
       />
     </main>
   </>

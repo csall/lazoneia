@@ -5,7 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function Header({ branding, botImage, tagline, targetLang, handleLanguageChange, colors, messages, clearHistory }) {
   return (
-    <header className="z-50 py-3 px-4 fixed top-0 left-0 w-full bg-gradient-to-r from-indigo-900/80 via-violet-900/70 to-transparent animate-gradient-move backdrop-blur-2xl shadow-2xl border-b border-indigo-900/20">
+    <header
+      className={`z-50 py-3 px-4 fixed top-0 left-0 w-full backdrop-blur-2xl shadow-2xl border-b ${colors.border || 'border-indigo-900/20'} ${colors.bg || 'bg-gradient-to-r from-indigo-900/80 via-violet-900/70 to-transparent animate-gradient-move'}`}
+      style={colors.bg ? { background: undefined } : {}}
+    >
       <div className="container mx-auto flex justify-between items-center gap-4">
         {/* Flèche retour en haut à droite, visible uniquement sur desktop */}
         <div className="hidden md:flex items-center justify-end w-16">
@@ -24,7 +27,7 @@ export default function Header({ branding, botImage, tagline, targetLang, handle
                   transition={{ duration: 0.4 }}
                 />
               </span>
-              <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${colors.textColor}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${colors.textColor || 'text-white'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <motion.path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" initial={{ x: 0 }} animate={{ x: 0 }} whileHover={{ x: -2 }} transition={{ type: 'spring', stiffness: 300, damping: 20 }} />
               </svg>
             </motion.button>
@@ -37,22 +40,13 @@ export default function Header({ branding, botImage, tagline, targetLang, handle
             transition={{ type: 'spring', stiffness: 180, damping: 18 }}
             className="relative"
           >
-            <Image src={branding?.botImage || botImage} alt={branding?.name} width={48} height={48} className="w-12 h-12 rounded-full drop-shadow-[0_0_20px_rgba(139,92,246,0.5)] border-2 border-white/30 bg-gradient-to-br from-indigo-500/30 to-violet-500/30" priority />
+            <Image src={branding?.botImage || botImage} alt={branding?.name} width={48} height={48} className={`w-12 h-12 rounded-full drop-shadow-[0_0_20px_rgba(139,92,246,0.5)] border-2 ${colors.border || 'border-white/30'} ${colors.bg ? '' : 'bg-gradient-to-br from-indigo-500/30 to-violet-500/30'}`} priority />
             <motion.div className="absolute inset-0 rounded-full pointer-events-none" initial={{ opacity: 0 }} whileHover={{ opacity: 0.18 }} transition={{ duration: 0.4 }} style={{ background: 'radial-gradient(circle, #a5b4fc 0%, #c4b5fd 100%)', filter: 'blur(8px)' }} />
           </motion.div>
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
-              <div className="text-lg font-bold text-white drop-shadow-lg">{branding?.name}</div>
-              {tagline && (<motion.span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-700/80 text-indigo-100 ml-2 drop-shadow animate-gradient-move" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 180, damping: 18 }}>{tagline}</motion.span>)}
-              <motion.select id="language-select-header" value={targetLang} onChange={handleLanguageChange} className={`px-2 py-1 rounded-lg border ${colors.borderColor} bg-gray-900 ${colors.textColor} focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-2`} style={{ background: `#E3DEDE` }} whileFocus={{ scale: 1.05, boxShadow: '0 0 0 4px #6366f1' }} whileHover={{ scale: 1.04 }}>
-                <option value="français">FR</option>
-                <option value="anglais">EN</option>
-                <option value="espagnol">ES</option>
-                <option value="allemand">DE</option>
-                <option value="italien">IT</option>
-                <option value="wolof">WO</option>
-                <option value="portuguais">PT</option>
-              </motion.select>
+              <div className={`text-lg font-bold ${colors.textColor || 'text-white'} drop-shadow-lg`}>{branding?.name}</div>
+              {tagline && (<motion.span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${colors.button || 'bg-indigo-700/80'} ${colors.textColor || 'text-indigo-100'} ml-2 drop-shadow animate-gradient-move`} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 180, damping: 18 }}>{tagline}</motion.span>)}
               <AnimatePresence>
                 {messages.length > 0 && (
                   <motion.button
