@@ -48,32 +48,6 @@ export default function InputBar({
           border: '1.5px solid #c7d2fe',
         }}
       >
-        {/* Annuler enregistrement */}
-        {micState === "recording" && (
-          <motion.button
-            type="button"
-            onClick={cancelRecording}
-            className="mr-2 bg-gray-300  hover:bg-gray-400 text-gray-700 rounded-full p-3 shadow border border-gray-400 flex items-center justify-center transition-all duration-200 cursor-pointer"
-            whileTap={{ scale: 0.9 }}
-            aria-label="Annuler l'enregistrement"
-            style={{ width: 56, height: 56, minWidth: 44, minHeight: 44 }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-7 w-7"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </motion.button>
-        )}
         {/* Input animé avec bouton envoyer à l'intérieur */}
         <div className="relative w-full">
           <motion.textarea
@@ -136,84 +110,110 @@ export default function InputBar({
             placeholder=''
             animate={{ boxShadow: isFocused ? '0 0 0 2px #6366f1' : '0 2px 16px rgba(60,60,120,0.10)' }}
           />
-          {/* Boutons micro et envoyer positionnés à droite dans le textarea */}
-          {micState !== "recording" && (
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2 items-center">
-              {userInput.trim().length === 0 && (
+          {/* Boutons micro, envoyer, annuler et check positionnés à droite dans le textarea */}
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center space-x-3">
+            {micState === "recording" ? (
+              <>
+                <motion.button
+                  type="button"
+                  onClick={cancelRecording}
+                  className="bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-full p-3 shadow border border-gray-400 flex items-center justify-center transition-all duration-200 cursor-pointer"
+                  whileTap={{ scale: 0.9 }}
+                  aria-label="Annuler l'enregistrement"
+                  style={{ width: 44, height: 44, minWidth: 36, minHeight: 36 }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </motion.button>
                 <motion.button
                   type="button"
                   onClick={handleMicClick}
-                  disabled={isLoading}
-                  className="bg-gradient-to-br from-blue-500 to-violet-600 text-white rounded-full p-3 shadow-xl border border-indigo-300 flex items-center justify-center transition-all duration-300 cursor-pointer"
+                  className="bg-green-500 hover:bg-green-600 text-white rounded-full p-3 shadow border border-green-300 flex items-center justify-center transition-all duration-200 cursor-pointer"
                   whileTap={{ scale: 0.9 }}
-                  aria-label="Démarrer l'enregistrement"
-                  style={{ width: 44, height: 44, minWidth: 36, minHeight: 36, boxShadow: '0 0 0 4px rgba(120,120,255,0.10)' }}
+                  aria-label="Valider l'enregistrement"
+                  style={{ width: 44, height: 44, minWidth: 36, minHeight: 36 }}
                 >
-                  {/* Icône micro Material Filled, arrondie, glassy */}
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-7 w-7 drop-shadow-lg">
-                    <defs>
-                      <radialGradient id="micGlass" cx="50%" cy="50%" r="70%">
-                        <stop offset="0%" stopColor="#fff" stopOpacity="1" />
-                        <stop offset="50%" stopColor="#6366f1" stopOpacity="0.95" />
-                        <stop offset="100%" stopColor="#7c3aed" stopOpacity="1" />
-                      </radialGradient>
-                    </defs>
-                    <rect x="9" y="4" width="6" height="12" rx="3" fill="url(#micGlass)" stroke="#6366f1" strokeWidth="1.5" />
-                    <rect x="9" y="4" width="6" height="12" rx="3" fill="#fff" fillOpacity="0.22" />
-                    <path d="M12 18c2.21 0 4-1.79 4-4V8a4 4 0 10-8 0v6c0 2.21 1.79 4 4 4z" fill="url(#micGlass)" stroke="#6366f1" strokeWidth="1.2" />
-                    <path d="M19 11v2a7 7 0 01-14 0v-2" stroke="#6366f1" strokeWidth="2" fill="none" />
-                    <path d="M12 22v-2" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" />
-                    <circle cx="12" cy="22" r="1.5" fill="#6366f1" />
-                    <ellipse cx="12" cy="8" rx="2.5" ry="1.2" fill="#fff" fillOpacity="0.35" />
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </motion.button>
-              )}
-              {userInput.trim().length > 0 && (
-                <motion.button
-                  type="submit"
-                  disabled={isLoading}
-                  className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold p-3 rounded-full shadow-2xl flex items-center justify-center text-xl transition-all duration-300 cursor-pointer align-middle"
-                  whileTap={{ scale: 0.9 }}
-                  style={{ width: 44, height: 44, minWidth: 36, minHeight: 36, boxShadow: "0 0 0 4px rgba(120,120,255,0.08)" }}
-                >
-                  <AnimatePresence>
-                    {isLoading ? (
-                      <motion.div
-                        className="animate-spin rounded-full h-7 w-7 sm:h-6 sm:w-6 border-b-2 border-white border-t-2 border-indigo-400"
-                        initial={{ rotate: 0 }}
-                        animate={{ rotate: 360 }}
-                        transition={{ repeat: Infinity, duration: 1 }}
-                      />
-                    ) : (
-                      <motion.svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6 sm:h-5 sm:w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        initial={{ x: 0 }}
-                        animate={{ x: isFocused ? 4 : 0 }}
-                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                      >
-                        <path
-                          d="M12 19V5"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
+              </>
+            ) : (
+              <>
+                {userInput.trim().length === 0 && (
+                  <motion.button
+                    type="button"
+                    onClick={handleMicClick}
+                    disabled={isLoading}
+                    className="bg-gradient-to-br from-blue-500 to-violet-600 text-white rounded-full p-3 shadow-xl border border-indigo-300 flex items-center justify-center transition-all duration-300 cursor-pointer"
+                    whileTap={{ scale: 0.9 }}
+                    aria-label="Démarrer l'enregistrement"
+                    style={{ width: 44, height: 44, minWidth: 36, minHeight: 36, boxShadow: '0 0 0 4px rgba(120,120,255,0.10)' }}
+                  >
+                    {/* Icône micro Material Filled, arrondie, glassy */}
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-7 w-7 drop-shadow-lg">
+                      <rect x="9" y="4" width="6" height="12" rx="3" fill="#fff" stroke="#fff" strokeWidth="1.5" />
+                      <path d="M12 18c2.21 0 4-1.79 4-4V8a4 4 0 10-8 0v6c0 2.21 1.79 4 4 4z" fill="#fff" stroke="#fff" strokeWidth="1.2" />
+                      <path d="M19 11v2a7 7 0 01-14 0v-2" stroke="#fff" strokeWidth="2" fill="none" />
+                      <path d="M12 22v-2" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+                      <circle cx="12" cy="22" r="1.5" fill="#fff" />
+                      <ellipse cx="12" cy="8" rx="2.5" ry="1.2" fill="#fff" fillOpacity="0.7" />
+                    </svg>
+                  </motion.button>
+                )}
+                {userInput.trim().length > 0 && (
+                  <motion.button
+                    type="submit"
+                    disabled={isLoading}
+                    className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold p-3 rounded-full shadow-2xl flex items-center justify-center text-xl transition-all duration-300 cursor-pointer align-middle"
+                    whileTap={{ scale: 0.9 }}
+                    style={{ width: 44, height: 44, minWidth: 36, minHeight: 36, boxShadow: "0 0 0 4px rgba(120,120,255,0.08)" }}
+                  >
+                    <AnimatePresence>
+                      {isLoading ? (
+                        <motion.div
+                          className="animate-spin rounded-full h-7 w-7 sm:h-6 sm:w-6 border-b-2 border-white border-t-2 border-indigo-400"
+                          initial={{ rotate: 0 }}
+                          animate={{ rotate: 360 }}
+                          transition={{ repeat: Infinity, duration: 1 }}
                         />
-                        <path
-                          d="M5 12L12 5L19 12"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                        />
-                      </motion.svg>
-                    )}
-                  </AnimatePresence>
-                </motion.button>
-              )}
-            </div>
-          )}
+                      ) : (
+                        <span className="flex items-center justify-center h-full">
+                          <motion.svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-7 w-7 sm:h-6 sm:w-6"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            initial={{ x: 0 }}
+                            animate={{ x: isFocused ? 4 : 0 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                          >
+                            <path
+                              d="M4 12L20 12"
+                              stroke="#fff"
+                              strokeWidth="3.2"
+                              strokeLinecap="round"
+                              filter="drop-shadow(0px 1px 2px #6366f1)"
+                            />
+                            <path
+                              d="M14 6L20 12L14 18"
+                              stroke="#fff"
+                              strokeWidth="3.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              filter="drop-shadow(0px 1px 2px #6366f1)"
+                            />
+                            <circle cx="20" cy="12" r="1.5" fill="#fff" fillOpacity="0.85" />
+                          </motion.svg>
+                        </span>
+                      )}
+                    </AnimatePresence>
+                  </motion.button>
+                )}
+              </>
+            )}
+          </div>
   </div>
           {/* Animation amplitude micro en overlay dans le textarea */}
           {micState === "recording" && micAmplitude && (
@@ -340,25 +340,6 @@ export default function InputBar({
         )}
       </div>
            
-  {/* Bouton envoyer animé : affiché uniquement si pas d'enregistrement */}
-  {/* (supprimé le doublon, le bouton est dans la barre d'input) */}
-        {/* Boutons check et annuler pendant l'enregistrement */}
-        {micState === "recording" && (
-          <div className="flex gap-2 ml-2">
-            <motion.button
-              type="button"
-              onClick={handleMicClick}
-              className="bg-green-500 hover:bg-green-600 text-white rounded-full p-3 shadow border border-green-300 flex items-center justify-center transition-all duration-200 cursor-pointer"
-              whileTap={{ scale: 0.9 }}
-              aria-label="Valider l'enregistrement"
-              style={{ width: 56, height: 56, minWidth: 44, minHeight: 44 }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </motion.button>
-          </div>
-        )}
       </motion.div>
     </form>
   );
