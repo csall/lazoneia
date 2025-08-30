@@ -37,6 +37,7 @@ export default function InputBar({
     >
       <AnimatePresence>
         <motion.div
+          key={micState + '-' + (isLoading ? 'loading' : 'idle') + '-' + (userInput ? 'input' : 'empty')}
           className="flex flex-col items-center w-full max-w-full mx-auto rounded-3xl px-2 py-2 sm:max-w-2xl sm:px-4 sm:py-3 bg-white/60 backdrop-blur-lg shadow-2xl border border-indigo-200"
           initial={{ y: 64, opacity: 0, scale: 0.98 }}
           animate={{ y: 0, opacity: 1, scale: 1 }}
@@ -241,7 +242,7 @@ export default function InputBar({
           {micState !== "recording" && (
               <>
               <span className="flex items-center gap-1 ml-2">
-                <motion.select id="language-select-inputbar" value={targetLang} onChange={handleLanguageChange} className={`px-2 py-1 rounded-lg border ${colors.border || colors.borderColor || 'border-indigo-500/30'} bg-gray-900 ${colors.textColor || 'text-white'} focus:ring focus:outline-none transition-all text-xs cursor-pointer`} style={{ background: `#E3DEDE` }} whileFocus={{ scale: 1.05, boxShadow: '0 0 0 4px #6366f1' }} whileHover={{ scale: 1.04 }}>
+                <select id="language-select-inputbar" value={targetLang} onChange={handleLanguageChange} className={`px-2 py-1 rounded-lg border ${colors.border || colors.borderColor || 'border-indigo-500/30'} bg-gray-900 ${colors.textColor || 'text-white'} focus:ring focus:outline-none transition-all text-xs cursor-pointer`} style={{ background: `#E3DEDE` }}>
                   <option value="français">FR</option>
                   <option value="anglais">EN</option>
                   <option value="espagnol">ES</option>
@@ -249,7 +250,7 @@ export default function InputBar({
                   <option value="italien">IT</option>
                   <option value="wolof">WO</option>
                   <option value="portuguais">PT</option>
-                </motion.select>
+                </select>
                   {/* Drapeau selon la langue sélectionnée */}
                   {targetLang === "français" && (
                     <span className="inline-block w-5 h-5 mr-1 align-middle">
@@ -287,7 +288,7 @@ export default function InputBar({
                     </span>
                   )}
                 {/* Sélecteur de ton moderne */}
-                  <motion.select
+                  <select
                     id="tone-select-inputbar"
                     value={selectedTone}
                     onChange={e => handleToneSelection(e.target.value)}
@@ -297,13 +298,11 @@ export default function InputBar({
                       color: colors.textColor || '#fff',
                       borderColor: colors.border || '#6366f1',
                     }}
-                    whileFocus={{ scale: 1.05, boxShadow: `0 0 0 4px ${colors.bg || '#6366f1'}` }}
-                    whileHover={{ scale: 1.04 }}
                   >
                     {tones && tones.length > 0 && tones.map(tone => (
                       <option key={tone.value} value={tone.value}>{tone.label}</option>
                     ))}
-                  </motion.select>
+                  </select>
            
               </span>
               <div className="flex-1" />
