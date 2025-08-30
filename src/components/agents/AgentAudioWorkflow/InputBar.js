@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function InputBar({
@@ -169,6 +170,42 @@ export default function InputBar({
                   <option value="wolof">WO</option>
                   <option value="portuguais">PT</option>
                 </motion.select>
+                  {/* Drapeau selon la langue sélectionnée */}
+                  {targetLang === "français" && (
+                    <span className="inline-block w-5 h-5 mr-1 align-middle">
+                      <Image src="https://flagcdn.com/fr.svg" alt="FR" width={20} height={20} className="w-full h-full rounded-sm shadow" />
+                    </span>
+                  )}
+                  {targetLang === "anglais" && (
+                    <span className="inline-block w-5 h-5 mr-1 align-middle">
+                      <Image src="https://flagcdn.com/gb.svg" alt="EN" width={20} height={20} className="w-full h-full rounded-sm shadow" />
+                    </span>
+                  )}
+                  {targetLang === "espagnol" && (
+                    <span className="inline-block w-5 h-5 mr-1 align-middle">
+                      <Image src="https://flagcdn.com/es.svg" alt="ES" width={20} height={20} className="w-full h-full rounded-sm shadow" />
+                    </span>
+                  )}
+                  {targetLang === "allemand" && (
+                    <span className="inline-block w-5 h-5 mr-1 align-middle">
+                      <Image src="https://flagcdn.com/de.svg" alt="DE" width={20} height={20} className="w-full h-full rounded-sm shadow" />
+                    </span>
+                  )}
+                  {targetLang === "italien" && (
+                    <span className="inline-block w-5 h-5 mr-1 align-middle">
+                      <Image src="https://flagcdn.com/it.svg" alt="IT" width={20} height={20} className="w-full h-full rounded-sm shadow" />
+                    </span>
+                  )}
+                  {targetLang === "wolof" && (
+                    <span className="inline-block w-5 h-5 mr-1 align-middle">
+                      <Image src="https://flagcdn.com/sn.svg" alt="WO" width={20} height={20} className="w-full h-full rounded-sm shadow" />
+                    </span>
+                  )}
+                  {targetLang === "portuguais" && (
+                    <span className="inline-block w-5 h-5 mr-1 align-middle">
+                      <Image src="https://flagcdn.com/pt.svg" alt="PT" width={20} height={20} className="w-full h-full rounded-sm shadow" />
+                    </span>
+                  )}
                 {/* Sélecteur de ton moderne */}
                   <motion.select
                     id="tone-select-inputbar"
