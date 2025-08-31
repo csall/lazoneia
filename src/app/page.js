@@ -11,7 +11,6 @@ export const dynamic = "force-dynamic";
 
 // Import du hook pour les chemins d'images et de la fonction utilitaire
 import { normalizeImagePath } from "@/hooks/useImagePath";
-import FilterBar from "@/components/agents/FilterBar";
 import GoogleMenu from "@/components/navigation/GoogleMenu";
 
 // Composant pour chaque carte d'agent
@@ -715,7 +714,7 @@ export default function AgentsPage() {
               <div className="shrink-0 w-2 sm:w-0"></div>
               {(() => {
                 const allCount = agents.length;
-                const favoritesCount = agents.filter(a => a.isFavorite).length || 0;
+                const favoritesCount = agents.filter(a => favorites.includes(a.name)).length;
                 const marketingCount = agents.filter(a => a.category === "marketing").length;
                 const communicationCount = agents.filter(a => a.category === "communication").length;
                 const filters = [
