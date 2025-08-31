@@ -143,7 +143,7 @@ const AgentCard = ({
       whileHover={{ scale: 1.02 }}
     >
       <motion.div
-        className={`relative backdrop-blur-xl p-4 rounded-xl overflow-hidden border ${style.border} group w-full flex flex-col min-h-[360px] shadow-xl`}
+        className={`relative backdrop-blur-xl p-2 sm:p-4 rounded-xl overflow-hidden border ${style.border} group w-full flex flex-col min-h-[180px] sm:min-h-[360px]`}
         style={{
           background: `radial-gradient(circle at 50% 0%, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0) 75%), 
                        linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%)`,
@@ -314,9 +314,9 @@ const AgentCard = ({
               <Image
                 src={normalizeImagePath(image)}
                 alt={name}
-                width={100}
-                height={100}
-                className="object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.35)]"
+                width={60}
+                height={60}
+                className="object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.25)] w-[60px] h-[60px] sm:w-[100px] sm:h-[100px]"
                 priority
                 unoptimized
               />
