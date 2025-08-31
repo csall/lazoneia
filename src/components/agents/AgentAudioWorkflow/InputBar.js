@@ -19,27 +19,28 @@ export default function InputBar({
   handleToneSelection,
   tones,
   clearHistory, // Ajout de la prop
+  messages,
 }) {
   const [showLangMenu, setShowLangMenu] = useState(false);
-    const languages = [
-    {value:"français",label:"FR",flag:"fr"},
-    {value:"anglais",label:"EN",flag:"gb"},
-    {value:"espagnol",label:"ES",flag:"es"},
-    {value:"allemand",label:"DE",flag:"de"},
-    {value:"italien",label:"IT",flag:"it"},
-    {value:"wolof",label:"WO",flag:"sn"},
-    {value:"portuguais",label:"PT",flag:"pt"},
-    {value:"arabe",label:"AR",flag:"sa"},
-    {value:"chinois",label:"ZH",flag:"cn"},
-    {value:"russe",label:"RU",flag:"ru"},
-    {value:"japonais",label:"JA",flag:"jp"},
-    {value:"turc",label:"TR",flag:"tr"},
-    {value:"néerlandais",label:"NL",flag:"nl"},
-    {value:"polonais",label:"PL",flag:"pl"},
-    {value:"suédois",label:"SV",flag:"se"},
-    {value:"grec",label:"EL",flag:"gr"},
-    {value:"coréen",label:"KO",flag:"kr"},
-    {value:"hindi",label:"HI",flag:"in"}
+  const languages = [
+    { value: "français", label: "FR", flag: "fr" },
+    { value: "anglais", label: "EN", flag: "gb" },
+    { value: "espagnol", label: "ES", flag: "es" },
+    { value: "allemand", label: "DE", flag: "de" },
+    { value: "italien", label: "IT", flag: "it" },
+    { value: "wolof", label: "WO", flag: "sn" },
+    { value: "portuguais", label: "PT", flag: "pt" },
+    { value: "arabe", label: "AR", flag: "sa" },
+    { value: "chinois", label: "ZH", flag: "cn" },
+    { value: "russe", label: "RU", flag: "ru" },
+    { value: "japonais", label: "JA", flag: "jp" },
+    { value: "turc", label: "TR", flag: "tr" },
+    { value: "néerlandais", label: "NL", flag: "nl" },
+    { value: "polonais", label: "PL", flag: "pl" },
+    { value: "suédois", label: "SV", flag: "se" },
+    { value: "grec", label: "EL", flag: "gr" },
+    { value: "coréen", label: "KO", flag: "kr" },
+    { value: "hindi", label: "HI", flag: "in" },
   ];
   const [isFocused, setIsFocused] = useState(false);
   const [placeholderAnim, setPlaceholderAnim] = useState(false);
@@ -163,12 +164,39 @@ export default function InputBar({
                       viewBox="0 0 24 24"
                       className="h-7 w-7 drop-shadow-lg"
                     >
-                      <rect x="9" y="4" width="6" height="12" rx="3" fill="#fff" />
-                      <path d="M12 18c2.21 0 4-1.79 4-4V8a4 4 0 10-8 0v6c0 2.21 1.79 4 4 4z" fill="#fff" />
-                      <path d="M19 11v2a7 7 0 01-14 0v-2" stroke="#fff" strokeWidth="2" fill="none" />
-                      <path d="M12 22v-2" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+                      <rect
+                        x="9"
+                        y="4"
+                        width="6"
+                        height="12"
+                        rx="3"
+                        fill="#fff"
+                      />
+                      <path
+                        d="M12 18c2.21 0 4-1.79 4-4V8a4 4 0 10-8 0v6c0 2.21 1.79 4 4 4z"
+                        fill="#fff"
+                      />
+                      <path
+                        d="M19 11v2a7 7 0 01-14 0v-2"
+                        stroke="#fff"
+                        strokeWidth="2"
+                        fill="none"
+                      />
+                      <path
+                        d="M12 22v-2"
+                        stroke="#fff"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
                       <circle cx="12" cy="22" r="1.5" fill="#fff" />
-                      <ellipse cx="12" cy="8" rx="2.5" ry="1.2" fill="#fff" fillOpacity="0.5" />
+                      <ellipse
+                        cx="12"
+                        cy="8"
+                        rx="2.5"
+                        ry="1.2"
+                        fill="#fff"
+                        fillOpacity="0.5"
+                      />
                     </svg>
                   </motion.button>
                 )}
@@ -247,17 +275,32 @@ export default function InputBar({
           </div>
           {/* Animation amplitude micro en overlay dans le textarea */}
           {micState === "recording" && micAmplitude && (
-            <div className="absolute inset-0 flex items-center" style={{ pointerEvents: 'none' }}>
+            <div
+              className="absolute inset-0 flex items-center"
+              style={{ pointerEvents: "none" }}
+            >
               <div className="flex items-center w-full justify-center relative">
                 {/* Bouton annuler à gauche */}
-                <div className="absolute left-3 top-1/2" style={{ transform: 'translateY(-50%)', pointerEvents: 'auto', marginLeft: '6px' }}>
+                <div
+                  className="absolute left-3 top-1/2"
+                  style={{
+                    transform: "translateY(-50%)",
+                    pointerEvents: "auto",
+                    marginLeft: "6px",
+                  }}
+                >
                   <motion.button
                     type="button"
                     onClick={cancelRecording}
                     className="bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-full p-3 shadow border border-gray-400 flex items-center justify-center transition-all duration-200 cursor-pointer"
                     whileTap={{ scale: 0.9 }}
                     aria-label="Annuler l'enregistrement"
-                    style={{ width: 44, height: 44, minWidth: 36, minHeight: 36 }}
+                    style={{
+                      width: 44,
+                      height: 44,
+                      minWidth: 36,
+                      minHeight: 36,
+                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -276,27 +319,46 @@ export default function InputBar({
                   </motion.button>
                 </div>
                 {/* Animation amplitude au centre */}
-                <div className="flex items-end gap-1 h-8 mx-auto" style={{ width: "fit-content" }}>
+                <div
+                  className="flex items-end gap-1 h-8 mx-auto"
+                  style={{ width: "fit-content" }}
+                >
                   {micAmplitude.map((amp, i) => (
                     <motion.div
                       key={i}
                       initial={{ height: 8 }}
                       animate={{ height: amp }}
-                      transition={{ type: "spring", stiffness: 180, damping: 18 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 180,
+                        damping: 18,
+                      }}
                       className="w-1.5 rounded bg-indigo-400/80"
                       style={{ minHeight: 8, maxHeight: 40 }}
                     />
                   ))}
                 </div>
                 {/* Bouton check à droite */}
-                <div className="absolute right-3 top-1/2" style={{ transform: 'translateY(-50%)', pointerEvents: 'auto', marginRight: '6px' }}>
+                <div
+                  className="absolute right-3 top-1/2"
+                  style={{
+                    transform: "translateY(-50%)",
+                    pointerEvents: "auto",
+                    marginRight: "6px",
+                  }}
+                >
                   <motion.button
                     type="button"
                     onClick={handleMicClick}
                     className="bg-green-500 hover:bg-green-600 text-white rounded-full p-3 shadow border border-green-300 flex items-center justify-center transition-all duration-200 cursor-pointer"
                     whileTap={{ scale: 0.9 }}
                     aria-label="Valider l'enregistrement"
-                    style={{ width: 44, height: 44, minWidth: 36, minHeight: 36 }}
+                    style={{
+                      width: 44,
+                      height: 44,
+                      minWidth: 36,
+                      minHeight: 36,
+                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -327,12 +389,19 @@ export default function InputBar({
                   {/* Icône du drapeau à gauche du select natif */}
                   <span className="flex items-center justify-center w-6 h-6 rounded overflow-hidden border border-indigo-300 bg-white/80 mr-1">
                     <Image
-                      src={`https://flagcdn.com/${languages.find(l => l.value === targetLang)?.flag}.svg`}
+                      src={`https://flagcdn.com/${
+                        languages.find((l) => l.value === targetLang)?.flag
+                      }.svg`}
                       alt={targetLang + " flag"}
                       width={24}
                       height={24}
                       className="w-full h-full object-cover"
-                      style={{ minWidth: 20, minHeight: 20, maxWidth: 24, maxHeight: 24 }}
+                      style={{
+                        minWidth: 20,
+                        minHeight: 20,
+                        maxWidth: 24,
+                        maxHeight: 24,
+                      }}
                       unoptimized
                     />
                   </span>
@@ -340,15 +409,20 @@ export default function InputBar({
                     id="language-select-inputbar"
                     value={targetLang}
                     onChange={handleLanguageChange}
-                    className={`px-2 py-1 rounded-lg border ${colors.border || 'border-indigo-300'} focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`}
+                    className={`px-2 py-1 rounded-lg border ${
+                      colors.border || "border-indigo-300"
+                    } focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`}
                     style={{
-                      background: colors.bg || '#6366f1',
-                      color: colors.textColor || '#fff',
-                      borderColor: colors.border || '#6366f1',
+                      background: colors.bg || "#6366f1",
+                      color: colors.textColor || "#fff",
+                      borderColor: colors.border || "#6366f1",
                     }}
                   >
-                    {languages.map(lang => (
-                      <option key={lang.value} value={lang.value}>{lang.value.charAt(0).toUpperCase() + lang.value.slice(1)}</option>
+                    {languages.map((lang) => (
+                      <option key={lang.value} value={lang.value}>
+                        {lang.value.charAt(0).toUpperCase() +
+                          lang.value.slice(1)}
+                      </option>
                     ))}
                   </select>
                   {/* Sélecteur de ton moderne */}
@@ -379,62 +453,67 @@ export default function InputBar({
                       ))}
                   </motion.select>
                   {/* Bouton supprimer l'historique après le bouton ton */}
-                  <motion.button
-                    type="button"
-                    onClick={clearHistory}
-                    className="bg-[#948D8D] text-white rounded-full p-2 shadow-xl border border-[#948D8D] flex items-center justify-center transition-all duration-300 cursor-pointer ml-2 backdrop-blur-md"
-                    whileTap={{ scale: 0.94, rotate: 8 }}
-                    whileHover={{ scale: 1.08, boxShadow: "0 0 0 4px #948D8D" }}
-                    aria-label="Supprimer tout l'historique"
-                    style={{
-                      height: 32,
-                      minHeight: 32,
-                      width: 32,
-                      minWidth: 32,
-                      boxShadow: "0 0 0 2px rgba(148,141,141,0.12)",
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4"
-                      viewBox="0 0 24 24"
-                      fill="none"
+                  {messages && messages.length > 0 && (
+                    <motion.button
+                      type="button"
+                      onClick={clearHistory}
+                      className="bg-[#948D8D] text-white rounded-full p-2 shadow-xl border border-[#948D8D] flex items-center justify-center transition-all duration-300 cursor-pointer ml-2 backdrop-blur-md"
+                      whileTap={{ scale: 0.94, rotate: 8 }}
+                      whileHover={{
+                        scale: 1.08,
+                        boxShadow: "0 0 0 4px #948D8D",
+                      }}
+                      aria-label="Supprimer tout l'historique"
+                      style={{
+                        height: 32,
+                        minHeight: 32,
+                        width: 32,
+                        minWidth: 32,
+                        boxShadow: "0 0 0 2px rgba(148,141,141,0.12)",
+                      }}
                     >
-                      <rect
-                        x="7"
-                        y="9"
-                        width="10"
-                        height="9"
-                        rx="2"
-                        fill="#fff"
-                        fillOpacity="0.9"
-                      />
-                      <rect
-                        x="9"
-                        y="4"
-                        width="6"
-                        height="2"
-                        rx="1"
-                        fill="#fff"
-                        fillOpacity="1"
-                      />
-                      <path
-                        d="M10 12v4M14 12v4"
-                        stroke="#fff"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                      <rect
-                        x="5"
-                        y="7"
-                        width="14"
-                        height="2"
-                        rx="1"
-                        fill="#fff"
-                        fillOpacity="0.8"
-                      />
-                    </svg>
-                  </motion.button>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <rect
+                          x="7"
+                          y="9"
+                          width="10"
+                          height="9"
+                          rx="2"
+                          fill="#fff"
+                          fillOpacity="0.9"
+                        />
+                        <rect
+                          x="9"
+                          y="4"
+                          width="6"
+                          height="2"
+                          rx="1"
+                          fill="#fff"
+                          fillOpacity="1"
+                        />
+                        <path
+                          d="M10 12v4M14 12v4"
+                          stroke="#fff"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                        <rect
+                          x="5"
+                          y="7"
+                          width="14"
+                          height="2"
+                          rx="1"
+                          fill="#fff"
+                          fillOpacity="0.8"
+                        />
+                      </svg>
+                    </motion.button>
+                  )}
                 </span>
                 <div className="flex-1" />
               </>
