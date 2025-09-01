@@ -92,62 +92,48 @@ const GoogleMenu = () => {
 
       <AnimatePresence>
         {open && (
-          <>
-            <motion.div
-              key="backdrop"
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+          <motion.nav
+            key="topbar"
+            ref={containerRef}
+            role="menubar"
+            initial={{ y: -60, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -40, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 26 }}
+            className="fixed top-0 left-0 right-0 z-[60] flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-fuchsia-600/30 via-purple-700/30 to-indigo-700/30 backdrop-blur-xl border-b border-white/15 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.5)]"
+          >
+            <div className="flex-1 flex items-center gap-2 overflow-x-auto scrollbar-hide">
+              {filtered.map(item => (
+                <Link
+                  key={item.link}
+                  href={item.link}
+                  onClick={handleSelect}
+                  className="relative group flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-fuchsia-400/40 transition-colors"
+                >
+                  <motion.span
+                    className="w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-br from-fuchsia-500 via-purple-500 to-indigo-500 text-white text-[11px] shadow-inner shadow-black/40"
+                    whileHover={{ rotate: 4 }}
+                    whileTap={{ scale: 0.92 }}
+                    layoutId={`icon-${item.name}`}
+                  >
+                    {item.icon}
+                  </motion.span>
+                  <span className="text-xs font-medium text-white whitespace-nowrap group-hover:text-fuchsia-100 tracking-wide">
+                    {item.name}
+                  </span>
+                </Link>
+              ))}
+            </div>
+            <motion.button
               onClick={() => setOpen(false)}
-            />
-            <motion.div
-              key="panel"
-              ref={containerRef}
-              role="menu"
-              aria-label="Menu navigation"
-              initial={{ opacity: 0, y: 8, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 4, scale: 0.96 }}
-              transition={{ type: "spring", stiffness: 260, damping: 22 }}
-              className="absolute top-full right-0 mt-3 w-72 max-h-[70vh] rounded-2xl border border-white/12 bg-gradient-to-br from-white/10 via-white/5 to-white/5 backdrop-blur-xl shadow-[0_8px_30px_-5px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.08)] overflow-hidden flex flex-col z-50"
+              aria-label="Fermer le menu"
+              whileHover={{ rotate: 90 }}
+              whileTap={{ scale: 0.9 }}
+              className="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white/70 hover:text-white"
             >
-              <div className="flex items-center justify-between px-3 py-2 border-b border-white/10">
-                <span className="text-xs uppercase tracking-wide text-white/50">Menu</span>
-                <button
-                  onClick={() => setOpen(false)}
-                  aria-label="Fermer"
-                  className="w-7 h-7 flex items-center justify-center rounded-md bg-white/5 hover:bg-white/15 text-white/70 hover:text-white border border-white/10 text-sm"
-                >✕</button>
-              </div>
-              <div className="overflow-y-auto custom-scroll px-2 py-3">
-                <ul className="flex flex-col gap-2">
-                  {filtered.map(item => (
-                    <li key={item.link}>
-                      <Link
-                        href={item.link}
-                        onClick={handleSelect}
-                        className="group flex items-center gap-3 rounded-xl border border-white/10 hover:border-fuchsia-400/40 bg-white/5 hover:bg-white/10 p-3 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400/60"
-                      >
-                        <motion.span
-                          className="w-10 h-10 rounded-lg flex items-center justify-center bg-gradient-to-br from-fuchsia-500 via-purple-500 to-indigo-500 text-white shadow-inner shadow-black/40"
-                          whileHover={{ rotate: 3 }}
-                          whileTap={{ scale: 0.94 }}
-                          layoutId={`icon-${item.name}`}
-                        >
-                          {item.icon}
-                        </motion.span>
-                        <div className="flex flex-col">
-                          <span className="text-sm font-medium text-white group-hover:text-fuchsia-100">{item.name}</span>
-                          <span className="text-[11px] text-white/50">{item.keywords.split(" ").slice(0,2).join(", ")}</span>
-                        </div>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
-          </>
+              ✕
+            </motion.button>
+          </motion.nav>
         )}
       </AnimatePresence>
     </div>
