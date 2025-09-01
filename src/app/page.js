@@ -24,8 +24,8 @@ const AgentCard = ({
   tagline,
   isFavorite,
   onToggleFavorite,
+  lines = 3,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
   const cardStyles = {
     charm: {
       bg: "bg-gradient-to-br from-pink-900/60 to-rose-900/60",
@@ -139,11 +139,11 @@ const AgentCard = ({
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, type: "spring", stiffness: 50 }}
       viewport={{ once: true, margin: "-100px" }}
-      className="perspective-1000"
+      className="perspective-1000 h-full flex"
       whileHover={{ scale: 1.02 }}
     >
       <motion.div
-  className={`relative backdrop-blur-xl px-2 py-1 sm:px-3 sm:py-2 rounded-lg overflow-hidden border ${style.border} group w-full flex flex-col min-h-[130px] sm:min-h-[190px] max-h-[240px]`}
+  className={`relative backdrop-blur-xl px-2 py-1 sm:px-3 sm:py-2 rounded-lg overflow-hidden border ${style.border} group w-full flex flex-col h-full`}
         style={{
           background: `radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0) 70%), 
                        linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.35) 100%)`,
@@ -346,51 +346,19 @@ const AgentCard = ({
           {/* Description sous l'image (marge ajoutée) */}
           <div className="relative overflow-hidden mt-3 mb-7 pb-3 w-full px-1">
             <motion.p
-        className={`text-gray-300 text-[11px] group-hover:text-white transition-all duration-500 leading-snug ${
-                isExpanded
-                  ? "max-h-[400px]"
-      : "max-h-[60px] md:group-hover:max-h-[400px]"
-              }`}
+              className="text-gray-300 text-[11px] leading-snug group-hover:text-white transition-colors duration-500"
+              style={{ display: '-webkit-box', WebkitLineClamp: lines, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
               initial={{ y: 10, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
               {description}
             </motion.p>
-            {/* (Icône voir plus/moins retirée sur mobile) */}
           </div>
           </div>
 
           {/* Bouton pour réduire la description (visible uniquement sur mobile quand étendu) */}
-          <div className="md:hidden flex justify-center mb-3">
-            {isExpanded && (
-              <motion.button
-                onClick={() => setIsExpanded(false)}
-                className={`w-8 h-8 rounded-full ${style.accent} flex items-center justify-center shadow-lg`}
-                whileTap={{ scale: 0.9 }}
-                initial={{ rotate: 180 }}
-                animate={{ y: [0, -2, 0] }}
-                transition={{
-                  y: { repeat: Infinity, duration: 1.5, ease: "easeInOut" },
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </motion.button>
-            )}
-          </div>
+          {/* Zone expansion supprimée pour uniformité des hauteurs */}
 
           {/* Button */}
           {/* Séparateur et bouton */}
@@ -696,7 +664,8 @@ export default function AgentsPage() {
           </svg>
         </div>
 
-  <div className="grid grid-cols-1 gap-2 p-1 max-w-full scrollbar-hide sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 sm:gap-8 sm:p-4 max-w-7xl mx-auto">
+  {/* Grille d'agents : 5 colonnes sur écrans larges */}
+  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-2 sm:p-4 max-w-7xl mx-auto">
           {agents
             .filter((agent) => {
               if (filter === "all") return true;
@@ -704,17 +673,22 @@ export default function AgentsPage() {
               return agent.category === filter;
             })
             .map((agent, i) => (
-              <AgentCard
+              <div
                 key={i}
-                name={agent.name}
-                description={agent.description}
-                image={agent.image}
-                color={agent.color}
-                link={agent.link}
-                tagline={agent.tagline}
-                isFavorite={favorites.includes(agent.name)}
-                onToggleFavorite={toggleFavorite}
-              />
+                className="h-[270px] flex w-full"
+              >
+                <AgentCard
+                  name={agent.name}
+                  description={agent.description}
+                  image={agent.image}
+                  color={agent.color}
+                  link={agent.link}
+                  tagline={agent.tagline}
+                  isFavorite={favorites.includes(agent.name)}
+                  onToggleFavorite={toggleFavorite}
+                  lines={3}
+                />
+              </div>
             ))}
         </div>
       </section>
