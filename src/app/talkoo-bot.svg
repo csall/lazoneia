@@ -1,0 +1,61 @@
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Style minimal inspiré de Scribo, palette Talko -->
+  <!-- Cercles décoratifs extérieurs -->
+  <circle cx="120" cy="120" r="100" stroke="#f5d0fe" stroke-width="1" stroke-dasharray="4 4" />
+  <circle cx="120" cy="120" r="110" stroke="#f5d0fe" stroke-width="1" stroke-dasharray="8 8" />
+
+  <!-- Tête / noyau -->
+  <circle cx="120" cy="120" r="90" fill="url(#talko-face)" />
+  <circle cx="120" cy="120" r="90" stroke="#7e22ce" stroke-width="4" />
+
+  <!-- Yeux -->
+  <circle cx="92" cy="102" r="12" fill="white" />
+  <circle cx="148" cy="102" r="12" fill="white" />
+  <circle cx="92" cy="102" r="6" fill="#581c87" />
+  <circle cx="148" cy="102" r="6" fill="#581c87" />
+  <circle cx="94" cy="100" r="2" fill="white" />
+  <circle cx="150" cy="100" r="2" fill="white" />
+
+  <!-- Sourcils expressifs -->
+  <path d="M78 88C86 82 96 84 101 88" stroke="#581c87" stroke-width="4" stroke-linecap="round" />
+  <path d="M162 88C154 82 144 84 139 88" stroke="#581c87" stroke-width="4" stroke-linecap="round" />
+
+  <!-- Sourire neutre -->
+  <path d="M104 142C114 150 126 150 136 142" stroke="#581c87" stroke-width="4" stroke-linecap="round" />
+
+  <!-- Bulles de dialogue minimalistes (communication) -->
+  <rect x="70" y="70" width="38" height="24" rx="6" stroke="#f5d0fe" stroke-width="2" fill="none" />
+  <path d="M78 94l-4 6 8-4" fill="#f5d0fe" />
+  <rect x="132" y="70" width="38" height="24" rx="6" stroke="#f5d0fe" stroke-width="2" fill="none" />
+  <path d="M162 94l4 6-8-4" fill="#f5d0fe" />
+  <circle cx="84" cy="82" r="3" fill="#f5d0fe" />
+  <circle cx="92" cy="82" r="3" fill="#f5d0fe" />
+  <circle cx="100" cy="82" r="3" fill="#f5d0fe" />
+  <circle cx="144" cy="82" r="3" fill="#f5d0fe" />
+  <circle cx="152" cy="82" r="3" fill="#f5d0fe" />
+  <circle cx="136" cy="82" r="3" fill="#f5d0fe" />
+
+  <!-- Panneau actu / ticker -->
+  <rect x="95" y="162" width="50" height="22" rx="6" fill="#7e22ce" stroke="#f5d0fe" stroke-width="2" />
+  <path d="M102 173h20" stroke="#f5d0fe" stroke-width="2" stroke-linecap="round" />
+  <path d="M124 173h8" stroke="#f5d0fe" stroke-width="2" stroke-linecap="round" opacity="0.6" />
+  <path d="M135 173h4" stroke="#f5d0fe" stroke-width="2" stroke-linecap="round" opacity="0.4" />
+
+  <!-- Ondes / signal -->
+  <path d="M120 54c16 0 30 6 42 18" stroke="#f5d0fe" stroke-width="3" stroke-linecap="round" stroke-opacity="0.6" />
+  <path d="M120 46c22 0 40 8 56 24" stroke="#f5d0fe" stroke-width="3" stroke-linecap="round" stroke-opacity="0.3" />
+
+  <!-- Blush / accent -->
+  <circle cx="78" cy="128" r="14" fill="#f0abfc" opacity="0.18" />
+  <circle cx="162" cy="128" r="14" fill="#f0abfc" opacity="0.18" />
+
+  <!-- Ellipse highlight subtile -->
+  <ellipse cx="120" cy="112" rx="70" ry="60" fill="#ffffff" opacity="0.06" />
+
+  <defs>
+    <linearGradient id="talko-face" x1="60" y1="60" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#c026d3" />
+      <stop offset="100%" stop-color="#701a75" />
+    </linearGradient>
+  </defs>
+</svg>
