@@ -92,52 +92,62 @@ const GoogleMenu = () => {
 
       <AnimatePresence>
         {open && (
-          <motion.div
-            key="panel"
-            ref={containerRef}
-            role="menu"
-            aria-label="Menu navigation"
-            initial={{ opacity: 0, x: 12, scale: 0.96 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: 8, scale: 0.96 }}
-            transition={{ type: "spring", stiffness: 260, damping: 22 }}
-            className="absolute top-0 right-full mr-3 w-64 max-h-[70vh] rounded-2xl border border-white/12 bg-gradient-to-br from-white/10 via-white/5 to-white/5 backdrop-blur-xl shadow-[0_8px_30px_-5px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.08)] overflow-hidden flex flex-col"
-          >
-            <div className="flex items-center justify-between px-3 py-2 border-b border-white/10">
-              <span className="text-xs uppercase tracking-wide text-white/50">Menu</span>
-              <button
-                onClick={() => setOpen(false)}
-                aria-label="Fermer"
-                className="w-7 h-7 flex items-center justify-center rounded-md bg-white/5 hover:bg-white/15 text-white/70 hover:text-white border border-white/10 text-sm"
-              >✕</button>
-            </div>
-            <div className="overflow-y-auto custom-scroll px-2 py-3">
-              <ul className="flex flex-col gap-2">
-                {filtered.map(item => (
-                  <li key={item.link}>
-                    <Link
-                      href={item.link}
-                      onClick={handleSelect}
-                      className="group flex items-center gap-3 rounded-xl border border-white/10 hover:border-fuchsia-400/40 bg-white/5 hover:bg-white/10 p-3 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400/60"
-                    >
-                      <motion.span
-                        className="w-10 h-10 rounded-lg flex items-center justify-center bg-gradient-to-br from-fuchsia-500 via-purple-500 to-indigo-500 text-white shadow-inner shadow-black/40"
-                        whileHover={{ rotate: 3 }}
-                        whileTap={{ scale: 0.94 }}
-                        layoutId={`icon-${item.name}`}
+          <>
+            <motion.div
+              key="backdrop"
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setOpen(false)}
+            />
+            <motion.div
+              key="panel"
+              ref={containerRef}
+              role="menu"
+              aria-label="Menu navigation"
+              initial={{ opacity: 0, y: 8, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 4, scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 260, damping: 22 }}
+              className="absolute top-full right-0 mt-3 w-72 max-h-[70vh] rounded-2xl border border-white/12 bg-gradient-to-br from-white/10 via-white/5 to-white/5 backdrop-blur-xl shadow-[0_8px_30px_-5px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.08)] overflow-hidden flex flex-col z-50"
+            >
+              <div className="flex items-center justify-between px-3 py-2 border-b border-white/10">
+                <span className="text-xs uppercase tracking-wide text-white/50">Menu</span>
+                <button
+                  onClick={() => setOpen(false)}
+                  aria-label="Fermer"
+                  className="w-7 h-7 flex items-center justify-center rounded-md bg-white/5 hover:bg-white/15 text-white/70 hover:text-white border border-white/10 text-sm"
+                >✕</button>
+              </div>
+              <div className="overflow-y-auto custom-scroll px-2 py-3">
+                <ul className="flex flex-col gap-2">
+                  {filtered.map(item => (
+                    <li key={item.link}>
+                      <Link
+                        href={item.link}
+                        onClick={handleSelect}
+                        className="group flex items-center gap-3 rounded-xl border border-white/10 hover:border-fuchsia-400/40 bg-white/5 hover:bg-white/10 p-3 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400/60"
                       >
-                        {item.icon}
-                      </motion.span>
+                        <motion.span
+                          className="w-10 h-10 rounded-lg flex items-center justify-center bg-gradient-to-br from-fuchsia-500 via-purple-500 to-indigo-500 text-white shadow-inner shadow-black/40"
+                          whileHover={{ rotate: 3 }}
+                          whileTap={{ scale: 0.94 }}
+                          layoutId={`icon-${item.name}`}
+                        >
+                          {item.icon}
+                        </motion.span>
                         <div className="flex flex-col">
                           <span className="text-sm font-medium text-white group-hover:text-fuchsia-100">{item.name}</span>
                           <span className="text-[11px] text-white/50">{item.keywords.split(" ").slice(0,2).join(", ")}</span>
                         </div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </motion.div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </div>
