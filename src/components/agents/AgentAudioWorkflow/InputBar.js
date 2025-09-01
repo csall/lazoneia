@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -45,6 +45,16 @@ export default function InputBar({
   const [isFocused, setIsFocused] = useState(false);
   const [placeholderAnim, setPlaceholderAnim] = useState(false);
   const inputRef = textareaRef;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const check = () => setIsMobile(window.innerWidth < 640);
+      check();
+      window.addEventListener('resize', check);
+      return () => window.removeEventListener('resize', check);
+    }
+  }, []);
 
   return (
     <form
@@ -115,7 +125,7 @@ export default function InputBar({
                 micState === "transcribing"
               }
               rows={1}
-              className={`w-full min-h-[44px] max-h-[120px] resize-none rounded-2xl px-4 pr-16 py-3 text-base bg-white/80 text-gray-900 shadow-none border-2 border-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400/80 transition-all duration-300 scrollbar-hide placeholder:italic placeholder:text-indigo-400 placeholder:opacity-80 ${
+              className={`relative z-20 w-full min-h-[44px] max-h-[120px] resize-none rounded-2xl px-4 pr-16 py-3 text-base bg-white/80 text-gray-900 shadow-none border-2 border-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400/80 transition-all duration-300 scrollbar-hide placeholder:italic placeholder:text-indigo-400 placeholder:opacity-80 ${
                 micState === "transcribing" ? "text-center font-semibold" : ""
               } sm:text-lg sm:px-5 sm:pr-20 sm:py-4`}
               style={{
@@ -360,8 +370,8 @@ export default function InputBar({
                     <select
                       id="language-select-inputbar"
                       value={targetLang}
-                      onChange={handleLanguageChange}
-                      className={`peer relative z-10 px-3 pr-8 h-11 rounded-2xl border ${(colors.border || 'border-indigo-300/60')} appearance-none
+                      onChange={(e) => { handleLanguageChange(e); if (isMobile) setTimeout(() => inputRef.current?.focus(), 80); }}
+                      className={`peer relative z-[5] px-3 pr-8 h-11 rounded-2xl border ${(colors.border || 'border-indigo-300/60')} appearance-none
                         bg-white/10 backdrop-blur-xl shadow-[0_4px_24px_-6px_rgba(99,102,241,0.25),0_0_0_1px_rgba(255,255,255,0.10)]
                         text-white text-[13px] font-semibold tracking-wide
                         focus:outline-none focus:ring-2 focus:ring-fuchsia-400/60 focus:border-fuchsia-400 transition-all cursor-pointer
@@ -394,8 +404,8 @@ export default function InputBar({
                     <motion.select
                       id="tone-select-inputbar"
                       value={selectedTone}
-                      onChange={(e) => handleToneSelection(e.target.value)}
-                      className={`peer relative z-10 px-3 pr-8 h-11 rounded-2xl border ${(colors.border || 'border-indigo-300/60')} appearance-none
+                      onChange={(e) => { handleToneSelection(e.target.value); if (isMobile) setTimeout(() => inputRef.current?.focus(), 80); }}
+                      className={`peer relative z-[5] px-3 pr-8 h-11 rounded-2xl border ${(colors.border || 'border-indigo-300/60')} appearance-none
                         bg-white/10 backdrop-blur-xl shadow-[0_4px_24px_-6px_rgba(139,92,246,0.22),0_0_0_1px_rgba(255,255,255,0.10)]
                         text-white text-[13px] font-semibold tracking-wide
                         focus:outline-none focus:ring-2 focus:ring-fuchsia-400/60 focus:border-fuchsia-400 transition-all cursor-pointer
