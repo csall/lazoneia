@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -21,7 +21,9 @@ export default function InputBar({
   clearHistory, // Ajout de la prop
   messages,
 }) {
-  const [showLangMenu, setShowLangMenu] = useState(false);
+  // Panels (bottom sheets) for custom selection to avoid native select blocking input on mobile
+  const [showLangPanel, setShowLangPanel] = useState(false);
+  const [showTonePanel, setShowTonePanel] = useState(false);
   const languages = [
     { value: "français", label: "FR", flag: "fr" },
     { value: "anglais", label: "EN", flag: "gb" },
@@ -385,73 +387,65 @@ export default function InputBar({
           <div className="flex items-center ml-2 w-full">
             {micState !== "recording" && (
               <>
-                <span className="flex items-center gap-1 ml-2 mt-1">
-                  {/* Icône du drapeau à gauche du select natif */}
-                  <span className="flex items-center justify-center w-6 h-6 rounded overflow-hidden border border-indigo-300 bg-white/80 mr-1">
-                    <Image
-                      src={`https://flagcdn.com/${
-                        languages.find((l) => l.value === targetLang)?.flag
-                      }.svg`}
-                      alt={targetLang + " flag"}
-                      width={24}
-                      height={24}
-                      className="w-full h-full object-cover"
-                      style={{
-                        minWidth: 20,
-                        minHeight: 20,
-                        maxWidth: 24,
-                        maxHeight: 24,
-                      }}
-                      unoptimized
-                    />
-                  </span>
-                  <select
-                    id="language-select-inputbar"
-                    value={targetLang}
-                    onChange={handleLanguageChange}
-                    className={`px-2 py-1 rounded-lg border ${
-                      colors.border || "border-indigo-300"
-                    } focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`}
-                    style={{
-                      background: colors.bg || "#6366f1",
-                      color: colors.textColor || "#fff",
-                      borderColor: colors.border || "#6366f1",
+                <span className="flex items-center gap-2 ml-2 mt-1">
+                  {/* Bouton langue */}
+                  <button
+                    type="button"
+                    aria-haspopup="dialog"
+                    aria-expanded={showLangPanel}
+                    onClick={() => {
+                      setShowTonePanel(false);
+                      setShowLangPanel((o) => !o);
                     }}
+                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-indigo-500/90 text-white text-xs font-medium shadow-md border border-indigo-300 active:scale-95 transition"
                   >
-                    {languages.map((lang) => (
-                      <option key={lang.value} value={lang.value}>
-                        {lang.value.charAt(0).toUpperCase() +
-                          lang.value.slice(1)}
-                      </option>
-                    ))}
-                  </select>
-                  {/* Sélecteur de ton moderne */}
-                  <motion.select
-                    id="tone-select-inputbar"
-                    value={selectedTone}
-                    onChange={(e) => handleToneSelection(e.target.value)}
-                    className={`px-2 py-1 rounded-lg border ${
-                      colors.border || "border-indigo-300"
-                    } focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`}
-                    style={{
-                      background: colors.bg || "#6366f1",
-                      color: colors.textColor || "#fff",
-                      borderColor: colors.border || "#6366f1",
+                    <span className="flex items-center justify-center w-5 h-5 rounded overflow-hidden bg-white/20">
+                      <Image
+                        src={`https://flagcdn.com/${
+                          languages.find((l) => l.value === targetLang)?.flag
+                        }.svg`}
+                        alt={targetLang + ' flag'}
+                        width={20}
+                        height={20}
+                        className="w-full h-full object-cover"
+                        unoptimized
+                      />
+                    </span>
+                    <span className="uppercase tracking-wide">
+                      {languages.find((l) => l.value === targetLang)?.label || 'LANG'}
+                    </span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className={`h-3 w-3 transition-transform ${showLangPanel ? 'rotate-180' : ''}`}
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z" />
+                    </svg>
+                  </button>
+                  {/* Bouton ton */}
+                  <button
+                    type="button"
+                    aria-haspopup="dialog"
+                    aria-expanded={showTonePanel}
+                    onClick={() => {
+                      setShowLangPanel(false);
+                      setShowTonePanel((o) => !o);
                     }}
-                    whileFocus={{
-                      scale: 1.05,
-                      boxShadow: `0 0 0 4px ${colors.bg || "#6366f1"}`,
-                    }}
-                    whileHover={{ scale: 1.04 }}
+                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-violet-500/90 text-white text-xs font-medium shadow-md border border-violet-300 active:scale-95 transition"
                   >
-                    {tones &&
-                      tones.length > 0 &&
-                      tones.map((tone) => (
-                        <option key={tone.value} value={tone.value}>
-                          {tone.label}
-                        </option>
-                      ))}
-                  </motion.select>
+                    <span className="truncate max-w-[72px]">
+                      {tones?.find((t) => t.value === selectedTone)?.label || 'Ton'}
+                    </span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className={`h-3 w-3 transition-transform ${showTonePanel ? 'rotate-180' : ''}`}
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z" />
+                    </svg>
+                  </button>
                   {/* Bouton supprimer l'historique après le bouton ton */}
                   {messages && messages.length > 0 && (
                     <motion.button
@@ -519,6 +513,82 @@ export default function InputBar({
               </>
             )}
           </div>
+          {/* Panels */}
+          <AnimatePresence>
+            {showLangPanel && (
+              <motion.div
+                key="lang-panel"
+                initial={{ y: 40, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 40, opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 260, damping: 24 }}
+                className="fixed left-0 right-0 bottom-[72px] sm:bottom-[80px] z-[60] px-4"
+              >
+                <div className="max-h-60 overflow-y-auto rounded-2xl border border-indigo-300 bg-white/95 backdrop-blur shadow-xl p-3 grid grid-cols-3 gap-2 text-sm">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.value}
+                      onClick={() => {
+                        handleLanguageChange({ target: { value: lang.value } });
+                        setShowLangPanel(false);
+                      }}
+                      className={`flex items-center gap-2 px-2 py-1.5 rounded-xl border transition text-indigo-700 hover:bg-indigo-50 active:scale-95 ${
+                        lang.value === targetLang ? 'bg-indigo-100 border-indigo-400' : 'bg-white/60 border-indigo-200'
+                      }`}
+                    >
+                      <Image
+                        src={`https://flagcdn.com/${lang.flag}.svg`}
+                        alt={lang.label}
+                        width={20}
+                        height={20}
+                        className="rounded object-cover"
+                        unoptimized
+                      />
+                      <span className="truncate">{lang.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+            {showTonePanel && (
+              <motion.div
+                key="tone-panel"
+                initial={{ y: 40, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 40, opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 260, damping: 24 }}
+                className="fixed left-0 right-0 bottom-[72px] sm:bottom-[80px] z-[60] px-4"
+              >
+                <div className="max-h-56 overflow-y-auto rounded-2xl border border-violet-300 bg-white/95 backdrop-blur shadow-xl p-3 flex flex-col gap-2 text-sm">
+                  {tones?.map((tone) => (
+                    <button
+                      key={tone.value}
+                      onClick={() => {
+                        handleToneSelection(tone.value);
+                        setShowTonePanel(false);
+                      }}
+                      className={`flex items-center justify-between px-3 py-2 rounded-xl border transition text-violet-700 hover:bg-violet-50 active:scale-95 ${
+                        tone.value === selectedTone ? 'bg-violet-100 border-violet-400' : 'bg-white/60 border-violet-200'
+                      }`}
+                    >
+                      <span className="truncate">{tone.label}</span>
+                      {tone.value === selectedTone && (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          {(showLangPanel || showTonePanel) && (
+            <div
+              onClick={() => { setShowLangPanel(false); setShowTonePanel(false); }}
+              className="fixed inset-0 z-[55] bg-black/10 backdrop-blur-[1px]"
+            />
+          )}
 
           {/* Bouton envoyer animé : affiché uniquement si pas d'enregistrement */}
           {/* (supprimé le doublon, le bouton est dans la barre d'input) */}
