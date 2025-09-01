@@ -28,21 +28,18 @@ export default function InputBar({
     { value: "français", label: "FR", flag: "fr" },
     { value: "anglais", label: "EN", flag: "gb" },
     { value: "espagnol", label: "ES", flag: "es" },
+    { value: "wolof", label: "WO", flag: "sn" },
     { value: "allemand", label: "DE", flag: "de" },
     { value: "italien", label: "IT", flag: "it" },
-    { value: "wolof", label: "WO", flag: "sn" },
     { value: "portuguais", label: "PT", flag: "pt" },
     { value: "arabe", label: "AR", flag: "sa" },
     { value: "chinois", label: "ZH", flag: "cn" },
     { value: "russe", label: "RU", flag: "ru" },
-    { value: "japonais", label: "JA", flag: "jp" },
     { value: "turc", label: "TR", flag: "tr" },
     { value: "néerlandais", label: "NL", flag: "nl" },
-    { value: "polonais", label: "PL", flag: "pl" },
     { value: "suédois", label: "SV", flag: "se" },
     { value: "grec", label: "EL", flag: "gr" },
     { value: "coréen", label: "KO", flag: "kr" },
-    { value: "hindi", label: "HI", flag: "in" },
   ];
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = textareaRef;
