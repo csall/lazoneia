@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -45,6 +45,25 @@ export default function InputBar({
   const [isFocused, setIsFocused] = useState(false);
   const [placeholderAnim, setPlaceholderAnim] = useState(false);
   const inputRef = textareaRef;
+  const wasFocusedBeforeSelect = useRef(false);
+  const baselineVH = useRef(null);
+  useEffect(()=>{
+    if (typeof window !== 'undefined') {
+      baselineVH.current = window.innerHeight;
+    }
+  }, []);
+
+  const conditionalRefocus = () => {
+    if (!inputRef?.current) return;
+    // Skip if baseline unknown
+    if (baselineVH.current == null) { inputRef.current.focus(); return; }
+    const currentH = window.innerHeight;
+    const keyboardLikelyOpen = currentH < baselineVH.current - 120; // heuristic
+    if (wasFocusedBeforeSelect.current && keyboardLikelyOpen) {
+      // Refocus only if keyboard still open context
+      setTimeout(()=>{ try { inputRef.current?.focus(); } catch(_) {} }, 40);
+    }
+  };
 
   return (
     <form
@@ -103,11 +122,13 @@ export default function InputBar({
               }}
               onFocus={() => {
                 setIsFocused(true);
+                wasFocusedBeforeSelect.current = true;
                 setPlaceholderAnim(true);
               }}
               onBlur={() => {
                 setIsFocused(false);
                 setPlaceholderAnim(false);
+                // Do not clear wasFocusedBeforeSelect; we want to know if we had focus before select
               }}
               disabled={
                 isLoading ||
@@ -408,7 +429,7 @@ export default function InputBar({
                   <select
                     id="language-select-inputbar"
                     value={targetLang}
-                    onChange={(e)=>{handleLanguageChange(e); setTimeout(()=>{try{inputRef?.current?.focus();}catch(_){}},60);}}
+                    onChange={(e)=>{handleLanguageChange(e); conditionalRefocus();}}
                     className={`px-2 py-1 rounded-lg border ${
                       colors.border || "border-indigo-300"
                     } focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`}
@@ -429,7 +450,7 @@ export default function InputBar({
                   <motion.select
                     id="tone-select-inputbar"
                     value={selectedTone}
-                    onChange={(e) => {handleToneSelection(e.target.value); setTimeout(()=>{try{inputRef?.current?.focus();}catch(_){}},60);}}
+                    onChange={(e) => {handleToneSelection(e.target.value); conditionalRefocus();}}
                     className={`px-2 py-1 rounded-lg border ${
                       colors.border || "border-indigo-300"
                     } focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`}
