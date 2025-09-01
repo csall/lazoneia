@@ -94,11 +94,11 @@ const AgentCard = ({
     },
     talko: {
       bg: "bg-gradient-to-br from-purple-900/60 to-magenta-900/60",
-      border: "border-purple-500/20",
+  border: "border-purple-500/20",
       glow: "from-purple-500 to-magenta-600",
       button: "from-purple-500 to-magenta-600 hover:from-purple-600 hover:to-magenta-700",
-      hover: "group-hover:text-purple-200",
-      accent: "bg-purple-500",
+  hover: "group-hover:text-purple-200",
+  accent: "bg-purple-500",
       mesh: "from-purple-500/40 via-magenta-600/30 to-purple-500/40",
     },
     reply: {
@@ -287,7 +287,7 @@ const AgentCard = ({
           >
             {/* Glow behind image */}
             <motion.div
-              className={`absolute w-12 h-12 rounded-full bg-gradient-to-r ${style.glow} blur-2xl opacity-25 group-hover:opacity-40 transition-opacity duration-700`}
+              className={`absolute w-16 h-16 rounded-full bg-gradient-to-r ${style.glow} blur-2xl opacity-25 group-hover:opacity-40 transition-opacity duration-700`}
               animate={{
                 scale: [1, 1.2, 1],
               }}
@@ -665,7 +665,7 @@ export default function AgentsPage() {
         </div>
 
   {/* Grille d'agents : 5 colonnes sur écrans larges */}
-  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-2 sm:p-4 max-w-[1500px] mx-auto">
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-2 sm:p-4 max-w-[1500px] mx-auto">
           {agents
             .filter((agent) => {
               if (filter === "all") return true;
@@ -675,7 +675,7 @@ export default function AgentsPage() {
             .map((agent, i) => (
               <div
                 key={i}
-                className="h-[270px] flex w-full"
+                className="h-[270px] flex w-full flex-1 min-w-0"
               >
                 <AgentCard
                   name={agent.name}

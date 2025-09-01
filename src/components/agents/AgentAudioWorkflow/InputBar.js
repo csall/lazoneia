@@ -27,6 +27,7 @@ export default function InputBar({
   const languages = [
     { value: "français", label: "FR", flag: "fr" },
     { value: "anglais", label: "EN", flag: "gb" },
+    { value: "allemand", label: "DE", flag: "de" },
     { value: "espagnol", label: "ES", flag: "es" },
     { value: "wolof", label: "WO", flag: "sn" },
     { value: "allemand", label: "DE", flag: "de" },

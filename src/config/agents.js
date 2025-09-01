@@ -126,7 +126,7 @@ const agents = [
   },
   {
     name: "Talko",
-    description: "Votre nouvel expert en actualités et informations fiables.",
+    description: "Votre expert conversationnel dédié à l'actualité fiable, la veille d'information et l'explication claire des sujets complexes. Il synthétise, contextualise, compare les sources et reformule dans un ton adapté (discussion, info ou analyse). Idéal pour rester informé sans surcharge.",
     image: "talko-bot.svg",
     color: "talko",
     link: "/agent/talko",
@@ -138,7 +138,7 @@ const agents = [
       textColor: "text-white",
       headerGradient: "from-purple-200 to-magenta-300",
       botImage: "/talko-bot.svg",
-      description: "Votre nouvel expert en actualités et informations fiables."
+      description: "Assistant d'actualités intelligent : synthèse multi‑sources, clarification rapide, veille thématique, explication pédagogique et suggestions de suivi. Évite la désinformation en privilégiant structure, nuance et fiabilité des formulations."
     },
     tones: [
       { value: "actualité", label: "Actualité" },
@@ -146,19 +146,19 @@ const agents = [
       { value: "discussion", label: "Discussion" }
     ],
     colors: {
-      gradientFrom: "from-purple-900",
-      gradientTo: "to-magenta-800",
+      gradientFrom: "from-pink-900",
+      gradientTo: "to-rose-800",
       textColor: "text-white",
-      buttonGradientFrom: "from-purple-500",
-      buttonGradientTo: "to-magenta-600",
-      buttonHoverFrom: "hover:from-purple-600",
-      buttonHoverTo: "hover:to-magenta-700",
-      borderColor: "border-purple-500/30",
-      placeholderColor: "placeholder-purple-300",
-      responseBg: "bg-purple-900/30",
-      responseBorder: "border-purple-700/30",
-      ringColor: "ring-purple-500",
-      shadowColor: "shadow-purple-500/50"
+      buttonGradientFrom: "from-pink-500",
+      buttonGradientTo: "to-rose-600",
+      buttonHoverFrom: "hover:from-pink-600",
+      buttonHoverTo: "hover:to-rose-700",
+      borderColor: "border-pink-500/30",
+      placeholderColor: "placeholder-pink-300",
+      responseBg: "bg-pink-900/30",
+      responseBorder: "border-pink-700/30",
+      ringColor: "ring-pink-500",
+      shadowColor: "shadow-pink-500/50"
     },
     endpoint: "https://cheikh06000.app.n8n.cloud/webhook/talko",
     placeholder: "Écrivez ou enregistrez vos questions...",
