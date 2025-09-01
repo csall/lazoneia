@@ -29,19 +29,6 @@ const GoogleMenu = () => {
       keywords: "home accueil start"
     },
     {
-      name: "Agents",
-      link: "/agents",
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="9" cy="8" r="4" />
-          <path d="M17 11a4 4 0 1 0 -4 -4" />
-          <path d="M3 21v-2a6 6 0 0 1 6 -6h0a6 6 0 0 1 6 6v2" />
-          <path d="M17 21v-2a6 6 0 0 0 -3 -5.22" />
-        </svg>
-      ),
-      keywords: "agents bot liste"
-    },
-    {
       name: "À propos",
       link: "/a-propos",
       icon: (
@@ -101,11 +88,7 @@ const GoogleMenu = () => {
   const updateIndicator = useCallback(() => {
     const scroller = scrollRef.current;
     if (!scroller) return;
-    const activeIndex = filtered.findIndex(it => {
-      if (it.link === '/') return pathname === '/';
-      if (it.link === '/agents') return pathname.startsWith('/agent/') || pathname.startsWith('/agents');
-      return pathname.startsWith(it.link);
-    });
+    const activeIndex = filtered.findIndex(it => (it.link === '/' ? pathname === '/' : pathname.startsWith(it.link)));
     if (activeIndex === -1) {
       setIndicator(prev => (prev.visible ? { ...prev, visible: false } : prev));
       return;
@@ -252,7 +235,7 @@ const GoogleMenu = () => {
             <div className="absolute inset-0 pointer-events-none opacity-35 mix-blend-screen bg-[radial-gradient(circle_at_20%_15%,rgba(255,255,255,0.18),transparent_60%),radial-gradient(circle_at_85%_25%,rgba(255,0,255,0.18),transparent_60%),radial-gradient(circle_at_50%_85%,rgba(0,180,255,0.18),transparent_60%)]" />
             <div className="relative overflow-y-auto pr-1 custom-scrollbar flex flex-col gap-1" style={{ scrollbarWidth:'none' }}>
               {filtered.map((item, idx) => {
-                const active = (item.link === '/' ? pathname === '/' : item.link === '/agents' ? (pathname.startsWith('/agent/') || pathname.startsWith('/agents')) : pathname.startsWith(item.link));
+                const active = (item.link === '/' ? pathname === '/' : pathname.startsWith(item.link));
                 return (
                   <Link
                     key={item.link}
