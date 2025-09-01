@@ -24,7 +24,7 @@ const AgentCard = ({
   tagline,
   isFavorite,
   onToggleFavorite,
-  lines = 3,
+  lines = 4,
 }) => {
   const cardStyles = {
     charm: {
@@ -665,7 +665,7 @@ export default function AgentsPage() {
         </div>
 
   {/* Grille d'agents : 5 colonnes sur écrans larges */}
-  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-2 sm:p-4 max-w-7xl mx-auto">
+  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-2 sm:p-4 max-w-[1500px] mx-auto">
           {agents
             .filter((agent) => {
               if (filter === "all") return true;
@@ -686,7 +686,7 @@ export default function AgentsPage() {
                   tagline={agent.tagline}
                   isFavorite={favorites.includes(agent.name)}
                   onToggleFavorite={toggleFavorite}
-                  lines={3}
+                  lines={4}
                 />
               </div>
             ))}
