@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -45,16 +45,6 @@ export default function InputBar({
   const [isFocused, setIsFocused] = useState(false);
   const [placeholderAnim, setPlaceholderAnim] = useState(false);
   const inputRef = textareaRef;
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const check = () => setIsMobile(window.innerWidth < 640);
-      check();
-      window.addEventListener('resize', check, { passive: true });
-      return () => window.removeEventListener('resize', check);
-    }
-  }, []);
 
   return (
     <form
@@ -125,7 +115,7 @@ export default function InputBar({
                 micState === "transcribing"
               }
               rows={1}
-              className={`relative z-30 w-full min-h-[52px] max-h-[140px] resize-none rounded-2xl px-4 pr-16 py-3 text-base bg-white/85 text-gray-900 shadow-sm border-2 border-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400/80 transition-all duration-300 scrollbar-hide placeholder:italic placeholder:text-indigo-400 placeholder:opacity-80 ${
+              className={`w-full min-h-[44px] max-h-[120px] resize-none rounded-2xl px-4 pr-16 py-3 text-base bg-white/80 text-gray-900 shadow-none border-2 border-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400/80 transition-all duration-300 scrollbar-hide placeholder:italic placeholder:text-indigo-400 placeholder:opacity-80 ${
                 micState === "transcribing" ? "text-center font-semibold" : ""
               } sm:text-lg sm:px-5 sm:pr-20 sm:py-4`}
               style={{
@@ -151,94 +141,131 @@ export default function InputBar({
             />
             {/* Boutons micro et envoyer positionnés à droite dans le textarea */}
             {micState !== "recording" && (
-              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2 items-center z-40">
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2 items-center">
                 {userInput.trim().length === 0 && (
                   <motion.button
                     type="button"
                     onClick={handleMicClick}
                     disabled={isLoading}
-                    aria-label="Démarrer l'enregistrement"
-                    whileHover={{ scale: 1.08, rotate: 2 }}
+                    className="bg-gradient-to-br from-blue-500 to-violet-600 text-white rounded-full p-3 shadow-xl border border-indigo-300 flex items-center justify-center transition-all duration-300 cursor-pointer"
                     whileTap={{ scale: 0.9 }}
-                    className={`relative group w-11 h-11 rounded-full flex items-center justify-center overflow-hidden
-                      border border-indigo-300/60 bg-indigo-500/70
-                      backdrop-blur-xl shadow-[0_2px_12px_-2px_rgba(0,0,0,0.35),0_0_0_1px_rgba(255,255,255,0.15)]
-                      transition-all duration-300
-                      disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer`}
+                    aria-label="Démarrer l'enregistrement"
+                    style={{
+                      width: 36,
+                      height: 36,
+                      minWidth: 28,
+                      minHeight: 28,
+                      boxShadow: "0 0 0 3px rgba(120,120,255,0.10)",
+                    }}
                   >
-                    {/* Glow gradient layer */}
-                    <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.25),transparent_60%),radial-gradient(circle_at_70%_70%,rgba(147,51,234,0.35),transparent_65%)]" />
-                    {/* Animated pulse ring */}
-                    <span className="absolute inset-0 rounded-full ring-0 group-hover:ring-4 ring-indigo-400/20 transition-all duration-500" />
-                    {/* Icon */}
-                    <motion.svg
+                    {/* Icône micro Material Filled, arrondie, glassy */}
+                    <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
-                      className="h-6 w-6 text-white drop-shadow-lg"
-                      initial={{ y: 0 }}
-                      animate={{ y: [0, -2, 0] }}
-                      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                      className="h-7 w-7 drop-shadow-lg"
                     >
-                      <rect x="9" y="5" width="6" height="10" rx="3" fill="currentColor" />
-                      <path d="M5 11v2a7 7 0 0014 0v-2" stroke="currentColor" strokeWidth="2" fill="none" />
-                      <path d="M12 22v-2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </motion.svg>
+                      <rect
+                        x="9"
+                        y="4"
+                        width="6"
+                        height="12"
+                        rx="3"
+                        fill="#fff"
+                      />
+                      <path
+                        d="M12 18c2.21 0 4-1.79 4-4V8a4 4 0 10-8 0v6c0 2.21 1.79 4 4 4z"
+                        fill="#fff"
+                      />
+                      <path
+                        d="M19 11v2a7 7 0 01-14 0v-2"
+                        stroke="#fff"
+                        strokeWidth="2"
+                        fill="none"
+                      />
+                      <path
+                        d="M12 22v-2"
+                        stroke="#fff"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                      <circle cx="12" cy="22" r="1.5" fill="#fff" />
+                      <ellipse
+                        cx="12"
+                        cy="8"
+                        rx="2.5"
+                        ry="1.2"
+                        fill="#fff"
+                        fillOpacity="0.5"
+                      />
+                    </svg>
                   </motion.button>
                 )}
                 {userInput.trim().length > 0 && (
                   <motion.button
                     type="submit"
-                    disabled={isLoading || userInput.trim().length === 0}
-                    whileHover={!isLoading ? { scale: 1.06, rotate: -2 } : {}}
-                    whileTap={!isLoading ? { scale: 0.9 } : {}}
-                    className={`relative group w-11 h-11 rounded-full flex items-center justify-center
-                      ${isLoading || userInput.trim().length === 0 ? 'bg-gradient-to-br from-indigo-400 via-violet-500 to-fuchsia-500 cursor-not-allowed opacity-60' : 'bg-gradient-to-br from-indigo-500 via-violet-600 to-fuchsia-600 hover:brightness-110'}
-                      text-white shadow-[0_4px_18px_-4px_rgba(109,40,217,0.55),0_0_0_1px_rgba(255,255,255,0.15)]
-                      transition-all duration-300 font-medium overflow-hidden`}
-                    aria-disabled={isLoading || userInput.trim().length === 0}
+                    disabled={isLoading}
+                    className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold p-3 rounded-full shadow-2xl flex items-center justify-center text-xl transition-all duration-300 cursor-pointer align-middle"
+                    whileTap={{ scale: 0.9 }}
+                    style={{
+                      width: 36,
+                      height: 36,
+                      minWidth: 28,
+                      minHeight: 28,
+                      boxShadow: "0 0 0 3px rgba(120,120,255,0.08)",
+                    }}
                   >
-                    <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[conic-gradient(from_0deg,rgba(255,255,255,0.25),transparent_70%)]" />
-                    <span className="absolute inset-0 rounded-full ring-0 group-hover:ring-4 ring-fuchsia-400/25 transition-all duration-500" />
-                    <AnimatePresence initial={false} mode="wait">
+                    <AnimatePresence>
                       {isLoading ? (
                         <motion.div
-                          key="loader"
-                          className="relative h-6 w-6"
-                          initial={{ opacity: 0, scale: 0.6 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.6 }}
-                        >
-                          <motion.span
-                            className="absolute inset-0 rounded-full border-2 border-t-transparent border-white/90"
-                            animate={{ rotate: 360 }}
-                            transition={{ repeat: Infinity, duration: 0.9, ease: 'linear' }}
-                          />
-                        </motion.div>
+                          className="animate-spin rounded-full h-7 w-7 sm:h-6 sm:w-6 border-b-2 border-white border-t-2 border-indigo-400"
+                          initial={{ rotate: 0 }}
+                          animate={{ rotate: 360 }}
+                          transition={{ repeat: Infinity, duration: 1 }}
+                        />
                       ) : (
-                        <motion.span
-                          key="arrow"
-                          className="flex items-center justify-center h-6 w-6"
-                          initial={{ opacity: 0, x: -6 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: 6 }}
-                          transition={{ type: 'spring', stiffness: 320, damping: 26 }}
-                        >
+                        <span className="flex items-center justify-center h-full">
                           <motion.svg
                             xmlns="http://www.w3.org/2000/svg"
+                            className="h-7 w-7 sm:h-6 sm:w-6"
                             viewBox="0 0 24 24"
-                            className="h-6 w-6"
                             fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2.6"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            animate={{ x: isFocused ? 2 : 0 }}
-                            transition={{ type: 'spring', stiffness: 260, damping: 18 }}
+                            initial={{ x: 0 }}
+                            animate={{ x: isFocused ? 4 : 0 }}
+                            transition={{
+                              type: "spring",
+                              stiffness: 300,
+                              damping: 20,
+                            }}
                           >
-                            <path d="M4 12H20" />
-                            <path d="M14 6L20 12L14 18" />
+                            <defs>
+                              <linearGradient
+                                id="arrowGradient"
+                                x1="0"
+                                y1="0"
+                                x2="24"
+                                y2="24"
+                                gradientUnits="userSpaceOnUse"
+                              >
+                                <stop stopColor="#4f46e5" />
+                                <stop offset="0.5" stopColor="#6366f1" />
+                                <stop offset="1" stopColor="#a78bfa" />
+                              </linearGradient>
+                            </defs>
+                            <path
+                              d="M4 12L20 12"
+                              stroke="#fff"
+                              strokeWidth="3.2"
+                              strokeLinecap="round"
+                            />
+                            <path
+                              d="M14 6L20 12L14 18"
+                              stroke="#fff"
+                              strokeWidth="3.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
                           </motion.svg>
-                        </motion.span>
+                        </span>
                       )}
                     </AnimatePresence>
                   </motion.button>
@@ -265,23 +292,30 @@ export default function InputBar({
                   <motion.button
                     type="button"
                     onClick={cancelRecording}
-                    aria-label="Annuler l'enregistrement"
-                    whileHover={{ scale: 1.06, rotate: -4 }}
+                    className="bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-full p-3 shadow border border-gray-400 flex items-center justify-center transition-all duration-200 cursor-pointer"
                     whileTap={{ scale: 0.9 }}
-                    className="relative w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-zinc-600 via-neutral-600 to-zinc-700 text-white/90 border border-white/15 shadow-[0_4px_14px_-4px_rgba(0,0,0,0.55),0_0_0_1px_rgba(255,255,255,0.12)] overflow-hidden"
+                    aria-label="Annuler l'enregistrement"
+                    style={{
+                      width: 44,
+                      height: 44,
+                      minWidth: 36,
+                      minHeight: 36,
+                    }}
                   >
-                    <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.18),transparent_60%)]" />
-                    <motion.svg
+                    <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
                       className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
                       stroke="currentColor"
-                      strokeWidth="2.2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
                     >
-                      <path d="M6 18L18 6M6 6l12 12" />
-                    </motion.svg>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
                   </motion.button>
                 </div>
                 {/* Animation amplitude au centre */}
@@ -316,24 +350,30 @@ export default function InputBar({
                   <motion.button
                     type="button"
                     onClick={handleMicClick}
-                    aria-label="Valider l'enregistrement"
-                    whileHover={{ scale: 1.06, rotate: 3 }}
+                    className="bg-green-500 hover:bg-green-600 text-white rounded-full p-3 shadow border border-green-300 flex items-center justify-center transition-all duration-200 cursor-pointer"
                     whileTap={{ scale: 0.9 }}
-                    className="relative w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-emerald-500 via-green-500 to-teal-500 text-white border border-white/15 shadow-[0_4px_16px_-4px_rgba(16,185,129,0.55),0_0_0_1px_rgba(255,255,255,0.15)] overflow-hidden"
+                    aria-label="Valider l'enregistrement"
+                    style={{
+                      width: 44,
+                      height: 44,
+                      minWidth: 36,
+                      minHeight: 36,
+                    }}
                   >
-                    <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.25),transparent_60%)]" />
-                    <motion.svg
+                    <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      className="h-7 w-7"
+                      className="h-6 w-6"
                       fill="none"
+                      viewBox="0 0 24 24"
                       stroke="currentColor"
-                      strokeWidth="2.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
                     >
-                      <path d="M5 13l4 4L19 7" />
-                    </motion.svg>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
                   </motion.button>
                 </div>
               </div>
@@ -342,11 +382,10 @@ export default function InputBar({
           {/* Placeholder animé */}
           {/* Placeholder natif utilisé, pas d'animation custom */}
           {/* Boutons micro et envoyer à droite du textarea, dans la barre d'input */}
-          <div className={`w-full ${isMobile ? 'mt-2' : ''}`}>
-            <div className={`flex ${isMobile ? 'flex-row flex-wrap gap-2 px-1' : 'items-center ml-2'} w-full`}>
+          <div className="flex items-center ml-2 w-full">
             {micState !== "recording" && (
               <>
-                <span className={`flex items-center gap-2 ${isMobile ? 'w-full flex-wrap' : 'ml-2 mt-1'}`}>
+                <span className="flex items-center gap-1 ml-2 mt-1">
                   {/* Icône du drapeau à gauche du select natif */}
                   <span className="flex items-center justify-center w-6 h-6 rounded overflow-hidden border border-indigo-300 bg-white/80 mr-1">
                     <Image
@@ -366,128 +405,119 @@ export default function InputBar({
                       unoptimized
                     />
                   </span>
-                  {/* Sélecteur langue */}
-                  <label htmlFor="language-select-inputbar" className="sr-only">Langue</label>
-                  <div className="relative group ml-1 flex-1 min-w-[120px]" style={{ zIndex: 60 }}>
-                    {isMobile ? (
-                      <select
-                        id="language-select-inputbar"
-                        value={targetLang}
-                        onChange={handleLanguageChange}
-                        className="w-full h-12 rounded-xl border border-indigo-300/60 bg-white/90 text-gray-900 text-sm font-medium px-3 pr-8 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 active:scale-[0.985] transition"
-                      >
-                        {languages.map((lang) => (
-                          <option key={lang.value} value={lang.value}>
-                            {lang.value.charAt(0).toUpperCase() + lang.value.slice(1)}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      <>
-                        <select
-                          id="language-select-inputbar"
-                          value={targetLang}
-                          onChange={handleLanguageChange}
-                          className={`peer relative z-[5] px-3 pr-8 h-11 rounded-2xl border ${(colors.border || 'border-indigo-300/60')} appearance-none bg-white/10 backdrop-blur-xl shadow-[0_4px_24px_-6px_rgba(99,102,241,0.25),0_0_0_1px_rgba(255,255,255,0.10)] text-white text-[13px] font-semibold tracking-wide focus:outline-none focus:ring-2 focus:ring-fuchsia-400/60 focus:border-fuchsia-400 transition-all cursor-pointer active:scale-95 active:ring-4 active:ring-fuchsia-400/30`}
-                          style={{
-                            background: colors.bg ? colors.bg : 'rgba(255,255,255,0.12)',
-                            color: colors.textColor || '#fff',
-                            borderColor: colors.border || undefined,
-                            WebkitTapHighlightColor: 'transparent',
-                            boxShadow: '0 2px 16px rgba(99,102,241,0.13)',
-                            transition: 'box-shadow .25s cubic-bezier(.4,2,.3,1)',
-                          }}
-                        >
-                          {languages.map((lang) => (
-                            <option key={lang.value} value={lang.value} className="bg-white text-gray-900 text-base">
-                              {lang.value.charAt(0).toUpperCase() + lang.value.slice(1)}
-                            </option>
-                          ))}
-                        </select>
-                        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-fuchsia-300 peer-focus:text-fuchsia-400 transition-colors" aria-hidden>
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-                        </span>
-                        <span className="pointer-events-none absolute inset-0 rounded-2xl ring-0 peer-focus:ring-4 peer-focus:ring-fuchsia-400/30 peer-hover:ring-2 peer-hover:ring-indigo-400/30 transition-all duration-300" aria-hidden />
-                      </>
-                    )}
-                  </div>
-                  {/* Sélecteur de ton */}
-                  <label htmlFor="tone-select-inputbar" className="sr-only">Ton</label>
-                  <div className="relative group ml-1 flex-1 min-w-[120px]" style={{ zIndex: 60 }}>
-                    {isMobile ? (
-                      <select
-                        id="tone-select-inputbar"
-                        value={selectedTone}
-                        onChange={(e) => handleToneSelection(e.target.value)}
-                        className="w-full h-12 rounded-xl border border-indigo-300/60 bg-white/90 text-gray-900 text-sm font-medium px-3 pr-8 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 active:scale-[0.985] transition"
-                      >
-                        {tones && tones.length > 0 && tones.map((tone) => (
-                          <option key={tone.value} value={tone.value}>{tone.label}</option>
-                        ))}
-                      </select>
-                    ) : (
-                      <>
-                        <motion.select
-                          id="tone-select-inputbar"
-                          value={selectedTone}
-                          onChange={(e) => handleToneSelection(e.target.value)}
-                          className={`peer relative z-[5] px-3 pr-8 h-11 rounded-2xl border ${(colors.border || 'border-indigo-300/60')} appearance-none bg-white/10 backdrop-blur-xl shadow-[0_4px_24px_-6px_rgba(139,92,246,0.22),0_0_0_1px_rgba(255,255,255,0.10)] text-white text-[13px] font-semibold tracking-wide focus:outline-none focus:ring-2 focus:ring-fuchsia-400/60 focus:border-fuchsia-400 transition-all cursor-pointer active:scale-95 active:ring-4 active:ring-fuchsia-400/30`}
-                          style={{
-                            background: colors.bg ? colors.bg : 'rgba(255,255,255,0.12)',
-                            color: colors.textColor || '#fff',
-                            borderColor: colors.border || undefined,
-                            WebkitTapHighlightColor: 'transparent',
-                            boxShadow: '0 2px 16px rgba(139,92,246,0.13)',
-                            transition: 'box-shadow .25s cubic-bezier(.4,2,.3,1)',
-                          }}
-                          whileFocus={{ scale: 1.03 }}
-                          whileHover={{ scale: 1.02 }}
-                        >
-                          {tones && tones.length > 0 && tones.map((tone) => (
-                            <option key={tone.value} value={tone.value} className="bg-white text-gray-900 text-base">{tone.label}</option>
-                          ))}
-                        </motion.select>
-                        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-fuchsia-300 peer-focus:text-fuchsia-400 transition-colors" aria-hidden>
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-                        </span>
-                        <span className="pointer-events-none absolute inset-0 rounded-2xl ring-0 peer-focus:ring-4 peer-focus:ring-fuchsia-400/30 peer-hover:ring-2 peer-hover:ring-indigo-400/30 transition-all duration-300" aria-hidden />
-                      </>
-                    )}
-                  </div>
+                  <select
+                    id="language-select-inputbar"
+                    value={targetLang}
+                    onChange={handleLanguageChange}
+                    className={`px-2 py-1 rounded-lg border ${
+                      colors.border || "border-indigo-300"
+                    } focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`}
+                    style={{
+                      background: colors.bg || "#6366f1",
+                      color: colors.textColor || "#fff",
+                      borderColor: colors.border || "#6366f1",
+                    }}
+                  >
+                    {languages.map((lang) => (
+                      <option key={lang.value} value={lang.value}>
+                        {lang.value.charAt(0).toUpperCase() +
+                          lang.value.slice(1)}
+                      </option>
+                    ))}
+                  </select>
+                  {/* Sélecteur de ton moderne */}
+                  <motion.select
+                    id="tone-select-inputbar"
+                    value={selectedTone}
+                    onChange={(e) => handleToneSelection(e.target.value)}
+                    className={`px-2 py-1 rounded-lg border ${
+                      colors.border || "border-indigo-300"
+                    } focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`}
+                    style={{
+                      background: colors.bg || "#6366f1",
+                      color: colors.textColor || "#fff",
+                      borderColor: colors.border || "#6366f1",
+                    }}
+                    whileFocus={{
+                      scale: 1.05,
+                      boxShadow: `0 0 0 4px ${colors.bg || "#6366f1"}`,
+                    }}
+                    whileHover={{ scale: 1.04 }}
+                  >
+                    {tones &&
+                      tones.length > 0 &&
+                      tones.map((tone) => (
+                        <option key={tone.value} value={tone.value}>
+                          {tone.label}
+                        </option>
+                      ))}
+                  </motion.select>
                   {/* Bouton supprimer l'historique après le bouton ton */}
                   {messages && messages.length > 0 && (
                     <motion.button
                       type="button"
                       onClick={clearHistory}
+                      className="bg-[#948D8D] text-white rounded-full p-2 shadow-xl border border-[#948D8D] flex items-center justify-center transition-all duration-300 cursor-pointer ml-2 backdrop-blur-md"
+                      whileTap={{ scale: 0.94, rotate: 8 }}
+                      whileHover={{
+                        scale: 1.08,
+                        boxShadow: "0 0 0 4px #948D8D",
+                      }}
                       aria-label="Supprimer tout l'historique"
-                      whileHover={{ scale: 1.08, rotate: 3 }}
-                      whileTap={{ scale: 0.9, rotate: -6 }}
-                      className="relative ml-2 w-9 h-9 rounded-full flex items-center justify-center bg-gradient-to-br from-neutral-500 via-zinc-500 to-stone-500 text-white/90 border border-white/20 shadow-[0_2px_10px_-2px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.15)] overflow-hidden backdrop-blur-sm"
-                      style={{ boxShadow: "0 0 0 2px rgba(148,141,141,0.12)" }}
+                      style={{
+                        height: 32,
+                        minHeight: 32,
+                        width: 32,
+                        minWidth: 32,
+                        boxShadow: "0 0 0 2px rgba(148,141,141,0.12)",
+                      }}
                     >
-                      <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.25),transparent_60%)]" />
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-4 w-4"
                         viewBox="0 0 24 24"
                         fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
                       >
-                        <path d="M9 4h6M10 4.5v-1A1.5 1.5 0 0111.5 2h1A1.5 1.5 0 0114 3.5v1" />
-                        <path d="M5 7h14" />
-                        <path d="M8 7v11a2 2 0 002 2h4a2 2 0 002-2V7" />
-                        <path d="M10 11v5M14 11v5" />
+                        <rect
+                          x="7"
+                          y="9"
+                          width="10"
+                          height="9"
+                          rx="2"
+                          fill="#fff"
+                          fillOpacity="0.9"
+                        />
+                        <rect
+                          x="9"
+                          y="4"
+                          width="6"
+                          height="2"
+                          rx="1"
+                          fill="#fff"
+                          fillOpacity="1"
+                        />
+                        <path
+                          d="M10 12v4M14 12v4"
+                          stroke="#fff"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                        <rect
+                          x="5"
+                          y="7"
+                          width="14"
+                          height="2"
+                          rx="1"
+                          fill="#fff"
+                          fillOpacity="0.8"
+                        />
                       </svg>
                     </motion.button>
                   )}
                 </span>
-                {!isMobile && <div className="flex-1" />}
+                <div className="flex-1" />
               </>
             )}
-            </div>
           </div>
 
           {/* Bouton envoyer animé : affiché uniquement si pas d'enregistrement */}
