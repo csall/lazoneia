@@ -24,7 +24,7 @@ const AgentCard = ({
   tagline,
   isFavorite,
   onToggleFavorite,
-  lines = 4,
+  lines = 6,
 }) => {
   const cardStyles = {
     charm: {
@@ -686,7 +686,7 @@ export default function AgentsPage() {
                   tagline={agent.tagline}
                   isFavorite={favorites.includes(agent.name)}
                   onToggleFavorite={toggleFavorite}
-                  lines={4}
+                  lines={6}
                 />
               </div>
             ))}
