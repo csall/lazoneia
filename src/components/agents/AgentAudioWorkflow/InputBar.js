@@ -408,7 +408,7 @@ export default function InputBar({
                   <select
                     id="language-select-inputbar"
                     value={targetLang}
-                    onChange={handleLanguageChange}
+                    onChange={(e)=>{handleLanguageChange(e); setTimeout(()=>{try{inputRef?.current?.focus();}catch(_){}},60);}}
                     className={`px-2 py-1 rounded-lg border ${
                       colors.border || "border-indigo-300"
                     } focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`}
@@ -429,7 +429,7 @@ export default function InputBar({
                   <motion.select
                     id="tone-select-inputbar"
                     value={selectedTone}
-                    onChange={(e) => handleToneSelection(e.target.value)}
+                    onChange={(e) => {handleToneSelection(e.target.value); setTimeout(()=>{try{inputRef?.current?.focus();}catch(_){}},60);}}
                     className={`px-2 py-1 rounded-lg border ${
                       colors.border || "border-indigo-300"
                     } focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`}
