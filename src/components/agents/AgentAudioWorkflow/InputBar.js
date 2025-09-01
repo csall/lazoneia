@@ -53,6 +53,29 @@ export default function InputBar({
   const inputRef = textareaRef;
   const inputBarRef = useRef(null);
   const [inputHeight, setInputHeight] = useState(100);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [theme, setTheme] = useState('light');
+
+  // Détection initiale du thème système
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+      setTheme(prefersDark.matches ? 'dark' : 'light');
+      const listener = (e) => setTheme(e.matches ? 'dark' : 'light');
+      prefersDark.addEventListener('change', listener);
+      return () => prefersDark.removeEventListener('change', listener);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const update = () => setReducedMotion(mq.matches);
+      update();
+      mq.addEventListener('change', update);
+      return () => mq.removeEventListener('change', update);
+    }
+  }, []);
 
   useEffect(() => {
     const measure = () => {
@@ -61,36 +84,35 @@ export default function InputBar({
         setInputHeight(rect.height || 100);
       }
     };
-    measure();
     window.addEventListener('resize', measure);
+    measure();
     return () => window.removeEventListener('resize', measure);
   }, []);
-  const suppressSendRef = useRef(false); // empêche envoi auto après changement langue/ton
 
-  // Ouvre/ferme les panneaux en gérant le blur pour éviter le "premier tap" perdu sur mobile quand le clavier est ouvert
-  const togglePanelSafely = (panel) => {
-    const open = () => {
-      if (panel === 'lang') {
-        setShowTonePanel(false);
-        setShowLangPanel((o) => !o);
-      } else if (panel === 'tone') {
-        setShowLangPanel(false);
-        setShowTonePanel((o) => !o);
-      }
-    };
+  // Ref pour empêcher l'envoi immédiat après un clic panel
+  const suppressSendRef = useRef(false);
+
+  // Fonctions fiables d'ouverture/fermeture modales (évite toggle hasardeux + blur mobile)
+  const openLangPanel = () => {
     const el = inputRef?.current;
-    // Si le textarea est focus (clavier affiché), on blur d'abord puis on ouvre après un léger délai
-    if (el && document.activeElement === el) {
-      el.blur();
-      // Delay suffisant pour que le clavier commence à se rétracter et que le tap ne soit pas gobé
-      setTimeout(open, 60);
-    } else {
-      open();
-    }
+    const action = () => {
+      setShowTonePanel(false);
+      setShowLangPanel(prev => !prev);
+    };
+    if (el && document.activeElement === el) { el.blur(); setTimeout(action, 60); } else { action(); }
+  };
+  const openTonePanel = () => {
+    const el = inputRef?.current;
+    const action = () => {
+      setShowLangPanel(false);
+      setShowTonePanel(prev => !prev);
+    };
+    if (el && document.activeElement === el) { el.blur(); setTimeout(action, 60); } else { action(); }
   };
 
   return (
     <form
+      data-theme={theme}
       onSubmit={(e) => {
         if (suppressSendRef.current) {
           e.preventDefault();
@@ -106,22 +128,65 @@ export default function InputBar({
         minHeight: "72px",
       }}
     >
+      <style>{`
+  :root { --acc:#0ea5e9; --acc-strong:#0284c7; --acc-soft:rgba(14,165,233,0.20); --danger:#dc2626; --border:#d1d5db; --border-strong:#c3c7ce; --bg-card:rgba(255,255,255,0.85); --bg-alt:rgba(255,255,255,0.85); --bg-btn:#f3f5f7; --bg-btn-hover:#eef2f5; --bg-btn-active:#e3e7eb; --text:#1f2937; --text-dim:#6b7280; }
+  [data-theme='dark'] { --acc:#10b981; --acc-strong:#059669; --acc-soft:rgba(16,185,129,0.25); --border:#454954; --border-strong:#5b606d; --bg-card:rgba(50,53,60,0.9); --bg-alt:rgba(50,53,60,0.9); --bg-btn:#3b3f47; --bg-btn-hover:#454a53; --bg-btn-active:#50555f; --text:#f3f4f6; --text-dim:#9ca3af; }
+        .container-shell{background:var(--bg-card);backdrop-filter:blur(18px);} 
+        .fancy-btn{position:relative;overflow:hidden;}
+        .fancy-btn:after{content:'';position:absolute;inset:0;opacity:0;transition:opacity .35s;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,0.6),rgba(255,255,255,0));}
+        .fancy-btn:hover:after{opacity:1;}
+        .neutral-btn{background:var(--bg-btn);border:1px solid var(--border);color:var(--text-dim);} 
+        .neutral-btn:hover{background:var(--bg-btn-hover);color:var(--text);} 
+        .neutral-btn:active{background:var(--bg-btn-active);} 
+        .accent-outline:focus-visible{box-shadow:0 0 0 3px var(--acc-soft),0 0 0 4px var(--acc);outline:none;}
+        .send-active{background:var(--acc)!important;border-color:var(--acc)!important;color:#fff!important;}
+        .send-active:hover{background:var(--acc-strong)!important;}
+        .send-disabled{background:var(--bg-btn)!important;border-color:var(--border)!important;opacity:.55;color:var(--text-dim);} 
+        .textarea-base{background:rgba(255,255,255,0.9);border:1px solid var(--border);color:var(--text);} .textarea-base:focus{border-color:var(--border-strong);} 
+        .placeholder-dim::placeholder{color:var(--text-dim);} 
+        .panel-light{background:rgba(255,255,255,0.92);border:1px solid var(--border);backdrop-filter:blur(20px);} .panel-header{background:linear-gradient(90deg,rgba(14,165,233,0.08),rgba(14,165,233,0));} 
+        .panel-item{background:var(--bg-btn);border:1px solid var(--border);color:var(--text-dim);transition:background .25s,border-color .25s,color .25s;} 
+        .panel-item:hover{background:var(--bg-btn-hover);color:var(--text);} 
+        .panel-item-active{background:var(--acc);color:#fff!important;border:1px solid var(--acc);} 
+        .list-scroll-smooth{scrollbar-width:thin;scrollbar-color:var(--border) transparent;} .list-scroll-smooth::-webkit-scrollbar{width:6px;} .list-scroll-smooth::-webkit-scrollbar-thumb{background:var(--border);border-radius:20px;} .list-scroll-smooth::-webkit-scrollbar-track{background:transparent;} 
+        @keyframes pulseRing {0%{transform:scale(.9);opacity:.5}50%{transform:scale(1.05);opacity:0}100%{transform:scale(1.15);opacity:0}} 
+        .mic-ready:before{content:'';position:absolute;inset:0;border-radius:9999px;background:radial-gradient(circle,var(--acc) 0%,rgba(14,165,233,0) 70%);opacity:0;} 
+        .mic-ready[data-active="true"]:before{animation:pulseRing 2s ease-out infinite;} 
+        ${reducedMotion ? '.fancy-btn:after,.mic-ready[data-active="true"]:before{animation:none !important;}' : ''}
+        /* Fond bas: radial + bruit léger */
+        .input-bg-floor{position:absolute;left:0;bottom:0;width:100%;height:240px;pointer-events:none;z-index:0;background:
+          radial-gradient(circle at 50% 110%,rgba(14,165,233,0.22),rgba(14,165,233,0.08) 38%,rgba(255,255,255,0) 72%),
+          linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,0.65));
+          mask:linear-gradient(to top,rgba(0,0,0,0.9),rgba(0,0,0,0));
+        }
+        [data-theme='dark'] .input-bg-floor{background:
+          radial-gradient(circle at 50% 110%,rgba(16,185,129,0.25),rgba(16,185,129,0.06) 40%,rgba(0,0,0,0) 75%),
+          linear-gradient(to bottom,rgba(0,0,0,0),rgba(0,0,0,0.6));
+          mask:linear-gradient(to top,rgba(0,0,0,0.9),rgba(0,0,0,0));}
+        .input-bg-noise{position:absolute;inset:0;mix-blend-mode:overlay;opacity:.22;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'><filter id='n' x='0' y='0'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/></filter><rect width='160' height='160' fill='rgba(255,255,255,0.9)' filter='url(%23n)'/></svg>");background-size:320px 320px;}
+        /* Variantes (non utilisées mais prêtes) */
+        .input-bg-gradient-wave{background:linear-gradient(115deg,rgba(14,165,233,0.15),rgba(14,165,233,0) 60%),radial-gradient(circle at 70% 20%,rgba(14,165,233,0.12),rgba(14,165,233,0) 55%);} 
+      `}</style>
       <AnimatePresence>
-        <motion.div
+        {/* Fond décoratif sous la barre */}
+        <div aria-hidden="true" className="input-bg-floor">
+          <div className="input-bg-noise" />
+        </div>
+  <motion.div
           ref={inputBarRef}
-          className="flex flex-col items-center w-full max-w-full mx-auto rounded-3xl px-2 py-2 sm:max-w-4xl sm:px-4 sm:py-3 bg-white/60 backdrop-blur-lg shadow-2xl border border-indigo-200"
-          initial={{ y: 40, opacity: 0, scale: 0.98 }}
+          className="relative flex flex-col items-center w-full max-w-full mx-auto rounded-2xl px-2 py-2 sm:max-w-4xl sm:px-4 sm:py-3 shadow-[0_8px_28px_-6px_rgba(0,0,0,0.18),0_2px_8px_rgba(0,0,0,0.08)] border border-[var(--border)] container-shell"
+          initial={{ y: 38, opacity: 0, scale: 0.95 }}
           animate={{ y: 0, opacity: 1, scale: 1 }}
           exit={{ y: 40, opacity: 0, scale: 0.98 }}
           whileFocus={{ boxShadow: "0 0 0 4px #6366f1" }}
           transition={{ type: "spring", stiffness: 220, damping: 22 }}
           style={{
-            boxShadow: "0 8px 32px rgba(80,80,180,0.10)",
-            background: "rgba(255,255,255,0.7)",
-            borderRadius: 24,
-            border: "1.5px solid #c7d2fe",
+            boxShadow: "0 4px 18px -4px rgba(0,0,0,0.45),0 2px 8px rgba(0,0,0,0.35)",
+            background: "var(--bg-alt)",
+            borderRadius: 20,
           }}
         >
+          {/* Barre de progression supprimée selon la demande */}
           {/* Annuler enregistrement */}
           {/* Input animé avec bouton envoyer à l'intérieur */}
           <div className="relative w-full">
@@ -159,7 +224,7 @@ export default function InputBar({
                 micState === "transcribing"
               }
               rows={1}
-              className={`w-full min-h-[44px] max-h-[120px] resize-none rounded-2xl px-4 pr-16 py-3 text-base bg-white/80 text-gray-900 shadow-none border-2 border-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400/80 transition-all duration-300 scrollbar-hide placeholder:italic placeholder:text-indigo-400 placeholder:opacity-80 ${
+              className={`w-full min-h-[44px] max-h-[120px] resize-none rounded-xl px-4 pr-16 py-3 text-base shadow-none textarea-base placeholder-dim focus:ring-0 transition-all duration-150 scrollbar-hide placeholder:italic ${
                 micState === "transcribing" ? "text-center font-semibold" : ""
               } sm:text-lg sm:px-5 sm:pr-20 sm:py-4`}
               style={{
@@ -169,7 +234,7 @@ export default function InputBar({
                 scrollbarWidth: "none",
                 fontFamily: "Inter, ui-sans-serif, system-ui",
                 outline: "none",
-                background: "rgba(255,255,255,0.85)",
+                background: "var(--bg-alt)",
                 transition: "all 0.3s cubic-bezier(.4,2,.3,1)",
               }}
               inputMode="text"
@@ -178,11 +243,14 @@ export default function InputBar({
               spellCheck={false}
               placeholder=""
               animate={{
-                boxShadow: isFocused
-                  ? "0 0 0 2px #6366f1"
-                  : "0 2px 16px rgba(60,60,120,0.10)",
+                boxShadow: "0 1px 6px rgba(0,0,0,0.06)",
               }}
             />
+            {userInput.trim().length === 0 && micState !== 'recording' && micState !== 'transcribing' && (
+              <div className="pointer-events-none absolute left-5 right-16 top-1/2 -translate-y-1/2 text-[0.75rem] sm:text-xs font-medium tracking-wide select-none text-[var(--text-dim)]">
+                Écris ton message... (Entrée pour envoyer)
+              </div>
+            )}
             {/* Boutons micro et envoyer positionnés à droite dans le textarea */}
             {micState !== "recording" && (
               <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2 items-center">
@@ -191,7 +259,8 @@ export default function InputBar({
                     type="button"
                     onClick={handleMicClick}
                     disabled={isLoading}
-                    className="bg-gradient-to-br from-blue-500 to-violet-600 text-white rounded-full p-3 shadow-xl border border-indigo-300 flex items-center justify-center transition-all duration-300 cursor-pointer"
+                    className="fancy-btn mic-ready rounded-full p-3 shadow border flex items-center justify-center transition-all duration-150 cursor-pointer accent-outline send-active hover:brightness-110"
+                    data-active={!isLoading}
                     whileTap={{ scale: 0.9 }}
                     aria-label="Démarrer l'enregistrement"
                     style={{
@@ -199,7 +268,7 @@ export default function InputBar({
                       height: 36,
                       minWidth: 28,
                       minHeight: 28,
-                      boxShadow: "0 0 0 3px rgba(120,120,255,0.10)",
+                      boxShadow: "0 0 0 3px var(--acc-soft)",
                     }}
                   >
                     {/* Icône micro Material Filled, arrondie, glassy */}
@@ -248,7 +317,7 @@ export default function InputBar({
                   <motion.button
                     type="submit"
                     disabled={isLoading}
-                    className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold p-3 rounded-full shadow-2xl flex items-center justify-center text-xl transition-all duration-300 cursor-pointer align-middle"
+                    className={`fancy-btn font-semibold p-3 rounded-full shadow border flex items-center justify-center text-xl transition-all duration-150 cursor-pointer align-middle accent-outline ${userInput.trim().length>0 ? 'send-active' : 'send-disabled'}`}
                     whileTap={{ scale: 0.9 }}
                     style={{
                       width: 36,
@@ -430,13 +499,26 @@ export default function InputBar({
             {micState !== "recording" && (
               <>
                 <span className="flex items-center gap-2 ml-2 mt-1">
+                  {/* Toggle thème */}
+                  <button
+                    type="button"
+                    onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')}
+                    aria-label="Basculer thème"
+                    className="neutral-btn accent-outline rounded-lg p-2 flex items-center justify-center w-9 h-9 transition active:scale-95 hover:shadow"
+                  >
+                    {theme === 'light' ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2m0 14v2M5.64 5.64l1.42 1.42M16.94 16.94l1.42 1.42M3 12h2m14 0h2M7.06 16.94l1.42-1.42M16.94 7.06l1.42-1.42"/><circle cx="12" cy="12" r="4" /></svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                    )}
+                  </button>
                   {/* Bouton langue */}
                   <button
                     type="button"
                     aria-haspopup="dialog"
                     aria-expanded={showLangPanel}
-                    onClick={() => togglePanelSafely('lang')}
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-indigo-500/90 text-white text-xs font-medium shadow-md border border-indigo-300 active:scale-95 transition"
+                    onClick={openLangPanel}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg neutral-btn text-[11px] font-medium active:scale-95 transition shadow-sm hover:shadow accent-outline"
                   >
                     <span className="flex items-center justify-center w-5 h-5 rounded overflow-hidden bg-white/20">
                       <Image
@@ -467,8 +549,8 @@ export default function InputBar({
                     type="button"
                     aria-haspopup="dialog"
                     aria-expanded={showTonePanel}
-                    onClick={() => togglePanelSafely('tone')}
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-violet-500/90 text-white text-xs font-medium shadow-md border border-violet-300 active:scale-95 transition"
+                    onClick={openTonePanel}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg neutral-btn text-[11px] font-medium active:scale-95 transition shadow-sm hover:shadow accent-outline"
                   >
                     <span className="truncate max-w-[72px]">
                       {tones?.find((t) => t.value === selectedTone)?.label || 'Ton'}
@@ -557,7 +639,7 @@ export default function InputBar({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[70] p-2 sm:p-4 bg-black/30 backdrop-blur-sm"
+                className="fixed inset-0 z-[70] p-2 sm:p-4 bg-black/20"
                 onClick={() => { setShowLangPanel(false); setShowTonePanel(false); }}
                 aria-modal="true"
                 role="dialog"
@@ -569,24 +651,24 @@ export default function InputBar({
                   exit={{ x: -10, opacity: 0, scale: 0.97 }}
                   transition={{ type: 'spring', stiffness: 320, damping: 30 }}
                   style={{ position: 'absolute', left: 12, bottom: inputHeight + 12 }}
-                  className="w-[86%] sm:w-[420px] max-h-[55vh] sm:max-h-[60vh] overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl border bg-white/95 backdrop-blur-lg border-indigo-200 flex flex-col"
+                  className="w-[86%] sm:w-[420px] max-h-[55vh] sm:max-h-[60vh] overflow-hidden rounded-xl sm:rounded-2xl shadow-lg panel-light flex flex-col panel-fade"
                 >
-                  <div className="flex items-center justify-between px-4 py-3 sm:px-5 sm:py-4 border-b bg-gradient-to-r from-indigo-500/15 to-violet-500/15">
-                    <h2 className="text-xs sm:text-sm font-semibold text-indigo-700 tracking-wide uppercase">
-                      {showLangPanel ? 'Choisir une langue' : 'Choisir un ton'}
+                  <div className="flex items-center justify-between px-4 py-3 sm:px-5 sm:py-4 border-b panel-header text-[var(--text)]">
+                    <h2 className="text-[11px] sm:text-xs font-semibold tracking-wide uppercase text-[var(--acc-strong)]">
+                      {showLangPanel ? 'Langue' : 'Ton'}
                     </h2>
                     <button
                       type="button"
                       onClick={() => { setShowLangPanel(false); setShowTonePanel(false); }}
-                      className="p-1.5 rounded-full hover:bg-indigo-100 text-indigo-600 transition active:scale-95"
+                      className="p-1.5 rounded-full hover:bg-[var(--bg-btn-hover)] text-[var(--text-dim)] transition active:scale-95"
                       aria-label="Fermer"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                   </div>
-                  <div className="p-3 sm:p-4 overflow-y-auto custom-scrollbar">
+                  <div className="p-3 sm:p-4 overflow-y-auto list-scroll-smooth">
                     {showLangPanel && (
-                      <div className="grid grid-cols-4 sm:grid-cols-3 gap-2 sm:gap-3">
+          <div className="grid grid-cols-4 sm:grid-cols-3 gap-2 sm:gap-3">
                         {languages.map((lang) => (
                           <button
                             key={lang.value}
@@ -596,7 +678,7 @@ export default function InputBar({
                               handleLanguageChange({ target: { value: lang.value } });
                               setShowLangPanel(false);
                             }}
-                            className={`group flex flex-col items-center gap-1 px-1.5 py-1.5 sm:px-2 sm:py-2 rounded-lg sm:rounded-xl border text-[10px] sm:text-xs font-medium transition active:scale-[0.95] ${lang.value === targetLang ? 'bg-indigo-600 text-white border-indigo-600 shadow' : 'bg-white/70 border-indigo-200 text-indigo-700 hover:bg-indigo-100'}`}
+                            className={`group flex flex-col items-center gap-1 px-1.5 py-1.5 sm:px-2 sm:py-2 rounded-md border text-[10px] sm:text-xs font-medium transition active:scale-[0.95] relative panel-item ${lang.value === targetLang ? 'panel-item-active' : ''}`}
                           >
                             <Image
                               src={`https://flagcdn.com/${lang.flag}.svg`}
@@ -612,7 +694,7 @@ export default function InputBar({
                       </div>
                     )}
                     {showTonePanel && (
-                      <div className="flex flex-col gap-1.5 sm:gap-2">
+          <div className="flex flex-col gap-1.5 sm:gap-2">
                         {tones?.map((tone) => (
                           <button
                             key={tone.value}
@@ -622,7 +704,7 @@ export default function InputBar({
                               handleToneSelection(tone.value);
                               setShowTonePanel(false);
                             }}
-                            className={`flex items-center justify-between px-3 py-2 sm:px-4 sm:py-3 rounded-lg sm:rounded-xl border text-xs sm:text-sm font-medium transition active:scale-[0.97] ${tone.value === selectedTone ? 'bg-violet-600 text-white border-violet-600 shadow' : 'bg-white/70 border-violet-200 text-violet-700 hover:bg-violet-100'}`}
+                            className={`flex items-center justify-between px-3 py-2 sm:px-4 sm:py-3 rounded-md border text-xs sm:text-sm font-medium transition active:scale-[0.97] panel-item ${tone.value === selectedTone ? 'panel-item-active' : ''}`}
                           >
                             <span className="truncate pr-3 sm:pr-4">{tone.label}</span>
                             {tone.value === selectedTone && (
