@@ -77,11 +77,11 @@ const AgentCard = ({ agent, isFavorite, toggleFavorite }) => {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, type: "spring", stiffness: 60 }}
       viewport={{ once: true, margin: "-80px" }}
-      className="perspective-1000"
+      className="perspective-1000 flex flex-col w-full h-full"
       whileHover={{ scale: 1.03 }}
     >
       <motion.div
-        className={`relative h-full group rounded-xl overflow-hidden p-3 border ${style.border} ${style.bg} backdrop-blur-sm hover:shadow-lg transition-all duration-500`}
+        className={`relative h-full flex flex-col group rounded-xl overflow-hidden p-3 border ${style.border} ${style.bg} backdrop-blur-sm hover:shadow-lg transition-all duration-500`}
         onClick={() => !isMobile && toggleExpand()}
         style={{
           boxShadow: '0px 10px 20px rgba(0, 0, 0, 0.15)',
@@ -147,7 +147,7 @@ const AgentCard = ({ agent, isFavorite, toggleFavorite }) => {
         </motion.div>
 
         {/* Content */}
-        <div className="relative z-10 flex-1 flex flex-col">
+  <div className="relative z-10 flex-1 flex flex-col min-h-0">
           <div className="flex items-center justify-between mb-1">
             {/* Tagline badge */}
             <motion.span
@@ -272,7 +272,7 @@ const AgentCard = ({ agent, isFavorite, toggleFavorite }) => {
           </motion.div>
 
           {/* Description */}
-          <div className="relative overflow-hidden mb-2">
+          <div className="relative overflow-hidden mb-2 flex-shrink-0">
             <div 
               ref={descriptionRef}
               className="description-container relative"
@@ -287,7 +287,7 @@ const AgentCard = ({ agent, isFavorite, toggleFavorite }) => {
                   ease: [0.19, 1, 0.22, 1],
                 }}
               >
-                <p className={`text-gray-300 text-[10px] leading-relaxed ${
+                <p className={`text-gray-300 text-[10px] leading-relaxed line-clamp-4 ${
                   isExpanded ? 'text-white' : ''
                 } transition-all duration-300`}>
                   {description}
@@ -323,7 +323,7 @@ const AgentCard = ({ agent, isFavorite, toggleFavorite }) => {
 
           {/* Button */}
           <motion.div
-            className="mt-auto"
+            className="mt-auto pt-1"
             initial={{ y: 10, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}

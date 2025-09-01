@@ -25,6 +25,8 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
   const trackRef = useRef(null);
   const itemRefs = useRef({});
   const [indicator, setIndicator] = useState({ left: 0, width: 0 });
+  const [canScrollLeft, setCanScrollLeft] = useState(false); // retained (may reuse later)
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
   const updateIndicator = useCallback(() => {
     const key = filter;
@@ -91,6 +93,27 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
     };
   }, []);
 
+  // Update fade visibility on scroll / resize
+  const updateScrollShadows = useCallback(() => {
+    const scroller = scrollRef.current;
+    if (!scroller) return;
+    const { scrollLeft, scrollWidth, clientWidth } = scroller;
+    setCanScrollLeft(scrollLeft > 2);
+    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 2);
+  }, []);
+
+  useEffect(() => {
+    const scroller = scrollRef.current;
+    if (!scroller) return;
+    updateScrollShadows();
+    scroller.addEventListener('scroll', updateScrollShadows, { passive: true });
+    window.addEventListener('resize', updateScrollShadows);
+    return () => {
+      scroller.removeEventListener('scroll', updateScrollShadows);
+      window.removeEventListener('resize', updateScrollShadows);
+    };
+  }, [updateScrollShadows]);
+
   const onKey = useCallback((e) => {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return;
     e.preventDefault();
@@ -106,7 +129,7 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
       <div className="relative w-full">
         <div
           ref={scrollRef}
-          className="relative flex w-auto md:w-full overflow-x-auto md:overflow-x-hidden scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 gap-1 rounded-full px-1 py-0.5 backdrop-blur-2xl bg-white/15 md:bg-white/[0.04] border border-white/10 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_3px_10px_-4px_rgba(0,0,0,0.45),0_2px_24px_-6px_rgba(56,132,255,0.35)] no-scrollbar touch-pan-x select-none"
+          className="relative flex w-auto md:w-full overflow-x-auto md:overflow-x-hidden overflow-y-hidden scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 gap-1 rounded-full px-1.5 py-1 backdrop-blur-2xl bg-white/15 md:bg-white/[0.04] border border-white/10 no-scrollbar touch-pan-x select-none"
           role="tablist"
           aria-label="Filtrer les agents"
           onKeyDown={onKey}
@@ -128,7 +151,7 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
           {/* Indicateur actif glissant (mesuré) */}
           <motion.div
             key="indicator"
-            className="absolute z-0 h-8 rounded-full bg-gradient-to-r from-white/14 via-white/10 to-white/5 backdrop-blur-xl border border-white/15 shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_3px_10px_-4px_rgba(0,0,0,0.55)]"
+            className="absolute z-0 h-10 rounded-full bg-gradient-to-r from-white/18 via-white/8 to-white/5 backdrop-blur-xl border border-white/15"
             initial={false}
             animate={{ left: indicator.left, width: indicator.width }}
             transition={{ type: 'spring', stiffness: 340, damping: 32, mass: 0.6 }}
@@ -148,14 +171,14 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
               whileTap={{ scale: 0.95 }}
               whileHover={{ y: -1 }}
       ref={el => { if (el) itemRefs.current[opt.value] = el; }}
-              className={`group relative z-10 flex flex-none md:flex-1 md:justify-center items-center gap-1.5 px-2.5 sm:px-3 h-8 rounded-full text-[11px] sm:text-[12px] font-medium tracking-wide transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 scroll-mx-2 ${active ? 'text-white' : 'text-white/55 hover:text-white'}`}
+              className={`group relative z-10 flex flex-none md:flex-1 md:justify-center items-center gap-1.5 px-3 sm:px-4 h-10 rounded-full text-[12px] sm:text-[13px] font-medium tracking-wide transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 scroll-mx-2 ${active ? 'text-white' : 'text-white/55 hover:text-white'}`}
               style={{ scrollSnapAlign: 'center' }}
             >
               {/* Gradient accent fine ligne top */}
               {active && (
                 <motion.span
                   layoutId={`accent-${opt.value}`}
-                  className="absolute left-2 right-2 top-[3px] h-[2px] rounded-full bg-gradient-to-r from-white/70 via-white to-white/70"
+                  className="absolute left-3 right-3 top-1.5 h-[2px] rounded-full bg-gradient-to-r from-white/70 via-white to-white/70"
                   transition={{ type: 'spring', stiffness: 350, damping: 28 }}
                 />
               )}
@@ -163,7 +186,7 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
                 <Icon name={opt.icon} active={active} />
                 <span className="inline-block leading-none">{opt.label}</span>
               </span>
-              <span className={`ml-0.5 -mr-0.5 px-1 py-0.5 rounded-full border text-[9px] leading-none font-semibold transition-all ${active ? 'bg-white/25 border-white/15 text-white shadow-[0_0_0_1px_rgba(255,255,255,0.15)]' : 'bg-white/5 border-white/10 text-white/55 group-hover:text-white'}`}>{counts[opt.value]}</span>
+              <span className={`ml-0.5 -mr-0.5 px-1.5 py-0.5 rounded-full border text-[10px] leading-none font-semibold transition-all ${active ? 'bg-white/25 border-white/15 text-white' : 'bg-white/5 border-white/10 text-white/55 group-hover:text-white'}`}>{counts[opt.value]}</span>
               {/* Effet gradient de fond spécifique actif */}
               {active && (
                 <motion.span
@@ -186,8 +209,7 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
           {/* Bordure interne subtile */}
           <div className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-white/10" />
           {/* Fades gauche/droite */}
-          <div className="pointer-events-none absolute left-0 top-0 h-full w-6 bg-gradient-to-r from-white/60 via-white/20 to-transparent md:hidden" />
-          <div className="pointer-events-none absolute right-0 top-0 h-full w-6 bg-gradient-to-l from-white/60 via-white/20 to-transparent md:hidden" />
+          {/* Edge fades removed (ombrage supprimé) */}
           {/* Scroll snap only mobile */}
           <style>{`@media (max-width: 767px){[role=tablist]{scroll-snap-type:x mandatory;} }`}</style>
         </div>

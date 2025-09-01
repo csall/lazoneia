@@ -103,12 +103,13 @@ const AgentDisplay = ({ filter, favorites, toggleFavorite }) => {
           variants={containerVariants}
         >
           {filteredAgents.map((agent) => (
-            <AgentCard
-              key={agent.id}
-              agent={agent}
-              isFavorite={favorites.includes(agent.id)}
-              toggleFavorite={toggleFavorite}
-            />
+            <div key={agent.id} className="h-[360px] flex">
+              <AgentCard
+                agent={agent}
+                isFavorite={favorites.includes(agent.id)}
+                toggleFavorite={toggleFavorite}
+              />
+            </div>
           ))}
         </motion.div>
       )}
