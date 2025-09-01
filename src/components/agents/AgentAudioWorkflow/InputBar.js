@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -45,8 +45,29 @@ export default function InputBar({
     { value: "hindi", label: "HI", flag: "in" },
   ];
   const [isFocused, setIsFocused] = useState(false);
-  const [placeholderAnim, setPlaceholderAnim] = useState(false);
   const inputRef = textareaRef;
+
+  // Ouvre/ferme les panneaux en gérant le blur pour éviter le "premier tap" perdu sur mobile quand le clavier est ouvert
+  const togglePanelSafely = (panel) => {
+    const open = () => {
+      if (panel === 'lang') {
+        setShowTonePanel(false);
+        setShowLangPanel((o) => !o);
+      } else if (panel === 'tone') {
+        setShowLangPanel(false);
+        setShowTonePanel((o) => !o);
+      }
+    };
+    const el = inputRef?.current;
+    // Si le textarea est focus (clavier affiché), on blur d'abord puis on ouvre après un léger délai
+    if (el && document.activeElement === el) {
+      el.blur();
+      // Delay suffisant pour que le clavier commence à se rétracter et que le tap ne soit pas gobé
+      setTimeout(open, 60);
+    } else {
+      open();
+    }
+  };
 
   return (
     <form
@@ -103,14 +124,8 @@ export default function InputBar({
                   handleSubmit(e);
                 }
               }}
-              onFocus={() => {
-                setIsFocused(true);
-                setPlaceholderAnim(true);
-              }}
-              onBlur={() => {
-                setIsFocused(false);
-                setPlaceholderAnim(false);
-              }}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
               disabled={
                 isLoading ||
                 micState === "recording" ||
@@ -393,10 +408,7 @@ export default function InputBar({
                     type="button"
                     aria-haspopup="dialog"
                     aria-expanded={showLangPanel}
-                    onClick={() => {
-                      setShowTonePanel(false);
-                      setShowLangPanel((o) => !o);
-                    }}
+                    onClick={() => togglePanelSafely('lang')}
                     className="flex items-center gap-2 px-3 py-2 rounded-xl bg-indigo-500/90 text-white text-xs font-medium shadow-md border border-indigo-300 active:scale-95 transition"
                   >
                     <span className="flex items-center justify-center w-5 h-5 rounded overflow-hidden bg-white/20">
@@ -428,10 +440,7 @@ export default function InputBar({
                     type="button"
                     aria-haspopup="dialog"
                     aria-expanded={showTonePanel}
-                    onClick={() => {
-                      setShowLangPanel(false);
-                      setShowTonePanel((o) => !o);
-                    }}
+                    onClick={() => togglePanelSafely('tone')}
                     className="flex items-center gap-2 px-3 py-2 rounded-xl bg-violet-500/90 text-white text-xs font-medium shadow-md border border-violet-300 active:scale-95 transition"
                   >
                     <span className="truncate max-w-[72px]">
