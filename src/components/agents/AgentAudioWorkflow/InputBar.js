@@ -552,36 +552,36 @@ export default function InputBar({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[70] p-4 bg-black/30 backdrop-blur-sm"
+                className="fixed inset-0 z-[70] p-2 sm:p-4 bg-black/30 backdrop-blur-sm"
                 onClick={() => { setShowLangPanel(false); setShowTonePanel(false); }}
                 aria-modal="true"
                 role="dialog"
               >
                 <motion.div
                   onClick={(e) => e.stopPropagation()}
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: 20, opacity: 0 }}
-                  transition={{ type: 'spring', stiffness: 280, damping: 26 }}
-                  style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', bottom: inputHeight + 16 }}
-                  className="w-full max-w-md max-h-[60vh] overflow-hidden rounded-3xl shadow-2xl border bg-white/95 backdrop-blur-lg border-indigo-200 flex flex-col"
+                  initial={{ x: -10, opacity: 0, scale: 0.97 }}
+                  animate={{ x: 0, opacity: 1, scale: 1 }}
+                  exit={{ x: -10, opacity: 0, scale: 0.97 }}
+                  transition={{ type: 'spring', stiffness: 320, damping: 30 }}
+                  style={{ position: 'absolute', left: 12, bottom: inputHeight + 12 }}
+                  className="w-[86%] sm:w-[420px] max-h-[55vh] sm:max-h-[60vh] overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl border bg-white/95 backdrop-blur-lg border-indigo-200 flex flex-col"
                 >
-                  <div className="flex items-center justify-between px-5 py-4 border-b bg-gradient-to-r from-indigo-500/20 to-violet-500/20">
-                    <h2 className="text-sm font-semibold text-indigo-700 tracking-wide uppercase">
+                  <div className="flex items-center justify-between px-4 py-3 sm:px-5 sm:py-4 border-b bg-gradient-to-r from-indigo-500/15 to-violet-500/15">
+                    <h2 className="text-xs sm:text-sm font-semibold text-indigo-700 tracking-wide uppercase">
                       {showLangPanel ? 'Choisir une langue' : 'Choisir un ton'}
                     </h2>
                     <button
                       type="button"
                       onClick={() => { setShowLangPanel(false); setShowTonePanel(false); }}
-                      className="p-1.5 rounded-full hover:bg-indigo-100 text-indigo-600 transition"
+                      className="p-1.5 rounded-full hover:bg-indigo-100 text-indigo-600 transition active:scale-95"
                       aria-label="Fermer"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                   </div>
-                  <div className="p-4 overflow-y-auto custom-scrollbar">
+                  <div className="p-3 sm:p-4 overflow-y-auto custom-scrollbar">
                     {showLangPanel && (
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="grid grid-cols-4 sm:grid-cols-3 gap-2 sm:gap-3">
                         {languages.map((lang) => (
                           <button
                             key={lang.value}
@@ -591,14 +591,14 @@ export default function InputBar({
                               handleLanguageChange({ target: { value: lang.value } });
                               setShowLangPanel(false);
                             }}
-                            className={`group flex flex-col items-center gap-1 px-2 py-2 rounded-xl border text-xs font-medium transition ${lang.value === targetLang ? 'bg-indigo-600 text-white border-indigo-600 shadow' : 'bg-white/60 border-indigo-200 text-indigo-700 hover:bg-indigo-100'}`}
+                            className={`group flex flex-col items-center gap-1 px-1.5 py-1.5 sm:px-2 sm:py-2 rounded-lg sm:rounded-xl border text-[10px] sm:text-xs font-medium transition active:scale-[0.95] ${lang.value === targetLang ? 'bg-indigo-600 text-white border-indigo-600 shadow' : 'bg-white/70 border-indigo-200 text-indigo-700 hover:bg-indigo-100'}`}
                           >
                             <Image
                               src={`https://flagcdn.com/${lang.flag}.svg`}
                               alt={lang.label}
-                              width={32}
-                              height={32}
-                              className="rounded object-cover w-8 h-8"
+                              width={28}
+                              height={28}
+                              className="rounded object-cover w-7 h-7 sm:w-8 sm:h-8"
                               unoptimized
                             />
                             <span className="truncate w-full text-center">{lang.label}</span>
@@ -607,7 +607,7 @@ export default function InputBar({
                       </div>
                     )}
                     {showTonePanel && (
-                      <div className="flex flex-col gap-2">
+                      <div className="flex flex-col gap-1.5 sm:gap-2">
                         {tones?.map((tone) => (
                           <button
                             key={tone.value}
@@ -617,9 +617,9 @@ export default function InputBar({
                               handleToneSelection(tone.value);
                               setShowTonePanel(false);
                             }}
-                            className={`flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-medium transition ${tone.value === selectedTone ? 'bg-violet-600 text-white border-violet-600 shadow' : 'bg-white/70 border-violet-200 text-violet-700 hover:bg-violet-100'}`}
+                            className={`flex items-center justify-between px-3 py-2 sm:px-4 sm:py-3 rounded-lg sm:rounded-xl border text-xs sm:text-sm font-medium transition active:scale-[0.97] ${tone.value === selectedTone ? 'bg-violet-600 text-white border-violet-600 shadow' : 'bg-white/70 border-violet-200 text-violet-700 hover:bg-violet-100'}`}
                           >
-                            <span className="truncate pr-4">{tone.label}</span>
+                            <span className="truncate pr-3 sm:pr-4">{tone.label}</span>
                             {tone.value === selectedTone && (
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                             )}
