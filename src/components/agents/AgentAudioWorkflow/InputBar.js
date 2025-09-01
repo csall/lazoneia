@@ -51,7 +51,7 @@ export default function InputBar({
     if (typeof window !== 'undefined') {
       const check = () => setIsMobile(window.innerWidth < 640);
       check();
-      window.addEventListener('resize', check);
+      window.addEventListener('resize', check, { passive: true });
       return () => window.removeEventListener('resize', check);
     }
   }, []);
@@ -125,7 +125,7 @@ export default function InputBar({
                 micState === "transcribing"
               }
               rows={1}
-              className={`relative z-20 w-full min-h-[44px] max-h-[120px] resize-none rounded-2xl px-4 pr-16 py-3 text-base bg-white/80 text-gray-900 shadow-none border-2 border-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400/80 transition-all duration-300 scrollbar-hide placeholder:italic placeholder:text-indigo-400 placeholder:opacity-80 ${
+              className={`relative z-30 w-full min-h-[52px] max-h-[140px] resize-none rounded-2xl px-4 pr-16 py-3 text-base bg-white/85 text-gray-900 shadow-sm border-2 border-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400/80 transition-all duration-300 scrollbar-hide placeholder:italic placeholder:text-indigo-400 placeholder:opacity-80 ${
                 micState === "transcribing" ? "text-center font-semibold" : ""
               } sm:text-lg sm:px-5 sm:pr-20 sm:py-4`}
               style={{
@@ -151,7 +151,7 @@ export default function InputBar({
             />
             {/* Boutons micro et envoyer positionnés à droite dans le textarea */}
             {micState !== "recording" && (
-              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2 items-center">
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2 items-center z-40">
                 {userInput.trim().length === 0 && (
                   <motion.button
                     type="button"
@@ -188,17 +188,18 @@ export default function InputBar({
                 {userInput.trim().length > 0 && (
                   <motion.button
                     type="submit"
-                    disabled={isLoading}
-                    whileHover={{ scale: 1.08, rotate: -2 }}
-                    whileTap={{ scale: 0.92 }}
+                    disabled={isLoading || userInput.trim().length === 0}
+                    whileHover={!isLoading ? { scale: 1.06, rotate: -2 } : {}}
+                    whileTap={!isLoading ? { scale: 0.9 } : {}}
                     className={`relative group w-11 h-11 rounded-full flex items-center justify-center
-                      bg-gradient-to-br from-indigo-500 via-violet-600 to-fuchsia-600
+                      ${isLoading || userInput.trim().length === 0 ? 'bg-gradient-to-br from-indigo-400 via-violet-500 to-fuchsia-500 cursor-not-allowed opacity-60' : 'bg-gradient-to-br from-indigo-500 via-violet-600 to-fuchsia-600 hover:brightness-110'}
                       text-white shadow-[0_4px_18px_-4px_rgba(109,40,217,0.55),0_0_0_1px_rgba(255,255,255,0.15)]
-                      transition-all duration-300 font-medium overflow-hidden cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed`}
+                      transition-all duration-300 font-medium overflow-hidden`}
+                    aria-disabled={isLoading || userInput.trim().length === 0}
                   >
                     <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[conic-gradient(from_0deg,rgba(255,255,255,0.25),transparent_70%)]" />
                     <span className="absolute inset-0 rounded-full ring-0 group-hover:ring-4 ring-fuchsia-400/25 transition-all duration-500" />
-                    <AnimatePresence mode="wait" initial={false}>
+                    <AnimatePresence initial={false} mode="wait">
                       {isLoading ? (
                         <motion.div
                           key="loader"
@@ -341,10 +342,11 @@ export default function InputBar({
           {/* Placeholder animé */}
           {/* Placeholder natif utilisé, pas d'animation custom */}
           {/* Boutons micro et envoyer à droite du textarea, dans la barre d'input */}
-          <div className="flex items-center ml-2 w-full">
+          <div className={`w-full ${isMobile ? 'mt-2' : ''}`}>
+            <div className={`flex ${isMobile ? 'flex-row flex-wrap gap-2 px-1' : 'items-center ml-2'} w-full`}>
             {micState !== "recording" && (
               <>
-                <span className="flex items-center gap-1 ml-2 mt-1">
+                <span className={`flex items-center gap-2 ${isMobile ? '' : 'ml-2 mt-1'}`}>
                   {/* Icône du drapeau à gauche du select natif */}
                   <span className="flex items-center justify-center w-6 h-6 rounded overflow-hidden border border-indigo-300 bg-white/80 mr-1">
                     <Image
@@ -370,7 +372,7 @@ export default function InputBar({
                     <select
                       id="language-select-inputbar"
                       value={targetLang}
-                      onChange={(e) => { handleLanguageChange(e); if (isMobile) setTimeout(() => inputRef.current?.focus(), 80); }}
+                      onChange={(e) => { handleLanguageChange(e); /* suppression auto-refocus mobile */ }}
                       className={`peer relative z-[5] px-3 pr-8 h-11 rounded-2xl border ${(colors.border || 'border-indigo-300/60')} appearance-none
                         bg-white/10 backdrop-blur-xl shadow-[0_4px_24px_-6px_rgba(99,102,241,0.25),0_0_0_1px_rgba(255,255,255,0.10)]
                         text-white text-[13px] font-semibold tracking-wide
@@ -404,7 +406,7 @@ export default function InputBar({
                     <motion.select
                       id="tone-select-inputbar"
                       value={selectedTone}
-                      onChange={(e) => { handleToneSelection(e.target.value); if (isMobile) setTimeout(() => inputRef.current?.focus(), 80); }}
+                      onChange={(e) => { handleToneSelection(e.target.value); }}
                       className={`peer relative z-[5] px-3 pr-8 h-11 rounded-2xl border ${(colors.border || 'border-indigo-300/60')} appearance-none
                         bg-white/10 backdrop-blur-xl shadow-[0_4px_24px_-6px_rgba(139,92,246,0.22),0_0_0_1px_rgba(255,255,255,0.10)]
                         text-white text-[13px] font-semibold tracking-wide
@@ -462,9 +464,10 @@ export default function InputBar({
                     </motion.button>
                   )}
                 </span>
-                <div className="flex-1" />
+                {!isMobile && <div className="flex-1" />}
               </>
             )}
+            </div>
           </div>
 
           {/* Bouton envoyer animé : affiché uniquement si pas d'enregistrement */}
