@@ -47,6 +47,8 @@ export default function InputBar({
   // Visual viewport / safe-area management (iOS & modern browsers)
   const [viewportOffset, setViewportOffset] = useState(0); // distance from bottom keyboard -> for future use if needed
   const [safePadding, setSafePadding] = useState(0);
+  // Key to force remount of textarea (iOS focus reset after native select)
+  const [textareaKey, setTextareaKey] = useState(0);
 
   // rAF throttled auto-resize
   const resizeFrame = useRef(null);
@@ -134,6 +136,7 @@ export default function InputBar({
           {/* Input animé avec bouton envoyer à l'intérieur */}
       <div className="relative w-full">
             <motion.textarea
+              key={textareaKey}
               ref={inputRef}
               value={
                 micState === "recording"
@@ -457,7 +460,18 @@ export default function InputBar({
                     id="language-select-inputbar"
                     aria-label="Langue cible"
                     value={targetLang}
-                    onChange={handleLanguageChange}
+                    onChange={(e) => {
+                      handleLanguageChange(e);
+                      // Remount + refocus to avoid iOS dead tap zone after picker
+                      setTimeout(() => {
+                        setTextareaKey((k) => k + 1);
+                        requestAnimationFrame(() => {
+                          if (inputRef.current) {
+                            inputRef.current.focus({ preventScroll: true });
+                          }
+                        });
+                      }, 40);
+                    }}
                     className={`px-3 py-2 rounded-xl border focus:ring focus:outline-none transition-all text-sm sm:text-xs cursor-pointer font-medium shadow-sm ${
                       colors.border || 'border-indigo-300'
                     }`}
@@ -477,7 +491,17 @@ export default function InputBar({
                     id="tone-select-inputbar"
                     aria-label="Sélection du ton"
                     value={selectedTone}
-                    onChange={(e) => handleToneSelection(e.target.value)}
+                    onChange={(e) => {
+                      handleToneSelection(e.target.value);
+                      setTimeout(() => {
+                        setTextareaKey((k) => k + 1);
+                        requestAnimationFrame(() => {
+                          if (inputRef.current) {
+                            inputRef.current.focus({ preventScroll: true });
+                          }
+                        });
+                      }, 40);
+                    }}
                     className={`px-3 py-2 rounded-xl border focus:ring focus:outline-none transition-all text-sm sm:text-xs cursor-pointer font-medium shadow-sm ${
                       colors.border || 'border-indigo-300'
                     }`}
