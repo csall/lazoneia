@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,7 +14,8 @@ const GoogleMenu = () => {
   const pathname = usePathname();
   const [indicator, setIndicator] = useState({ left: 0, width: 0, visible: false });
 
-  const items = [
+  // Items mis en mémoire pour éviter une nouvelle référence à chaque rendu (sinon useCallback redéclenché en boucle)
+  const items = useMemo(() => [
     {
       name: "Accueil",
       link: "/",
@@ -49,7 +50,7 @@ const GoogleMenu = () => {
       ),
       keywords: "contact email message"
     }
-  ];
+  ], []);
 
   const filtered = items; // pas de recherche mobile
 
@@ -73,19 +74,24 @@ const GoogleMenu = () => {
 
   // Met à jour l'indicateur actif
   const updateIndicator = useCallback(() => {
-    if (!scrollRef.current) return;
-    // Trouve l'index actif
-    const activeIndex = filtered.findIndex(it => it.link === '/' ? pathname === '/' : pathname.startsWith(it.link));
-    if (activeIndex === -1) { setIndicator(prev => ({ ...prev, visible: false })); return; }
+    const scroller = scrollRef.current;
+    if (!scroller) return;
+    const activeIndex = filtered.findIndex(it => (it.link === '/' ? pathname === '/' : pathname.startsWith(it.link)));
+    if (activeIndex === -1) {
+      setIndicator(prev => (prev.visible ? { ...prev, visible: false } : prev));
+      return;
+    }
     const el = itemRefs.current[activeIndex];
     if (!el) return;
     const r = el.getBoundingClientRect();
-    const pr = scrollRef.current.getBoundingClientRect();
-    const left = r.left - pr.left + scrollRef.current.scrollLeft; // position relative dans le scroller
-    setIndicator({ left, width: r.width, visible: true });
-    // Auto-centre
-    const centerOffset = left + r.width / 2 - scrollRef.current.clientWidth / 2;
-    scrollRef.current.scrollTo({ left: Math.max(0, centerOffset), behavior: 'smooth' });
+    const pr = scroller.getBoundingClientRect();
+    const left = r.left - pr.left + scroller.scrollLeft;
+    setIndicator(prev => {
+      if (prev.left === left && prev.width === r.width && prev.visible) return prev; // éviter setState inutile
+      return { left, width: r.width, visible: true };
+    });
+    const centerOffset = left + r.width / 2 - scroller.clientWidth / 2;
+    scroller.scrollTo({ left: Math.max(0, centerOffset), behavior: 'smooth' });
   }, [filtered, pathname]);
 
   // Màj indicateur quand open ou pathname change
