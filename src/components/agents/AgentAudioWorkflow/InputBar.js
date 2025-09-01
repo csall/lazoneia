@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -44,14 +44,6 @@ export default function InputBar({
   ];
   const [isFocused, setIsFocused] = useState(false);
   const [placeholderAnim, setPlaceholderAnim] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const detect = () => setIsMobile(window.innerWidth < 640);
-    detect();
-    window.addEventListener('resize', detect, { passive: true });
-    return () => window.removeEventListener('resize', detect);
-  }, []);
   const inputRef = textareaRef;
 
   return (
@@ -390,38 +382,8 @@ export default function InputBar({
           {/* Placeholder animé */}
           {/* Placeholder natif utilisé, pas d'animation custom */}
           {/* Boutons micro et envoyer à droite du textarea, dans la barre d'input */}
-          <div className={`ml-2 w-full ${isMobile ? 'mt-2' : 'flex items-center'}`}>            
-            {isMobile && (
-              <div className="flex w-full gap-2 mb-2">
-                <select
-                  id="language-select-inputbar-mobile"
-                  value={targetLang}
-                  onChange={(e)=>{handleLanguageChange(e); setTimeout(()=>textareaRef.current?.focus(),50);}}
-                  onBlur={()=> setTimeout(()=>textareaRef.current?.focus(),30)}
-                  className="flex-1 h-11 rounded-xl px-3 pr-8 bg-white/90 text-gray-900 text-sm font-medium border border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-400/60 active:scale-[0.98] appearance-none"
-                >
-                  {languages.map(l=> <option key={l.value} value={l.value}>{l.value.charAt(0).toUpperCase()+l.value.slice(1)}</option>)}
-                </select>
-                <select
-                  id="tone-select-inputbar-mobile"
-                  value={selectedTone}
-                  onChange={(e)=>{handleToneSelection(e.target.value); setTimeout(()=>textareaRef.current?.focus(),50);}}
-                  onBlur={()=> setTimeout(()=>textareaRef.current?.focus(),30)}
-                  className="flex-1 h-11 rounded-xl px-3 pr-8 bg-white/90 text-gray-900 text-sm font-medium border border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-400/60 active:scale-[0.98] appearance-none"
-                >
-                  {tones && tones.length>0 && tones.map(t=> <option key={t.value} value={t.value}>{t.label}</option>)}
-                </select>
-                {messages && messages.length>0 && (
-                  <button
-                    type="button"
-                    onClick={clearHistory}
-                    className="h-11 w-11 rounded-xl bg-neutral-600 text-white text-xs font-medium flex items-center justify-center border border-neutral-500 active:scale-95 focus:outline-none focus:ring-2 focus:ring-neutral-400/60"
-                    aria-label="Supprimer tout l'historique"
-                  >✕</button>
-                )}
-              </div>
-            )}
-            {micState !== "recording" && !isMobile && (
+          <div className="flex items-center ml-2 w-full">
+            {micState !== "recording" && (
               <>
                 <span className="flex items-center gap-1 ml-2 mt-1">
                   {/* Icône du drapeau à gauche du select natif */}
