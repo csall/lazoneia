@@ -38,18 +38,58 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
   // Update indicator on filter change & resize
   useEffect(() => { updateIndicator(); }, [updateIndicator, options.length]);
   useEffect(() => {
+    // Re-measure after fonts/images load
+    const onLoad = () => updateIndicator();
+    window.addEventListener('load', onLoad);
+    return () => window.removeEventListener('load', onLoad);
+  }, [updateIndicator]);
+  useEffect(() => {
     const fn = () => updateIndicator();
     window.addEventListener('resize', fn);
     return () => window.removeEventListener('resize', fn);
   }, [updateIndicator]);
 
-  // Scroll active into view smoothly
+  // Scroll active into view smoothly on mobile only
   useEffect(() => {
     const el = itemRefs.current[filter];
-    if (el && scrollRef.current) {
+    if (el && scrollRef.current && window.innerWidth < 768) {
       el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
     }
   }, [filter]);
+
+  // Drag to scroll (mobile)
+  useEffect(() => {
+    const scroller = scrollRef.current;
+    if (!scroller) return;
+    let isDown = false; let startX = 0; let scrollStart = 0; let lockDirection = null;
+    const onPointerDown = (e) => {
+      if (window.innerWidth >= 768) return; // only mobile
+      isDown = true; lockDirection = null;
+      startX = e.clientX; scrollStart = scroller.scrollLeft;
+      scroller.classList.add('cursor-grabbing');
+    };
+    const onPointerMove = (e) => {
+      if (!isDown) return;
+      const dx = e.clientX - startX;
+      if (!lockDirection) {
+        if (Math.abs(dx) > 5) lockDirection = 'x';
+      }
+      if (lockDirection === 'x') {
+        scroller.scrollLeft = scrollStart - dx;
+      }
+    };
+    const end = () => { isDown = false; scroller.classList.remove('cursor-grabbing'); };
+    scroller.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    window.addEventListener('pointerup', end);
+    window.addEventListener('pointerleave', end);
+    return () => {
+      scroller.removeEventListener('pointerdown', onPointerDown);
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', end);
+      window.removeEventListener('pointerleave', end);
+    };
+  }, []);
 
   const onKey = useCallback((e) => {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return;
@@ -63,10 +103,10 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
 
   return (
     <div className="w-full flex justify-center mb-1 px-2 sm:px-0 select-none">
-      <div className="relative inline-block">
+      <div className="relative w-full">
         <div
           ref={scrollRef}
-          className="relative flex overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 gap-1 rounded-full px-1 py-0.5 backdrop-blur-2xl bg-white/[0.04] border border-white/10 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_3px_10px_-4px_rgba(0,0,0,0.55),0_2px_24px_-6px_rgba(56,132,255,0.40)] no-scrollbar max-w-[min(100vw-1rem,560px)]"
+          className="relative flex w-auto md:w-full overflow-x-auto md:overflow-x-hidden scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 gap-1 rounded-full px-1 py-0.5 backdrop-blur-2xl bg-white/[0.04] border border-white/10 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_3px_10px_-4px_rgba(0,0,0,0.55),0_2px_24px_-6px_rgba(56,132,255,0.40)] no-scrollbar touch-pan-x select-none"
           role="tablist"
           aria-label="Filtrer les agents"
           onKeyDown={onKey}
@@ -108,7 +148,8 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
               whileTap={{ scale: 0.95 }}
               whileHover={{ y: -1 }}
       ref={el => { if (el) itemRefs.current[opt.value] = el; }}
-              className={`relative z-10 flex flex-none items-center gap-1.5 px-2.5 sm:px-3 h-8 rounded-full text-[11px] sm:text-[12px] font-medium tracking-wide transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 ${active ? 'text-white' : 'text-white/55 hover:text-white'}`}
+              className={`group relative z-10 flex flex-none md:flex-1 md:justify-center items-center gap-1.5 px-2.5 sm:px-3 h-8 rounded-full text-[11px] sm:text-[12px] font-medium tracking-wide transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 scroll-mx-2 ${active ? 'text-white' : 'text-white/55 hover:text-white'}`}
+              style={{ scrollSnapAlign: 'center' }}
             >
               {/* Gradient accent fine ligne top */}
               {active && (
@@ -122,7 +163,7 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
                 <Icon name={opt.icon} active={active} />
                 <span className="inline-block leading-none">{opt.label}</span>
               </span>
-              <span className={`ml-0.5 -mr-0.5 px-1 py-0.5 rounded-full border text-[9px] leading-none font-semibold transition-all ${active ? 'bg-white/25 border-white/15 text-white' : 'bg-white/5 border-white/10 text-white/55 group-hover:text-white'}`}>{counts[opt.value]}</span>
+              <span className={`ml-0.5 -mr-0.5 px-1 py-0.5 rounded-full border text-[9px] leading-none font-semibold transition-all ${active ? 'bg-white/25 border-white/15 text-white shadow-[0_0_0_1px_rgba(255,255,255,0.15)]' : 'bg-white/5 border-white/10 text-white/55 group-hover:text-white'}`}>{counts[opt.value]}</span>
               {/* Effet gradient de fond spécifique actif */}
               {active && (
                 <motion.span
@@ -145,8 +186,10 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
           {/* Bordure interne subtile */}
           <div className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-white/10" />
           {/* Fades gauche/droite */}
-          <div className="pointer-events-none absolute left-0 top-0 h-full w-4 bg-gradient-to-r from-slate-950/70 to-transparent" />
-          <div className="pointer-events-none absolute right-0 top-0 h-full w-4 bg-gradient-to-l from-slate-950/70 to-transparent" />
+          <div className="pointer-events-none absolute left-0 top-0 h-full w-6 bg-gradient-to-r from-slate-950/80 via-slate-950/40 to-transparent md:hidden" />
+          <div className="pointer-events-none absolute right-0 top-0 h-full w-6 bg-gradient-to-l from-slate-950/80 via-slate-950/40 to-transparent md:hidden" />
+          {/* Scroll snap only mobile */}
+          <style>{`@media (max-width: 767px){[role=tablist]{scroll-snap-type:x mandatory;} }`}</style>
         </div>
       </div>
     </div>
