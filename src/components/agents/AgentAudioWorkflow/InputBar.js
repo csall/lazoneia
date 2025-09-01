@@ -354,53 +354,74 @@ export default function InputBar({
                       unoptimized
                     />
                   </span>
-                  <select
-                    id="language-select-inputbar"
-                    value={targetLang}
-                    onChange={handleLanguageChange}
-                    className={`px-2 py-1 rounded-lg border ${
-                      colors.border || "border-indigo-300"
-                    } focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`}
-                    style={{
-                      background: colors.bg || "#6366f1",
-                      color: colors.textColor || "#fff",
-                      borderColor: colors.border || "#6366f1",
-                    }}
-                  >
-                    {languages.map((lang) => (
-                      <option key={lang.value} value={lang.value}>
-                        {lang.value.charAt(0).toUpperCase() +
-                          lang.value.slice(1)}
-                      </option>
-                    ))}
-                  </select>
-                  {/* Sélecteur de ton moderne */}
-                  <motion.select
-                    id="tone-select-inputbar"
-                    value={selectedTone}
-                    onChange={(e) => handleToneSelection(e.target.value)}
-                    className={`px-2 py-1 rounded-lg border ${
-                      colors.border || "border-indigo-300"
-                    } focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`}
-                    style={{
-                      background: colors.bg || "#6366f1",
-                      color: colors.textColor || "#fff",
-                      borderColor: colors.border || "#6366f1",
-                    }}
-                    whileFocus={{
-                      scale: 1.05,
-                      boxShadow: `0 0 0 4px ${colors.bg || "#6366f1"}`,
-                    }}
-                    whileHover={{ scale: 1.04 }}
-                  >
-                    {tones &&
-                      tones.length > 0 &&
-                      tones.map((tone) => (
-                        <option key={tone.value} value={tone.value}>
+                  {/* Sélecteur langue */}
+                  <label htmlFor="language-select-inputbar" className="sr-only">Langue</label>
+                  <div className="relative group ml-1">
+                    <select
+                      id="language-select-inputbar"
+                      value={targetLang}
+                      onChange={handleLanguageChange}
+                      className={`peer relative z-10 px-3 pr-8 h-11 rounded-2xl border ${(colors.border || 'border-indigo-300/60')} appearance-none
+                        bg-white/10 backdrop-blur-xl shadow-[0_4px_24px_-6px_rgba(99,102,241,0.25),0_0_0_1px_rgba(255,255,255,0.10)]
+                        text-white text-[13px] font-semibold tracking-wide
+                        focus:outline-none focus:ring-2 focus:ring-fuchsia-400/60 focus:border-fuchsia-400 transition-all cursor-pointer
+                        active:scale-95 active:ring-4 active:ring-fuchsia-400/30`}
+                      style={{
+                        background: colors.bg ? colors.bg : 'rgba(255,255,255,0.12)',
+                        color: colors.textColor || '#fff',
+                        borderColor: colors.border || undefined,
+                        WebkitTapHighlightColor: 'transparent',
+                        boxShadow: '0 2px 16px rgba(99,102,241,0.13)',
+                        transition: 'box-shadow .25s cubic-bezier(.4,2,.3,1)',
+                      }}
+                    >
+                      {languages.map((lang) => (
+                        <option key={lang.value} value={lang.value} className="bg-white text-gray-900 text-base">
+                          {lang.value.charAt(0).toUpperCase() + lang.value.slice(1)}
+                        </option>
+                      ))}
+                    </select>
+                    {/* Chevron */}
+                    <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-fuchsia-300 peer-focus:text-fuchsia-400 transition-colors" aria-hidden>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    </span>
+                    {/* Animated focus ring */}
+                    <span className="pointer-events-none absolute inset-0 rounded-2xl ring-0 peer-focus:ring-4 peer-focus:ring-fuchsia-400/30 peer-hover:ring-2 peer-hover:ring-indigo-400/30 transition-all duration-300" aria-hidden />
+                  </div>
+                  {/* Sélecteur de ton */}
+                  <label htmlFor="tone-select-inputbar" className="sr-only">Ton</label>
+                  <div className="relative group ml-1">
+                    <motion.select
+                      id="tone-select-inputbar"
+                      value={selectedTone}
+                      onChange={(e) => handleToneSelection(e.target.value)}
+                      className={`peer relative z-10 px-3 pr-8 h-11 rounded-2xl border ${(colors.border || 'border-indigo-300/60')} appearance-none
+                        bg-white/10 backdrop-blur-xl shadow-[0_4px_24px_-6px_rgba(139,92,246,0.22),0_0_0_1px_rgba(255,255,255,0.10)]
+                        text-white text-[13px] font-semibold tracking-wide
+                        focus:outline-none focus:ring-2 focus:ring-fuchsia-400/60 focus:border-fuchsia-400 transition-all cursor-pointer
+                        active:scale-95 active:ring-4 active:ring-fuchsia-400/30`}
+                      style={{
+                        background: colors.bg ? colors.bg : 'rgba(255,255,255,0.12)',
+                        color: colors.textColor || '#fff',
+                        borderColor: colors.border || undefined,
+                        WebkitTapHighlightColor: 'transparent',
+                        boxShadow: '0 2px 16px rgba(139,92,246,0.13)',
+                        transition: 'box-shadow .25s cubic-bezier(.4,2,.3,1)',
+                      }}
+                      whileFocus={{ scale: 1.03 }}
+                      whileHover={{ scale: 1.02 }}
+                    >
+                      {tones && tones.length > 0 && tones.map((tone) => (
+                        <option key={tone.value} value={tone.value} className="bg-white text-gray-900 text-base">
                           {tone.label}
                         </option>
                       ))}
-                  </motion.select>
+                    </motion.select>
+                    <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-fuchsia-300 peer-focus:text-fuchsia-400 transition-colors" aria-hidden>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    </span>
+                    <span className="pointer-events-none absolute inset-0 rounded-2xl ring-0 peer-focus:ring-4 peer-focus:ring-fuchsia-400/30 peer-hover:ring-2 peer-hover:ring-indigo-400/30 transition-all duration-300" aria-hidden />
+                  </div>
                   {/* Bouton supprimer l'historique après le bouton ton */}
                   {messages && messages.length > 0 && (
                     <motion.button
