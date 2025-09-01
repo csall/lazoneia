@@ -143,7 +143,7 @@ const AgentCard = ({
       whileHover={{ scale: 1.02 }}
     >
       <motion.div
-  className={`relative backdrop-blur-xl p-1 sm:p-1 rounded-lg overflow-hidden border ${style.border} group w-full flex flex-col min-h-[130px] sm:min-h-[190px] max-h-[240px]`}
+  className={`relative backdrop-blur-xl px-2 py-1 sm:px-3 sm:py-2 rounded-lg overflow-hidden border ${style.border} group w-full flex flex-col min-h-[130px] sm:min-h-[190px] max-h-[240px]`}
         style={{
           background: `radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0) 70%), 
                        linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.35) 100%)`,
@@ -343,8 +343,8 @@ const AgentCard = ({
               />
             </motion.div>
           </motion.div>
-          {/* Description sous l'image */}
-          <div className="relative overflow-hidden mb-7 pb-3 w-full px-1">
+          {/* Description sous l'image (marge ajoutée) */}
+          <div className="relative overflow-hidden mt-3 mb-7 pb-3 w-full px-1">
             <motion.p
         className={`text-gray-300 text-[11px] group-hover:text-white transition-all duration-500 leading-snug ${
                 isExpanded
