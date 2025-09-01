@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const GoogleMenu = () => {
   const [open, setOpen] = useState(false);
+  const [layoutMode, setLayoutMode] = useState('desktop'); // 'mobile' | 'desktop'
   const triggerRef = useRef(null);
   const containerRef = useRef(null);
   const scrollRef = useRef(null);
@@ -26,6 +27,19 @@ const GoogleMenu = () => {
         </svg>
       ),
       keywords: "home accueil start"
+    },
+    {
+      name: "Agents",
+      link: "/agents",
+      icon: (
+        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="9" cy="8" r="4" />
+          <path d="M17 11a4 4 0 1 0 -4 -4" />
+          <path d="M3 21v-2a6 6 0 0 1 6 -6h0a6 6 0 0 1 6 6v2" />
+          <path d="M17 21v-2a6 6 0 0 0 -3 -5.22" />
+        </svg>
+      ),
+      keywords: "agents bot liste"
     },
     {
       name: "À propos",
@@ -54,6 +68,17 @@ const GoogleMenu = () => {
 
   const filtered = items; // pas de recherche mobile
 
+  // Détection responsive initiale + resize
+  useEffect(() => {
+    const decide = () => {
+      const w = window.innerWidth;
+      setLayoutMode(w < 640 ? 'mobile' : 'desktop');
+    };
+    decide();
+    window.addEventListener('resize', decide);
+    return () => window.removeEventListener('resize', decide);
+  }, []);
+
   // Fermer en cliquant hors du panneau
   useEffect(() => {
     const handler = (e) => {
@@ -76,7 +101,11 @@ const GoogleMenu = () => {
   const updateIndicator = useCallback(() => {
     const scroller = scrollRef.current;
     if (!scroller) return;
-    const activeIndex = filtered.findIndex(it => (it.link === '/' ? pathname === '/' : pathname.startsWith(it.link)));
+    const activeIndex = filtered.findIndex(it => {
+      if (it.link === '/') return pathname === '/';
+      if (it.link === '/agents') return pathname.startsWith('/agent/') || pathname.startsWith('/agents');
+      return pathname.startsWith(it.link);
+    });
     if (activeIndex === -1) {
       setIndicator(prev => (prev.visible ? { ...prev, visible: false } : prev));
       return;
@@ -103,6 +132,10 @@ const GoogleMenu = () => {
     return () => window.removeEventListener('resize', onResize);
   }, [open, updateIndicator]);
 
+  const isAgentPage = pathname.startsWith('/agent/');
+  // Variante verticale forcée sur toutes les pages agent (mobile + desktop)
+  const verticalVariant = isAgentPage; // toujours vertical pour agent
+
   return (
     <div className="relative z-50">
       <motion.button
@@ -128,16 +161,22 @@ const GoogleMenu = () => {
       </motion.button>
 
       <AnimatePresence>
-        {open && (
+        {open && !verticalVariant && (
           <motion.nav
             key="topbar"
             ref={containerRef}
             role="menubar"
-            initial={{ y: -60, opacity: 0 }}
+            initial={{ y: -50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -40, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 26 }}
-            className="fixed top-0 left-0 right-0 z-[60] flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-fuchsia-600/30 via-purple-700/30 to-indigo-700/30 backdrop-blur-xl border-b border-white/15 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.5)] overflow-hidden"
+            exit={{ y: -30, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 320, damping: 28 }}
+            className={[
+              'fixed inset-x-0 z-[60] flex gap-3',
+              layoutMode === 'mobile' ? 'top-0 items-stretch px-2 pt-[max(env(safe-area-inset-top),0.35rem)] pb-2' : 'top-0 items-center px-4 py-2',
+              'bg-gradient-to-r from-fuchsia-600/30 via-purple-700/30 to-indigo-700/30 backdrop-blur-xl border-b border-white/15 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.5)]',
+              isAgentPage && layoutMode==='mobile' ? 'backdrop-saturate-150' : ''
+            ].join(' ')}
+            style={layoutMode==='desktop' ? {justifyContent:'center'}:undefined}
           >
             {/* Animated ambient gradient */}
             <motion.div
@@ -148,7 +187,14 @@ const GoogleMenu = () => {
             />
             {/* Subtle noise */}
             <div className="pointer-events-none absolute inset-0 opacity-[0.08] bg-[url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'><filter id=\'n\'><feTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\'/></filter><rect width=\'100%\' height=\'100%\' filter=\'url(%23n)\' opacity=\'0.4\'/></svg>')]" />
-            <div ref={scrollRef} className="relative flex-1 flex items-center gap-2 overflow-x-auto scrollbar-hide">
+            <div
+              ref={scrollRef}
+              className={[
+                'relative flex items-center gap-2 overflow-x-auto scrollbar-hide',
+                layoutMode==='desktop' ? 'flex-1 max-w-4xl' : 'w-full'
+              ].join(' ')}
+              style={{scrollSnapType:'x proximity'}}
+            >
               {/* Indicateur actif */}
               {indicator.visible && (
                 <motion.div
@@ -165,7 +211,7 @@ const GoogleMenu = () => {
                   href={item.link}
                   onClick={handleSelect}
                   ref={el => { itemRefs.current[idx] = el; }}
-                  className={`relative group flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full transition-colors border backdrop-blur-sm ${ (item.link==='/'? pathname==='/' : pathname.startsWith(item.link)) ? 'bg-white/15 border-fuchsia-400/40 shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_2px_10px_-4px_rgba(0,0,0,0.5)]' : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-fuchsia-400/30'}`}
+                  className={`relative group flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full transition-colors border backdrop-blur-sm scroll-snap-align-start ${ (item.link==='/'? pathname==='/' : pathname.startsWith(item.link)) ? 'bg-white/15 border-fuchsia-400/40 shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_2px_10px_-4px_rgba(0,0,0,0.5)]' : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-fuchsia-400/30'}`}
                 >
                   <motion.span
                     className="w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-br from-fuchsia-500 via-purple-500 to-indigo-500 text-white text-[11px] shadow-inner shadow-black/40"
@@ -189,6 +235,50 @@ const GoogleMenu = () => {
               className="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white/70 hover:text-white"
             >
               ✕
+            </motion.button>
+          </motion.nav>
+        )}
+        {open && verticalVariant && (
+          <motion.nav
+            key="vertical"
+            ref={containerRef}
+            role="menu"
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 40 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+            className="fixed top-20 right-4 z-[70] w-64 max-h-[70vh] flex flex-col gap-2 p-3 rounded-2xl bg-gradient-to-br from-fuchsia-800/75 via-purple-900/70 to-indigo-900/70 backdrop-blur-2xl border border-white/15 shadow-[0_8px_28px_-6px_rgba(0,0,0,0.55)] overflow-hidden"
+          >
+            <div className="absolute inset-0 pointer-events-none opacity-35 mix-blend-screen bg-[radial-gradient(circle_at_20%_15%,rgba(255,255,255,0.18),transparent_60%),radial-gradient(circle_at_85%_25%,rgba(255,0,255,0.18),transparent_60%),radial-gradient(circle_at_50%_85%,rgba(0,180,255,0.18),transparent_60%)]" />
+            <div className="relative overflow-y-auto pr-1 custom-scrollbar flex flex-col gap-1" style={{ scrollbarWidth:'none' }}>
+              {filtered.map((item, idx) => {
+                const active = (item.link === '/' ? pathname === '/' : item.link === '/agents' ? (pathname.startsWith('/agent/') || pathname.startsWith('/agents')) : pathname.startsWith(item.link));
+                return (
+                  <Link
+                    key={item.link}
+                    href={item.link}
+                    onClick={handleSelect}
+                    ref={el => { itemRefs.current[idx] = el; }}
+                    className={`relative group flex items-center gap-3 px-3 py-2 rounded-xl transition-colors border ${active ? 'bg-white/15 border-fuchsia-400/40 shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_2px_10px_-4px_rgba(0,0,0,0.5)]' : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-fuchsia-400/30'}`}
+                    role="menuitem"
+                  >
+                    <span className="w-9 h-9 rounded-full flex items-center justify-center bg-gradient-to-br from-fuchsia-500 via-purple-500 to-indigo-500 text-white text-[11px] shadow-inner shadow-black/40">
+                      {item.icon}
+                    </span>
+                    <span className="text-sm font-medium text-white whitespace-nowrap group-hover:text-fuchsia-100 tracking-wide flex-1">{item.name}</span>
+                    {active && <span className="w-2 h-2 rounded-full bg-fuchsia-400 shadow-[0_0_0_3px_rgba(255,255,255,0.15)]" />}
+                  </Link>
+                );
+              })}
+            </div>
+            <motion.button
+              onClick={() => setOpen(false)}
+              aria-label="Fermer le menu"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.92 }}
+              className="mt-2 w-full flex items-center justify-center gap-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-white/80 hover:text-white py-2 text-sm"
+            >
+              ✕ <span className="text-xs uppercase tracking-wide">Fermer</span>
             </motion.button>
           </motion.nav>
         )}

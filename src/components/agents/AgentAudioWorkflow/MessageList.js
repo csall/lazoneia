@@ -2,9 +2,29 @@ import React from "react";
 import { motion } from "framer-motion";
 
 export default function MessageList({ messages, colors, lastBotMsgRef, resultRef, handleCopy, copiedIdx, deleteMessage }) {
-  // Header et input height fixes (à ajuster si besoin)
-  const headerHeight = 80;
-  const inputHeight = 80;
+  // Hauteurs de base
+  const headerHeight = 80; // hauteur approximative du header
+  const inputHeight = 80;  // hauteur approximative de la barre d'input
+
+  // Offsets dynamiques selon viewport (desktop vs mobile) pour éviter les gros espacements sur desktop
+  const [layoutOffsets, setLayoutOffsets] = React.useState({ top: headerHeight + 50, bottom: inputHeight + 150 });
+
+  React.useEffect(() => {
+    const compute = () => {
+      const w = window.innerWidth;
+      if (w >= 1024) { // desktop
+        // Réduction des marges inutiles pour exploiter la hauteur
+        setLayoutOffsets({ top: headerHeight + 16, bottom: inputHeight + 40 });
+      } else if (w >= 640) { // tablette
+        setLayoutOffsets({ top: headerHeight + 32, bottom: inputHeight + 80 });
+      } else { // mobile
+        setLayoutOffsets({ top: headerHeight + 50, bottom: inputHeight + 150 });
+      }
+    };
+    compute();
+    window.addEventListener('resize', compute);
+    return () => window.removeEventListener('resize', compute);
+  }, []);
 
   // Scroll automatique sur le dernier message du bot
   React.useEffect(() => {
@@ -27,16 +47,16 @@ export default function MessageList({ messages, colors, lastBotMsgRef, resultRef
       className="w-full flex justify-center px-3 sm:px-8"
       style={{
         position: 'absolute',
-        top: headerHeight+50,
-        bottom: inputHeight+150,
+        top: layoutOffsets.top,
+        bottom: layoutOffsets.bottom,
         left: 0,
         right: 0,
         overflowY: 'auto',
         WebkitOverflowScrolling: 'touch',
         overscrollBehavior: 'contain',
         background: 'transparent',
-        scrollbarWidth: 'none', // Firefox
-        msOverflowStyle: 'none', // IE 10+
+        scrollbarWidth: 'none',
+        msOverflowStyle: 'none',
       }}
     >
       {/* Masque le scroll bar visuellement */}
@@ -50,7 +70,7 @@ export default function MessageList({ messages, colors, lastBotMsgRef, resultRef
           }
         }
       `}</style>
-  <div className="w-full max-w-4xl mx-auto">
+  <div className="w-full max-w-3xl lg:max-w-4xl mx-auto">
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-gray-300">
             <svg className="h-10 w-10 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8z" /></svg>
