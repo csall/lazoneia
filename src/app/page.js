@@ -143,13 +143,10 @@ const AgentCard = ({
       whileHover={{ scale: 1.02 }}
     >
       <motion.div
-        className={`relative backdrop-blur-xl p-2 sm:p-4 rounded-xl overflow-hidden border ${style.border} group w-full flex flex-col min-h-[180px] sm:min-h-[360px]`}
+  className={`relative backdrop-blur-xl p-1 sm:p-1 rounded-lg overflow-hidden border ${style.border} group w-full flex flex-col min-h-[130px] sm:min-h-[190px] max-h-[240px]`}
         style={{
-          background: `radial-gradient(circle at 50% 0%, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0) 75%), 
-                       linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%)`,
-          boxShadow: `0 20px 70px -15px rgba(0,0,0,0.7), 
-                      0 0 30px -5px rgba(0,0,0,0.4), 
-                      inset 0 0 15px rgba(255,255,255,0.05)`,
+          background: `radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0) 70%), 
+                       linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.35) 100%)`,
         }}
         whileHover={{
           y: -15,
@@ -224,17 +221,26 @@ const AgentCard = ({
 
         {/* Content */}
         <div className="relative z-10 flex-1 flex flex-col">
-          <div className="flex items-center justify-between mb-2">
-            {/* Tagline badge */}
-            <motion.span
-              className={`text-xs py-1 px-3 ${style.accent} text-white rounded-full self-start opacity-90`}
-              initial={{ x: -20, opacity: 0 }}
-              whileInView={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              {tagline}
-            </motion.span>
-
+          <div className="flex items-center justify-between gap-1 mb-1">
+            {/* Name & Tagline */}
+            <div className="flex items-center gap-2 mx-auto">
+              <motion.h3
+                className={`text-base font-semibold text-white leading-tight ${style.hover} transition-colors duration-300`}
+                initial={{ y: 10, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.1 }}
+              >
+                {name}
+              </motion.h3>
+              <motion.span
+                className={`text-[10px] py-0.5 px-2 ${style.accent} text-white rounded-full opacity-90 leading-none`}
+                initial={{ x: -20, opacity: 0 }}
+                whileInView={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                {tagline}
+              </motion.span>
+            </div>
             {/* Favorite button */}
             <motion.button
               initial={{ scale: 0, opacity: 0 }}
@@ -244,7 +250,7 @@ const AgentCard = ({
                 e.preventDefault();
                 onToggleFavorite(name);
               }}
-              className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-colors"
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-colors"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -253,7 +259,7 @@ const AgentCard = ({
                 viewBox="0 0 24 24"
                 fill={isFavorite ? "currentColor" : "none"}
                 stroke="currentColor"
-                className={`w-5 h-5 ${
+                className={`w-4 h-4 ${
                   isFavorite ? "text-yellow-400" : "text-gray-300"
                 }`}
                 strokeWidth={isFavorite ? "0" : "2"}
@@ -263,19 +269,10 @@ const AgentCard = ({
             </motion.button>
           </div>
 
-          {/* Name */}
-          <motion.h3
-            className={`text-2xl font-bold mb-1 text-white ${style.hover} transition-colors duration-300`}
-            initial={{ y: 10, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.1 }}
-          >
-            {name}
-          </motion.h3>
-
-          {/* Image */}
+          {/* Image centrée style PlayStation */}
+          <div className="w-full flex flex-col items-center my-1">
           <motion.div
-            className="h-32 flex items-center justify-center my-3 relative"
+            className="h-16 flex items-center justify-center relative"
             whileHover={{
               scale: 1.05,
               rotateZ: [0, -2, 2, -2, 0],
@@ -290,7 +287,7 @@ const AgentCard = ({
           >
             {/* Glow behind image */}
             <motion.div
-              className={`absolute w-20 h-20 rounded-full bg-gradient-to-r ${style.glow} blur-2xl opacity-30 group-hover:opacity-50 transition-opacity duration-700`}
+              className={`absolute w-12 h-12 rounded-full bg-gradient-to-r ${style.glow} blur-2xl opacity-25 group-hover:opacity-40 transition-opacity duration-700`}
               animate={{
                 scale: [1, 1.2, 1],
               }}
@@ -314,9 +311,9 @@ const AgentCard = ({
               <Image
                 src={normalizeImagePath(image)}
                 alt={name}
-                width={60}
-                height={60}
-                className="object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.25)] w-[60px] h-[60px] sm:w-[100px] sm:h-[100px]"
+                width={56}
+                height={56}
+                className="object-contain w-[56px] h-[56px] sm:w-[90px] sm:h-[90px]"
                 priority
                 unoptimized
               />
@@ -346,14 +343,13 @@ const AgentCard = ({
               />
             </motion.div>
           </motion.div>
-
-          {/* Description */}
-          <div className="relative overflow-hidden mb-3">
+          {/* Description sous l'image */}
+          <div className="relative overflow-hidden mb-7 pb-3 w-full px-1">
             <motion.p
-              className={`text-gray-300 text-xs group-hover:text-white transition-all duration-500 leading-relaxed ${
+        className={`text-gray-300 text-[11px] group-hover:text-white transition-all duration-500 leading-snug ${
                 isExpanded
                   ? "max-h-[400px]"
-                  : "max-h-[70px] md:group-hover:max-h-[400px]"
+      : "max-h-[60px] md:group-hover:max-h-[400px]"
               }`}
               initial={{ y: 10, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -361,42 +357,8 @@ const AgentCard = ({
             >
               {description}
             </motion.p>
-            {/* Dégradé qui masque le texte tronqué avec flèche intégrée */}
-            <div
-              className={`absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-black/80 to-transparent ${
-                isExpanded ? "opacity-0" : "md:group-hover:opacity-0"
-              } transition-opacity duration-500 flex justify-center items-end pb-1`}
-            >
-              {/* Flèche vers le bas visible uniquement sur mobile et quand non-étendu */}
-              <motion.button
-                onClick={() => setIsExpanded(!isExpanded)}
-                className={`md:hidden w-6 h-6 rounded-full ${
-                  style.accent
-                } flex items-center justify-center shadow-lg opacity-80 ${
-                  isExpanded ? "hidden" : "flex"
-                }`}
-                whileTap={{ scale: 0.9 }}
-                animate={{ y: [0, -2, 0] }}
-                transition={{
-                  y: { repeat: Infinity, duration: 1.5, ease: "easeInOut" },
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-3 w-3 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </motion.button>
-            </div>
+            {/* (Icône voir plus/moins retirée sur mobile) */}
+          </div>
           </div>
 
           {/* Bouton pour réduire la description (visible uniquement sur mobile quand étendu) */}
@@ -431,28 +393,30 @@ const AgentCard = ({
           </div>
 
           {/* Button */}
-          <motion.div
-            className="mt-auto"
+          {/* Séparateur et bouton */}
+          <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between pointer-events-none">
+            <span className="h-px w-full mr-2 bg-white/10 rounded-sm" />
+            <motion.div
+              className="pointer-events-auto"
             initial={{ y: 10, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-          >
-            <Link
-              href={name.split(" ")[0] === "to_be_desactivated" ? "#" : link} // Désactive le lien si Reply
-              className={`block w-full py-2 px-3 text-white font-bold rounded-lg transition-all duration-300 shadow-lg flex items-center justify-center text-xs backdrop-blur-sm
-    ${
-      name.split(" ")[0] === "to_be_desactivated"
-        ? "bg-gray-500 cursor-not-allowed opacity-50 pointer-events-none"
-        : `bg-gradient-to-r ${style.button} hover:shadow-xl`
-    }
-  `}
             >
-              <span>Discuter avec {name.split(" ")[0]}</span>
+              <Link
+              href={name.split(" ")[0] === "to_be_desactivated" ? "#" : link} // Désactive le lien si Reply
+              className={`w-8 h-8 rounded-full transition-all duration-300 flex items-center justify-center text-white text-[10px] backdrop-blur-sm border border-white/10
+                ${
+                  name.split(" ")[0] === "to_be_desactivated"
+                    ? "bg-gray-500 cursor-not-allowed opacity-50 pointer-events-none"
+                    : `bg-gradient-to-r ${style.button}`
+                }`}
+              aria-label={`Ouvrir ${name}`}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 ml-1.5 transition-transform duration-300 group-hover:translate-x-1"
+                className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -464,8 +428,9 @@ const AgentCard = ({
                   d="M14 5l7 7m0 0l-7 7m7-7H3"
                 />
               </svg>
-            </Link>
-          </motion.div>
+              </Link>
+            </motion.div>
+          </div>
         </div>
       </motion.div>
     </motion.div>
@@ -706,19 +671,7 @@ export default function AgentsPage() {
         </div>
 
         {/* Colorful blurred shapes */}
-        <div className="absolute top-20 -right-20 w-96 h-96 bg-indigo-600 rounded-full filter blur-[120px] opacity-20 animate-pulse"></div>
-        <div
-          className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-600 rounded-full filter blur-[100px] opacity-20 animate-pulse"
-          style={{ animationDelay: "1s" }}
-        ></div>
-        <div
-          className="absolute top-1/2 left-1/4 w-40 h-40 bg-purple-500 rounded-full filter blur-[80px] opacity-10 animate-pulse"
-          style={{ animationDelay: "2s" }}
-        ></div>
-        <div
-          className="absolute bottom-1/3 right-1/4 w-60 h-60 bg-blue-500 rounded-full filter blur-[90px] opacity-10 animate-pulse"
-          style={{ animationDelay: "1.5s" }}
-        ></div>
+  {/* Bloc unique d'affichage des agents */}
 
         {/* Decorative elements */}
         <div className="absolute top-20 left-10 opacity-30">
@@ -743,74 +696,27 @@ export default function AgentsPage() {
           </svg>
         </div>
 
-        <motion.div
-          className="relative z-10 container mx-auto"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-          viewport={{ once: true }}
-        >
-          {filter === "favorites" && favorites.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="col-span-full p-10 text-center"
-            >
-              <div className="bg-white/10 backdrop-blur-xl rounded-xl p-8 max-w-md mx-auto">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-16 w-16 mx-auto mb-4 text-yellow-400 opacity-50"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
-                  />
-                </svg>
-                <h3 className="text-xl font-medium mb-2">Aucun favori</h3>
-                <p className="text-blue-200 mb-6">
-                  Cliquez sur l&apos;étoile d&apos;un agent pour l&apos;ajouter
-                  à vos favoris.
-                </p>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setFilter("all")}
-                  className="px-5 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
-                >
-                  Voir tous les agents
-                </motion.button>
-              </div>
-            </motion.div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 p-4 max-w-7xl mx-auto">
-              {agents
-                .filter((agent) => {
-                  if (filter === "all") return true;
-                  if (filter === "favorites")
-                    return favorites.includes(agent.name);
-                  return agent.category === filter;
-                })
-                .map((agent, i) => (
-                  <AgentCard
-                    key={i}
-                    name={agent.name}
-                    description={agent.description}
-                    image={agent.image}
-                    color={agent.color}
-                    link={agent.link}
-                    tagline={agent.tagline}
-                    isFavorite={favorites.includes(agent.name)}
-                    onToggleFavorite={toggleFavorite}
-                  />
-                ))}
-            </div>
-          )}
-        </motion.div>
+  <div className="grid grid-cols-1 gap-2 p-1 max-w-full scrollbar-hide sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 sm:gap-8 sm:p-4 max-w-7xl mx-auto">
+          {agents
+            .filter((agent) => {
+              if (filter === "all") return true;
+              if (filter === "favorites") return favorites.includes(agent.name);
+              return agent.category === filter;
+            })
+            .map((agent, i) => (
+              <AgentCard
+                key={i}
+                name={agent.name}
+                description={agent.description}
+                image={agent.image}
+                color={agent.color}
+                link={agent.link}
+                tagline={agent.tagline}
+                isFavorite={favorites.includes(agent.name)}
+                onToggleFavorite={toggleFavorite}
+              />
+            ))}
+        </div>
       </section>
     </main>
   );
