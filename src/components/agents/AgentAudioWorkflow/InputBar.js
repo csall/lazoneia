@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -43,23 +43,81 @@ export default function InputBar({
     { value: "hindi", label: "HI", flag: "in" },
   ];
   const [isFocused, setIsFocused] = useState(false);
-  const [placeholderAnim, setPlaceholderAnim] = useState(false);
   const inputRef = textareaRef;
+  // Visual viewport / safe-area management (iOS & modern browsers)
+  const [viewportOffset, setViewportOffset] = useState(0); // distance from bottom keyboard -> for future use if needed
+  const [safePadding, setSafePadding] = useState(0);
+
+  // rAF throttled auto-resize
+  const resizeFrame = useRef(null);
+  const autoResize = useCallback(() => {
+    if (!inputRef?.current) return;
+    const el = inputRef.current;
+    el.style.height = 'auto';
+    // Clamp max height for mobile so it doesn't cover the selects
+    const max = 160; // px
+    el.style.height = Math.min(el.scrollHeight, max) + 'px';
+  }, [inputRef]);
+
+  const scheduleResize = useCallback(() => {
+    if (resizeFrame.current) cancelAnimationFrame(resizeFrame.current);
+    resizeFrame.current = requestAnimationFrame(autoResize);
+  }, [autoResize]);
+
+  useEffect(() => {
+    scheduleResize();
+  }, [userInput, scheduleResize]);
+
+  useEffect(() => {
+    const vv = window.visualViewport;
+    const update = () => {
+      if (!vv) return;
+      // When keyboard opens on mobile, visualViewport.height shrinks; we can compute offset if needed
+      const offset = window.innerHeight - vv.height - vv.offsetTop; // area possibly covered by keyboard
+      setViewportOffset(offset > 0 ? offset : 0);
+      // Safe-area inset bottom (iOS notch) — fallback 0
+      try {
+        const inset = parseInt(
+          getComputedStyle(document.documentElement).getPropertyValue(
+            'padding-bottom'
+          ) || '0',
+          10
+        );
+        setSafePadding(inset || 0);
+      } catch {
+        setSafePadding(0);
+      }
+    };
+    if (vv) {
+      vv.addEventListener('resize', update);
+      vv.addEventListener('scroll', update);
+      update();
+    }
+    return () => {
+      if (vv) {
+        vv.removeEventListener('resize', update);
+        vv.removeEventListener('scroll', update);
+      }
+    };
+  }, []);
+
+  useEffect(() => () => resizeFrame.current && cancelAnimationFrame(resizeFrame.current), []);
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="fixed bottom-0 left-0 w-full z-50 flex justify-center items-end px-2 pb-3 sm:px-0 sm:pb-4"
+      className="fixed bottom-0 left-0 w-full z-50 flex justify-center items-end px-2 sm:px-0"
       style={{
-        background: "none",
-        boxShadow: "none",
-        border: "none",
-        minHeight: "72px",
+        background: 'none',
+        boxShadow: 'none',
+        border: 'none',
+        minHeight: '72px',
+        paddingBottom: `calc(env(safe-area-inset-bottom, 0px) + ${Math.max(12, safePadding)}px)`,
       }}
     >
       <AnimatePresence>
         <motion.div
-          className="flex flex-col items-center w-full max-w-full mx-auto rounded-3xl px-2 py-2 sm:max-w-4xl sm:px-4 sm:py-3 bg-white/60 backdrop-blur-lg shadow-2xl border border-indigo-200"
+          className="flex flex-col items-stretch w-full max-w-full mx-auto rounded-3xl px-2 pt-2 pb-2 sm:max-w-4xl sm:px-4 sm:pt-3 sm:pb-3 bg-white/60 backdrop-blur-lg shadow-2xl border border-indigo-200"
           initial={{ y: 40, opacity: 0, scale: 0.98 }}
           animate={{ y: 0, opacity: 1, scale: 1 }}
           exit={{ y: 40, opacity: 0, scale: 0.98 }}
@@ -74,7 +132,7 @@ export default function InputBar({
         >
           {/* Annuler enregistrement */}
           {/* Input animé avec bouton envoyer à l'intérieur */}
-          <div className="relative w-full">
+      <div className="relative w-full">
             <motion.textarea
               ref={inputRef}
               value={
@@ -85,11 +143,8 @@ export default function InputBar({
                   : userInput
               }
               onChange={(e) => {
-                setUserInput(e.target.value);
-                if (inputRef.current) {
-                  inputRef.current.style.height = "auto";
-                  inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
-                }
+        setUserInput(e.target.value);
+        scheduleResize();
               }}
               onKeyDown={(e) => {
                 if (
@@ -101,21 +156,15 @@ export default function InputBar({
                   handleSubmit(e);
                 }
               }}
-              onFocus={() => {
-                setIsFocused(true);
-                setPlaceholderAnim(true);
-              }}
-              onBlur={() => {
-                setIsFocused(false);
-                setPlaceholderAnim(false);
-              }}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
               disabled={
                 isLoading ||
                 micState === "recording" ||
                 micState === "transcribing"
               }
               rows={1}
-              className={`w-full min-h-[44px] max-h-[120px] resize-none rounded-2xl px-4 pr-16 py-3 text-base bg-white/80 text-gray-900 shadow-none border-2 border-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400/80 transition-all duration-300 scrollbar-hide placeholder:italic placeholder:text-indigo-400 placeholder:opacity-80 ${
+              className={`w-full min-h-[44px] max-h-[160px] resize-none rounded-2xl px-4 pr-16 py-3 text-base bg-white/80 text-gray-900 shadow-none border-2 border-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400/80 transition-all duration-300 scrollbar-hide placeholder:italic placeholder:text-indigo-400 placeholder:opacity-80 ${
                 micState === "transcribing" ? "text-center font-semibold" : ""
               } sm:text-lg sm:px-5 sm:pr-20 sm:py-4`}
               style={{
@@ -382,12 +431,11 @@ export default function InputBar({
           {/* Placeholder animé */}
           {/* Placeholder natif utilisé, pas d'animation custom */}
           {/* Boutons micro et envoyer à droite du textarea, dans la barre d'input */}
-          <div className="flex items-center ml-2 w-full">
+          <div className="w-full">
             {micState !== "recording" && (
-              <>
-                <span className="flex items-center gap-1 ml-2 mt-1">
-                  {/* Icône du drapeau à gauche du select natif */}
-                  <span className="flex items-center justify-center w-6 h-6 rounded overflow-hidden border border-indigo-300 bg-white/80 mr-1">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mt-2 px-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="flex items-center justify-center w-7 h-7 rounded overflow-hidden border border-indigo-300 bg-white/80">
                     <Image
                       src={`https://flagcdn.com/${
                         languages.find((l) => l.value === targetLang)?.flag
@@ -397,50 +445,50 @@ export default function InputBar({
                       height={24}
                       className="w-full h-full object-cover"
                       style={{
-                        minWidth: 20,
-                        minHeight: 20,
-                        maxWidth: 24,
-                        maxHeight: 24,
+                        minWidth: 24,
+                        minHeight: 24,
+                        maxWidth: 28,
+                        maxHeight: 28,
                       }}
                       unoptimized
                     />
                   </span>
                   <select
                     id="language-select-inputbar"
+                    aria-label="Langue cible"
                     value={targetLang}
                     onChange={handleLanguageChange}
-                    className={`px-2 py-1 rounded-lg border ${
-                      colors.border || "border-indigo-300"
-                    } focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`}
+                    className={`px-3 py-2 rounded-xl border focus:ring focus:outline-none transition-all text-sm sm:text-xs cursor-pointer font-medium shadow-sm ${
+                      colors.border || 'border-indigo-300'
+                    }`}
                     style={{
-                      background: colors.bg || "#6366f1",
-                      color: colors.textColor || "#fff",
-                      borderColor: colors.border || "#6366f1",
+                      background: colors.bg || '#6366f1',
+                      color: colors.textColor || '#fff',
+                      borderColor: colors.border || '#6366f1',
                     }}
                   >
                     {languages.map((lang) => (
                       <option key={lang.value} value={lang.value}>
-                        {lang.value.charAt(0).toUpperCase() +
-                          lang.value.slice(1)}
+                        {lang.value.charAt(0).toUpperCase() + lang.value.slice(1)}
                       </option>
                     ))}
                   </select>
-                  {/* Sélecteur de ton moderne */}
                   <motion.select
                     id="tone-select-inputbar"
+                    aria-label="Sélection du ton"
                     value={selectedTone}
                     onChange={(e) => handleToneSelection(e.target.value)}
-                    className={`px-2 py-1 rounded-lg border ${
-                      colors.border || "border-indigo-300"
-                    } focus:ring focus:outline-none transition-all text-xs cursor-pointer ml-1`}
+                    className={`px-3 py-2 rounded-xl border focus:ring focus:outline-none transition-all text-sm sm:text-xs cursor-pointer font-medium shadow-sm ${
+                      colors.border || 'border-indigo-300'
+                    }`}
                     style={{
-                      background: colors.bg || "#6366f1",
-                      color: colors.textColor || "#fff",
-                      borderColor: colors.border || "#6366f1",
+                      background: colors.bg || '#6366f1',
+                      color: colors.textColor || '#fff',
+                      borderColor: colors.border || '#6366f1',
                     }}
                     whileFocus={{
                       scale: 1.05,
-                      boxShadow: `0 0 0 4px ${colors.bg || "#6366f1"}`,
+                      boxShadow: `0 0 0 4px ${colors.bg || '#6366f1'}`,
                     }}
                     whileHover={{ scale: 1.04 }}
                   >
@@ -452,29 +500,28 @@ export default function InputBar({
                         </option>
                       ))}
                   </motion.select>
-                  {/* Bouton supprimer l'historique après le bouton ton */}
                   {messages && messages.length > 0 && (
                     <motion.button
                       type="button"
                       onClick={clearHistory}
-                      className="bg-[#948D8D] text-white rounded-full p-2 shadow-xl border border-[#948D8D] flex items-center justify-center transition-all duration-300 cursor-pointer ml-2 backdrop-blur-md"
+                      className="bg-[#948D8D] text-white rounded-full p-2 shadow-xl border border-[#948D8D] flex items-center justify-center transition-all duration-300 cursor-pointer backdrop-blur-md"
                       whileTap={{ scale: 0.94, rotate: 8 }}
                       whileHover={{
                         scale: 1.08,
-                        boxShadow: "0 0 0 4px #948D8D",
+                        boxShadow: '0 0 0 4px #948D8D',
                       }}
                       aria-label="Supprimer tout l'historique"
                       style={{
-                        height: 32,
-                        minHeight: 32,
-                        width: 32,
-                        minWidth: 32,
-                        boxShadow: "0 0 0 2px rgba(148,141,141,0.12)",
+                        height: 36,
+                        minHeight: 36,
+                        width: 36,
+                        minWidth: 36,
+                        boxShadow: '0 0 0 2px rgba(148,141,141,0.12)',
                       }}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4"
+                        className="h-5 w-5"
                         viewBox="0 0 24 24"
                         fill="none"
                       >
@@ -514,9 +561,8 @@ export default function InputBar({
                       </svg>
                     </motion.button>
                   )}
-                </span>
-                <div className="flex-1" />
-              </>
+                </div>
+              </div>
             )}
           </div>
 
