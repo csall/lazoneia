@@ -1,185 +1,170 @@
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useCallback, useMemo, useRef, useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
+// Nouveau filtre moderne : contrôle segmenté animé (sans menu déroulant)
+// Props conservées pour compatibilité.
 export default function FilterBar({ filter, setFilter, agents, favorites }) {
-  const allCount = agents.length;
-  const favoritesCount = agents.filter(a => favorites.includes(a.name)).length;
-  const marketingCount = agents.filter(a => a.category === "marketing").length;
-  const communicationCount = agents.filter(a => a.category === "communication").length;
+  const counts = useMemo(() => ({
+    all: agents.length,
+    favorites: agents.filter(a => favorites.includes(a.name)).length,
+    marketing: agents.filter(a => a.category === "marketing").length,
+    communication: agents.filter(a => a.category === "communication").length,
+  }), [agents, favorites]);
 
-  const options = [
-    { value: "all", label: "Tous", count: allCount, gradient: "from-blue-500 to-purple-600" },
-    { value: "favorites", label: "Favoris", count: favoritesCount, gradient: "from-yellow-400 to-orange-500" },
-    { value: "marketing", label: "Marketing", count: marketingCount, gradient: "from-pink-500 to-rose-600" },
-    { value: "communication", label: "Communication", count: communicationCount, gradient: "from-indigo-500 to-sky-500" },
-  ];
+  const options = useMemo(() => ([
+    { value: "all", label: "Tous", icon: "grid", grad: "from-blue-500 via-indigo-500 to-purple-600" },
+    { value: "favorites", label: "Favoris", icon: "star", grad: "from-amber-400 via-orange-400 to-pink-500" },
+    { value: "marketing", label: "Marketing", icon: "megaphone", grad: "from-fuchsia-500 via-pink-500 to-rose-600" },
+    { value: "communication", label: "Com", icon: "chat", grad: "from-sky-500 via-cyan-400 to-teal-400" },
+  ]), []);
 
-  const [open, setOpen] = useState(false);
-  const containerRef = useRef(null);
-  const selected = options.find(o => o.value === filter) || options[0];
+  const currentIndex = options.findIndex(o => o.value === filter) ?? 0;
 
-  // Fermer au clic extérieur / échappe
+  // Refs & indicator metrics for horizontal scroll version
+  const scrollRef = useRef(null);
+  const trackRef = useRef(null);
+  const itemRefs = useRef({});
+  const [indicator, setIndicator] = useState({ left: 0, width: 0 });
+
+  const updateIndicator = useCallback(() => {
+    const key = filter;
+    const el = itemRefs.current[key];
+    const track = trackRef.current;
+    if (el && track) {
+      setIndicator({ left: el.offsetLeft, width: el.offsetWidth });
+    }
+  }, [filter]);
+
+  // Update indicator on filter change & resize
+  useEffect(() => { updateIndicator(); }, [updateIndicator, options.length]);
   useEffect(() => {
-    const onClick = (e) => {
-      if (open && containerRef.current && !containerRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    const onKey = (e) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("mousedown", onClick);
-    window.addEventListener("keydown", onKey);
-    return () => {
-      window.removeEventListener("mousedown", onClick);
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
+    const fn = () => updateIndicator();
+    window.addEventListener('resize', fn);
+    return () => window.removeEventListener('resize', fn);
+  }, [updateIndicator]);
 
-  // Gestion clavier sur le bouton (flèches pour naviguer)
-  const handleKeyDown = (e) => {
-    if (!["ArrowDown", "ArrowUp", "Enter", " ", "Escape"].includes(e.key)) return;
+  // Scroll active into view smoothly
+  useEffect(() => {
+    const el = itemRefs.current[filter];
+    if (el && scrollRef.current) {
+      el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+  }, [filter]);
+
+  const onKey = useCallback((e) => {
+    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return;
     e.preventDefault();
-    if (e.key === "Escape") return setOpen(false);
-    if (!open && (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === " " || e.key === "Enter")) {
-      return setOpen(true);
-    }
-    if (open && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
-      const idx = options.findIndex(o => o.value === selected.value);
-      const dir = e.key === "ArrowDown" ? 1 : -1;
-      const next = (idx + dir + options.length) % options.length;
-      setFilter(options[next].value);
-    }
-    if (open && (e.key === "Enter" || e.key === " ")) setOpen(false);
-  };
+    if (e.key === "Home") return setFilter(options[0].value);
+    if (e.key === "End") return setFilter(options[options.length - 1].value);
+    const dir = e.key === "ArrowRight" ? 1 : -1;
+    const next = (currentIndex + dir + options.length) % options.length;
+    setFilter(options[next].value);
+  }, [currentIndex, options, setFilter]);
 
   return (
-    <div className="w-full mb-3 sm:mb-5 px-2 sm:px-0 relative z-50 flex justify-center" ref={containerRef}>
-      <motion.div layout className="relative inline-block w-full sm:w-56">
-        {/* Bouton principal (combobox) */}
-        <motion.button
-          type="button"
-          aria-haspopup="listbox"
-          aria-expanded={open}
-          onClick={() => setOpen(o => !o)}
-          onKeyDown={handleKeyDown}
-          className={`group w-full relative cursor-pointer rounded-md border border-white/15 backdrop-blur-xl px-2.5 py-1.5 text-left shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_2px_6px_-2px_rgba(0,0,0,0.5),0_0_12px_-4px_rgba(59,130,246,0.3)] focus:outline-none focus:ring-1 focus:ring-blue-400/40 transition-all overflow-hidden`}
-          whileHover={{ scale: 1.01 }}
-          whileTap={{ scale: 0.98 }}
+    <div className="w-full flex justify-center mb-1 px-2 sm:px-0 select-none">
+      <div className="relative inline-block">
+        <div
+          ref={scrollRef}
+          className="relative flex overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 gap-1 rounded-full px-1 py-0.5 backdrop-blur-2xl bg-white/[0.04] border border-white/10 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_3px_10px_-4px_rgba(0,0,0,0.55),0_2px_24px_-6px_rgba(56,132,255,0.40)] no-scrollbar max-w-[min(100vw-1rem,560px)]"
+          role="tablist"
+          aria-label="Filtrer les agents"
+          onKeyDown={onKey}
+          style={{ scrollBehavior: 'smooth' }}
         >
-        {/* Halo animé */}
+          {/* Track container for indicator positioning */}
+          <div ref={trackRef} className="absolute inset-0 pointer-events-none" />
+        {/* Halo animé global */}
         <motion.div
-          className={`absolute inset-0 rounded-md opacity-40 bg-gradient-to-r ${selected.gradient}`}
-          style={{ filter: "blur(12px)" }}
-          animate={{ opacity: open ? [0.4, 0.8, 0.4] : 0.5 }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        />
-        {/* Overlay verre */}
-        <div className="absolute inset-0 rounded-lg bg-slate-900/60 backdrop-blur-xl border border-white/10" />
-        {/* Brillance diagonale */}
-        <motion.div
-          className="absolute -inset-[1px] rounded-lg opacity-0 group-hover:opacity-25"
-          style={{
-            background: "linear-gradient(120deg, rgba(255,255,255,0.15), rgba(255,255,255,0), rgba(255,255,255,0.15))",
-            mixBlendMode: "overlay"
-          }}
-          animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%" ] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-        />
-        <div className="relative flex items-center justify-between gap-2.5">
-          <div className="flex flex-col leading-tight">
-            <span className="text-[9px] uppercase tracking-wider text-blue-300/70 font-semibold">Filtre</span>
-            <span className="text-[13px] sm:text-sm font-semibold text-white flex items-center gap-1">
-              {selected.label}
-              <span className="px-1 py-0.5 rounded-full text-[9px] bg-white/10 text-blue-100 font-medium border border-white/10">
-                {selected.count}
-              </span>
-            </span>
-          </div>
-          <motion.span
-            className="flex items-center justify-center w-6 h-6 rounded-sm border border-white/15 bg-white/5 backdrop-blur-md"
-            animate={{ rotate: open ? 180 : 0 }}
-            transition={{ type: "spring", stiffness: 200, damping: 18 }}
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-blue-200">
-              <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </motion.span>
-        </div>
-        {/* Surlignage animé bas */}
-        <motion.div
-          className="absolute left-1/2 -translate-x-1/2 bottom-1 h-px bg-gradient-to-r from-transparent via-blue-400/60 to-transparent"
-          initial={{ width: "15%" }}
-          animate={{ width: open ? "60%" : "40%" }}
-          transition={{ type: "spring", stiffness: 140, damping: 18 }}
-        />
-        </motion.button>
+          aria-hidden
+          className="pointer-events-none absolute -inset-6 opacity-40"
+          style={{ filter: "blur(40px)" }}
+          animate={{ opacity: [0.25, 0.55, 0.25], rotate: 360 }}
+          transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+        >
+          <div className="w-full h-full bg-[conic-gradient(at_30%_30%,#3b82f6,#8b5cf6,#ec4899,#f59e0b,#3b82f6)]" />
+        </motion.div>
 
-        {/* Liste déroulante avec animation de hauteur (espace dynamique) */}
-  <AnimatePresence initial={false}>
-          {open && (
-            <motion.ul
-              key="dropdown"
-              role="listbox"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
-              className="mt-1.5 w-full overflow-hidden rounded-xl bg-transparent relative"
+          {/* Indicateur actif glissant (mesuré) */}
+          <motion.div
+            key="indicator"
+            className="absolute z-0 h-8 rounded-full bg-gradient-to-r from-white/14 via-white/10 to-white/5 backdrop-blur-xl border border-white/15 shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_3px_10px_-4px_rgba(0,0,0,0.55)]"
+            initial={false}
+            animate={{ left: indicator.left, width: indicator.width }}
+            transition={{ type: 'spring', stiffness: 340, damping: 32, mass: 0.6 }}
+            style={{ top: 0 }}
+          />
+
+    {options.map((opt, i) => {
+          const active = filter === opt.value;
+          return (
+            <motion.button
+              key={opt.value}
+              role="tab"
+              aria-selected={active}
+              aria-controls={`panel-${opt.value}`}
+              tabIndex={active ? 0 : -1}
+              onClick={() => setFilter(opt.value)}
+              whileTap={{ scale: 0.95 }}
+              whileHover={{ y: -1 }}
+      ref={el => { if (el) itemRefs.current[opt.value] = el; }}
+              className={`relative z-10 flex flex-none items-center gap-1.5 px-2.5 sm:px-3 h-8 rounded-full text-[11px] sm:text-[12px] font-medium tracking-wide transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 ${active ? 'text-white' : 'text-white/55 hover:text-white'}`}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 backdrop-blur-2xl border border-white/10 rounded-2xl" />
-              <div className="absolute inset-0 rounded-2xl opacity-40 bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.35),transparent_60%),radial-gradient(circle_at_70%_70%,rgba(168,85,247,0.35),transparent_60%)]" />
-              {options.map((opt, i) => {
-                const active = opt.value === filter;
-                return (
-                  <motion.li
-                    key={opt.value}
-                    role="option"
-                    aria-selected={active}
-                    onClick={() => { setFilter(opt.value); setOpen(false); }}
-                    tabIndex={-1}
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.03 * i }}
-                    className={`group relative flex items-center justify-between gap-2.5 px-2.5 py-1.5 cursor-pointer select-none text-[12px] ${active ? "text-white" : "text-blue-100/80 hover:text-white"}`}
-                  >
-                    {active && (
-                      <motion.div
-                        layoutId="filter-active-bg"
-                        className={`absolute inset-0 rounded-xl bg-gradient-to-r ${opt.gradient} opacity-60`}
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                      />
-                    )}
-                    <div className="absolute inset-0 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <div className="relative flex flex-col leading-tight">
-                      <span className="text-[12px] font-medium tracking-wide">{opt.label}</span>
-                      <span className="text-[8px] uppercase tracking-wider text-blue-300/70 font-medium">{opt.count} éléments</span>
-                    </div>
-                    <div className="relative flex items-center gap-2">
-                      {active && (
-                        <motion.span
-                          layoutId="filter-check"
-                          className="flex items-center justify-center w-4.5 h-4.5 rounded bg-white/20 border border-white/20"
-                          transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                        >
-                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-white">
-                            <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                        </motion.span>
-                      )}
-                      {!active && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-400/40 group-hover:bg-blue-300 transition-colors" />
-                      )}
-                      <span className="px-1 py-0.5 rounded-full text-[9px] bg-white/10 text-blue-100 font-medium border border-white/10">{opt.count}</span>
-                    </div>
-                  </motion.li>
-                );
-              })}
-              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-2/3 h-12 bg-gradient-to-t from-blue-500/30 to-transparent blur-2xl pointer-events-none" />
-            </motion.ul>
-          )}
-        </AnimatePresence>
-      </motion.div>
+              {/* Gradient accent fine ligne top */}
+              {active && (
+                <motion.span
+                  layoutId={`accent-${opt.value}`}
+                  className="absolute left-2 right-2 top-[3px] h-[2px] rounded-full bg-gradient-to-r from-white/70 via-white to-white/70"
+                  transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+                />
+              )}
+              <span className="flex items-center gap-1.5">
+                <Icon name={opt.icon} active={active} />
+                <span className="inline-block leading-none">{opt.label}</span>
+              </span>
+              <span className={`ml-0.5 -mr-0.5 px-1 py-0.5 rounded-full border text-[9px] leading-none font-semibold transition-all ${active ? 'bg-white/25 border-white/15 text-white' : 'bg-white/5 border-white/10 text-white/55 group-hover:text-white'}`}>{counts[opt.value]}</span>
+              {/* Effet gradient de fond spécifique actif */}
+              {active && (
+                <motion.span
+                  aria-hidden
+                  className={`pointer-events-none absolute inset-0 rounded-full overflow-hidden`}
+                >
+                  <motion.span
+                    className={`absolute inset-0 opacity-60 bg-gradient-to-r ${opt.grad}`}
+                    style={{ mixBlendMode: 'overlay' }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.65 }}
+                    transition={{ duration: 0.4 }}
+                  />
+                </motion.span>
+              )}
+            </motion.button>
+          );
+        })}
+
+          {/* Bordure interne subtile */}
+          <div className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-white/10" />
+          {/* Fades gauche/droite */}
+          <div className="pointer-events-none absolute left-0 top-0 h-full w-4 bg-gradient-to-r from-slate-950/70 to-transparent" />
+          <div className="pointer-events-none absolute right-0 top-0 h-full w-4 bg-gradient-to-l from-slate-950/70 to-transparent" />
+        </div>
+      </div>
     </div>
   );
+}
+
+function Icon({ name, active }) {
+  const base = "w-4 h-4 transition-colors";
+  const common = active ? "text-white drop-shadow-[0_0_4px_rgba(255,255,255,0.55)]" : "text-white/55 group-hover:text-white";
+  switch (name) {
+    case 'star':
+      return <svg className={`${base} ${common}`} viewBox="0 0 24 24" fill="currentColor"><path d="M11.48 3.5a.6.6 0 011.04 0l2.1 5.07c.07.17.23.29.41.31l5.49.44c.56.04.79.74.36 1.08l-4.18 3.58a.6.6 0 00-.19.6l1.28 5.31a.6.6 0 01-.88.64l-4.66-2.85a.6.6 0 00-.62 0l-4.66 2.85a.6.6 0 01-.88-.64l1.28-5.31a.6.6 0 00-.19-.6L2.12 10.4a.6.6 0 01.36-1.08l5.49-.44c.18-.02.34-.14.41-.31L11.48 3.5z"/></svg>;
+    case 'megaphone':
+      return <svg className={`${base} ${common}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 11v2a1 1 0 001 1h3l6 4V6L7 10H4a1 1 0 00-1 1z" strokeLinecap="round" strokeLinejoin="round"/><path d="M16 6v12" strokeLinecap="round"/></svg>;
+    case 'chat':
+      return <svg className={`${base} ${common}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.5 8.5 0 018 8v.5z" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+    case 'grid':
+    default:
+      return <svg className={`${base} ${common}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>;
+  }
 }
