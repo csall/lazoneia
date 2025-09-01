@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -46,6 +46,21 @@ export default function InputBar({
   ];
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = textareaRef;
+  const inputBarRef = useRef(null);
+  const [inputHeight, setInputHeight] = useState(100);
+
+  useEffect(() => {
+    const measure = () => {
+      if (inputBarRef.current) {
+        const rect = inputBarRef.current.getBoundingClientRect();
+        setInputHeight(rect.height || 100);
+      }
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, []);
+  const suppressSendRef = useRef(false); // empêche envoi auto après changement langue/ton
 
   // Ouvre/ferme les panneaux en gérant le blur pour éviter le "premier tap" perdu sur mobile quand le clavier est ouvert
   const togglePanelSafely = (panel) => {
@@ -71,7 +86,13 @@ export default function InputBar({
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={(e) => {
+        if (suppressSendRef.current) {
+          e.preventDefault();
+          return;
+        }
+        handleSubmit(e);
+      }}
       className="fixed bottom-0 left-0 w-full z-50 flex justify-center items-end px-2 pb-3 sm:px-0 sm:pb-4"
       style={{
         background: "none",
@@ -82,6 +103,7 @@ export default function InputBar({
     >
       <AnimatePresence>
         <motion.div
+          ref={inputBarRef}
           className="flex flex-col items-center w-full max-w-full mx-auto rounded-3xl px-2 py-2 sm:max-w-4xl sm:px-4 sm:py-3 bg-white/60 backdrop-blur-lg shadow-2xl border border-indigo-200"
           initial={{ y: 40, opacity: 0, scale: 0.98 }}
           animate={{ y: 0, opacity: 1, scale: 1 }}
@@ -522,82 +544,94 @@ export default function InputBar({
               </>
             )}
           </div>
-          {/* Panels */}
+          {/* Modales centrées langue / ton */}
           <AnimatePresence>
-            {showLangPanel && (
+            {(showLangPanel || showTonePanel) && (
               <motion.div
-                key="lang-panel"
-                initial={{ y: 40, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 40, opacity: 0 }}
-                transition={{ type: 'spring', stiffness: 260, damping: 24 }}
-                className="fixed left-0 right-0 bottom-[72px] sm:bottom-[80px] z-[60] px-4"
+                key="overlay"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[70] p-4 bg-black/30 backdrop-blur-sm"
+                onClick={() => { setShowLangPanel(false); setShowTonePanel(false); }}
+                aria-modal="true"
+                role="dialog"
               >
-                <div className="max-h-60 overflow-y-auto rounded-2xl border border-indigo-300 bg-white/95 backdrop-blur shadow-xl p-3 grid grid-cols-3 gap-2 text-sm">
-                  {languages.map((lang) => (
+                <motion.div
+                  onClick={(e) => e.stopPropagation()}
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 20, opacity: 0 }}
+                  transition={{ type: 'spring', stiffness: 280, damping: 26 }}
+                  style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', bottom: inputHeight + 16 }}
+                  className="w-full max-w-md max-h-[60vh] overflow-hidden rounded-3xl shadow-2xl border bg-white/95 backdrop-blur-lg border-indigo-200 flex flex-col"
+                >
+                  <div className="flex items-center justify-between px-5 py-4 border-b bg-gradient-to-r from-indigo-500/20 to-violet-500/20">
+                    <h2 className="text-sm font-semibold text-indigo-700 tracking-wide uppercase">
+                      {showLangPanel ? 'Choisir une langue' : 'Choisir un ton'}
+                    </h2>
                     <button
-                      key={lang.value}
-                      onClick={() => {
-                        handleLanguageChange({ target: { value: lang.value } });
-                        setShowLangPanel(false);
-                      }}
-                      className={`flex items-center gap-2 px-2 py-1.5 rounded-xl border transition text-indigo-700 hover:bg-indigo-50 active:scale-95 ${
-                        lang.value === targetLang ? 'bg-indigo-100 border-indigo-400' : 'bg-white/60 border-indigo-200'
-                      }`}
+                      type="button"
+                      onClick={() => { setShowLangPanel(false); setShowTonePanel(false); }}
+                      className="p-1.5 rounded-full hover:bg-indigo-100 text-indigo-600 transition"
+                      aria-label="Fermer"
                     >
-                      <Image
-                        src={`https://flagcdn.com/${lang.flag}.svg`}
-                        alt={lang.label}
-                        width={20}
-                        height={20}
-                        className="rounded object-cover"
-                        unoptimized
-                      />
-                      <span className="truncate">{lang.label}</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-            {showTonePanel && (
-              <motion.div
-                key="tone-panel"
-                initial={{ y: 40, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 40, opacity: 0 }}
-                transition={{ type: 'spring', stiffness: 260, damping: 24 }}
-                className="fixed left-0 right-0 bottom-[72px] sm:bottom-[80px] z-[60] px-4"
-              >
-                <div className="max-h-56 overflow-y-auto rounded-2xl border border-violet-300 bg-white/95 backdrop-blur shadow-xl p-3 flex flex-col gap-2 text-sm">
-                  {tones?.map((tone) => (
-                    <button
-                      key={tone.value}
-                      onClick={() => {
-                        handleToneSelection(tone.value);
-                        setShowTonePanel(false);
-                      }}
-                      className={`flex items-center justify-between px-3 py-2 rounded-xl border transition text-violet-700 hover:bg-violet-50 active:scale-95 ${
-                        tone.value === selectedTone ? 'bg-violet-100 border-violet-400' : 'bg-white/60 border-violet-200'
-                      }`}
-                    >
-                      <span className="truncate">{tone.label}</span>
-                      {tone.value === selectedTone && (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
-                    </button>
-                  ))}
-                </div>
+                  </div>
+                  <div className="p-4 overflow-y-auto custom-scrollbar">
+                    {showLangPanel && (
+                      <div className="grid grid-cols-3 gap-3">
+                        {languages.map((lang) => (
+                          <button
+                            key={lang.value}
+                            onClick={() => {
+                              suppressSendRef.current = true;
+                              setTimeout(() => (suppressSendRef.current = false), 350);
+                              handleLanguageChange({ target: { value: lang.value } });
+                              setShowLangPanel(false);
+                            }}
+                            className={`group flex flex-col items-center gap-1 px-2 py-2 rounded-xl border text-xs font-medium transition ${lang.value === targetLang ? 'bg-indigo-600 text-white border-indigo-600 shadow' : 'bg-white/60 border-indigo-200 text-indigo-700 hover:bg-indigo-100'}`}
+                          >
+                            <Image
+                              src={`https://flagcdn.com/${lang.flag}.svg`}
+                              alt={lang.label}
+                              width={32}
+                              height={32}
+                              className="rounded object-cover w-8 h-8"
+                              unoptimized
+                            />
+                            <span className="truncate w-full text-center">{lang.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    {showTonePanel && (
+                      <div className="flex flex-col gap-2">
+                        {tones?.map((tone) => (
+                          <button
+                            key={tone.value}
+                            onClick={() => {
+                              suppressSendRef.current = true;
+                              setTimeout(() => (suppressSendRef.current = false), 350);
+                              handleToneSelection(tone.value);
+                              setShowTonePanel(false);
+                            }}
+                            className={`flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-medium transition ${tone.value === selectedTone ? 'bg-violet-600 text-white border-violet-600 shadow' : 'bg-white/70 border-violet-200 text-violet-700 hover:bg-violet-100'}`}
+                          >
+                            <span className="truncate pr-4">{tone.label}</span>
+                            {tone.value === selectedTone && (
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
               </motion.div>
             )}
           </AnimatePresence>
-          {(showLangPanel || showTonePanel) && (
-            <div
-              onClick={() => { setShowLangPanel(false); setShowTonePanel(false); }}
-              className="fixed inset-0 z-[55] bg-black/10 backdrop-blur-[1px]"
-            />
-          )}
 
           {/* Bouton envoyer animé : affiché uniquement si pas d'enregistrement */}
           {/* (supprimé le doublon, le bouton est dans la barre d'input) */}
