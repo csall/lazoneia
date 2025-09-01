@@ -207,6 +207,9 @@ const GoogleMenu = () => {
                   <span className="text-xs font-medium text-white whitespace-nowrap group-hover:text-fuchsia-100 tracking-wide">
                     {item.name}
                   </span>
+
+
+                  
                 </Link>
               ))}
             </div>
