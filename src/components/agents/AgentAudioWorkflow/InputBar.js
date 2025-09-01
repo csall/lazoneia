@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -24,13 +24,13 @@ export default function InputBar({
   // Panels (bottom sheets) for custom selection to avoid native select blocking input on mobile
   const [showLangPanel, setShowLangPanel] = useState(false);
   const [showTonePanel, setShowTonePanel] = useState(false);
-  const languages = [
+  // Liste brute (sans doublons intentionnels). On déduplique pour éviter les clés React identiques.
+  const languagesRaw = useMemo(() => ([
     { value: "français", label: "FR", flag: "fr" },
     { value: "anglais", label: "EN", flag: "gb" },
     { value: "allemand", label: "DE", flag: "de" },
     { value: "espagnol", label: "ES", flag: "es" },
     { value: "wolof", label: "WO", flag: "sn" },
-    { value: "allemand", label: "DE", flag: "de" },
     { value: "italien", label: "IT", flag: "it" },
     { value: "portuguais", label: "PT", flag: "pt" },
     { value: "arabe", label: "AR", flag: "sa" },
@@ -41,7 +41,14 @@ export default function InputBar({
     { value: "suédois", label: "SV", flag: "se" },
     { value: "grec", label: "EL", flag: "gr" },
     { value: "coréen", label: "KO", flag: "kr" },
-  ];
+  ]), []);
+  const languages = useMemo(() => {
+    const map = new Map();
+    for (const lang of languagesRaw) {
+      if (!map.has(lang.value)) map.set(lang.value, lang);
+    }
+    return Array.from(map.values());
+  }, [languagesRaw]);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = textareaRef;
   const inputBarRef = useRef(null);
