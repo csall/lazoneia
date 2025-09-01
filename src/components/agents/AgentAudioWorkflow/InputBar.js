@@ -49,6 +49,24 @@ export default function InputBar({
     }
     return Array.from(map.values());
   }, [languagesRaw]);
+  // Ajout d'un identifiant de clé stable
+  const languagesSafe = useMemo(() => {
+    return languages.map((l, idx) => {
+      const base = (l.value || '').toString().trim().replace(/\s+/g,'-') || idx;
+      return { ...l, _kid: `lang-${idx}-${base}` };
+    });
+  }, [languages]);
+  // Déduplication préventive des tons (évite clés dupliquées ou vides)
+  const tonesSafe = useMemo(() => {
+    if (!Array.isArray(tones)) return [];
+    const seen = new Set();
+    return tones.filter((t) => {
+      const val = (t && t.value) ? String(t.value) : '';
+      if (seen.has(val)) return false;
+      seen.add(val);
+      return true;
+    });
+  }, [tones]);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = textareaRef;
   const inputBarRef = useRef(null);
@@ -170,7 +188,7 @@ export default function InputBar({
       `}</style>
       <AnimatePresence>
         {/* Fond décoratif sous la barre */}
-        <div aria-hidden="true" className="input-bg-floor">
+        <div key="bg-floor" aria-hidden="true" className="input-bg-floor">
           <div className="input-bg-noise" />
         </div>
   <motion.div
@@ -410,7 +428,7 @@ export default function InputBar({
                 >
                   {micAmplitude.map((amp, i) => (
                     <motion.div
-                      key={i}
+                      key={`amp-${i}`}
                       initial={{ height: 8 }}
                       animate={{ height: amp }}
                       transition={{
@@ -541,60 +559,24 @@ export default function InputBar({
                     <motion.button
                       type="button"
                       onClick={clearHistory}
-                      className="bg-[#948D8D] text-white rounded-full p-2 shadow-xl border border-[#948D8D] flex items-center justify-center transition-all duration-300 cursor-pointer ml-2 backdrop-blur-md"
-                      whileTap={{ scale: 0.94, rotate: 8 }}
-                      whileHover={{
-                        scale: 1.08,
-                        boxShadow: "0 0 0 4px #948D8D",
-                      }}
+                      className="neutral-btn accent-outline rounded-lg p-2 flex items-center justify-center w-9 h-9 transition active:scale-95 hover:shadow ml-2"
+                      whileTap={{ scale: 0.92 }}
+                      whileHover={{ scale: 1.05 }}
                       aria-label="Supprimer tout l'historique"
-                      style={{
-                        height: 32,
-                        minHeight: 32,
-                        width: 32,
-                        minWidth: 32,
-                        boxShadow: "0 0 0 2px rgba(148,141,141,0.12)",
-                      }}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4"
+                        className="h-5 w-5 text-[var(--text-dim)]"
                         viewBox="0 0 24 24"
                         fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
-                        <rect
-                          x="7"
-                          y="9"
-                          width="10"
-                          height="9"
-                          rx="2"
-                          fill="#fff"
-                          fillOpacity="0.9"
-                        />
-                        <rect
-                          x="9"
-                          y="4"
-                          width="6"
-                          height="2"
-                          rx="1"
-                          fill="#fff"
-                          fillOpacity="1"
-                        />
-                        <path
-                          d="M10 12v4M14 12v4"
-                          stroke="#fff"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                        />
-                        <rect
-                          x="5"
-                          y="7"
-                          width="14"
-                          height="2"
-                          rx="1"
-                          fill="#fff"
-                          fillOpacity="0.8"
-                        />
+                        <path d="M9 4h6m-7 4h8m-9 0l1 10a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-10" />
+                        <path d="M10 11v5M14 11v5" />
+                        <path d="M5 8h14" />
                       </svg>
                     </motion.button>
                   )}
@@ -604,10 +586,10 @@ export default function InputBar({
             )}
           </div>
           {/* Modales centrées langue / ton */}
-          <AnimatePresence>
+      <AnimatePresence>
             {(showLangPanel || showTonePanel) && (
               <motion.div
-                key="overlay"
+        key={showLangPanel ? 'overlay-lang' : 'overlay-tone'}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -641,9 +623,9 @@ export default function InputBar({
                   <div className="p-3 sm:p-4 overflow-y-auto list-scroll-smooth">
                     {showLangPanel && (
           <div className="grid grid-cols-4 sm:grid-cols-3 gap-2 sm:gap-3">
-                        {languages.map((lang, idx) => (
+            {languagesSafe.map((lang, idx) => (
                           <button
-                            key={`lang-${lang.value || idx}`}
+              key={lang._kid}
                             onClick={() => {
                               suppressSendRef.current = true;
                               setTimeout(() => (suppressSendRef.current = false), 350);
@@ -667,7 +649,7 @@ export default function InputBar({
                     )}
                     {showTonePanel && (
           <div className="flex flex-col gap-1.5 sm:gap-2">
-                        {tones?.map((tone, idx) => (
+                        {tonesSafe.map((tone, idx) => (
                           <button
                             key={`tone-${tone.value || idx}`}
                             onClick={() => {
