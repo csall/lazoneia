@@ -139,8 +139,9 @@ export default function InputBar({
         .neutral-btn:hover{background:var(--bg-btn-hover);color:var(--text);} 
         .neutral-btn:active{background:var(--bg-btn-active);} 
         .accent-outline:focus-visible{box-shadow:0 0 0 3px var(--acc-soft),0 0 0 4px var(--acc);outline:none;}
-        .send-active{background:var(--acc)!important;border-color:var(--acc)!important;color:#fff!important;}
-        .send-active:hover{background:var(--acc-strong)!important;}
+  /* Boutons micro / envoyer en gris (demande) */
+  .send-active{background:#6b7280!important;border-color:#6b7280!important;color:#fff!important;}
+  .send-active:hover{background:#4b5563!important;}
         .send-disabled{background:var(--bg-btn)!important;border-color:var(--border)!important;opacity:.55;color:var(--text-dim);} 
         .textarea-base{background:rgba(255,255,255,0.9);border:1px solid var(--border);color:var(--text);} .textarea-base:focus{border-color:var(--border-strong);} 
         .placeholder-dim::placeholder{color:var(--text-dim);} 
@@ -150,7 +151,7 @@ export default function InputBar({
         .panel-item-active{background:var(--acc);color:#fff!important;border:1px solid var(--acc);} 
         .list-scroll-smooth{scrollbar-width:thin;scrollbar-color:var(--border) transparent;} .list-scroll-smooth::-webkit-scrollbar{width:6px;} .list-scroll-smooth::-webkit-scrollbar-thumb{background:var(--border);border-radius:20px;} .list-scroll-smooth::-webkit-scrollbar-track{background:transparent;} 
         @keyframes pulseRing {0%{transform:scale(.9);opacity:.5}50%{transform:scale(1.05);opacity:0}100%{transform:scale(1.15);opacity:0}} 
-        .mic-ready:before{content:'';position:absolute;inset:0;border-radius:9999px;background:radial-gradient(circle,var(--acc) 0%,rgba(14,165,233,0) 70%);opacity:0;} 
+  .mic-ready:before{content:'';position:absolute;inset:0;border-radius:9999px;background:radial-gradient(circle,#6b7280 0%,rgba(107,114,128,0) 70%);opacity:0;} 
         .mic-ready[data-active="true"]:before{animation:pulseRing 2s ease-out infinite;} 
         ${reducedMotion ? '.fancy-btn:after,.mic-ready[data-active="true"]:before{animation:none !important;}' : ''}
         /* Fond bas: radial + bruit léger */
@@ -259,57 +260,28 @@ export default function InputBar({
                     type="button"
                     onClick={handleMicClick}
                     disabled={isLoading}
-                    className="fancy-btn mic-ready rounded-full p-3 shadow border flex items-center justify-center transition-all duration-150 cursor-pointer accent-outline send-active hover:brightness-110"
+                    className="fancy-btn mic-ready rounded-full p-3.5 shadow border flex items-center justify-center transition-all duration-150 cursor-pointer accent-outline send-active hover:brightness-110 border-[#6b7280]"
                     data-active={!isLoading}
                     whileTap={{ scale: 0.9 }}
                     aria-label="Démarrer l'enregistrement"
                     style={{
-                      width: 36,
-                      height: 36,
-                      minWidth: 28,
-                      minHeight: 28,
-                      boxShadow: "0 0 0 3px var(--acc-soft)",
+                      width: 44,
+                      height: 44,
+                      minWidth: 36,
+                      minHeight: 36,
+                      boxShadow: "0 0 0 3px rgba(107,114,128,0.35)",
                     }}
                   >
-                    {/* Icône micro Material Filled, arrondie, glassy */}
+                    {/* Icône micro style ChatGPT (pleine) taille réduite */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
-                      className="h-7 w-7 drop-shadow-lg"
+                      className="h-8 w-8"
+                      aria-hidden="true"
+                      fill="#fff"
                     >
-                      <rect
-                        x="9"
-                        y="4"
-                        width="6"
-                        height="12"
-                        rx="3"
-                        fill="#fff"
-                      />
-                      <path
-                        d="M12 18c2.21 0 4-1.79 4-4V8a4 4 0 10-8 0v6c0 2.21 1.79 4 4 4z"
-                        fill="#fff"
-                      />
-                      <path
-                        d="M19 11v2a7 7 0 01-14 0v-2"
-                        stroke="#fff"
-                        strokeWidth="2"
-                        fill="none"
-                      />
-                      <path
-                        d="M12 22v-2"
-                        stroke="#fff"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                      <circle cx="12" cy="22" r="1.5" fill="#fff" />
-                      <ellipse
-                        cx="12"
-                        cy="8"
-                        rx="2.5"
-                        ry="1.2"
-                        fill="#fff"
-                        fillOpacity="0.5"
-                      />
+                      <path d="M12 15a3 3 0 003-3V7a3 3 0 10-6 0v5a3 3 0 003 3z" />
+                      <path d="M5 11a1 1 0 012 0 5 5 0 0010 0 1 1 0 012 0 7 7 0 01-6 6.92V20h3a1 1 0 010 2H8a1 1 0 010-2h3v-2.08A7 7 0 015 11z" />
                     </svg>
                   </motion.button>
                 )}
@@ -317,13 +289,13 @@ export default function InputBar({
                   <motion.button
                     type="submit"
                     disabled={isLoading}
-                    className={`fancy-btn font-semibold p-3 rounded-full shadow border flex items-center justify-center text-xl transition-all duration-150 cursor-pointer align-middle accent-outline ${userInput.trim().length>0 ? 'send-active' : 'send-disabled'}`}
+                    className={`fancy-btn font-semibold p-3.5 rounded-full shadow border flex items-center justify-center text-xl transition-all duration-150 cursor-pointer align-middle accent-outline ${userInput.trim().length>0 ? 'send-active' : 'send-disabled'}`}
                     whileTap={{ scale: 0.9 }}
                     style={{
-                      width: 36,
-                      height: 36,
-                      minWidth: 28,
-                      minHeight: 28,
+                      width: 44,
+                      height: 44,
+                      minWidth: 36,
+                      minHeight: 36,
                       boxShadow: "0 0 0 3px rgba(120,120,255,0.08)",
                     }}
                   >
@@ -518,7 +490,7 @@ export default function InputBar({
                     aria-haspopup="dialog"
                     aria-expanded={showLangPanel}
                     onClick={openLangPanel}
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg neutral-btn text-[11px] font-medium active:scale-95 transition shadow-sm hover:shadow accent-outline"
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md neutral-btn text-[10px] font-medium active:scale-95 transition shadow-sm hover:shadow accent-outline"
                   >
                     <span className="flex items-center justify-center w-5 h-5 rounded overflow-hidden bg-white/20">
                       <Image
@@ -532,7 +504,7 @@ export default function InputBar({
                         unoptimized
                       />
                     </span>
-                    <span className="uppercase tracking-wide">
+                    <span className="uppercase tracking-wide leading-none">
                       {languages.find((l) => l.value === targetLang)?.label || 'LANG'}
                     </span>
                     <svg
@@ -669,9 +641,9 @@ export default function InputBar({
                   <div className="p-3 sm:p-4 overflow-y-auto list-scroll-smooth">
                     {showLangPanel && (
           <div className="grid grid-cols-4 sm:grid-cols-3 gap-2 sm:gap-3">
-                        {languages.map((lang) => (
+                        {languages.map((lang, idx) => (
                           <button
-                            key={lang.value}
+                            key={`lang-${lang.value || idx}`}
                             onClick={() => {
                               suppressSendRef.current = true;
                               setTimeout(() => (suppressSendRef.current = false), 350);
@@ -695,9 +667,9 @@ export default function InputBar({
                     )}
                     {showTonePanel && (
           <div className="flex flex-col gap-1.5 sm:gap-2">
-                        {tones?.map((tone) => (
+                        {tones?.map((tone, idx) => (
                           <button
-                            key={tone.value}
+                            key={`tone-${tone.value || idx}`}
                             onClick={() => {
                               suppressSendRef.current = true;
                               setTimeout(() => (suppressSendRef.current = false), 350);
