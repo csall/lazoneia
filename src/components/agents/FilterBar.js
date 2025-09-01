@@ -106,7 +106,7 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
       <div className="relative w-full">
         <div
           ref={scrollRef}
-          className="relative flex w-auto md:w-full overflow-x-auto md:overflow-x-hidden scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 gap-1 rounded-full px-1 py-0.5 backdrop-blur-2xl bg-white/[0.04] border border-white/10 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_3px_10px_-4px_rgba(0,0,0,0.55),0_2px_24px_-6px_rgba(56,132,255,0.40)] no-scrollbar touch-pan-x select-none"
+          className="relative flex w-auto md:w-full overflow-x-auto md:overflow-x-hidden scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 gap-1 rounded-full px-1 py-0.5 backdrop-blur-2xl bg-white/15 md:bg-white/[0.04] border border-white/10 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_3px_10px_-4px_rgba(0,0,0,0.45),0_2px_24px_-6px_rgba(56,132,255,0.35)] no-scrollbar touch-pan-x select-none"
           role="tablist"
           aria-label="Filtrer les agents"
           onKeyDown={onKey}
@@ -186,8 +186,8 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
           {/* Bordure interne subtile */}
           <div className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-white/10" />
           {/* Fades gauche/droite */}
-          <div className="pointer-events-none absolute left-0 top-0 h-full w-6 bg-gradient-to-r from-slate-950/80 via-slate-950/40 to-transparent md:hidden" />
-          <div className="pointer-events-none absolute right-0 top-0 h-full w-6 bg-gradient-to-l from-slate-950/80 via-slate-950/40 to-transparent md:hidden" />
+          <div className="pointer-events-none absolute left-0 top-0 h-full w-6 bg-gradient-to-r from-white/60 via-white/20 to-transparent md:hidden" />
+          <div className="pointer-events-none absolute right-0 top-0 h-full w-6 bg-gradient-to-l from-white/60 via-white/20 to-transparent md:hidden" />
           {/* Scroll snap only mobile */}
           <style>{`@media (max-width: 767px){[role=tablist]{scroll-snap-type:x mandatory;} }`}</style>
         </div>
