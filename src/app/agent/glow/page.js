@@ -3,8 +3,10 @@
 
 import AgentAudioWorkflow from "@/components/agents/AgentAudioWorkflow";
 import agents from "@/config/agents";
+import { useTheme } from "@/components/theme/ThemeProvider";
 
 export default function GlowPage() {
+  const { theme } = useTheme();
   const agent = agents.find(a => a.name === "Glow");
   return (
     <AgentAudioWorkflow
@@ -16,6 +18,7 @@ export default function GlowPage() {
       colors={agent.colors}
       tones={agent.tones}
       tagline={agent.tagline}
+      theme={theme}
     />
   );
 }

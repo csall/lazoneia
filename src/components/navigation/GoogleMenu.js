@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import { useTheme } from "@/components/theme/ThemeProvider";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -119,8 +120,9 @@ const GoogleMenu = () => {
   // Variante verticale forcée sur toutes les pages agent (mobile + desktop)
   const verticalVariant = isAgentPage; // toujours vertical pour agent
 
+  const { theme, toggle } = useTheme();
   return (
-    <div className="relative z-50">
+    <div className="relative z-50 flex items-center gap-2">
       <motion.button
         ref={triggerRef}
         onClick={() => setOpen(o => !o)}
@@ -142,6 +144,25 @@ const GoogleMenu = () => {
         </div>
         <span className="sr-only">Ouvrir le menu</span>
       </motion.button>
+      {/* Toggle thème global */}
+      <button
+        onClick={toggle}
+        aria-label="Basculer le thème"
+        className={`group relative w-11 h-11 rounded-full flex items-center justify-center transition focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400/60
+          ${theme === 'light' ? 'bg-white shadow-[0_2px_6px_-1px_rgba(0,0,0,0.15),0_0_0_1px_rgba(0,0,0,0.05)] text-gray-700 hover:text-gray-900 hover:shadow-[0_4px_14px_-2px_rgba(0,0,0,0.2),0_0_0_1px_rgba(0,0,0,0.06)]' : 'bg-white/10 text-white/80 border border-white/20 hover:bg-white/20'} backdrop-blur-xl`}
+      >
+        <span className="absolute inset-0 rounded-full bg-gradient-to-br from-fuchsia-400/0 via-purple-400/0 to-indigo-400/0 group-hover:from-fuchsia-400/10 group-hover:via-purple-400/10 group-hover:to-indigo-400/10 transition-opacity" />
+        {theme === 'light' ? (
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2m0 14v2M5.64 5.64l1.42 1.42M16.94 16.94l1.42 1.42M3 12h2m14 0h2M7.06 16.94l1.42-1.42M16.94 7.06l1.42-1.42" />
+            <circle cx="12" cy="12" r="4" />
+          </svg>
+        ) : (
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+          </svg>
+        )}
+      </button>
 
       <AnimatePresence>
         {open && !verticalVariant && (

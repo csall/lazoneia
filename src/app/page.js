@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { useTheme } from "@/components/theme/ThemeProvider";
+import { getCardStyle } from "@/styles/cardStyles";
 import agents from "@/config/agents";
 import FilterBar from "@/components/agents/FilterBar";
 
@@ -26,112 +28,18 @@ const AgentCard = ({
   onToggleFavorite,
   lines = 6,
 }) => {
-  const cardStyles = {
-    charm: {
-      bg: "bg-gradient-to-br from-pink-900/60 to-rose-900/60",
-      border: "border-pink-500/20",
-      glow: "from-pink-500 to-rose-600",
-      button: "from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700",
-      hover: "group-hover:text-pink-200",
-      accent: "bg-pink-500",
-      mesh: "from-pink-500/40 via-rose-600/30 to-pink-500/40",
-    },
-    glow: {
-      bg: "bg-gradient-to-br from-pink-900/60 to-rose-900/60",
-      border: "border-pink-500/20",
-      glow: "from-pink-500 to-rose-600",
-      button: "from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700",
-      hover: "group-hover:text-pink-200",
-      accent: "bg-pink-500",
-      mesh: "from-pink-500/40 via-rose-600/30 to-pink-500/40",
-    },
-    punchy: {
-      bg: "bg-gradient-to-br from-indigo-900/60 to-violet-900/60",
-      border: "border-violet-500/20",
-      glow: "from-violet-500 to-indigo-600",
-      button:
-        "from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700",
-      hover: "group-hover:text-indigo-200",
-      accent: "bg-indigo-500",
-      mesh: "from-violet-500/40 via-indigo-600/30 to-violet-500/40",
-    },
-    
-    fitzy: {
-      bg: "bg-gradient-to-br from-green-900/60 to-teal-900/60",
-      border: "border-green-500/20",
-      glow: "from-green-500 to-teal-600",
-      button: "from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700",
-      hover: "group-hover:text-green-200",
-      accent: "bg-green-500",
-      mesh: "from-green-500/40 via-teal-600/30 to-green-500/40",
-    },
-    psyco: {
-      bg: "bg-gradient-to-br from-blue-900/60 to-sky-900/60",
-      border: "border-blue-500/20",
-      glow: "from-blue-500 to-sky-600",
-      button: "from-blue-500 to-sky-600 hover:from-blue-600 hover:to-sky-700",
-      hover: "group-hover:text-blue-200",
-      accent: "bg-blue-500",
-      mesh: "from-blue-500/40 via-sky-600/30 to-blue-500/40",
-    },
-    foody: {
-      bg: "bg-gradient-to-br from-yellow-900/60 to-amber-900/60",
-      border: "border-yellow-500/20",
-      glow: "from-yellow-500 to-amber-600",
-      button: "from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700",
-      hover: "group-hover:text-yellow-200",
-      accent: "bg-yellow-500",
-      mesh: "from-yellow-500/40 via-amber-600/30 to-yellow-500/40",
-    },
-    globo: {
-      bg: "bg-gradient-to-br from-blue-900/60 to-sky-900/60",
-      border: "border-blue-500/20",
-      glow: "from-blue-500 to-sky-600",
-      button: "from-blue-500 to-sky-600 hover:from-blue-600 hover:to-sky-700",
-      hover: "group-hover:text-blue-200",
-      accent: "bg-blue-500",
-      mesh: "from-blue-500/40 via-sky-600/30 to-blue-500/40",
-    },
-    talko: {
-      bg: "bg-gradient-to-br from-purple-900/60 to-magenta-900/60",
-  border: "border-purple-500/20",
-      glow: "from-purple-500 to-magenta-600",
-      button: "from-purple-500 to-magenta-600 hover:from-purple-600 hover:to-magenta-700",
-  hover: "group-hover:text-purple-200",
-  accent: "bg-purple-500",
-      mesh: "from-purple-500/40 via-magenta-600/30 to-purple-500/40",
-    },
-    reply: {
-      bg: "bg-gradient-to-br from-blue-900/60 to-sky-900/60",
-      border: "border-blue-500/20",
-      glow: "from-blue-500 to-sky-600",
-      button: "from-blue-500 to-sky-600 hover:from-blue-600 hover:to-sky-700",
-      hover: "group-hover:text-blue-200",
-      accent: "bg-blue-500",
-      mesh: "from-blue-500/40 via-sky-600/30 to-blue-500/40",
-    },
-    lingo: {
-      bg: "bg-gradient-to-br from-amber-900/60 to-yellow-900/60",
-      border: "border-amber-500/20",
-      glow: "from-amber-500 to-yellow-600",
-      button:
-        "from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700",
-      hover: "group-hover:text-amber-200",
-      accent: "bg-amber-500",
-      mesh: "from-amber-500/40 via-yellow-600/30 to-amber-500/40",
-    },
-    scribo: {
-      bg: "bg-gradient-to-br from-teal-900/60 to-cyan-900/60",
-      border: "border-teal-500/20",
-      glow: "from-teal-500 to-cyan-600",
-      button: "from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700",
-      hover: "group-hover:text-teal-200",
-      accent: "bg-teal-500",
-      mesh: "from-teal-500/40 via-cyan-600/30 to-teal-500/40",
-    },
-  };
+  const { theme } = useTheme();
 
-  const style = cardStyles[color];
+  const style = getCardStyle(theme, color);
+  const isLight = theme === 'light';
+  const textSecondary = isLight ? 'text-gray-600 group-hover:text-gray-800' : 'text-gray-300 group-hover:text-white';
+
+  // Background layers adapted for light vs dark to éviter un aspect trop sombre en mode clair
+  const cardBackground = isLight
+   ? `radial-gradient(circle at 50% 0%, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.35) 70%),
+     linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.6) 100%)`
+   : `radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0) 70%),
+     linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.35) 100%)`;
 
   return (
     <motion.div
@@ -143,10 +51,9 @@ const AgentCard = ({
       whileHover={{ scale: 1.02 }}
     >
       <motion.div
-  className={`relative backdrop-blur-xl px-2 py-1 sm:px-3 sm:py-2 rounded-lg overflow-hidden border ${style.border} group w-full flex flex-col h-full`}
+  className={`relative backdrop-blur-xl px-2 py-1 sm:px-3 sm:py-2 rounded-xl overflow-hidden border ${style.border} group w-full flex flex-col h-full transition-shadow ${isLight ? 'shadow-[0_2px_6px_-1px_rgba(0,0,0,0.08),0_0_0_1px_rgba(0,0,0,0.05)] hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.06)]' : 'shadow-[0_0_0_1px_rgba(255,255,255,0.05)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.08)]'}`}
         style={{
-          background: `radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0) 70%), 
-                       linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.35) 100%)`,
+          background: cardBackground,
         }}
         whileHover={{
           y: -15,
@@ -156,13 +63,13 @@ const AgentCard = ({
       >
         {/* Mesh gradient background */}
         <div
-          className={`absolute inset-0 bg-gradient-to-br ${style.bg} opacity-80`}
+          className={`absolute inset-0 bg-gradient-to-br ${style.bg} ${isLight ? 'opacity-70 mix-blend-multiply' : 'opacity-80'} transition-opacity`}
         ></div>
         <div
           className={`absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10`}
         ></div>
         <div
-          className={`absolute -inset-[100%] bg-gradient-conic ${style.mesh} opacity-30 blur-3xl animate-slow-spin`}
+          className={`absolute -inset-[100%] bg-gradient-conic ${style.mesh} ${isLight ? 'opacity-20' : 'opacity-30'} blur-3xl animate-slow-spin`}
         ></div>
 
         {/* Floating particles */}
@@ -225,7 +132,7 @@ const AgentCard = ({
             {/* Name & Tagline */}
             <div className="flex items-center gap-2 mx-auto">
               <motion.h3
-                className={`text-base font-semibold text-white leading-tight ${style.hover} transition-colors duration-300`}
+                className={`text-base font-semibold leading-tight ${style.hover} transition-colors duration-300 ${isLight ? 'text-gray-900' : 'text-white'}`}
                 initial={{ y: 10, opacity: 0 }}
                 whileInView={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1 }}
@@ -346,7 +253,7 @@ const AgentCard = ({
           {/* Description sous l'image (marge ajoutée) */}
           <div className="relative overflow-hidden mt-3 mb-7 pb-3 w-full px-1">
             <motion.p
-              className="text-gray-300 text-[11px] leading-snug group-hover:text-white transition-colors duration-500"
+              className={`text-[11px] leading-snug transition-colors duration-500 ${textSecondary}`}
               style={{ display: '-webkit-box', WebkitLineClamp: lines, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
               initial={{ y: 10, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -412,6 +319,8 @@ export default function AgentsPage() {
   const [filter, setFilter] = useState("all");
   // Plus besoin d'attendre que le client soit monté pour améliorer la performance
   const [isClientMounted, setIsClientMounted] = useState(true);
+  // Récupération du thème global
+  const { theme } = useTheme();
 
   // Effet d'initialisation exécuté immédiatement
   useEffect(() => {
@@ -466,17 +375,20 @@ export default function AgentsPage() {
     });
   };
 
-
-
+  const isLight = theme === 'light';
   return (
-    <main className="min-h-screen bg-gradient-to-r from-blue-900 to-purple-900 animate-gradient-x text-white font-sans">
+    <main className={`min-h-screen font-sans transition-colors duration-500 ${isLight ? 'text-gray-800 bg-[radial-gradient(circle_at_20%_15%,rgba(56,189,248,0.25),transparent_55%),radial-gradient(circle_at_80%_75%,rgba(167,139,250,0.25),transparent_55%),linear-gradient(to_br,#f8fafc,#ffffff,#f5f3ff)]' : 'text-white bg-gradient-to-br from-blue-950 via-blue-900 to-purple-950'} relative overflow-hidden`}>      
+      {/* Theme animated overlay */}
+      <div className="pointer-events-none absolute inset-0 ${isLight ? 'opacity-60' : 'opacity-40'} mix-blend-overlay">
+        <div className={`absolute inset-0 ${isLight ? 'bg-[radial-gradient(circle_at_25%_30%,rgba(56,189,248,0.18),transparent_60%),radial-gradient(circle_at_75%_70%,rgba(167,139,250,0.18),transparent_60%),radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.6),transparent_65%)]' : 'bg-[radial-gradient(circle_at_20%_30%,rgba(56,189,248,0.08),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(167,139,250,0.08),transparent_60%)]'} transition-all duration-700`}></div>
+      </div>
       <section className="relative py-6 text-center px-4 overflow-hidden">
         {/* Background decoration */}
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10"></div>
+        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5 dark:opacity-10 transition-opacity"></div>
 
         <div className="container mx-auto mb-12 relative">
           {/* Barre de navigation avec menu Google */}
-          <div className="flex justify-end items-center w-full fixed top-0 left-0 right-0 z-40 px-4 py-1 bg-gradient-to-b from-blue-900/80 to-transparent backdrop-blur-sm">
+          <div className="flex justify-end items-center w-full fixed top-0 left-0 right-0 z-40 px-4 py-1 backdrop-blur-sm bg-gradient-to-b from-white/70 to-transparent dark:from-blue-900/70 transition-colors">
             {/* Menu style Google en haut à droite */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
@@ -491,7 +403,7 @@ export default function AgentsPage() {
           <div className="h-10"></div>
 
           {/* Titre LaZoneIA avec animations avancées */}
-          <div className="relative mb-6 mt-1 pt-2 pb-2">
+          <div className="relative mb-6 mt-1 pt-2 pb-2 select-none">
             {/* Effet de glow animé derrière le titre */}
             <motion.div
               className="absolute top-1/2 left-1/2 w-4/5 h-16 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/30 via-indigo-500/30 to-purple-600/30 rounded-full blur-2xl"
@@ -563,10 +475,10 @@ export default function AgentsPage() {
               {["L", "a", "Z", "o", "n", "e", "I", "A"].map((letter, index) => (
                 <motion.span
                   key={index}
-                  className={`text-4xl md:text-5xl font-bold ${
+                  className={`text-4xl md:text-5xl font-bold transition-colors ${
                     letter === "Z" || letter === "I" || letter === "A"
-                      ? "bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500"
-                      : "text-white"
+                      ? isLight ? 'bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-violet-500' : "bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500"
+                      : isLight ? 'text-gray-900' : "text-white"
                   }`}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -589,7 +501,7 @@ export default function AgentsPage() {
 
             {/* Tagline animée */}
             <motion.div
-              className="text-sm text-blue-200/80 text-center mt-2"
+              className={`text-sm text-center mt-2 ${isLight ? 'text-sky-600/70' : 'text-blue-200/80'}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: [0, 1] }}
               transition={{ delay: 1, duration: 1 }}
@@ -642,7 +554,7 @@ export default function AgentsPage() {
   {/* Bloc unique d'affichage des agents */}
 
         {/* Decorative elements */}
-        <div className="absolute top-20 left-10 opacity-30">
+  <div className="absolute top-20 left-10 opacity-20 dark:opacity-30 transition-opacity">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
             <path d="M20 0L26 14H14L20 0Z" fill="white" />
             <path d="M20 40L14 26H26L20 40Z" fill="white" />
@@ -650,7 +562,7 @@ export default function AgentsPage() {
             <path d="M40 20L26 26V14L40 20Z" fill="white" />
           </svg>
         </div>
-        <div className="absolute bottom-20 right-10 opacity-30">
+  <div className="absolute bottom-20 right-10 opacity-20 dark:opacity-30 transition-opacity">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
             <circle cx="20" cy="20" r="10" stroke="white" strokeWidth="2" />
             <circle

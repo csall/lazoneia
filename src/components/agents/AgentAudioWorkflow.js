@@ -4,6 +4,8 @@ import Header from "./AgentAudioWorkflow/Header";
 import MessageList from "./AgentAudioWorkflow/MessageList";
 import InputBar from "./AgentAudioWorkflow/InputBar";
 
+import { useTheme } from "@/components/theme/ThemeProvider";
+
 export default function AgentAudioWorkflow({
   // ...hooks principaux...
   branding,
@@ -14,20 +16,41 @@ export default function AgentAudioWorkflow({
   tones=[],
   sendButtonLabel = "Envoyer",
   defaultLang = "français",
-  colors = {
-    gradientFrom: "from-indigo-900",
-    gradientTo: "to-violet-800",
+  colors = {},
+  theme: forcedTheme,
+}) {
+  const { theme: ctxTheme } = useTheme();
+  const activeTheme = forcedTheme || ctxTheme || 'light';
+  const isLight = activeTheme === 'light';
+
+  // Merge default palette per theme
+  const baseDark = {
+    gradientFrom: "from-blue-950",
+    gradientTo: "to-purple-950",
     textColor: "text-white",
     buttonGradientFrom: "from-indigo-500",
-    buttonGradientTo: "to-violet-600",
+    buttonGradientTo: "to-purple-600",
     buttonHoverFrom: "hover:from-indigo-600",
-    buttonHoverTo: "hover:to-violet-700",
+    buttonHoverTo: "hover:to-purple-700",
     borderColor: "border-indigo-500/30",
     placeholderColor: "placeholder-indigo-300",
-    responseBg: "bg-indigo-900/30",
-    responseBorder: "border-indigo-700/30",
-  },
-}) {
+    responseBg: "bg-white/5",
+    responseBorder: "border-white/10",
+  };
+  const baseLight = {
+    gradientFrom: "from-sky-50",
+    gradientTo: "to-violet-100",
+    textColor: "text-gray-800",
+    buttonGradientFrom: "from-sky-500",
+    buttonGradientTo: "to-violet-500",
+    buttonHoverFrom: "hover:from-sky-600",
+    buttonHoverTo: "hover:to-violet-600",
+    borderColor: "border-sky-300/50",
+    placeholderColor: "placeholder-gray-400",
+    responseBg: "bg-white/70 backdrop-blur-md",
+    responseBorder: "border-sky-200",
+  };
+  const mergedColors = { ...(isLight ? baseLight : baseDark), ...colors };
   // Détection mobile/desktop côté client
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -187,8 +210,8 @@ export default function AgentAudioWorkflow({
   };
   const textareaBackground =
     micState === "recording" || micState === "transcribing"
-      ? "bg-black/50 text-white"
-      : colors.responseBg;
+      ? (isLight ? "bg-gray-900/70 text-white" : "bg-black/50 text-white")
+      : mergedColors.responseBg + (isLight ? " text-gray-800" : " text-white");
   const [targetLang, setTargetLang] = useState(defaultLang); // Use defaultLang for initial state
 
   const handleLanguageChange = (e) => {
@@ -391,24 +414,28 @@ useEffect(() => {
   <>
     {/* Background illimité, adapté mobile/desktop */}
     {isMobile ? (
-      <div className={`fixed top-0 left-0 w-full min-h-[100vh] h-auto bg-gradient-to-b ${colors.gradientFrom} ${colors.gradientTo}`} style={{zIndex:-1}}></div>
+      <div className={`fixed top-0 left-0 w-full min-h-[100vh] h-auto bg-gradient-to-b ${mergedColors.gradientFrom} ${mergedColors.gradientTo} transition-colors`} style={{zIndex:-1}}></div>
     ) : (
-      <div className={`fixed top-0 left-0 w-full min-h-[100vh] h-auto bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo}`} style={{zIndex:-1}}></div>
+      <div className={`fixed top-0 left-0 w-full min-h-[100vh] h-auto bg-gradient-to-br ${mergedColors.gradientFrom} ${mergedColors.gradientTo} transition-colors`} style={{zIndex:-1}}></div>
     )}
-    <main className={`relative flex flex-col h-screen ${colors.textColor}`}>
+    {/* Subtle radial overlays */}
+    <div className="fixed inset-0 pointer-events-none" style={{zIndex:-1}}>
+      <div className={`absolute inset-0 ${isLight ? 'bg-[radial-gradient(circle_at_20%_30%,rgba(56,189,248,0.25),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(167,139,250,0.25),transparent_60%)]' : 'bg-[radial-gradient(circle_at_20%_30%,rgba(56,189,248,0.10),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(167,139,250,0.10),transparent_60%)]'} transition-all duration-700`}></div>
+    </div>
+    <main className={`relative flex flex-col h-screen transition-colors ${mergedColors.textColor}`}>
       <Header
         branding={branding}
         botImage={botImage}
         tagline={tagline}
         targetLang={targetLang}
         handleLanguageChange={handleLanguageChange}
-        colors={colors}
+        colors={mergedColors}
         messages={messages}
         clearHistory={clearHistory}
       />
       <MessageList
   messages={messages}
-  colors={colors}
+  colors={mergedColors}
   lastBotMsgRef={lastBotMsgRef}
   resultRef={resultRef}
   handleCopy={handleCopy}
@@ -425,7 +452,7 @@ useEffect(() => {
         handleSubmit={handleSubmit}
         cancelRecording={cancelRecording}
         handleMicClick={handleMicClick}
-        colors={colors}
+        colors={mergedColors}
         targetLang={targetLang}
         handleLanguageChange={handleLanguageChange}
         selectedTone={selectedTone}

@@ -2,8 +2,10 @@
 
 import AgentAudioWorkflow from "@/components/agents/AgentAudioWorkflow";
 import agents from "@/config/agents";
+import { useTheme } from "@/components/theme/ThemeProvider";
 
 export default function FoodyPage() {
+  const { theme } = useTheme();
   const agent = agents.find(a => a.name === "Foody");
   return (
     <AgentAudioWorkflow
@@ -15,6 +17,7 @@ export default function FoodyPage() {
       colors={agent.colors}
       tones={agent.tones}
       tagline={agent.tagline}
+      theme={theme}
     />
   );
 }

@@ -1,9 +1,12 @@
 import { useCallback, useMemo, useRef, useEffect, useState } from "react";
+import { useTheme } from "@/components/theme/ThemeProvider";
 import { motion } from "framer-motion";
 
 // Nouveau filtre moderne : contrôle segmenté animé (sans menu déroulant)
 // Props conservées pour compatibilité.
 export default function FilterBar({ filter, setFilter, agents, favorites }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const counts = useMemo(() => ({
     all: agents.length,
     favorites: agents.filter(a => favorites.includes(a.name)).length,
@@ -125,11 +128,12 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
   }, [currentIndex, options, setFilter]);
 
   return (
-    <div className="w-full flex justify-center mb-1 px-2 sm:px-0 select-none">
-      <div className="relative w-full">
-        <div
+    <div className="w-full flex justify-center mb-3 px-2 sm:px-0 select-none">
+      <div className="relative w-full max-w-5xl">
+        <div className={`relative flex w-auto md:w-full overflow-x-auto md:overflow-x-hidden overflow-y-hidden gap-1 rounded-full px-1.5 py-1 touch-pan-x select-none backdrop-blur-xl
+          ${isLight ? 'bg-white/80 border border-gray-200 shadow-[0_2px_6px_-1px_rgba(0,0,0,0.08),0_0_0_1px_rgba(0,0,0,0.04)]' : 'bg-white/12 md:bg-white/5 border border-white/10'}
+          scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 no-scrollbar`}
           ref={scrollRef}
-          className="relative flex w-auto md:w-full overflow-x-auto md:overflow-x-hidden overflow-y-hidden scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 gap-1 rounded-full px-1.5 py-1 backdrop-blur-2xl bg-white/15 md:bg-white/[0.04] border border-white/10 no-scrollbar touch-pan-x select-none"
           role="tablist"
           aria-label="Filtrer les agents"
           onKeyDown={onKey}
@@ -138,20 +142,23 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
           {/* Track container for indicator positioning */}
           <div ref={trackRef} className="absolute inset-0 pointer-events-none" />
         {/* Halo animé global */}
-        <motion.div
-          aria-hidden
-          className="pointer-events-none absolute -inset-6 opacity-40"
-          style={{ filter: "blur(40px)" }}
-          animate={{ opacity: [0.25, 0.55, 0.25], rotate: 360 }}
-          transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-        >
-          <div className="w-full h-full bg-[conic-gradient(at_30%_30%,#3b82f6,#8b5cf6,#ec4899,#f59e0b,#3b82f6)]" />
-        </motion.div>
+        {!isLight && (
+          <motion.div
+            aria-hidden
+            className="pointer-events-none absolute -inset-6 opacity-40"
+            style={{ filter: "blur(40px)" }}
+            animate={{ opacity: [0.25, 0.55, 0.25], rotate: 360 }}
+            transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+          >
+            <div className="w-full h-full bg-[conic-gradient(at_30%_30%,#3b82f6,#8b5cf6,#ec4899,#f59e0b,#3b82f6)]" />
+          </motion.div>
+        )}
 
           {/* Indicateur actif glissant (mesuré) */}
           <motion.div
             key="indicator"
-            className="absolute z-0 h-10 rounded-full bg-gradient-to-r from-white/18 via-white/8 to-white/5 backdrop-blur-xl border border-white/15"
+            className={`absolute z-0 h-10 rounded-full backdrop-blur-xl border
+              ${isLight ? 'bg-gradient-to-r from-sky-100 via-indigo-50 to-violet-100 border-gray-300 shadow-[0_0_0_1px_rgba(255,255,255,0.6),0_4px_10px_-2px_rgba(0,0,0,0.08)]' : 'bg-gradient-to-r from-white/18 via-white/8 to-white/5 border-white/15'}`}
             initial={false}
             animate={{ left: indicator.left, width: indicator.width }}
             transition={{ type: 'spring', stiffness: 340, damping: 32, mass: 0.6 }}
@@ -171,14 +178,15 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
               whileTap={{ scale: 0.95 }}
               whileHover={{ y: -1 }}
       ref={el => { if (el) itemRefs.current[opt.value] = el; }}
-              className={`group relative z-10 flex flex-none md:flex-1 md:justify-center items-center gap-1.5 px-3 sm:px-4 h-10 rounded-full text-[12px] sm:text-[13px] font-medium tracking-wide transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 scroll-mx-2 ${active ? 'text-white' : 'text-white/55 hover:text-white'}`}
+              className={`group relative z-10 flex flex-none md:flex-1 md:justify-center items-center gap-1.5 px-3 sm:px-4 h-10 rounded-full text-[12px] sm:text-[13px] font-medium tracking-wide transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/40 scroll-mx-2
+                ${isLight ? (active ? 'text-gray-900' : 'text-gray-600 hover:text-gray-900') : (active ? 'text-white' : 'text-white/55 hover:text-white')}`}
               style={{ scrollSnapAlign: 'center' }}
             >
               {/* Gradient accent fine ligne top */}
               {active && (
                 <motion.span
                   layoutId={`accent-${opt.value}`}
-                  className="absolute left-3 right-3 top-1.5 h-[2px] rounded-full bg-gradient-to-r from-white/70 via-white to-white/70"
+                  className={`absolute left-3 right-3 top-1.5 h-[2px] rounded-full ${isLight ? 'bg-gradient-to-r from-sky-400/70 via-indigo-400/70 to-violet-400/70' : 'bg-gradient-to-r from-white/70 via-white to-white/70'}`}
                   transition={{ type: 'spring', stiffness: 350, damping: 28 }}
                 />
               )}
@@ -186,7 +194,9 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
                 <Icon name={opt.icon} active={active} />
                 <span className="inline-block leading-none">{opt.label}</span>
               </span>
-              <span className={`ml-0.5 -mr-0.5 px-1.5 py-0.5 rounded-full border text-[10px] leading-none font-semibold transition-all ${active ? 'bg-white/25 border-white/15 text-white' : 'bg-white/5 border-white/10 text-white/55 group-hover:text-white'}`}>{counts[opt.value]}</span>
+              <span className={`ml-0.5 -mr-0.5 px-1.5 py-0.5 rounded-full border text-[10px] leading-none font-semibold transition-all
+                ${isLight ? (active ? 'bg-gradient-to-r from-sky-500/15 to-violet-500/15 border-sky-300/70 text-gray-800' : 'bg-gray-100 border-gray-300 text-gray-500 group-hover:text-gray-700')
+                  : (active ? 'bg-white/25 border-white/15 text-white' : 'bg-white/5 border-white/10 text-white/55 group-hover:text-white')}`}>{counts[opt.value]}</span>
               {/* Effet gradient de fond spécifique actif */}
               {active && (
                 <motion.span
@@ -194,10 +204,10 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
                   className={`pointer-events-none absolute inset-0 rounded-full overflow-hidden`}
                 >
                   <motion.span
-                    className={`absolute inset-0 opacity-60 bg-gradient-to-r ${opt.grad}`}
-                    style={{ mixBlendMode: 'overlay' }}
+                    className={`absolute inset-0 ${isLight ? 'opacity-[0.35]' : 'opacity-60'} bg-gradient-to-r ${opt.grad}`}
+                    style={{ mixBlendMode: isLight ? 'normal' : 'overlay' }}
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.65 }}
+                    animate={{ opacity: isLight ? 0.35 : 0.65 }}
                     transition={{ duration: 0.4 }}
                   />
                 </motion.span>
@@ -207,7 +217,7 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
         })}
 
           {/* Bordure interne subtile */}
-          <div className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-white/10" />
+          <div className={`pointer-events-none absolute inset-0 rounded-full ring-1 ${isLight ? 'ring-gray-200' : 'ring-white/10'}`} />
           {/* Fades gauche/droite */}
           {/* Edge fades removed (ombrage supprimé) */}
           {/* Scroll snap only mobile */}
@@ -219,8 +229,12 @@ export default function FilterBar({ filter, setFilter, agents, favorites }) {
 }
 
 function Icon({ name, active }) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const base = "w-4 h-4 transition-colors";
-  const common = active ? "text-white drop-shadow-[0_0_4px_rgba(255,255,255,0.55)]" : "text-white/55 group-hover:text-white";
+  const common = isLight
+    ? (active ? "text-sky-600" : "text-gray-500 group-hover:text-gray-700")
+    : (active ? "text-white drop-shadow-[0_0_4px_rgba(255,255,255,0.55)]" : "text-white/55 group-hover:text-white");
   switch (name) {
     case 'star':
       return <svg className={`${base} ${common}`} viewBox="0 0 24 24" fill="currentColor"><path d="M11.48 3.5a.6.6 0 011.04 0l2.1 5.07c.07.17.23.29.41.31l5.49.44c.56.04.79.74.36 1.08l-4.18 3.58a.6.6 0 00-.19.6l1.28 5.31a.6.6 0 01-.88.64l-4.66-2.85a.6.6 0 00-.62 0l-4.66 2.85a.6.6 0 01-.88-.64l1.28-5.31a.6.6 0 00-.19-.6L2.12 10.4a.6.6 0 01.36-1.08l5.49-.44c.18-.02.34-.14.41-.31L11.48 3.5z"/></svg>;

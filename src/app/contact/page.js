@@ -5,11 +5,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { useImagePath, normalizeImagePath } from "@/hooks/useImagePath";
+import { useTheme } from "@/components/theme/ThemeProvider";
 import GoogleMenu from "@/components/navigation/GoogleMenu";
 
 // ...existing code...
 
 export default function ContactPage() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const [formState, setFormState] = useState({
     name: "",
     email: "",
@@ -45,9 +48,12 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-r from-blue-900 to-purple-900 text-white">
+    <main className={`min-h-screen ${isLight ? 'text-gray-800 bg-gradient-to-br from-sky-50 via-white to-violet-50' : 'text-white bg-gradient-to-br from-blue-950 via-blue-900 to-purple-950'} transition-colors duration-500 relative overflow-hidden`}>      
+      <div className="pointer-events-none absolute inset-0 opacity-40 mix-blend-overlay">
+        <div className={`absolute inset-0 ${isLight ? 'bg-[radial-gradient(circle_at_20%_30%,rgba(56,189,248,0.25),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(167,139,250,0.25),transparent_60%)]' : 'bg-[radial-gradient(circle_at_20%_30%,rgba(56,189,248,0.08),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(167,139,250,0.08),transparent_60%)]'} transition-all duration-700`}></div>
+      </div>
       {/* Barre de navigation avec menu Google et flèche retour */}
-      <div className="flex justify-between items-center w-full fixed top-0 left-0 right-0 z-40 px-4 py-4 bg-gradient-to-b from-blue-900/80 to-transparent backdrop-blur-sm">
+  <div className="flex justify-between items-center w-full fixed top-0 left-0 right-0 z-40 px-4 py-4 backdrop-blur-sm bg-gradient-to-b from-white/70 to-transparent dark:from-blue-900/70 transition-colors">
         {/* Flèche de retour */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -100,10 +106,10 @@ export default function ContactPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">
+            <h1 className={`text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r ${isLight ? 'from-gray-900 to-sky-600' : 'from-white to-blue-200'} transition-colors`}>
               Contactez-nous
             </h1>
-            <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+            <p className={`text-xl max-w-2xl mx-auto ${isLight ? 'text-sky-700/70' : 'text-blue-100'} transition-colors`}>
               Une question, une suggestion ou besoin d&apos;une démo ? Notre équipe est à votre écoute.
             </p>
           </motion.div>
@@ -119,7 +125,7 @@ export default function ContactPage() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="bg-gradient-to-br from-green-700/40 to-teal-700/40 p-8 rounded-3xl backdrop-blur-md shadow-lg border border-green-500/20 h-full flex flex-col items-center justify-center text-center"
+                  className={`p-8 rounded-3xl backdrop-blur-md shadow-lg h-full flex flex-col items-center justify-center text-center border transition-colors ${isLight ? 'bg-gradient-to-br from-green-200/60 to-teal-200/60 border-green-300/50' : 'bg-gradient-to-br from-green-700/40 to-teal-700/40 border-green-500/20'}`}
                 >
                   <div className="bg-green-500/30 p-4 rounded-full mb-6">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -127,7 +133,7 @@ export default function ContactPage() {
                     </svg>
                   </div>
                   <h2 className="text-2xl font-bold mb-4">Message envoyé !</h2>
-                  <p className="text-blue-100 mb-6">
+                  <p className={`${isLight ? 'text-gray-600' : 'text-blue-100'} mb-6 transition-colors`}>
                     Merci de nous avoir contactés. Nous vous répondrons dans les plus brefs délais.
                   </p>
                   <button
@@ -140,7 +146,7 @@ export default function ContactPage() {
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <label htmlFor="name" className="block text-blue-200 mb-2">Nom</label>
+                    <label htmlFor="name" className={`block mb-2 transition-colors ${isLight ? 'text-sky-700' : 'text-blue-200'}`}>Nom</label>
                     <input
                       type="text"
                       id="name"
@@ -148,12 +154,12 @@ export default function ContactPage() {
                       value={formState.name}
                       onChange={handleChange}
                       required
-                      className="w-full bg-blue-900/50 border border-blue-700/50 rounded-lg py-3 px-4 text-white placeholder-blue-300 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none transition"
+                      className={`w-full rounded-lg py-3 px-4 focus:outline-none transition placeholder-opacity-60 ${isLight ? 'bg-white/70 border border-sky-200 focus:border-sky-400 focus:ring focus:ring-sky-300/40 text-gray-800 placeholder-gray-500' : 'bg-blue-900/50 border border-blue-700/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 text-white placeholder-blue-300'}`}
                       placeholder="Votre nom"
                     />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-blue-200 mb-2">Email</label>
+                    <label htmlFor="email" className={`block mb-2 transition-colors ${isLight ? 'text-sky-700' : 'text-blue-200'}`}>Email</label>
                     <input
                       type="email"
                       id="email"
@@ -161,12 +167,12 @@ export default function ContactPage() {
                       value={formState.email}
                       onChange={handleChange}
                       required
-                      className="w-full bg-blue-900/50 border border-blue-700/50 rounded-lg py-3 px-4 text-white placeholder-blue-300 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none transition"
+                      className={`w-full rounded-lg py-3 px-4 focus:outline-none transition placeholder-opacity-60 ${isLight ? 'bg-white/70 border border-sky-200 focus:border-sky-400 focus:ring focus:ring-sky-300/40 text-gray-800 placeholder-gray-500' : 'bg-blue-900/50 border border-blue-700/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 text-white placeholder-blue-300'}`}
                       placeholder="votre.email@example.com"
                     />
                   </div>
                   <div>
-                    <label htmlFor="subject" className="block text-blue-200 mb-2">Sujet</label>
+                    <label htmlFor="subject" className={`block mb-2 transition-colors ${isLight ? 'text-sky-700' : 'text-blue-200'}`}>Sujet</label>
                     <input
                       type="text"
                       id="subject"
@@ -174,12 +180,12 @@ export default function ContactPage() {
                       value={formState.subject}
                       onChange={handleChange}
                       required
-                      className="w-full bg-blue-900/50 border border-blue-700/50 rounded-lg py-3 px-4 text-white placeholder-blue-300 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none transition"
+                      className={`w-full rounded-lg py-3 px-4 focus:outline-none transition placeholder-opacity-60 ${isLight ? 'bg-white/70 border border-sky-200 focus:border-sky-400 focus:ring focus:ring-sky-300/40 text-gray-800 placeholder-gray-500' : 'bg-blue-900/50 border border-blue-700/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 text-white placeholder-blue-300'}`}
                       placeholder="Sujet de votre message"
                     />
                   </div>
                   <div>
-                    <label htmlFor="message" className="block text-blue-200 mb-2">Message</label>
+                    <label htmlFor="message" className={`block mb-2 transition-colors ${isLight ? 'text-sky-700' : 'text-blue-200'}`}>Message</label>
                     <textarea
                       id="message"
                       name="message"
@@ -187,7 +193,7 @@ export default function ContactPage() {
                       onChange={handleChange}
                       required
                       rows={5}
-                      className="w-full bg-blue-900/50 border border-blue-700/50 rounded-lg py-3 px-4 text-white placeholder-blue-300 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 focus:outline-none transition resize-none"
+                      className={`w-full rounded-lg py-3 px-4 focus:outline-none transition placeholder-opacity-60 resize-none ${isLight ? 'bg-white/70 border border-sky-200 focus:border-sky-400 focus:ring focus:ring-sky-300/40 text-gray-800 placeholder-gray-500' : 'bg-blue-900/50 border border-blue-700/50 focus:border-indigo-400 focus:ring focus:ring-indigo-300/50 text-white placeholder-blue-300'}`}
                       placeholder="Votre message ici..."
                     />
                   </div>
@@ -195,7 +201,7 @@ export default function ContactPage() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 flex justify-center items-center"
+                      className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 flex justify-center items-center"
                     >
                       {isSubmitting ? (
                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>

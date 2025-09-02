@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import "./globals.css";
 import "./mobile-fixes.css";
 
@@ -37,17 +38,17 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="fr">
+    <html lang="fr" suppressHydrationWarning>
       <head>
         <link rel="icon" href="https://www.lazoneia.com/favicon.ico" sizes="any" />
         <link rel="icon" href="https://www.lazoneia.com/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="https://www.lazoneia.com/favicon-large.svg" />
         <meta name="theme-color" content="#3b82f6" />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

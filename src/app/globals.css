@@ -5,12 +5,7 @@
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* Removed unsupported @theme inline block (was causing lint error). */
 
 @keyframes slow-pulse {
   0%, 100% {
@@ -80,6 +75,23 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Theme data attribute overrides */
+[data-theme='dark'] body, body[data-theme='dark'] {
+  --background: #05060a;
+  --foreground: #f5f7fa;
+}
+
+[data-theme='light'] body, body[data-theme='light'] {
+  --background: #ffffff;
+  --foreground: #181a1f;
+}
+
+/* Smooth theme transition */
+html, body, body * {
+  transition: background-color 0.45s ease, color 0.45s ease, border-color 0.45s ease, fill 0.45s ease, stroke 0.45s ease;
+}
+
 
 /* Animations pour particules SVG */
 @keyframes bounce-slow {

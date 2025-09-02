@@ -1,9 +1,11 @@
 "use client";
 
 import AgentAudioWorkflow from "@/components/agents/AgentAudioWorkflow";
+import { useTheme } from "@/components/theme/ThemeProvider";
 import agents from "@/config/agents";
 
 export default function PunchyPage() {
+  const { theme } = useTheme();
   const agent = agents.find(a => a.name === "Punchy");
   return (
     <AgentAudioWorkflow
@@ -15,6 +17,7 @@ export default function PunchyPage() {
       colors={agent.colors}
       tones={agent.tones}
       tagline={agent.tagline}
+      theme={theme}
     />
   );
 }

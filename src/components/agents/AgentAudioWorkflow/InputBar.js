@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from "react";
+import { useTheme } from "@/components/theme/ThemeProvider";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -72,18 +73,9 @@ export default function InputBar({
   const inputBarRef = useRef(null);
   const [inputHeight, setInputHeight] = useState(100);
   const [reducedMotion, setReducedMotion] = useState(false);
-  const [theme, setTheme] = useState('light');
+  const { theme, toggle } = useTheme();
 
-  // Détection initiale du thème système
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-      setTheme(prefersDark.matches ? 'dark' : 'light');
-      const listener = (e) => setTheme(e.matches ? 'dark' : 'light');
-      prefersDark.addEventListener('change', listener);
-      return () => prefersDark.removeEventListener('change', listener);
-    }
-  }, []);
+  // Thème géré globalement
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -489,19 +481,7 @@ export default function InputBar({
             {micState !== "recording" && (
               <>
                 <span className="flex items-center gap-2 ml-2 mt-1">
-                  {/* Toggle thème */}
-                  <button
-                    type="button"
-                    onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')}
-                    aria-label="Basculer thème"
-                    className="neutral-btn accent-outline rounded-lg p-2 flex items-center justify-center w-9 h-9 transition active:scale-95 hover:shadow"
-                  >
-                    {theme === 'light' ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2m0 14v2M5.64 5.64l1.42 1.42M16.94 16.94l1.42 1.42M3 12h2m14 0h2M7.06 16.94l1.42-1.42M16.94 7.06l1.42-1.42"/><circle cx="12" cy="12" r="4" /></svg>
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-                    )}
-                  </button>
+                  {/* Theme toggle removed here (global toggle available in navigation). If needed, uncomment and use onClick={toggle}. */}
                   {/* Bouton langue */}
                   <button
                     type="button"
