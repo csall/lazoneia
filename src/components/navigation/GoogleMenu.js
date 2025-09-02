@@ -116,9 +116,8 @@ const GoogleMenu = () => {
     return () => window.removeEventListener('resize', onResize);
   }, [open, updateIndicator]);
 
-  const isAgentPage = pathname.startsWith('/agent/');
-  // Variante verticale forcée sur toutes les pages agent (mobile + desktop)
-  const verticalVariant = isAgentPage; // toujours vertical pour agent
+  // Forcer l'affichage vertical sur toutes les pages
+  const verticalVariant = true;
 
   const { theme, toggle } = useTheme();
   return (
@@ -165,86 +164,7 @@ const GoogleMenu = () => {
       </button>
 
       <AnimatePresence>
-        {open && !verticalVariant && (
-          <motion.nav
-            key="topbar"
-            ref={containerRef}
-            role="menubar"
-            initial={{ y: -50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -30, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 320, damping: 28 }}
-            className={[
-              'fixed inset-x-0 z-[60] flex gap-3',
-              layoutMode === 'mobile' ? 'top-0 items-stretch px-2 pt-[max(env(safe-area-inset-top),0.35rem)] pb-2' : 'top-0 items-center px-4 py-2',
-              'bg-gradient-to-r from-fuchsia-600/30 via-purple-700/30 to-indigo-700/30 backdrop-blur-xl border-b border-white/15 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.5)]',
-              isAgentPage && layoutMode==='mobile' ? 'backdrop-saturate-150' : ''
-            ].join(' ')}
-            style={layoutMode==='desktop' ? {justifyContent:'center'}:undefined}
-          >
-            {/* Animated ambient gradient */}
-            <motion.div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 opacity-40 mix-blend-screen bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.15),transparent_60%),radial-gradient(circle_at_80%_30%,rgba(255,0,255,0.12),transparent_55%),radial-gradient(circle_at_50%_80%,rgba(0,180,255,0.12),transparent_55%)]"
-              animate={{ opacity:[0.35,0.55,0.35] }}
-              transition={{ duration:9, repeat:Infinity, ease:"easeInOut" }}
-            />
-            {/* Subtle noise */}
-            <div className="pointer-events-none absolute inset-0 opacity-[0.08] bg-[url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'><filter id=\'n\'><feTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\'/></filter><rect width=\'100%\' height=\'100%\' filter=\'url(%23n)\' opacity=\'0.4\'/></svg>')]" />
-            <div
-              ref={scrollRef}
-              className={[
-                'relative flex items-center gap-2 overflow-x-auto scrollbar-hide',
-                layoutMode==='desktop' ? 'flex-1 max-w-4xl' : 'w-full'
-              ].join(' ')}
-              style={{scrollSnapType:'x proximity'}}
-            >
-              {/* Indicateur actif */}
-              {indicator.visible && (
-                <motion.div
-                  key="indicator"
-                  className="absolute top-1/2 -translate-y-1/2 h-9 rounded-full bg-gradient-to-r from-fuchsia-500/25 via-purple-500/20 to-indigo-500/25 backdrop-blur-md border border-fuchsia-400/30 shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_4px_12px_-4px_rgba(0,0,0,0.5)]"
-                  animate={{ left: indicator.left, width: indicator.width }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                  style={{ left: indicator.left, width: indicator.width }}
-                />
-              )}
-              {filtered.map((item, idx) => (
-                <Link
-                  key={item.link}
-                  href={item.link}
-                  onClick={handleSelect}
-                  ref={el => { itemRefs.current[idx] = el; }}
-                  className={`relative group flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full transition-colors border backdrop-blur-sm scroll-snap-align-start ${ (item.link==='/'? pathname==='/' : pathname.startsWith(item.link)) ? 'bg-white/15 border-fuchsia-400/40 shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_2px_10px_-4px_rgba(0,0,0,0.5)]' : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-fuchsia-400/30'}`}
-                >
-                  <motion.span
-                    className="w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-br from-fuchsia-500 via-purple-500 to-indigo-500 text-white text-[11px] shadow-inner shadow-black/40"
-                    whileHover={{ rotate: 4 }}
-                    whileTap={{ scale: 0.92 }}
-                    layoutId={`icon-${item.name}`}
-                  >
-                    {item.icon}
-                  </motion.span>
-                  <span className="text-xs font-medium text-white whitespace-nowrap group-hover:text-fuchsia-100 tracking-wide">
-                    {item.name}
-                  </span>
-
-
-                  
-                </Link>
-              ))}
-            </div>
-            <motion.button
-              onClick={() => setOpen(false)}
-              aria-label="Fermer le menu"
-              whileHover={{ rotate: 90 }}
-              whileTap={{ scale: 0.9 }}
-              className="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white/70 hover:text-white"
-            >
-              ✕
-            </motion.button>
-          </motion.nav>
-        )}
+  {/* Variante horizontale supprimée: toujours vertical */}
         {open && verticalVariant && (
           <motion.nav
             key="vertical"

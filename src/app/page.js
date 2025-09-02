@@ -387,20 +387,22 @@ export default function AgentsPage() {
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5 dark:opacity-10 transition-opacity"></div>
 
         <div className="container mx-auto mb-12 relative">
-          {/* Barre de navigation avec menu Google */}
-          <div className="flex justify-end items-center w-full fixed top-0 left-0 right-0 z-40 px-4 py-1 backdrop-blur-sm bg-gradient-to-b from-white/70 to-transparent dark:from-blue-900/70 transition-colors">
-            {/* Menu style Google en haut à droite */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-            >
-              <GoogleMenu />
-            </motion.div>
-          </div>
+          {/* Barre de navigation unifiée (alignée avec pages agents) */}
+          <header className="fixed top-0 left-0 w-full z-50 py-3 px-4 backdrop-blur-2xl shadow-2xl border-b border-white/10 dark:border-white/10 bg-gradient-to-r from-indigo-900/80 via-violet-900/70 to-transparent">
+            <div className="container mx-auto flex justify-end items-center gap-2">
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.1 }}
+                whileHover={{ scale: 1.04 }}
+              >
+                <GoogleMenu />
+              </motion.div>
+            </div>
+          </header>
 
-          {/* Espace pour compenser la barre de navigation fixe - réduit */}
-          <div className="h-10"></div>
+          {/* Espace compensateur même hauteur que header agents */}
+          <div className="h-16"></div>
 
           {/* Titre LaZoneIA avec animations avancées */}
           <div className="relative mb-6 mt-1 pt-2 pb-2 select-none">

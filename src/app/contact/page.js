@@ -52,51 +52,33 @@ export default function ContactPage() {
       <div className="pointer-events-none absolute inset-0 opacity-40 mix-blend-overlay">
         <div className={`absolute inset-0 ${isLight ? 'bg-[radial-gradient(circle_at_20%_30%,rgba(56,189,248,0.25),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(167,139,250,0.25),transparent_60%)]' : 'bg-[radial-gradient(circle_at_20%_30%,rgba(56,189,248,0.08),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(167,139,250,0.08),transparent_60%)]'} transition-all duration-700`}></div>
       </div>
-      {/* Barre de navigation avec menu Google et flèche retour */}
-  <div className="flex justify-between items-center w-full fixed top-0 left-0 right-0 z-40 px-4 py-4 backdrop-blur-sm bg-gradient-to-b from-white/70 to-transparent dark:from-blue-900/70 transition-colors">
-        {/* Flèche de retour */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <Link href="/">
-            <motion.button
-              className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 shadow-lg hover:bg-white/20 transition-colors"
-              whileHover={{ scale: 1.05, x: -3 }}
-              whileTap={{ scale: 0.95 }}
-              aria-label="Retour à l'accueil"
-            >
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                className="h-5 w-5 text-white" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
+      {/* Header unifié (comme pages agents) */}
+      <header className="fixed top-0 left-0 w-full z-50 py-3 px-4 backdrop-blur-2xl shadow-2xl border-b border-white/10 bg-gradient-to-r from-indigo-900/80 via-violet-900/70 to-transparent transition-colors">
+        <div className="container mx-auto flex justify-between items-center gap-4">
+          {/* Flèche retour desktop */}
+          <div className="hidden md:flex items-center justify-start w-16">
+            <Link href="/" replace>
+              <motion.button
+                className="w-10 h-10 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/10 shadow-lg hover:bg-white/20 transition-colors"
+                whileHover={{ scale: 1.12, x: -3 }}
+                whileTap={{ scale: 0.92, rotate: -8 }}
+                aria-label="Retour à l'accueil"
               >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M10 19l-7-7m0 0l7-7m-7 7h18" 
-                />
-              </svg>
-            </motion.button>
-          </Link>
-        </motion.div>
-        
-        {/* Menu style Google en haut à droite */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-        >
-          <GoogleMenu />
-        </motion.div>
-      </div>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+              </motion.button>
+            </Link>
+          </div>
+          <div className="flex-1" />
+          <div className="flex items-center gap-2">
+            <GoogleMenu />
+          </div>
+        </div>
+      </header>
       
-      {/* Espace pour compenser la barre de navigation fixe */}
-      <div className="h-16"></div>
+  {/* Espace pour compenser la barre de navigation fixe */}
+  <div className="h-16"></div>
       
       <section className="py-16 px-4">
         <div className="container mx-auto max-w-4xl">
