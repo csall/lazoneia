@@ -16,8 +16,9 @@ export default function MessageList({ messages, colors, lastBotMsgRef, resultRef
     const compute = () => {
       const w = window.innerWidth;
       if (w >= 1024) { // desktop
-        // Réduction des marges inutiles pour exploiter la hauteur
-        setLayoutOffsets({ top: headerHeight + 16, bottom: inputHeight + 40 });
+        // Ajout d'espace supplémentaire sous les messages pour dégager l'input (demande utilisateur)
+        const extraDesktopGap  = 50 ; // espace additionnel
+        setLayoutOffsets({ top: headerHeight + 16, bottom: inputHeight + 40 + extraDesktopGap });
       } else if (w >= 640) { // tablette
         setLayoutOffsets({ top: headerHeight + 32, bottom: inputHeight + 80 });
       } else { // mobile
