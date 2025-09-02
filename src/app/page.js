@@ -270,7 +270,7 @@ const AgentCard = ({
           {/* Button */}
           {/* Séparateur et bouton */}
           <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between pointer-events-none">
-            <span className="h-px w-full mr-2 bg-white/10 rounded-sm" />
+            <span className={`h-px w-full mr-2 rounded-sm ${isLight ? 'bg-gray-300/70' : 'bg-white/10'}`} />
             <motion.div
               className="pointer-events-auto"
             initial={{ y: 10, opacity: 0 }}
