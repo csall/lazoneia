@@ -34,13 +34,12 @@ const AgentCard = ({
   const isLight = theme === 'light';
   const textSecondary = isLight ? 'text-gray-600 group-hover:text-gray-800' : 'text-gray-300 group-hover:text-white';
 
-  // Background layers adapted for light vs dark to éviter un aspect trop sombre en mode clair
+  // Per-agent background: light uses direct gradient class, dark keeps layered radial for depth
   const cardBackground = isLight
-  ? `radial-gradient(circle at 50% 0%, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.35) 70%),
-    linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.6) 100%)`
-  : `radial-gradient(circle at 50% 0%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 55%, rgba(0,0,0,0) 75%),
-    radial-gradient(circle at 85% 140%, rgba(255,255,255,0.08), rgba(0,0,0,0) 70%),
-    linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0.55) 95%)`;
+    ? 'transparent'
+    : `radial-gradient(circle at 50% 0%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 55%, rgba(0,0,0,0) 75%),
+       radial-gradient(circle at 85% 140%, rgba(255,255,255,0.08), rgba(0,0,0,0) 70%),
+       linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0.55) 95%)`;
 
   return (
     <motion.div
@@ -52,10 +51,9 @@ const AgentCard = ({
       whileHover={{ scale: 1.02 }}
     >
       <motion.div
-  className={`relative backdrop-blur-xl px-2 py-1 sm:px-3 sm:py-2 rounded-xl overflow-hidden border ${style.border} group w-full flex flex-col h-full transition-shadow ${isLight ? 'shadow-[0_2px_6px_-1px_rgba(0,0,0,0.08),0_0_0_1px_rgba(0,0,0,0.05)] hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.06)]' : 'shadow-[0_0_0_1px_rgba(255,255,255,0.05)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.08)]'}`}
-        style={{
-          background: cardBackground,
-        }}
+  className={`relative backdrop-blur-xl px-2 py-1 sm:px-3 sm:py-2 rounded-xl overflow-hidden border ${style.border} group w-full flex flex-col h-full transition-shadow
+    ${isLight ? `${style.bg} shadow-[0_2px_6px_-1px_rgba(0,0,0,0.08),0_0_0_1px_rgba(0,0,0,0.05)] hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.06)]` : 'shadow-[0_0_0_1px_rgba(255,255,255,0.05)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.08)]'}`}
+        style={isLight ? undefined : { background: cardBackground }}
         whileHover={{
           y: -15,
           zIndex: 20,
@@ -64,10 +62,14 @@ const AgentCard = ({
       >
         {/* Unified contour overlay for both themes */}
         <div className="pointer-events-none absolute inset-0 rounded-xl">
-          {/* Outer ring */}
-          <div className={`absolute inset-0 rounded-xl ring-1 ${isLight ? 'ring-white/50' : 'ring-white/25'}`}></div>
+          {/* Outer ring (tinted approach inspired by Punchy) */}
+          <div className={`absolute inset-0 rounded-xl ring-1 ${isLight ? 'ring-white/40' : 'ring-white/25'}`}></div>
+          {/* Light mode subtle colored glow overlay */}
+          {isLight && (
+            <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${style.glow} opacity-20 mix-blend-multiply`}></div>
+          )}
           {/* Radial soft highlight */}
-          <div className={`absolute inset-0 rounded-xl mix-blend-overlay ${isLight ? 'opacity-40' : 'opacity-45'} bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.45),transparent_65%)]`}></div>
+          <div className={`absolute inset-0 rounded-xl mix-blend-overlay ${isLight ? 'opacity-35' : 'opacity-45'} bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.45),transparent_65%)]`}></div>
           {/* Dark mode glow gradient */}
           {!isLight && (
             <div className={`absolute -inset-[2px] rounded-[0.9rem] blur-[10px] opacity-35 bg-gradient-to-r ${style.glow}`}></div>
@@ -75,10 +77,12 @@ const AgentCard = ({
           {/* Inner subtle border */}
           <div className={`absolute inset-px rounded-[0.65rem] border ${isLight ? 'border-white/10 opacity-20' : 'border-white/15 opacity-40'}`}></div>
         </div>
-        {/* Mesh gradient background */}
-        <div
-          className={`absolute inset-0 bg-gradient-to-br ${style.bg} ${isLight ? 'opacity-70 mix-blend-multiply' : 'opacity-80'} transition-opacity`}
-        ></div>
+        {/* Mesh gradient background (only dark mode needs overlay; light uses direct bg class) */}
+        {!isLight && (
+          <div
+            className={`absolute inset-0 bg-gradient-to-br ${style.bg} opacity-80 transition-opacity`}
+          ></div>
+        )}
         <div
           className={`absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10`}
         ></div>
@@ -154,8 +158,10 @@ const AgentCard = ({
                 {name}
               </motion.h3>
               <motion.span
-                className={`text-[10px] py-0.5 px-2 ${style.accent} text-white rounded-full leading-none relative overflow-hidden
-                  ${isLight ? 'opacity-90' : 'opacity-95 shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_2px_6px_-1px_rgba(0,0,0,0.5)]'}
+                className={`text-[10px] py-0.5 px-2 rounded-full leading-none relative overflow-hidden text-white
+                  ${isLight
+                    ? `bg-gradient-to-r ${style.button} shadow-[0_2px_4px_-1px_rgba(0,0,0,0.25)] ring-1 ring-white/40`
+                    : `${style.accent} opacity-95 shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_2px_6px_-1px_rgba(0,0,0,0.5)]`}
                 `}
                 initial={{ x: -20, opacity: 0 }}
                 whileInView={{ x: 0, opacity: 1 }}
@@ -305,7 +311,7 @@ const AgentCard = ({
                 ${
                   name.split(" ")[0] === "to_be_desactivated"
                     ? "bg-gray-500 cursor-not-allowed opacity-50 pointer-events-none"
-                    : `bg-gradient-to-r ${isLight ? 'from-indigo-400 to-violet-500 hover:from-indigo-500 hover:to-violet-600' : 'from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700'}`
+                    : `bg-gradient-to-r ${style.button}`
                 }`}
               aria-label={`Ouvrir ${name}`}
             >
