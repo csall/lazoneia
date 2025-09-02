@@ -74,15 +74,8 @@ export default function InputBar({
   const [inputHeight, setInputHeight] = useState(100);
   const [reducedMotion, setReducedMotion] = useState(false);
   const { theme, toggle } = useTheme();
-  // Responsive button sizing / positioning
-  const [viewportWidth, setViewportWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
-  useEffect(() => {
-    const onResize = () => setViewportWidth(window.innerWidth);
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
-  const isMobile = viewportWidth < 640; // Tailwind sm breakpoint
-  const btnSize = isMobile ? 36 : 48; // reduced mobile circular button size
+  // NOTE: Removed JS-based viewport sizing to avoid SSR hydration mismatches.
+  // Use pure CSS responsive classes (w-9 h-9 vs sm:w-12 sm:h-12) for buttons.
 
   // Thème géré globalement
 
@@ -144,7 +137,7 @@ export default function InputBar({
         background: "none",
         boxShadow: "none",
         border: "none",
-        minHeight: isMobile ? "68px" : "72px",
+        minHeight: "72px",
         paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 0.75rem)'
       }}
     >
@@ -280,17 +273,11 @@ export default function InputBar({
                     type="button"
                     onClick={handleMicClick}
                     disabled={isLoading}
-                    className={`fancy-btn mic-ready rounded-full shadow border flex items-center justify-center transition-all duration-150 cursor-pointer accent-outline send-active hover:brightness-110 border-[#6b7280] ${isMobile ? 'p-2.5' : 'p-3.5'}`}
+                    className={`fancy-btn mic-ready rounded-full shadow border flex items-center justify-center transition-all duration-150 cursor-pointer accent-outline send-active hover:brightness-110 border-[#6b7280] p-2.5 sm:p-3.5 w-9 h-9 sm:w-12 sm:h-12`}
                     data-active={!isLoading}
                     whileTap={{ scale: 0.9 }}
                     aria-label="Démarrer l'enregistrement"
-                    style={{
-                      width: btnSize,
-                      height: btnSize,
-                      minWidth: btnSize,
-                      minHeight: btnSize,
-                      boxShadow: "0 0 0 3px rgba(107,114,128,0.35)",
-                    }}
+                    style={{ boxShadow: "0 0 0 3px rgba(107,114,128,0.35)" }}
                   >
                     {/* Icône micro style ChatGPT (pleine) taille réduite */}
                     <svg
@@ -305,19 +292,13 @@ export default function InputBar({
                     </svg>
                   </motion.button>
                 )}
-                {userInput.trim().length > 0 && (
+        {userInput.trim().length > 0 && (
                   <motion.button
                     type="submit"
                     disabled={isLoading}
-                    className={`fancy-btn font-semibold rounded-full shadow border flex items-center justify-center text-xl transition-all duration-150 cursor-pointer align-middle accent-outline ${userInput.trim().length>0 ? 'send-active' : 'send-disabled'} ${isMobile ? 'p-2.5' : 'p-3.5'}`}
+          className={`fancy-btn font-semibold rounded-full shadow border flex items-center justify-center text-xl transition-all duration-150 cursor-pointer align-middle accent-outline ${userInput.trim().length>0 ? 'send-active' : 'send-disabled'} p-2.5 sm:p-3.5 w-9 h-9 sm:w-12 sm:h-12`}
                     whileTap={{ scale: 0.9 }}
-                    style={{
-                      width: btnSize,
-                      height: btnSize,
-                      minWidth: btnSize,
-                      minHeight: btnSize,
-                      boxShadow: "0 0 0 3px rgba(120,120,255,0.08)",
-                    }}
+          style={{ boxShadow: "0 0 0 3px rgba(120,120,255,0.08)" }}
                   >
                     <AnimatePresence>
                       {isLoading ? (
@@ -400,12 +381,7 @@ export default function InputBar({
                     className="bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-full p-3 shadow border border-gray-400 flex items-center justify-center transition-all duration-200 cursor-pointer"
                     whileTap={{ scale: 0.9 }}
                     aria-label="Annuler l'enregistrement"
-                    style={{
-                      width: btnSize,
-                      height: btnSize,
-                      minWidth: btnSize,
-                      minHeight: btnSize,
-                    }}
+                    style={{ width: '48px', height: '48px' }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -458,12 +434,7 @@ export default function InputBar({
                     className="bg-green-500 hover:bg-green-600 text-white rounded-full p-3 shadow border border-green-300 flex items-center justify-center transition-all duration-200 cursor-pointer"
                     whileTap={{ scale: 0.9 }}
                     aria-label="Valider l'enregistrement"
-                    style={{
-                      width: btnSize,
-                      height: btnSize,
-                      minWidth: btnSize,
-                      minHeight: btnSize,
-                    }}
+                    style={{ width: '48px', height: '48px' }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
