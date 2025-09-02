@@ -377,7 +377,7 @@ export default function AgentsPage() {
 
   const isLight = theme === 'light';
   return (
-    <main className={`min-h-screen font-sans transition-colors duration-500 ${isLight ? 'text-gray-800 bg-[radial-gradient(circle_at_20%_15%,rgba(56,189,248,0.25),transparent_55%),radial-gradient(circle_at_80%_75%,rgba(167,139,250,0.25),transparent_55%),linear-gradient(to_br,#f8fafc,#ffffff,#f5f3ff)]' : 'text-white bg-gradient-to-br from-blue-950 via-blue-900 to-purple-950'} relative overflow-hidden`}>      
+    <main className={`min-h-screen font-sans transition-colors duration-500 ${isLight ? 'text-gray-800 bg-[radial-gradient(circle_at_20%_15%,rgba(56,189,248,0.25),transparent_55%),radial-gradient(circle_at_80%_75%,rgba(167,139,250,0.25),transparent_55%),linear-gradient(to_bottom_right,#f8fafc,#ffffff,#f5f3ff)]' : 'text-white bg-gradient-to-br from-blue-950 via-blue-900 to-purple-950'} relative overflow-hidden`}>      
       {/* Theme animated overlay */}
       <div className="pointer-events-none absolute inset-0 ${isLight ? 'opacity-60' : 'opacity-40'} mix-blend-overlay">
         <div className={`absolute inset-0 ${isLight ? 'bg-[radial-gradient(circle_at_25%_30%,rgba(56,189,248,0.18),transparent_60%),radial-gradient(circle_at_75%_70%,rgba(167,139,250,0.18),transparent_60%),radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.6),transparent_65%)]' : 'bg-[radial-gradient(circle_at_20%_30%,rgba(56,189,248,0.08),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(167,139,250,0.08),transparent_60%)]'} transition-all duration-700`}></div>

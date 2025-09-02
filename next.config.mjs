@@ -31,7 +31,7 @@ const nextConfig = {
   output: 'standalone', // Optimise le déploiement sur Vercel
   
   // Garantit que les SVGs sont traités correctement
-  webpack(config) {
+  webpack(config, { dev }) {
     // Configuration spécifique pour les SVG
     // On gère deux cas:
     // 1. Les SVG importés en tant que composants React via SVGR
@@ -61,8 +61,10 @@ const nextConfig = {
         publicPath: '/'
       }
     });
+
+  // (Les diagnostics CSS ont été retirés; build standard rétabli)
     
-    return config;
+  return config;
   },
   
   // Configuration avancée pour garantir que les chemins statiques sont correctement résolus
