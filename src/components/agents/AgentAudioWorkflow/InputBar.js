@@ -74,6 +74,15 @@ export default function InputBar({
   const [inputHeight, setInputHeight] = useState(100);
   const [reducedMotion, setReducedMotion] = useState(false);
   const { theme, toggle } = useTheme();
+  // Responsive button sizing / positioning
+  const [viewportWidth, setViewportWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+  useEffect(() => {
+    const onResize = () => setViewportWidth(window.innerWidth);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  const isMobile = viewportWidth < 640; // Tailwind sm breakpoint
+  const btnSize = isMobile ? 40 : 48; // dynamic circular button size
 
   // Thème géré globalement
 
@@ -135,7 +144,8 @@ export default function InputBar({
         background: "none",
         boxShadow: "none",
         border: "none",
-        minHeight: "72px",
+        minHeight: isMobile ? "68px" : "72px",
+        paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 0.75rem)'
       }}
     >
       <style>{`
@@ -262,7 +272,7 @@ export default function InputBar({
                 Écris ton message... (Entrée pour envoyer)
               </div>
             )}
-            {/* Boutons micro et envoyer positionnés à droite dans le textarea */}
+            {/* Boutons micro et envoyer positionnés dynamiquement (center desktop / bottom mobile) */}
             {micState !== "recording" && (
               <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2 items-center">
                 {userInput.trim().length === 0 && (
@@ -270,15 +280,15 @@ export default function InputBar({
                     type="button"
                     onClick={handleMicClick}
                     disabled={isLoading}
-                    className="fancy-btn mic-ready rounded-full p-3.5 shadow border flex items-center justify-center transition-all duration-150 cursor-pointer accent-outline send-active hover:brightness-110 border-[#6b7280]"
+                    className={`fancy-btn mic-ready rounded-full shadow border flex items-center justify-center transition-all duration-150 cursor-pointer accent-outline send-active hover:brightness-110 border-[#6b7280] ${isMobile ? 'p-2.5' : 'p-3.5'}`}
                     data-active={!isLoading}
                     whileTap={{ scale: 0.9 }}
                     aria-label="Démarrer l'enregistrement"
                     style={{
-                      width: 44,
-                      height: 44,
-                      minWidth: 36,
-                      minHeight: 36,
+                      width: btnSize,
+                      height: btnSize,
+                      minWidth: btnSize,
+                      minHeight: btnSize,
                       boxShadow: "0 0 0 3px rgba(107,114,128,0.35)",
                     }}
                   >
@@ -299,13 +309,13 @@ export default function InputBar({
                   <motion.button
                     type="submit"
                     disabled={isLoading}
-                    className={`fancy-btn font-semibold p-3.5 rounded-full shadow border flex items-center justify-center text-xl transition-all duration-150 cursor-pointer align-middle accent-outline ${userInput.trim().length>0 ? 'send-active' : 'send-disabled'}`}
+                    className={`fancy-btn font-semibold rounded-full shadow border flex items-center justify-center text-xl transition-all duration-150 cursor-pointer align-middle accent-outline ${userInput.trim().length>0 ? 'send-active' : 'send-disabled'} ${isMobile ? 'p-2.5' : 'p-3.5'}`}
                     whileTap={{ scale: 0.9 }}
                     style={{
-                      width: 44,
-                      height: 44,
-                      minWidth: 36,
-                      minHeight: 36,
+                      width: btnSize,
+                      height: btnSize,
+                      minWidth: btnSize,
+                      minHeight: btnSize,
                       boxShadow: "0 0 0 3px rgba(120,120,255,0.08)",
                     }}
                   >
@@ -391,10 +401,10 @@ export default function InputBar({
                     whileTap={{ scale: 0.9 }}
                     aria-label="Annuler l'enregistrement"
                     style={{
-                      width: 44,
-                      height: 44,
-                      minWidth: 36,
-                      minHeight: 36,
+                      width: btnSize,
+                      height: btnSize,
+                      minWidth: btnSize,
+                      minHeight: btnSize,
                     }}
                   >
                     <svg
@@ -449,10 +459,10 @@ export default function InputBar({
                     whileTap={{ scale: 0.9 }}
                     aria-label="Valider l'enregistrement"
                     style={{
-                      width: 44,
-                      height: 44,
-                      minWidth: 36,
-                      minHeight: 36,
+                      width: btnSize,
+                      height: btnSize,
+                      minWidth: btnSize,
+                      minHeight: btnSize,
                     }}
                   >
                     <svg
