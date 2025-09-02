@@ -82,7 +82,7 @@ export default function InputBar({
     return () => window.removeEventListener('resize', onResize);
   }, []);
   const isMobile = viewportWidth < 640; // Tailwind sm breakpoint
-  const btnSize = isMobile ? 40 : 48; // dynamic circular button size
+  const btnSize = isMobile ? 36 : 48; // reduced mobile circular button size
 
   // Thème géré globalement
 
