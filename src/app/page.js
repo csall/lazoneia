@@ -285,7 +285,7 @@ const AgentCard = ({
                 ${
                   name.split(" ")[0] === "to_be_desactivated"
                     ? "bg-gray-500 cursor-not-allowed opacity-50 pointer-events-none"
-                    : `bg-gradient-to-r ${style.button}`
+                    : `bg-gradient-to-r ${isLight ? 'from-indigo-400 to-violet-500 hover:from-indigo-500 hover:to-violet-600' : 'from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700'}`
                 }`}
               aria-label={`Ouvrir ${name}`}
             >
