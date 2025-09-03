@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Face/Head -->
-  <circle cx="120" cy="120" r="90" fill="url(#gradient-face-scribo)" />
-  <circle cx="120" cy="120" r="90" stroke="#0F766E" stroke-width="4" />
+  <circle cx="120" cy="120" r="100" fill="url(#gradient-face-scribo)" />
+  <circle cx="120" cy="120" r="120" fill="url(#patternScribo)" opacity="0.25" />
   
   <!-- Eyes -->
   <circle cx="90" cy="100" r="12" fill="white" />
@@ -38,19 +37,20 @@
   <path d="M80 170C80 165 85 165 90 170C95 165 100 165 100 170C100 175 90 180 90 180C90 180 80 175 80 170Z" fill="#5EEAD4" />
   <path d="M140 170C140 165 145 165 150 170C155 165 160 165 160 170C160 175 150 180 150 180C150 180 140 175 140 170Z" fill="#5EEAD4" />
   
-  <!-- Decorative elements -->
-  <circle cx="120" cy="120" r="100" stroke="#99F6E4" stroke-width="1" stroke-dasharray="4 4" />
-  <circle cx="120" cy="120" r="110" stroke="#99F6E4" stroke-width="1" stroke-dasharray="8 8" />
+  <!-- Removed dashed rings (unified pattern) -->
   
   <!-- Writing implement on top -->
   <path d="M120 50L115 60H125L120 50Z" fill="#14B8A6" />
   <rect x="115" y="60" width="10" height="15" fill="#14B8A6" />
   
-  <!-- Definitions for gradients -->
+  <!-- Definitions -->
   <defs>
     <linearGradient id="gradient-face-scribo" x1="60" y1="60" x2="180" y2="180" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#14B8A6" />
       <stop offset="100%" stop-color="#0F766E" />
     </linearGradient>
+    <pattern id="patternScribo" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="10" r="1" fill="#99F6E4" />
+    </pattern>
   </defs>
 </svg>

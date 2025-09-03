@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Face/Head -->
-  <circle cx="120" cy="120" r="90" fill="url(#gradient-face-pitchy)" />
-  <circle cx="120" cy="120" r="90" stroke="#047857" stroke-width="4" />
+  <circle cx="120" cy="120" r="100" fill="url(#gradient-face-pitchy)" />
+  <circle cx="120" cy="120" r="120" fill="url(#patternPitchy)" opacity="0.25" />
   
   <!-- Eyes -->
   <circle cx="90" cy="100" r="12" fill="white" />
@@ -41,19 +40,19 @@
   <path d="M190 160C190 150 180 150 170 160L160 170H180L190 160Z" fill="#D1FAE5" />
   <text x="170" y="163" font-family="Arial" font-size="10" fill="#047857">Idea!</text>
   
-  <!-- Decorative elements -->
-  <circle cx="120" cy="120" r="100" stroke="#A7F3D0" stroke-width="1" stroke-dasharray="4 4" />
-  <circle cx="120" cy="120" r="110" stroke="#A7F3D0" stroke-width="1" stroke-dasharray="8 8" />
+  <!-- Removed dashed rings -->
   
   <!-- Lightbulb - ideas -->
   <path d="M120 45C110 45 105 55 110 65C115 70 125 70 130 65C135 55 130 45 120 45Z" fill="#34D399" />
   <rect x="115" y="65" width="10" height="5" fill="#10B981" />
   
-  <!-- Definitions for gradients -->
   <defs>
     <linearGradient id="gradient-face-pitchy" x1="60" y1="60" x2="180" y2="180" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#10B981" />
       <stop offset="100%" stop-color="#065F46" />
     </linearGradient>
+    <pattern id="patternPitchy" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="10" r="1" fill="#A7F3D0" />
+    </pattern>
   </defs>
 </svg>

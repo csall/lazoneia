@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Face background with gradient -->
   <circle cx="120" cy="120" r="100" fill="url(#faceGradient)"/>
+  <circle cx="120" cy="120" r="120" fill="url(#patternGlowUnified)" opacity="0.25" />
   
   <!-- Eyes - alluring -->
   <path d="M75 95C75 95 80 85 90 85C100 85 105 95 105 95" stroke="white" stroke-width="4" stroke-linecap="round"/>
@@ -50,8 +50,7 @@
   <path d="M110 180C110 175 115 175 120 180C125 175 130 175 130 180C130 185 120 195 120 195C120 195 110 185 110 180Z" fill="#FBCFE8" />
   <path d="M120 195L120 205" stroke="#F9A8D4" stroke-width="2" />
   
-  <!-- Radial pattern for background with pink glow -->
-  <circle cx="120" cy="120" r="120" fill="url(#bgPattern)" opacity="0.3"/>
+  <!-- Unified pattern replaces specific radial pattern -->
   
   <!-- Gradients and patterns -->
   <defs>
@@ -60,7 +59,7 @@
       <stop offset="100%" stop-color="#9D174D"/>
     </radialGradient>
     
-    <pattern id="bgPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+    <pattern id="patternGlowUnified" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
       <circle cx="10" cy="10" r="1" fill="#FBCFE8"/>
     </pattern>
     
