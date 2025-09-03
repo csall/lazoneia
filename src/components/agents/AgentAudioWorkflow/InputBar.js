@@ -273,85 +273,54 @@ export default function InputBar({
                     type="button"
                     onClick={handleMicClick}
                     disabled={isLoading}
-                    className={`fancy-btn mic-ready rounded-full shadow border flex items-center justify-center transition-all duration-150 cursor-pointer accent-outline send-active hover:brightness-110 border-[#6b7280] p-2.5 sm:p-3.5 w-9 h-9 sm:w-12 sm:h-12`}
-                    data-active={!isLoading}
-                    whileTap={{ scale: 0.9 }}
+                    className="neutral-btn accent-outline rounded-lg p-2 flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 transition active:scale-95 hover:shadow disabled:opacity-50 disabled:cursor-not-allowed"
+                    whileTap={{ scale: 0.92 }}
                     aria-label="Démarrer l'enregistrement"
-                    style={{ boxShadow: "0 0 0 3px rgba(107,114,128,0.35)" }}
                   >
-                    {/* Icône micro style ChatGPT (pleine) taille réduite */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
-                      className="h-8 w-8"
-                      aria-hidden="true"
-                      fill="#fff"
+                      className="h-5 w-5 text-[var(--text-dim)]"
+                      fill="currentColor"
                     >
                       <path d="M12 15a3 3 0 003-3V7a3 3 0 10-6 0v5a3 3 0 003 3z" />
                       <path d="M5 11a1 1 0 012 0 5 5 0 0010 0 1 1 0 012 0 7 7 0 01-6 6.92V20h3a1 1 0 010 2H8a1 1 0 010-2h3v-2.08A7 7 0 015 11z" />
                     </svg>
                   </motion.button>
                 )}
-        {userInput.trim().length > 0 && (
+                {userInput.trim().length > 0 && (
                   <motion.button
                     type="submit"
-                    disabled={isLoading}
-          className={`fancy-btn font-semibold rounded-full shadow border flex items-center justify-center text-xl transition-all duration-150 cursor-pointer align-middle accent-outline ${userInput.trim().length>0 ? 'send-active' : 'send-disabled'} p-2.5 sm:p-3.5 w-9 h-9 sm:w-12 sm:h-12`}
-                    whileTap={{ scale: 0.9 }}
-          style={{ boxShadow: "0 0 0 3px rgba(120,120,255,0.08)" }}
+                    disabled={isLoading || userInput.trim().length === 0}
+                    className="neutral-btn accent-outline rounded-lg p-2 flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 transition active:scale-95 hover:shadow disabled:opacity-50 disabled:cursor-not-allowed"
+                    whileTap={{ scale: 0.92 }}
+                    aria-label="Envoyer le message"
                   >
                     <AnimatePresence>
                       {isLoading ? (
                         <motion.div
-                          className="animate-spin rounded-full h-7 w-7 sm:h-6 sm:w-6 border-b-2 border-white border-t-2 border-indigo-400"
+                          className="animate-spin rounded-full h-5 w-5 border-b-2 border-[var(--text-dim)] border-t-2 border-transparent"
                           initial={{ rotate: 0 }}
                           animate={{ rotate: 360 }}
                           transition={{ repeat: Infinity, duration: 1 }}
                         />
                       ) : (
-                        <span className="flex items-center justify-center h-full">
-                          <motion.svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-7 w-7 sm:h-6 sm:w-6"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            initial={{ x: 0 }}
-                            animate={{ x: isFocused ? 4 : 0 }}
-                            transition={{
-                              type: "spring",
-                              stiffness: 300,
-                              damping: 20,
-                            }}
-                          >
-                            <defs>
-                              <linearGradient
-                                id="arrowGradient"
-                                x1="0"
-                                y1="0"
-                                x2="24"
-                                y2="24"
-                                gradientUnits="userSpaceOnUse"
-                              >
-                                <stop stopColor="#4f46e5" />
-                                <stop offset="0.5" stopColor="#6366f1" />
-                                <stop offset="1" stopColor="#a78bfa" />
-                              </linearGradient>
-                            </defs>
-                            <path
-                              d="M4 12L20 12"
-                              stroke="#fff"
-                              strokeWidth="3.2"
-                              strokeLinecap="round"
-                            />
-                            <path
-                              d="M14 6L20 12L14 18"
-                              stroke="#fff"
-                              strokeWidth="3.2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </motion.svg>
-                        </span>
+                        <motion.svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 text-[var(--text-dim)]"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.4"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          initial={{ x: 0 }}
+                          animate={{ x: isFocused ? 3 : 0 }}
+                          transition={{ type: 'spring', stiffness: 260, damping: 18 }}
+                        >
+                          <path d="M4 12h16" />
+                          <path d="M14 6l6 6-6 6" />
+                        </motion.svg>
                       )}
                     </AnimatePresence>
                   </motion.button>
