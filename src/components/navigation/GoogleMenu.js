@@ -198,15 +198,7 @@ const GoogleMenu = () => {
                 );
               })}
             </div>
-            <motion.button
-              onClick={() => setOpen(false)}
-              aria-label="Fermer le menu"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.92 }}
-              className="mt-2 w-full flex items-center justify-center gap-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-white/80 hover:text-white py-2 text-sm"
-            >
-              ✕ <span className="text-xs uppercase tracking-wide">Fermer</span>
-            </motion.button>
+            {/* Bouton fermer supprimé selon la demande */}
           </motion.nav>
         )}
       </AnimatePresence>
