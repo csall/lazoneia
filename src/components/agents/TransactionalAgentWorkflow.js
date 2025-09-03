@@ -1,0 +1,331 @@
+"use client";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import { useTheme } from "@/components/theme/ThemeProvider";
+import Image from "next/image";
+import Header from "./AgentAudioWorkflow/Header";
+
+export default function TransactionalAgentWorkflow({ agent }) {
+  const { theme } = useTheme();
+  const isLight = theme === "light";
+  const {
+    endpoint,
+    placeholder = "Entrez votre texte...",
+    sendButtonLabel = "Transformer",
+    tones = [],
+    colors = {},
+    branding = {},
+    tagline,
+  } = agent;
+
+  // Reuse same color merge logic conceptually as AgentAudioWorkflow
+  const baseDark = {
+    gradientFrom: "from-blue-950",
+    gradientTo: "to-purple-950",
+    textColor: "text-white",
+    buttonGradientFrom: "from-indigo-500",
+    buttonGradientTo: "to-purple-600",
+    buttonHoverFrom: "hover:from-indigo-600",
+    buttonHoverTo: "hover:to-purple-700",
+    border: "border-indigo-500/30",
+  };
+  const baseLight = {
+    gradientFrom: "from-sky-50",
+    gradientTo: "to-violet-100",
+    textColor: "text-gray-800",
+    buttonGradientFrom: "from-sky-500",
+    buttonGradientTo: "to-violet-500",
+    buttonHoverFrom: "hover:from-sky-600",
+    buttonHoverTo: "hover:to-violet-600",
+    border: "border-sky-300/50",
+  };
+  const mergedColors = { ...(isLight ? baseLight : baseDark), ...colors };
+
+  // Header requires these props; keep minimal implementations
+  const [messages, setMessages] = useState([]); // no chat history for transactional, stays empty
+  const clearHistory = () => setMessages([]);
+  const [targetLang, setTargetLang] = useState("français");
+  const handleLanguageChange = (e) => setTargetLang(e.target?.value || targetLang);
+  // Langues simplifiées (réduites)
+  const languagesRaw = useMemo(() => ([
+    { value: "français", label: "FR", flag: "fr" },
+    { value: "anglais", label: "EN", flag: "gb" },
+    { value: "espagnol", label: "ES", flag: "es" },
+    { value: "allemand", label: "DE", flag: "de" },
+    { value: "italien", label: "IT", flag: "it" },
+    { value: "portugais", label: "PT", flag: "pt" },
+    { value: "wolof", label: "WO", flag: "sn" },
+  ]), []);
+  const languages = useMemo(() => {
+    const map = new Map();
+    for (const l of languagesRaw) if (!map.has(l.value)) map.set(l.value, l);
+    return Array.from(map.values());
+  }, [languagesRaw]);
+  const languagesSafe = useMemo(() => languages.map((l,i)=>({ ...l, _kid:`lang-${i}-${l.value}` })), [languages]);
+  const [showLang, setShowLang] = useState(false);
+  const toggleLang = () => setShowLang(v => !v);
+  const selectLang = (val) => { setTargetLang(val); setShowLang(false); };
+
+  const [source, setSource] = useState("");
+  const [tone, setTone] = useState(tones[0]?.value || "");
+  const [result, setResult] = useState("");
+  const [highlightResult, setHighlightResult] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [error, setError] = useState("");
+  const [autoTriggered, setAutoTriggered] = useState(false);
+
+  const canSubmit = source.trim().length > 0 && !loading;
+
+  const handleSubmit = useCallback(async () => {
+    if (!canSubmit) return;
+    setLoading(true);
+    setResult("");
+    setError("");
+    try {
+      const r = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: source, tone, targetLang }),
+      });
+      if (!r.ok) throw new Error("Erreur serveur");
+      const data = await r.json().catch(() => ({}));
+      const text = data.result || data.output || data[0]?.text || JSON.stringify(data, null, 2);
+      setResult(text);
+      // highlight nouvelle réponse
+      setHighlightResult(true);
+      setTimeout(() => setHighlightResult(false), 1400);
+    } catch (e) {
+      setError(e.message || "Erreur");
+    } finally {
+      setLoading(false);
+    }
+  }, [endpoint, source, tone, targetLang, canSubmit]);
+
+  // Stable ref for handleSubmit to avoid effect dependency churn
+  const handleSubmitRef = useRef(handleSubmit);
+  useEffect(() => { handleSubmitRef.current = handleSubmit; }, [handleSubmit]);
+
+  const copyResult = () => {
+    if (!result) return;
+    navigator.clipboard.writeText(result);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  const handleSourceKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
+  // Auto-submit when language changes (stable deps) using refs to avoid dependency array churn warnings
+  const firstLangChange = useRef(true);
+  const sourceRef = useRef("");
+  const loadingRef = useRef(false);
+  const resultRef = useRef("");
+  useEffect(() => { sourceRef.current = source; }, [source]);
+  useEffect(() => { loadingRef.current = loading; }, [loading]);
+  useEffect(() => { resultRef.current = result; }, [result]);
+  useEffect(() => {
+    if (firstLangChange.current) { firstLangChange.current = false; return; }
+    const trimmed = sourceRef.current.trim();
+    if (!trimmed) {
+      if (resultRef.current) setResult("");
+      return;
+    }
+    if (!loadingRef.current) {
+      setAutoTriggered(true);
+      handleSubmitRef.current();
+      const to = setTimeout(() => setAutoTriggered(false), 1200);
+      return () => clearTimeout(to);
+    }
+  // only reacts to targetLang change intentionally
+  }, [targetLang]);
+
+  return (
+    <main className={`min-h-screen font-sans transition-colors ${isLight ? 'text-gray-800 bg-[radial-gradient(circle_at_20%_15%,rgba(56,189,248,0.25),transparent_55%),radial-gradient(circle_at_80%_75%,rgba(167,139,250,0.25),transparent_55%),linear-gradient(to_bottom_right,#f8fafc,#ffffff,#f5f3ff)]' : 'text-white bg-gradient-to-br from-blue-950 via-blue-900 to-purple-950'}`}>
+      <Header
+        branding={branding}
+        botImage={branding?.botImage || `/${agent.image}`}
+        tagline={tagline}
+        targetLang={targetLang}
+        handleLanguageChange={handleLanguageChange}
+        colors={mergedColors}
+        messages={messages}
+        clearHistory={clearHistory}
+      />
+  {/* Espace sous le header fixe */}
+  {/* Container avec plus d'espace sous le header fixe */}
+  <div className="mx-auto w-full max-w-6xl px-4 pb-24 pt-32 md:pt-40 flex flex-col gap-8 transition-all">
+        {tones.length > 0 && (
+          <div className="pt-1 -mx-1">
+            <div
+              className="flex gap-2 px-1 pb-2 overflow-x-auto md:overflow-visible md:flex-wrap whitespace-nowrap md:whitespace-normal scrollbar-thin"
+              style={{ WebkitOverflowScrolling: 'touch' }}
+            >
+        {tones.map((t) => (
+                <button
+                  key={t.value}
+                  onClick={() => setTone(t.value)}
+                  className={`px-3.5 py-1.5 rounded-full text-[11px] font-medium flex-shrink-0 transition border
+                    ${tone === t.value
+                      ? isLight
+                        ? 'bg-white text-indigo-700 border-indigo-300 shadow-sm ring-1 ring-indigo-200'
+                        : `bg-gradient-to-r ${colors.buttonGradientFrom || 'from-indigo-500'} ${colors.buttonGradientTo || 'to-violet-600'} text-white border-transparent shadow`
+                      : `bg-white/70 dark:bg-white/10 text-gray-700 dark:text-gray-300 border-gray-300/70 dark:border-white/10 hover:bg-white/90 dark:hover:bg-white/20`} focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60 focus-visible:ring-offset-2 ${isLight ? 'focus-visible:ring-offset-white' : 'focus-visible:ring-offset-transparent'}`}
+          title={`Ton: ${t.label}`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="grid gap-8 md:grid-cols-2 items-start">
+          {/* Source */}
+          <div className={`relative flex flex-col rounded-xl border backdrop-blur-sm ${isLight ? 'bg-white/70 border-gray-200 shadow-sm' : 'bg-white/5 border-white/10'} p-4 min-h-[420px]`}>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-medium uppercase tracking-wide opacity-70">Source</h2>
+              <div className="flex gap-2">
+                <button
+                  disabled={!source}
+                  onClick={() => setSource("")}
+                  className="text-xs px-2 py-1 rounded border border-gray-300/70 dark:border-white/15 hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-40"
+                >
+                  Effacer
+                </button>
+              </div>
+            </div>
+            <textarea
+              className={`flex-1 w-full resize-none rounded-md border bg-transparent p-3 text-sm leading-relaxed focus:outline-none focus:ring-2 ${isLight ? 'border-gray-300 focus:ring-indigo-300' : 'border-white/15 focus:ring-fuchsia-500/40'}`}
+              placeholder={placeholder}
+              value={source}
+              onChange={(e) => setSource(e.target.value)}
+              onKeyDown={handleSourceKeyDown}
+            />
+            <div className="mt-2 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400 select-none">
+              <span className="hidden sm:inline">Entrée pour envoyer • Shift+Entrée pour nouvelle ligne</span>
+              <span className="sm:hidden">Entrée = envoyer</span>
+              {autoTriggered && (
+                <span className="ml-2 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-medium bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-300 dark:border-indigo-400/40 animate-pulse" title="Envoi automatique après changement de langue">Auto</span>
+              )}
+            </div>
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                onClick={handleSubmit}
+                disabled={!canSubmit}
+                aria-label={sendButtonLabel || 'Transformer'}
+                title={isLight ? 'Envoyer (Entrée)' : ''}
+                className={`h-10 rounded-md text-sm font-medium transition flex items-center gap-2 px-4
+                  ${isLight
+                    ? (canSubmit
+                        ? 'border border-gray-300/70 bg-white/80 text-gray-800 hover:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300 active:scale-[0.97]'
+                        : 'border border-gray-200 bg-gray-200 text-gray-500 cursor-not-allowed')
+                    : (canSubmit
+                        ? `bg-gradient-to-r ${colors.buttonGradientFrom || 'from-indigo-500'} ${colors.buttonGradientTo || 'to-violet-600'} text-white hover:opacity-90 active:scale-[0.97]`
+                        : 'bg-white/10 text-gray-400 cursor-not-allowed')} 
+                `}
+              >
+                {loading && <span className={`inline-block w-4 h-4 border-2 ${isLight ? 'border-gray-400 border-t-gray-700' : 'border-white/40 border-t-white'} animate-spin rounded-full`} />}
+                {!loading && !isLight && canSubmit && (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-4 w-4 opacity-90" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 2 11 13" /><path d="m22 2-7 20-4-9-9-4Z" /></svg>
+                )}
+                {sendButtonLabel || 'Transformer'}
+              </button>
+            </div>
+          </div>
+
+          {/* Résultat */}
+          <div className={`relative flex flex-col rounded-xl border backdrop-blur-sm ${isLight ? 'bg-white/70 border-gray-200 shadow-sm' : 'bg-white/5 border-white/10'} p-4 min-h-[420px]`}>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-medium uppercase tracking-wide opacity-70">Résultat</h2>
+              <div className="flex gap-2 items-center">
+                <button
+                  type="button"
+                  onClick={toggleLang}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[10px] font-medium border border-gray-300/70 dark:border-white/15 bg-white/70 dark:bg-white/10 hover:bg-white/90 dark:hover:bg-white/20 transition"
+                  aria-haspopup="listbox"
+                  aria-expanded={showLang}
+                >
+                  <span className="flex items-center justify-center w-5 h-5 rounded overflow-hidden bg-white/20">
+                    <Image
+                      src={`https://flagcdn.com/${languages.find(l=>l.value===targetLang)?.flag || 'fr'}.svg`}
+                      alt={targetLang}
+                      width={20}
+                      height={20}
+                      className="w-full h-full object-cover"
+                      unoptimized
+                    />
+                  </span>
+                  <span className="uppercase tracking-wide leading-none">{languages.find(l=>l.value===targetLang)?.label || 'LANG'}</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" className={`h-3 w-3 transition-transform ${showLang ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z"/></svg>
+                </button>
+                <button
+                  onClick={copyResult}
+                  disabled={!result}
+                  className="text-xs px-2 py-1 rounded border border-gray-300/70 dark:border-white/15 hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-40"
+                >
+                  {copied ? 'Copié' : 'Copier'}
+                </button>
+                {result && (
+                  <button
+                    type="button"
+                    onClick={() => setResult("")}
+                    className="text-[10px] px-2 py-1 rounded border border-gray-300/60 dark:border-white/15 hover:bg-red-50 dark:hover:bg-red-500/10 text-red-600 dark:text-red-300"
+                  >
+                    Vider
+                  </button>
+                )}
+              </div>
+            </div>
+            {showLang && (
+              <div className="absolute top-14 right-4 z-20 w-48 max-h-72 overflow-y-auto rounded-lg border border-gray-200 dark:border-white/15 shadow-xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl p-2 flex flex-col gap-1 text-gray-800 dark:text-gray-100">
+                {languagesSafe.map(lang => {
+                  const selected = lang.value === targetLang;
+                  return (
+                    <button
+                      key={lang._kid}
+                      onClick={() => selectLang(lang.value)}
+                      className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs font-medium transition border text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/60 active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900 ${selected ? 'bg-gradient-to-r from-indigo-500/25 to-violet-500/25 text-indigo-700 dark:text-indigo-300 border-indigo-400/40 shadow-sm' : 'border-transparent'}`}
+                      role="option"
+                      aria-selected={selected}
+                    >
+                      <Image src={`https://flagcdn.com/${lang.flag}.svg`} alt={lang.label} width={18} height={18} className="rounded object-cover ring-1 ring-black/5 dark:ring-white/10" unoptimized />
+                      <span className="truncate">{lang.label}</span>
+                      {selected && (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-auto text-indigo-600 dark:text-indigo-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 13l4 4L19 7" /></svg>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+            <div className="relative flex-1 flex flex-col">
+              {loading && (
+                <div className="absolute inset-0 flex flex-col gap-2">
+                  {Array.from({ length: 10 }).map((_, i) => (
+                    <div key={i} className="h-3 rounded bg-gray-300/60 dark:bg-white/10 animate-pulse" style={{ width: `${70 + (i % 3) * 10}%` }} />
+                  ))}
+                </div>
+              )}
+              {!loading && error && <div className="text-sm text-red-500">{error}</div>}
+              {!loading && !error && result && (
+                <div className={highlightResult ? 'animate-[pulse_1.3s_ease-in-out] rounded-lg ring-1 ring-indigo-300/40 dark:ring-indigo-500/30 p-2 -m-2 transition' : 'p-0 m-0'}>
+                  <pre className="whitespace-pre-wrap text-sm leading-relaxed font-normal">{result}</pre>
+                </div>
+              )}
+              {!loading && !error && !result && (
+                <p className="text-sm opacity-60 italic">Le résultat apparaîtra ici après traitement…</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="sr-only" aria-live="polite">
+        {loading ? 'Traitement en cours…' : result ? 'Résultat mis à jour.' : error ? 'Erreur lors du traitement.' : ''}
+      </div>
+    </main>
+  );
+}

@@ -1,23 +1,11 @@
 "use client";
 
-import AgentAudioWorkflow from "@/components/agents/AgentAudioWorkflow";
-import { useTheme } from "@/components/theme/ThemeProvider";
 import agents from "@/config/agents";
+import TransactionalAgentWorkflow from "@/components/agents/TransactionalAgentWorkflow";
+
 
 export default function PunchyPage() {
-  const { theme } = useTheme();
-  const agent = agents.find(a => a.name === "Punchy");
-  return (
-    <AgentAudioWorkflow
-      branding={agent.branding}
-      endpoint={agent.endpoint}
-      placeholder={agent.placeholder}
-      botImage={agent.branding.botImage}
-      sendButtonLabel={agent.sendButtonLabel}
-      colors={agent.colors}
-      tones={agent.tones}
-      tagline={agent.tagline}
-      theme={theme}
-    />
-  );
+  const agent = agents.find(a => a.color === "punchy");
+  if (!agent) return null;
+  return <TransactionalAgentWorkflow agent={agent} />;
 }

@@ -1,23 +1,11 @@
 "use client";
 
-import AgentAudioWorkflow from "@/components/agents/AgentAudioWorkflow";
 import agents from "@/config/agents";
-import { useTheme } from "@/components/theme/ThemeProvider";
+import TransactionalAgentWorkflow from "@/components/agents/TransactionalAgentWorkflow";
+
 
 export default function ReplyPage() {
-  const { theme } = useTheme();
-  const agent = agents.find(a => a.name === "Reply");
-  return (
-    <AgentAudioWorkflow
-      branding={agent.branding}
-      endpoint={agent.endpoint}
-      placeholder={agent.placeholder}
-      botImage={agent.branding.botImage}
-      sendButtonLabel={agent.sendButtonLabel}
-      colors={agent.colors}
-      tones={agent.tones}
-      tagline={agent.tagline}
-      theme={theme}
-    />
-  );
+   const agent = agents.find(a => a.color === "reply");
+  if (!agent) return null;
+  return <TransactionalAgentWorkflow agent={agent} />;
 }

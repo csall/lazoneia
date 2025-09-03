@@ -65,7 +65,7 @@ const agents = [
       { value: "nutrition", label: "Nutrition" },
       { value: "astuce", label: "Astuce" }
     ],
-    colors: {
+  colors: {
       gradientFrom: "from-yellow-900",
       gradientTo: "to-amber-800",
       textColor: "text-white",
@@ -82,7 +82,8 @@ const agents = [
     },
     endpoint: "https://cheikh06000.app.n8n.cloud/webhook/foody",
     placeholder: "Écrivez ou enregistrez vos questions culinaires ou nutritionnelles...",
-    sendButtonLabel: "Obtenir des conseils"
+  sendButtonLabel: "Obtenir des conseils",
+  type: "conversationnel"
   },
   {
     name: "Psyco",
@@ -105,7 +106,7 @@ const agents = [
       { value: "conseil", label: "Conseil" },
       { value: "écoute", label: "Écoute" }
     ],
-    colors: {
+  colors: {
       gradientFrom: "from-blue-900",
       gradientTo: "to-sky-800",
       textColor: "text-white",
@@ -122,7 +123,8 @@ const agents = [
     },
     endpoint: "https://cheikh06000.app.n8n.cloud/webhook/psyco",
     placeholder: "Écrivez ou enregistrez vos préoccupations ou questions...",
-    sendButtonLabel: "Obtenir des conseils"
+  sendButtonLabel: "Obtenir des conseils",
+  type: "conversationnel"
   },
   {
     name: "Talko",
@@ -145,7 +147,7 @@ const agents = [
       { value: "info", label: "Info" },
       { value: "discussion", label: "Discussion" }
     ],
-    colors: {
+  colors: {
       gradientFrom: "from-pink-900",
       gradientTo: "to-rose-800",
       textColor: "text-white",
@@ -162,7 +164,8 @@ const agents = [
     },
     endpoint: "https://cheikh06000.app.n8n.cloud/webhook/talko",
     placeholder: "Écrivez ou enregistrez vos questions...",
-    sendButtonLabel: "Discuter"
+  sendButtonLabel: "Discuter",
+  type: "conversationnel"
   },
   {
     name: "Scribo",
@@ -202,7 +205,8 @@ const agents = [
     },
     endpoint: "https://cheikh06000.app.n8n.cloud/webhook/scribo",
     placeholder: "Écrivez ou enregistrez une idée à développer...",
-    sendButtonLabel: "Améliorer"
+  sendButtonLabel: "Améliorer",
+  type: "transactionnel"
   },
   {
     name: "Reply",
@@ -243,7 +247,8 @@ const agents = [
     },
     endpoint: "https://cheikh06000.app.n8n.cloud/webhook/reply",
     placeholder: "Collez ou enregistrez le message auquel vous voulez répondre...",
-    sendButtonLabel: "faire une blague"
+  sendButtonLabel: "Répondre",
+  type: "transactionnel"
   },
   {
     name: "Globo",
@@ -283,7 +288,8 @@ const agents = [
     },
     endpoint: "https://cheikh06000.app.n8n.cloud/webhook/globo",
     placeholder: "Écrivez ou enregistrez vos questions sur vos voyages...",
-    sendButtonLabel: "Obtenir des conseils"
+  sendButtonLabel: "Obtenir des conseils",
+  type: "conversationnel"
   },
   {
     name: "Fitzy",
@@ -323,7 +329,8 @@ const agents = [
     },
     endpoint: "https://cheikh06000.app.n8n.cloud/webhook/fitzy",
     placeholder: "Écrivez ou enregistrez vos objectifs ou questions...",
-    sendButtonLabel: "Obtenir des conseils"
+  sendButtonLabel: "Obtenir des conseils",
+  type: "conversationnel"
   },
   {
     name: "Lingo",
@@ -362,7 +369,8 @@ const agents = [
     },
     endpoint: "https://cheikh06000.app.n8n.cloud/webhook/lingo",
     placeholder: "Entrez votre texte à traduire...",
-    sendButtonLabel: "Traduire"
+  sendButtonLabel: "Traduire",
+  type: "transactionnel"
   },
   {
     name: "Glow",
@@ -402,7 +410,8 @@ const agents = [
     },
     endpoint: "https://cheikh06000.app.n8n.cloud/webhook/glow",
     placeholder: "Écrivez ou enregistrez votre message...",
-    sendButtonLabel: "séduire"
+    sendButtonLabel: "séduire",
+    type: "conversationnel"
   }
 ];
 
