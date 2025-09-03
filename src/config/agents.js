@@ -42,7 +42,7 @@ const agents = [
     },
     endpoint: "https://cheikh06000.app.n8n.cloud/webhook/punchy",
     placeholder: "Collez ou enregistrez la phrase à punchliner...",
-    sendButtonLabel: "envoyer la punchline"
+    sendButtonLabel: "Faire une blague"
   },
   {
     name: "Foody",

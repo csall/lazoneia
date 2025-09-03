@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { getCardStyle } from "@/styles/cardStyles";
 import agents from "@/config/agents";
+import agentDisplayOrder from "@/config/agentOrder";
 import FilterBar from "@/components/agents/FilterBar";
 
 // Cette configuration est nécessaire pour éviter les erreurs de prérendu
@@ -607,6 +608,15 @@ export default function AgentsPage() {
   {/* Grille d'agents : 5 colonnes sur écrans larges */}
   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-2 sm:p-4 max-w-[1500px] mx-auto">
           {agents
+            .slice()
+            .sort((a,b)=>{
+              const ia = agentDisplayOrder.indexOf(a.name);
+              const ib = agentDisplayOrder.indexOf(b.name);
+              const ra = ia === -1 ? Number.MAX_SAFE_INTEGER : ia;
+              const rb = ib === -1 ? Number.MAX_SAFE_INTEGER : ib;
+              if (ra !== rb) return ra - rb;
+              return a.name.localeCompare(b.name);
+            })
             .filter((agent) => {
               if (filter === "all") return true;
               if (filter === "favorites") return favorites.includes(agent.name);
