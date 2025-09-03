@@ -1,56 +1,48 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Face/Head -->
-  <circle cx="120" cy="120" r="90" fill="url(#gradient-face-reply)" />
-  <circle cx="120" cy="120" r="90" stroke="#0369A1" stroke-width="4" />
-  
+  <!-- Unified base -->
+  <circle cx="120" cy="120" r="100" fill="url(#gradient-face-reply)" />
+  <circle cx="120" cy="120" r="120" fill="url(#patternReply)" opacity="0.25" />
+
   <!-- Eyes -->
-  <circle cx="90" cy="100" r="12" fill="white" />
-  <circle cx="150" cy="100" r="12" fill="white" />
-  <circle cx="90" cy="100" r="6" fill="#0C4A6E" />
-  <circle cx="150" cy="100" r="6" fill="#0C4A6E" />
-  <circle cx="92" cy="98" r="2" fill="white" />
-  <circle cx="152" cy="98" r="2" fill="white" />
-  
-  <!-- Eyebrows - friendly communication look -->
-  <path d="M78 85C85 80 95 85 100 88" stroke="#0C4A6E" stroke-width="4" stroke-linecap="round" />
-  <path d="M162 85C155 80 145 85 140 88" stroke="#0C4A6E" stroke-width="4" stroke-linecap="round" />
-  
-  <!-- Smile - friendly -->
-  <path d="M90 140C105 152 135 152 150 140" stroke="#0C4A6E" stroke-width="4" stroke-linecap="round" />
-  
-  <!-- Speech bubbles decorative elements -->
-  <path d="M60 70C50 70 50 80 60 85L75 90V80C85 75 85 65 75 65H60V70Z" fill="#BAE6FD" stroke="#0369A1" />
-  <path d="M180 70C190 70 190 80 180 85L165 90V80C155 75 155 65 165 65H180V70Z" fill="#BAE6FD" stroke="#0369A1" />
-  
-  <!-- Communication icon on forehead -->
-  <path d="M120 60C110 60 105 70 110 75C115 80 125 80 130 75C135 70 130 60 120 60Z" fill="#7DD3FC" />
-  <line x1="120" y1="60" x2="120" y2="50" stroke="#7DD3FC" stroke-width="2" />
-  <circle cx="120" cy="45" r="5" fill="#7DD3FC" />
-  
-  <!-- Message dots -->
-  <circle cx="65" cy="70" r="2" fill="#0369A1" />
-  <circle cx="70" cy="70" r="2" fill="#0369A1" />
-  <circle cx="75" cy="70" r="2" fill="#0369A1" />
-  
-  <circle cx="175" cy="70" r="2" fill="#0369A1" />
-  <circle cx="170" cy="70" r="2" fill="#0369A1" />
-  <circle cx="165" cy="70" r="2" fill="#0369A1" />
-  
-  <!-- Decorative elements -->
-  <circle cx="120" cy="120" r="100" stroke="#BAE6FD" stroke-width="1" stroke-dasharray="4 4" />
-  <circle cx="120" cy="120" r="110" stroke="#BAE6FD" stroke-width="1" stroke-dasharray="8 8" />
-  
-  <!-- Reply icon -->
-  <path d="M120 170C100 170 95 165 90 160" stroke="#0EA5E9" stroke-width="3" stroke-linecap="round" />
-  <path d="M90 160L95 150" stroke="#0EA5E9" stroke-width="3" stroke-linecap="round" />
-  <path d="M90 160L85 150" stroke="#0EA5E9" stroke-width="3" stroke-linecap="round" />
-  
-  <!-- Definitions for gradients -->
+  <circle cx="90" cy="100" r="14" fill="white" />
+  <circle cx="150" cy="100" r="14" fill="white" />
+  <circle cx="90" cy="100" r="7" fill="#0C4A6E" />
+  <circle cx="150" cy="100" r="7" fill="#0C4A6E" />
+  <circle cx="93" cy="97" r="2" fill="white" />
+  <circle cx="153" cy="97" r="2" fill="white" />
+
+  <!-- Eyebrows -->
+  <path d="M76 84C85 78 95 82 102 86" stroke="#0C4A6E" stroke-width="5" stroke-linecap="round" />
+  <path d="M164 84C155 78 145 82 138 86" stroke="#0C4A6E" stroke-width="5" stroke-linecap="round" />
+
+  <!-- Smile -->
+  <path d="M95 148C108 158 132 158 145 148" stroke="#0C4A6E" stroke-width="5" stroke-linecap="round" />
+
+  <!-- Speech bubbles simplified -->
+  <g opacity="0.9">
+    <path d="M58 72C50 72 50 80 58 84L72 88V80C82 76 82 66 72 66H58V72Z" fill="#BAE6FD" stroke="#0369A1" stroke-width="1.5" />
+    <path d="M182 72C190 72 190 80 182 84L168 88V80C158 76 158 66 168 66H182V72Z" fill="#BAE6FD" stroke="#0369A1" stroke-width="1.5" />
+  </g>
+
+  <!-- Forehead icon -->
+  <path d="M120 58C112 58 108 66 112 72C116 76 124 76 128 72C132 66 128 58 120 58Z" fill="#7DD3FC" />
+  <circle cx="120" cy="50" r="6" fill="#7DD3FC" />
+
+  <!-- Reply arrows -->
+  <g stroke="#0EA5E9" stroke-width="3" stroke-linecap="round">
+    <path d="M120 170C102 170 97 165 92 160" />
+    <path d="M92 160L97 150" />
+    <path d="M92 160L87 150" />
+  </g>
+
   <defs>
     <linearGradient id="gradient-face-reply" x1="60" y1="60" x2="180" y2="180" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#0EA5E9" />
       <stop offset="100%" stop-color="#0369A1" />
     </linearGradient>
+    <pattern id="patternReply" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="10" r="1" fill="#BAE6FD" />
+    </pattern>
   </defs>
 </svg>

@@ -1,58 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Face background with gradient -->
-  <circle cx="120" cy="120" r="100" fill="url(#faceGradient)"/>
-  
-  <!-- Eyes - winking comedian -->
-  <circle cx="80" cy="100" r="15" fill="white"/>
-  <circle cx="160" cy="100" r="15" fill="white"/>
-  <circle cx="80" cy="100" r="7" fill="#4338CA"/>
-  <!-- Winking eye -->
-  <path d="M150 100C155 96 165 96 170 100" stroke="#4338CA" stroke-width="5" stroke-linecap="round"/>
-  
-  <!-- Eyebrows - comedic expression -->
-  <path d="M65 70C75 65 85 70 95 75" stroke="#C4B5FD" stroke-width="5" stroke-linecap="round"/>
-  <path d="M145 70C155 65 165 70 175 75" stroke="#C4B5FD" stroke-width="5" stroke-linecap="round"/>
-  
-  <!-- Big smile - jovial -->
-  <path d="M80 140C100 170 140 170 160 140" stroke="#C4B5FD" stroke-width="5" stroke-linecap="round"/>
-  <path d="M80 140C100 165 140 165 160 140" fill="#A78BFA" opacity="0.5" />
-  
-  <!-- Microphone - comedy -->
-  <rect x="115" y="150" width="10" height="30" fill="#6D28D9" rx="5"/>
-  <circle cx="120" cy="190" r="15" fill="#7C3AED"/>
-  
-  <!-- Bow tie - comedy style -->
-  <path d="M90 120L120 130L150 120L120 110L90 120Z" fill="#A855F7"/>
-  <circle cx="120" cy="120" r="5" fill="#7C3AED" />
-  
-  <!-- Comedy icons -->
-  <path d="M180 60C190 50 200 60 190 70C200 80 190 90 180 80C170 90 160 80 170 70C160 60 170 50 180 60Z" fill="#C4B5FD" />
-  <text x="175" y="75" font-family="Arial" font-size="15" fill="#4338CA">!</text>
-  
-  <path d="M60 60C70 50 80 60 70 70C80 80 70 90 60 80C50 90 40 80 50 70C40 60 50 50 60 60Z" fill="#C4B5FD" />
-  <text x="55" y="75" font-family="Arial" font-size="15" fill="#4338CA">?</text>
-  
-  <!-- Comedy elements -->
-  <path d="M100 180H140V190C140 195 130 200 120 200C110 200 100 195 100 190V180Z" fill="#8B5CF6" />
-  <path d="M105 180C105 175 110 170 120 170C130 170 135 175 135 180H105Z" fill="#A78BFA" />
-  
-  <!-- Radial pattern for background -->
-  <circle cx="120" cy="120" r="120" fill="url(#bgPattern)" opacity="0.3"/>
-  
-  <!-- Comedy sound effects -->
-  <text x="45" y="130" font-family="Comic Sans MS" font-size="12" fill="#C4B5FD">Bam!</text>
-  <text x="175" y="130" font-family="Comic Sans MS" font-size="12" fill="#C4B5FD">Pow!</text>
-  
-  <!-- Gradients and patterns -->
+  <!-- Lingo-inspired unified base -->
+  <circle cx="120" cy="120" r="100" fill="url(#faceGradient)" />
+
+  <!-- Eyes (one wink preserved) -->
+  <circle cx="80" cy="100" r="15" fill="white" />
+  <circle cx="80" cy="100" r="7" fill="#4338CA" />
+  <!-- Wink eye uses arc instead of full eye -->
+  <path d="M150 100C155 96 165 96 170 100" stroke="#4338CA" stroke-width="6" stroke-linecap="round" />
+
+  <!-- Eyebrows -->
+  <path d="M65 75C75 70 85 72 95 77" stroke="#C4B5FD" stroke-width="6" stroke-linecap="round" />
+  <path d="M145 75C155 70 165 72 175 77" stroke="#C4B5FD" stroke-width="6" stroke-linecap="round" />
+
+  <!-- Smile -->
+  <path d="M80 150C100 170 140 170 160 150" stroke="#C4B5FD" stroke-width="6" stroke-linecap="round" />
+  <path d="M80 150C100 165 140 165 160 150" fill="#A78BFA" opacity="0.35" />
+
+  <!-- Bow tie (centered) -->
+  <path d="M95 128L120 135L145 128L120 121L95 128Z" fill="#A855F7" />
+  <circle cx="120" cy="128" r="6" fill="#7C3AED" />
+
+  <!-- Microphone stylized at bottom -->
+  <rect x="115" y="155" width="10" height="28" rx="5" fill="#6D28D9" />
+  <circle cx="120" cy="190" r="14" fill="#7C3AED" />
+
+  <!-- Fun punctuation bubbles -->
+  <g opacity="0.85">
+    <path d="M182 62C192 52 202 62 192 72C202 82 192 92 182 82C172 92 162 82 172 72C162 62 172 52 182 62Z" fill="#C4B5FD" />
+    <text x="177" y="77" font-family="Arial" font-size="15" fill="#4338CA">!</text>
+    <path d="M58 62C68 52 78 62 68 72C78 82 68 92 58 82C48 92 38 82 48 72C38 62 48 52 58 62Z" fill="#C4B5FD" />
+    <text x="53" y="77" font-family="Arial" font-size="15" fill="#4338CA">?</text>
+  </g>
+
+  <!-- Background pattern circle -->
+  <circle cx="120" cy="120" r="120" fill="url(#bgPattern)" opacity="0.3" />
+
+  <!-- Gradient & pattern defs -->
   <defs>
     <radialGradient id="faceGradient" cx="0.5" cy="0.5" r="0.5" gradientUnits="objectBoundingBox">
-      <stop offset="0%" stop-color="#A78BFA"/>
-      <stop offset="100%" stop-color="#4C1D95"/>
+      <stop offset="0%" stop-color="#A78BFA" />
+      <stop offset="100%" stop-color="#4C1D95" />
     </radialGradient>
-    
     <pattern id="bgPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-      <circle cx="10" cy="10" r="1" fill="#C4B5FD"/>
+      <circle cx="10" cy="10" r="1" fill="#C4B5FD" />
     </pattern>
   </defs>
 </svg>
