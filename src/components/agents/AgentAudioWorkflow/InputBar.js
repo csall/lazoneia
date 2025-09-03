@@ -200,7 +200,6 @@ export default function InputBar({
             borderRadius: 20,
           }}
         >
-          {/* Barre de progression supprimée selon la demande */}
           {/* Annuler enregistrement */}
           {/* Input animé avec bouton envoyer à l'intérieur */}
           <div className="relative w-full">

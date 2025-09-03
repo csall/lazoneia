@@ -15,8 +15,8 @@ export default function Header({ branding, botImage, tagline, targetLang, handle
           <Link href="/" replace>
             <motion.button
               className={`w-10 h-10 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/10 shadow-lg hover:bg-white/20 transition-colors relative overflow-hidden`}
-              whileHover={{ scale: 1.12, x: 4, boxShadow: '0 0 0 6px #6366f1' }}
-              whileTap={{ scale: 0.92, rotate: -8 }}
+              whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
               aria-label="Retour à l'accueil"
             >
               <span className="absolute inset-0 pointer-events-none">
@@ -38,8 +38,8 @@ export default function Header({ branding, botImage, tagline, targetLang, handle
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              whileHover={{ scale: 1.08, boxShadow: '0 0 0 8px #6366f1' }}
-              whileTap={{ scale: 0.92, rotate: -8 }}
+             whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
               transition={{ type: 'spring', stiffness: 180, damping: 18 }}
               className="relative cursor-pointer"
               aria-label="Retour à l'accueil"
