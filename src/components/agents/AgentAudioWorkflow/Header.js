@@ -3,10 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function Header({ branding, botImage, tagline, targetLang, handleLanguageChange, colors, messages, clearHistory }) {
+export default function Header({ branding, botImage, tagline, targetLang, handleLanguageChange, colors, messages, clearHistory, fixed = true }) {
+  const headerClass = fixed
+    ? `z-50 py-3 px-4 fixed top-0 left-0 w-full backdrop-blur-2xl shadow-2xl border-b ${colors.border || 'border-indigo-900/20'} ${colors.bg || 'bg-gradient-to-r from-indigo-900/80 via-violet-900/70 to-transparent animate-gradient-move'}`
+    : `relative w-full py-6 px-4 border-b ${colors.border || 'border-indigo-900/20'} ${colors.bg || 'bg-gradient-to-r from-indigo-900/40 via-violet-900/40 to-transparent'} backdrop-blur-xl`;
   return (
     <header
-      className={`z-50 py-3 px-4 fixed top-0 left-0 w-full backdrop-blur-2xl shadow-2xl border-b ${colors.border || 'border-indigo-900/20'} ${colors.bg || 'bg-gradient-to-r from-indigo-900/80 via-violet-900/70 to-transparent animate-gradient-move'}`}
+      className={headerClass}
       style={colors.bg ? { background: undefined } : {}}
     >
       <div className="container mx-auto flex justify-between items-center gap-4">

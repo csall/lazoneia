@@ -203,10 +203,11 @@ export default function TransactionalAgentWorkflow({ agent }) {
         colors={mergedColors}
         messages={messages}
         clearHistory={clearHistory}
+        fixed={false}
       />
   {/* Espace sous le header fixe */}
   {/* Container avec plus d'espace sous le header fixe */}
-  <div className="mx-auto w-full max-w-6xl px-4 pb-24 pt-32 md:pt-40 flex flex-col gap-8 transition-all">
+  <div className="mx-auto w-full max-w-6xl px-4 pb-24 pt-8 md:pt-10 flex flex-col gap-8 transition-all">
         {tones.length > 0 && (
           <div className="pt-1 -mx-1">
             <div
