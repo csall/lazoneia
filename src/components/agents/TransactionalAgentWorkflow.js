@@ -69,10 +69,14 @@ export default function TransactionalAgentWorkflow({ agent }) {
   const [tone, setTone] = useState(tones[0]?.value || "");
   const [result, setResult] = useState("");
   const [highlightResult, setHighlightResult] = useState(false);
+  const [showBottomFade, setShowBottomFade] = useState(false);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
   const [autoTriggered, setAutoTriggered] = useState(false);
+  const resultPanelRef = useRef(null);
+  const resultEndRef = useRef(null);
+  const resultScrollAreaRef = useRef(null);
 
   const canSubmit = source.trim().length > 0 && !loading;
 
@@ -143,6 +147,51 @@ export default function TransactionalAgentWorkflow({ agent }) {
   // only reacts to targetLang change intentionally
   }, [targetLang]);
 
+  // Auto scroll inside the result panel to the bottom when new result appears (more robust)
+  useEffect(() => {
+    if (!loading && result) {
+      const raf = requestAnimationFrame(() => {
+        const area = resultScrollAreaRef.current;
+        if (area) {
+          if (resultEndRef.current?.scrollIntoView) {
+            try { resultEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' }); } catch { area.scrollTop = area.scrollHeight; }
+          } else {
+            area.scrollTop = area.scrollHeight;
+          }
+          const need = area.scrollHeight > area.clientHeight + 4 && area.scrollTop + area.clientHeight < area.scrollHeight - 4;
+          setShowBottomFade(need);
+        }
+        if (resultPanelRef.current) {
+          const rect = resultPanelRef.current.getBoundingClientRect();
+          if (rect.top < 0 || rect.bottom > window.innerHeight) {
+            resultPanelRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      });
+      return () => cancelAnimationFrame(raf);
+    } else if (!result) {
+      setShowBottomFade(false);
+    }
+  }, [result, loading]);
+
+  // Met à jour l'état du fade lors du scroll manuel
+  useEffect(() => {
+    const el = resultScrollAreaRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 4;
+      const canScroll = el.scrollHeight > el.clientHeight + 4;
+      setShowBottomFade(canScroll && !atBottom);
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    onScroll();
+    return () => {
+      el.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, [result]);
+
   return (
     <main className={`min-h-screen font-sans transition-colors ${isLight ? 'text-gray-800 bg-[radial-gradient(circle_at_20%_15%,rgba(56,189,248,0.25),transparent_55%),radial-gradient(circle_at_80%_75%,rgba(167,139,250,0.25),transparent_55%),linear-gradient(to_bottom_right,#f8fafc,#ffffff,#f5f3ff)]' : 'text-white bg-gradient-to-br from-blue-950 via-blue-900 to-purple-950'}`}>
       <Header
@@ -185,7 +234,7 @@ export default function TransactionalAgentWorkflow({ agent }) {
 
         <div className="grid gap-8 md:grid-cols-2 items-start">
           {/* Source */}
-          <div className={`relative flex flex-col rounded-xl border backdrop-blur-sm ${isLight ? 'bg-white/70 border-gray-200 shadow-sm' : 'bg-white/5 border-white/10'} p-4 min-h-[420px]`}>
+          <div  className={`relative flex flex-col rounded-xl border backdrop-blur-sm ${isLight ? 'bg-white/70 border-gray-200 shadow-sm' : 'bg-white/5 border-white/10'} p-4 min-h-[420px]`}>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-sm font-medium uppercase tracking-wide opacity-70">Source</h2>
               <div className="flex gap-2">
@@ -238,7 +287,7 @@ export default function TransactionalAgentWorkflow({ agent }) {
           </div>
 
           {/* Résultat */}
-          <div className={`relative flex flex-col rounded-xl border backdrop-blur-sm ${isLight ? 'bg-white/70 border-gray-200 shadow-sm' : 'bg-white/5 border-white/10'} p-4 min-h-[420px]`}>
+          <div ref={resultPanelRef} className={`relative flex flex-col rounded-xl border backdrop-blur-sm ${isLight ? 'bg-white/70 border-gray-200 shadow-sm' : 'bg-white/5 border-white/10'} p-4 min-h-[420px]`}>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-sm font-medium uppercase tracking-wide opacity-70">Résultat</h2>
               <div className="flex gap-2 items-center">
@@ -310,14 +359,24 @@ export default function TransactionalAgentWorkflow({ agent }) {
                   ))}
                 </div>
               )}
-              {!loading && error && <div className="text-sm text-red-500">{error}</div>}
-              {!loading && !error && result && (
-                <div className={highlightResult ? 'animate-[pulse_1.3s_ease-in-out] rounded-lg ring-1 ring-indigo-300/40 dark:ring-indigo-500/30 p-2 -m-2 transition' : 'p-0 m-0'}>
-                  <pre className="whitespace-pre-wrap text-sm leading-relaxed font-normal">{result}</pre>
-                </div>
-              )}
-              {!loading && !error && !result && (
-                <p className="text-sm opacity-60 italic">Le résultat apparaîtra ici après traitement…</p>
+              <div
+                ref={resultScrollAreaRef}
+                className="flex-1 overflow-y-auto pr-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-indigo-300/40 dark:scrollbar-thumb-indigo-500/40 max-h-[56vh] md:max-h-none overscroll-contain"
+                style={{ WebkitOverflowScrolling: 'touch' }}
+              >
+                {!loading && error && <div className="text-sm text-red-500">{error}</div>}
+                {!loading && !error && result && (
+                  <div className={highlightResult ? 'animate-[pulse_1.3s_ease-in-out] rounded-lg ring-1 ring-indigo-300/40 dark:ring-indigo-500/30 p-2 transition' : ''}>
+                    <pre className="whitespace-pre-wrap text-sm leading-relaxed font-normal">{result}</pre>
+                    <div ref={resultEndRef} />
+                  </div>
+                )}
+                {!loading && !error && !result && (
+                  <p className="text-sm opacity-60 italic">Le résultat apparaîtra ici après traitement…</p>
+                )}
+              </div>
+              {showBottomFade && (
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white/90 dark:from-blue-950/90 to-transparent md:hidden" />
               )}
             </div>
           </div>
