@@ -184,6 +184,8 @@ const agents = [
       description: "Ton assistant personnel d'écriture et de style. Transforme tes phrases brutes en messages clairs, fluides et impactants. Corrige orthographe, grammaire et ponctuation tout en proposant des reformulations adaptées à ton style et au contexte."
     },
     tones: [
+      { value: "professionnel", label: "Professionnel" },
+      { value: "amical", label: "Amical" },
       { value: "narratif", label: "Narratif" },
       { value: "persuasif", label: "Persuasif" },
       { value: "poetique", label: "Poétique" }
@@ -225,7 +227,7 @@ const agents = [
       description: "Le génie des réponses parfaites. Suggère plusieurs options adaptées à chaque situation."
     },
     tones: [
-      { value: "pro", label: "Professionnel" },
+      { value: "professionnel", label: "Professionnel" },
       { value: "cool", label: "Décontracté" },
       { value: "humoristique", label: "Humoristique" },
       { value: "seduisant", label: "Séduisant" }
