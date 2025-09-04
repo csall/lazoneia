@@ -77,6 +77,7 @@ export default function TransactionalAgentWorkflow({ agent }) {
   const resultPanelRef = useRef(null);
   const resultEndRef = useRef(null);
   const resultScrollAreaRef = useRef(null);
+  const sourcePanelRef = useRef(null);
 
   const canSubmit = source.trim().length > 0 && !loading;
 
@@ -235,7 +236,7 @@ export default function TransactionalAgentWorkflow({ agent }) {
 
         <div className="grid gap-8 md:grid-cols-2 items-start">
           {/* Source */}
-          <div  className={`relative flex flex-col rounded-xl border backdrop-blur-sm ${isLight ? 'bg-white/70 border-gray-200 shadow-sm' : 'bg-white/5 border-white/10'} p-4 min-h-[420px]`}>
+          <div ref={sourcePanelRef} className={`relative flex flex-col rounded-xl border backdrop-blur-sm ${isLight ? 'bg-white/70 border-gray-200 shadow-sm' : 'bg-white/5 border-white/10'} p-4 min-h-[420px]`}>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-sm font-medium uppercase tracking-wide opacity-70">Source</h2>
               <div className="flex gap-2">
@@ -386,6 +387,34 @@ export default function TransactionalAgentWorkflow({ agent }) {
       <div className="sr-only" aria-live="polite">
         {loading ? 'Traitement en cours…' : result ? 'Résultat mis à jour.' : error ? 'Erreur lors du traitement.' : ''}
       </div>
+      {/* Bouton flotant pour remonter à la source */}
+      {result && (
+        <button
+          type="button"
+          onClick={() => {
+            const root = typeof document !== 'undefined' ? (document.scrollingElement || document.documentElement || document.body) : null;
+            try {
+              if (root?.scrollTo) root.scrollTo({ top: 0, behavior: 'smooth' });
+              else window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch {
+              if (root) root.scrollTop = 0;
+              window.scrollTo(0,0);
+            }
+          }}
+          aria-label="Revenir à la source"
+          title="Revenir à la source"
+          className={`fixed bottom-5 right-5 z-40 shadow-lg rounded-full p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/70
+            ${isLight
+              ? 'bg-white/90 hover:bg-white text-indigo-700 border border-indigo-200'
+              : 'bg-indigo-600/80 hover:bg-indigo-600 text-white border border-white/10 backdrop-blur'}
+          `}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+            <path d="M12 19V5" />
+            <path d="M5 12l7-7 7 7" />
+          </svg>
+        </button>
+      )}
     </main>
   );
 }
