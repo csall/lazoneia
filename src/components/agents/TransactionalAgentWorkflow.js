@@ -156,6 +156,23 @@ export default function TransactionalAgentWorkflow({ agent }) {
   // only reacts to targetLang change intentionally
   }, [targetLang]);
 
+  // Auto-submit when tone changes (same pattern que la langue)
+  const firstToneChange = useRef(true);
+  useEffect(() => {
+    if (firstToneChange.current) { firstToneChange.current = false; return; }
+    const trimmed = sourceRef.current.trim();
+    if (!trimmed) {
+      if (resultRef.current) setResult("");
+      return;
+    }
+    if (!loadingRef.current) {
+      setAutoTriggered(true);
+      handleSubmitRef.current();
+      const to = setTimeout(() => setAutoTriggered(false), 1200);
+      return () => clearTimeout(to);
+    }
+  }, [tone]);
+
   // Met à jour le compteur de caractères
   useEffect(() => { setCharCount(source.length); }, [source]);
 
