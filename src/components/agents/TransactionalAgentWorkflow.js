@@ -322,32 +322,18 @@ export default function TransactionalAgentWorkflow({ agent }) {
             } p-4 min-h-[420px]`}
           >
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-medium uppercase tracking-wide opacity-70">
+              <h2 className="text-sm font-semibold uppercase tracking-wide opacity-80 flex items-center gap-2">
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/></svg>
                 Source
               </h2>
               <div className="flex gap-2">
                 <button
                   disabled={!source}
                   onClick={() => setSource("")}
-                  className="text-xs px-2 py-1 rounded border border-gray-300/70 dark:border-white/15 hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-40 flex items-center gap-1"
+                  className="text-xs px-2 py-1 rounded border border-gray-300/70 dark:border-white/15 hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-40 flex items-center gap-1 group"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    className="w-3.5 h-3.5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M3 6h18" />
-                    <path d="M8 6V4h8v2" />
-                    <path d="M10 11v6" />
-                    <path d="M14 11v6" />
-                    <path d="M5 6l1 14c.1 1.1.9 2 2 2h8c1.1 0 1.9-.9 2-2l1-14" />
-                  </svg>
-                  Effacer
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M8 6V4h8v2" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M5 6l1 14c.1 1.1.9 2 2 2h8c1.1 0 1.9-.9 2-2l1-14" /></svg>
+                  <span className="hidden sm:inline">Effacer</span>
                 </button>
               </div>
             </div>
@@ -384,6 +370,12 @@ export default function TransactionalAgentWorkflow({ agent }) {
                   Auto
                 </span>
               )}
+            </div>
+            <div className="mt-1 h-1 w-full rounded bg-gray-200/60 dark:bg-white/10 overflow-hidden">
+              <div
+                className={`h-full transition-all duration-300 ${charCount > maxChars * 0.9 ? 'bg-red-500/70 dark:bg-red-500/70' : 'bg-indigo-500/60 dark:bg-indigo-400/60'}`}
+                style={{width: `${Math.min(100, (charCount / maxChars) * 100)}%`}}
+              />
             </div>
             <div className="mt-4 flex justify-end gap-2">
               <button
@@ -446,7 +438,8 @@ export default function TransactionalAgentWorkflow({ agent }) {
             } p-4 min-h-[420px]`}
           >
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
-              <h2 className="text-sm font-medium uppercase tracking-wide opacity-70">
+              <h2 className="text-sm font-semibold uppercase tracking-wide opacity-80 flex items-center gap-2">
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M5 5h14v14H5z"/><path d="M9 9h6v6H9z"/></svg>
                 Résultat
               </h2>
               <div className="flex flex-wrap items-center gap-2">
@@ -465,8 +458,9 @@ export default function TransactionalAgentWorkflow({ agent }) {
                 <button
                   onClick={copyResult}
                   disabled={!result}
-                  className="text-xs px-2 py-1 rounded border border-gray-300/70 dark:border-white/15 hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-40"
+                  className="text-xs px-2 py-1 rounded border border-gray-300/70 dark:border-white/15 hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-40 flex items-center gap-1"
                 >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                   {copied ? "Copié" : "Copier"}
                 </button>
                 {result && (
@@ -482,22 +476,7 @@ export default function TransactionalAgentWorkflow({ agent }) {
                       hover:bg-gray-100 dark:hover:bg-white/15 hover:text-gray-900 dark:hover:text-white
                       focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-transparent"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      className="w-3.5 h-3.5"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M3 6h18" />
-                      <path d="M8 6V4h8v2" />
-                      <path d="M10 11v6" />
-                      <path d="M14 11v6" />
-                      <path d="M5 6l1 14c.1 1.1.9 2 2 2h8c1.1 0 1.9-.9 2-2l1-14" />
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M8 6V4h8v2" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M5 6l1 14c.1 1.1.9 2 2 2h8c1.1 0 1.9-.9 2-2l1-14" /></svg>
                   </button>
                 )}
               </div>
@@ -568,11 +547,7 @@ export default function TransactionalAgentWorkflow({ agent }) {
                 )}
                 {!loading && !error && result && (
                   <div
-                    className={
-                      highlightResult
-                        ? "animate-[pulse_1.3s_ease-in-out] rounded-lg ring-1 ring-indigo-300/40 dark:ring-indigo-500/30 p-2 transition"
-                        : ""
-                    }
+                    className={`${highlightResult ? 'animate-[pulse_1.3s_ease-in-out]' : ''} group rounded-lg ring-1 ring-indigo-300/30 dark:ring-indigo-500/20 p-2 transition shadow-sm hover:shadow-md bg-white/60 dark:bg-white/5 backdrop-blur-sm`}
                   >
                     <pre className="whitespace-pre-wrap text-sm leading-relaxed font-normal">
                       {result}
