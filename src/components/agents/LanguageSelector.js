@@ -29,6 +29,16 @@ export default function LanguageSelector({
     return () => window.removeEventListener('resize', check);
   }, []);
 
+  // Empêche le scroll arrière-plan sur mobile quand ouvert
+  useEffect(() => {
+    if (!isMobile) return;
+    if (open) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = prev; };
+    }
+  }, [open, isMobile]);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e) => {
@@ -98,38 +108,40 @@ export default function LanguageSelector({
           })}
         </div>
       )}
-      {open && isMobile && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={close} />
-          <div ref={listRef} role="listbox" className="relative w-full max-h-[70vh] overflow-y-auto bg-white dark:bg-gray-900 rounded-t-2xl pt-3 pb-6 px-4 shadow-2xl border-t border-gray-200 dark:border-white/10 animate-[slide-up_0.25s_ease]">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[11px] uppercase tracking-wide font-semibold text-gray-600 dark:text-gray-300">Langues</span>
-              <button onClick={close} className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60">
-                <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' className='w-4 h-4' stroke='currentColor' strokeWidth='2' fill='none' strokeLinecap='round' strokeLinejoin='round'><path d='M18 6 6 18'/><path d='M6 6l12 12'/></svg>
-              </button>
-            </div>
-            <div className="grid grid-cols-4 gap-2 text-[11px]">
-              {languages.map(lang => {
-                const selected = lang.value === value;
-                return (
-                  <button
-                    key={lang.value}
-                    data-lang-item
-                    data-selected={selected}
-                    onClick={() => { onChange?.(lang.value); close(); }}
-                    className={`flex flex-col items-center gap-1 p-2 rounded-lg border text-[10px] font-medium transition active:scale-[0.96] focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900 ${selected ? 'bg-gradient-to-br from-indigo-500/20 to-violet-500/20 text-indigo-700 dark:text-indigo-300 border-indigo-400/40 shadow-sm' : 'border-gray-200 dark:border-white/10 bg-white/70 dark:bg-white/5 hover:bg-indigo-50/60 dark:hover:bg-indigo-500/10'}`}
-                  >
-                    <span className="w-9 h-9 rounded-md overflow-hidden ring-1 ring-black/5 dark:ring-white/10 flex items-center justify-center bg-white/40 dark:bg-white/10">
-                      <Image src={`https://flagcdn.com/${lang.flag}.svg`} alt={lang.label} width={32} height={32} className="object-cover" unoptimized />
-                    </span>
-                    <span className="truncate w-full text-center leading-tight">{lang.label}</span>
-                    {selected && <span className="inline-block w-1.5 h-1.5 rounded-full bg-indigo-500 dark:bg-indigo-300" />}
+          {open && isMobile && (
+            <div className="fixed inset-0 z-50">
+              <div className="absolute inset-0 bg-black/25 backdrop-blur-sm" onClick={close} />
+              <div className="absolute left-1/2 top-[18%] -translate-x-1/2 w-[86%] max-w-[420px] max-h-[60vh] rounded-2xl shadow-lg border border-gray-200 dark:border-white/15 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl flex flex-col animate-[fade-in_.25s_ease]" role="dialog" aria-modal="true">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200/70 dark:border-white/10">
+                  <h2 className="text-[11px] font-semibold uppercase tracking-wide text-indigo-600 dark:text-indigo-300">Langue</h2>
+                  <button onClick={close} aria-label="Fermer" className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60">
+                    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' className='w-4 h-4' stroke='currentColor' strokeWidth='2' fill='none' strokeLinecap='round' strokeLinejoin='round'><path d='M18 6 6 18'/><path d='M6 6l12 12'/></svg>
                   </button>
-                )})}
+                </div>
+                <div ref={listRef} className="p-3 overflow-y-auto grid grid-cols-4 gap-2">
+                  {languages.map(lang => {
+                    const selected = lang.value === value;
+                    return (
+                      <button
+                        key={lang.value}
+                        data-lang-item
+                        data-selected={selected}
+                        onClick={() => { onChange?.(lang.value); close(); }}
+                        className={`flex flex-col items-center gap-1 px-1.5 py-1.5 rounded-md border text-[10px] font-medium transition active:scale-[0.95] ${selected ? 'bg-gradient-to-br from-indigo-500/25 to-violet-500/25 text-indigo-700 dark:text-indigo-300 border-indigo-400/40 shadow-sm' : 'border-gray-200 dark:border-white/10 bg-white/70 dark:bg-white/5 hover:bg-indigo-50/50 dark:hover:bg-indigo-500/10'}`}
+                      >
+                        <Image src={`https://flagcdn.com/${lang.flag}.svg`} alt={lang.label} width={28} height={28} className="rounded object-cover w-7 h-7" unoptimized />
+                        <span className="truncate w-full text-center leading-tight">{lang.label}</span>
+                        {selected && <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 dark:bg-indigo-300" />}
+                      </button>
+                    );
+                  })}
+                  {!languages.length && (
+                    <div className='col-span-4 text-center text-xs text-gray-500 dark:text-gray-400 py-6'>Aucune langue</div>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          )}
     </div>
   );
 }
