@@ -209,30 +209,7 @@ export default function TransactionalAgentWorkflow({ agent }) {
   {/* Espace sous le header fixe */}
   {/* Container avec plus d'espace sous le header fixe */}
   <div className="mx-auto w-full max-w-6xl px-4 pb-24 pt-8 md:pt-10 flex flex-col gap-8 transition-all">
-        {tones.length > 0 && (
-          <div className="pt-1 -mx-1">
-            <div
-              className="flex gap-2 px-1 pb-2 overflow-x-auto md:overflow-visible md:flex-wrap whitespace-nowrap md:whitespace-normal scrollbar-thin"
-              style={{ WebkitOverflowScrolling: 'touch' }}
-            >
-        {tones.map((t) => (
-                <button
-                  key={t.value}
-                  onClick={() => setTone(t.value)}
-                  className={`px-3.5 py-1.5 rounded-full text-[11px] font-medium flex-shrink-0 transition border
-                    ${tone === t.value
-                      ? isLight
-                        ? 'bg-white text-indigo-700 border-indigo-300 shadow-sm ring-1 ring-indigo-200'
-                        : `bg-gradient-to-r ${colors.buttonGradientFrom || 'from-indigo-500'} ${colors.buttonGradientTo || 'to-violet-600'} text-white border-transparent shadow`
-                      : `bg-white/70 dark:bg-white/10 text-gray-700 dark:text-gray-300 border-gray-300/70 dark:border-white/10 hover:bg-white/90 dark:hover:bg-white/20`} focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60 focus-visible:ring-offset-2 ${isLight ? 'focus-visible:ring-offset-white' : 'focus-visible:ring-offset-transparent'}`}
-          title={`Ton: ${t.label}`}
-                >
-                  {t.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+  {/* Barre des tons remplacée par un select à côté du sélecteur de langue */}
 
         <div className="grid gap-8 md:grid-cols-2 items-start">
           {/* Source */}
@@ -296,23 +273,38 @@ export default function TransactionalAgentWorkflow({ agent }) {
                 <button
                   type="button"
                   onClick={toggleLang}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[10px] font-medium border border-gray-300/70 dark:border-white/15 bg-white/70 dark:bg-white/10 hover:bg-white/90 dark:hover:bg-white/20 transition"
+                  className="flex items-center gap-1 px-2 py-1 h-7 rounded-md text-[10px] font-medium border border-gray-300/70 dark:border-white/15 bg-white/70 dark:bg-white/10 hover:bg-white/90 dark:hover:bg-white/20 transition leading-none"
                   aria-haspopup="listbox"
                   aria-expanded={showLang}
                 >
-                  <span className="flex items-center justify-center w-5 h-5 rounded overflow-hidden bg-white/20">
+                  <span className="flex items-center justify-center w-4 h-4 rounded overflow-hidden bg-white/20 ring-1 ring-black/5 dark:ring-white/10">
                     <Image
                       src={`https://flagcdn.com/${languages.find(l=>l.value===targetLang)?.flag || 'fr'}.svg`}
                       alt={targetLang}
-                      width={20}
-                      height={20}
+                      width={16}
+                      height={16}
                       className="w-full h-full object-cover"
                       unoptimized
                     />
                   </span>
-                  <span className="uppercase tracking-wide leading-none">{languages.find(l=>l.value===targetLang)?.label || 'LANG'}</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" className={`h-3 w-3 transition-transform ${showLang ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z"/></svg>
+                  <span className="uppercase tracking-wide">{languages.find(l=>l.value===targetLang)?.label || 'LANG'}</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" className={`h-3 w-3 ml-0.5 opacity-70 transition-transform ${showLang ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z"/></svg>
                 </button>
+                {tones.length > 0 && (
+                  <label className="relative" title="Sélection du ton">
+                    <span className="sr-only">Ton</span>
+                    <select
+                      value={tone}
+                      onChange={(e)=>setTone(e.target.value)}
+                      className={`appearance-none pr-6 pl-2.5 py-1.5 rounded-md text-[10px] font-medium border bg-white/70 dark:bg-white/10 border-gray-300/70 dark:border-white/15 hover:bg-white/90 dark:hover:bg-white/20 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60 ${isLight ? 'focus-visible:ring-offset-2 focus-visible:ring-offset-white' : 'focus-visible:ring-offset-0'} cursor-pointer`}
+                    >
+                      {tones.map(t => (
+                        <option key={t.value} value={t.value}>{t.label}</option>
+                      ))}
+                    </select>
+                    <svg className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 h-3 w-3 opacity-70" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z"/></svg>
+                  </label>
+                )}
                 <button
                   onClick={copyResult}
                   disabled={!result}
@@ -324,9 +316,23 @@ export default function TransactionalAgentWorkflow({ agent }) {
                   <button
                     type="button"
                     onClick={() => setResult("")}
-                    className="text-[10px] px-2 py-1 rounded border border-gray-300/60 dark:border-white/15 hover:bg-red-50 dark:hover:bg-red-500/10 text-red-600 dark:text-red-300"
+                    title="Vider le résultat"
+                    aria-label="Vider le résultat"
+                    className="group flex items-center gap-1 h-7 px-2 rounded-md border text-[10px] font-medium transition
+                      border-red-300/60 dark:border-red-400/30
+                      bg-white/60 dark:bg-white/10
+                      text-red-600 dark:text-red-300
+                      hover:bg-red-50 dark:hover:bg-red-500/15 hover:text-red-700 dark:hover:text-red-200
+                      focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-transparent"
                   >
-                    Vider
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 6h18" />
+                      <path d="M8 6V4h8v2" />
+                      <path d="M10 11v6" />
+                      <path d="M14 11v6" />
+                      <path d="M5 6l1 14c.1 1.1.9 2 2 2h8c1.1 0 1.9-.9 2-2l1-14" />
+                    </svg>
+                    <span className="tracking-wide">Vider</span>
                   </button>
                 )}
               </div>
