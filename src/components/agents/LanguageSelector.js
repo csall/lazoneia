@@ -1,6 +1,7 @@
 "use client";
 import Image from 'next/image';
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 
 export default function LanguageSelector({
   languages = [],
@@ -112,10 +113,10 @@ export default function LanguageSelector({
           })}
         </div>
       )}
-          {open && isMobile && (
-            <div className="fixed inset-0 z-50">
-              <div className="absolute inset-0 bg-black/25 backdrop-blur-sm" onClick={close} />
-              <div className="absolute left-1/2 top-3 -translate-x-1/2 w-[94%] sm:w-[86%] max-w-[520px] max-h-[68vh] rounded-2xl shadow-xl border border-gray-200 dark:border-white/15 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl flex flex-col animate-[fade-in_.25s_ease]" role="dialog" aria-modal="true">
+          {open && isMobile && mounted && createPortal(
+            <div className="fixed inset-0 z-[80]">
+              <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={close} />
+              <div className="absolute left-1/2 top-3 -translate-x-1/2 w-[94%] sm:w-[86%] max-w-[520px] max-h-[68vh] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/15 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl flex flex-col animate-[fade-in_.25s_ease]" role="dialog" aria-modal="true">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200/70 dark:border-white/10">
                   <h2 className="text-[11px] font-semibold uppercase tracking-wide text-indigo-600 dark:text-indigo-300">Langue</h2>
                   <button onClick={close} aria-label="Fermer" className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60">
@@ -144,8 +145,8 @@ export default function LanguageSelector({
                   )}
                 </div>
               </div>
-            </div>
-          )}
+            </div>, document.body)
+          }
     </div>
   );
 }
