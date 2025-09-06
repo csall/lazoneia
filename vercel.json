@@ -8,53 +8,7 @@
       },
       "continue": true
     },
-    {
-      "src": "/agents-bot.svg",
-      "dest": "/_next/static/agents-bot.svg"
-    },
-    {
-      "src": "/glow-bot.svg",
-      "dest": "/_next/static/glow-bot.svg"
-    },
-    {
-      "src": "/punchy-bot.svg",
-      "dest": "/_next/static/punchy-bot.svg"
-    },
-    {
-      "src": "/lingo-bot.svg",
-      "dest": "/_next/static/lingo-bot.svg"
-    },
-    {
-      "src": "/pitchy-bot.svg",
-      "dest": "/_next/static/pitchy-bot.svg"
-    },
-    {
-      "src": "/scribo-bot.svg",
-      "dest": "/_next/static/scribo-bot.svg"
-    },
-    {
-      "src": "/reply-bot.svg",
-      "dest": "/_next/static/reply-bot.svg"
-    },
-    {
-      "src": "/favicon.ico",
-      "dest": "/_next/static/favicon.ico"
-    },
-    {
-      "src": "/favicon.svg",
-      "dest": "/_next/static/favicon.svg"
-    },
-    {
-      "src": "/favicon-large.svg",
-      "dest": "/_next/static/favicon-large.svg"
-    },
-    {
-      "src": "/manifest.json",
-      "dest": "/_next/static/manifest.json"
-    },
-    {
-      "handle": "filesystem"
-    }
+    { "handle": "filesystem" }
   ],
   "images": {
     "sizes": [16, 32, 48, 64, 96, 128, 180, 256, 384, 512, 1024],

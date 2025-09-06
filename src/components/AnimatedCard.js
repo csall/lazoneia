@@ -43,27 +43,28 @@ export default function AnimatedCard({ title, description, icon, animationData, 
   };
   
   // Déterminer quelle image SVG utiliser en fonction du botType ou du nom
-  const { getImagePath } = useImagePath();
+  // Alias getImagePath en 'get' pour simplifier les appels
+  const { getImagePath: get } = useImagePath();
   const getBotImage = () => {
     // Image collective pour les agents (utilisée pour la page agents)
     if (botType === "agents" || title.toLowerCase().includes("agents")) {
-      return getImagePath("/agents-bot.svg");
+  return get("/agents-bot.svg");
     }
     // Utiliser des images spécifiques pour chaque agent
     else if (botType === "punchy" || title.toLowerCase().includes("punchy")) {
-      return getImagePath("/punchy-bot.svg");
+  return get("/punchy-bot.svg");
     } else if (botType === "reply" || title.toLowerCase().includes("reply")) {
-      return getImagePath("/reply-bot.svg");
+  return get("/reply-bot.svg");
     } else if (botType === "scribo" || title.toLowerCase().includes("scribo")) {
-      return getImagePath("/scribo-bot.svg");
+  return get("/scribo-bot.svg");
     } else if (botType === "lingo" || title.toLowerCase().includes("lingo")) {
-      return getImagePath("/lingo-bot.svg");
+  return get("/lingo-bot.svg");
     } else if (botType === "charm" || title.toLowerCase().includes("charm") || botType === "glow" || title.toLowerCase().includes("glow")) {
-      return getImagePath("/glow-bot.svg");
+  return get("/glow-bot.svg");
     } else if (botType === "pitchy" || title.toLowerCase().includes("pitchy")) {
-      return getImagePath("/pitchy-bot.svg");
+  return get("/pitchy-bot.svg");
     } else if (botType === "fitzy" || title.toLowerCase().includes("fitzy")) {
-      return getImagePath("/fitzy-bot.svg");
+  return get("/fitzy-bot.svg");
     }
     // Les anciens agents ont été remplacés par les nouveaux
     return null;
