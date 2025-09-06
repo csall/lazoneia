@@ -315,12 +315,12 @@ export default function TransactionalAgentWorkflow({ agent }) {
                     onClick={() => setResult("")}
                     title="Vider le résultat"
                     aria-label="Vider le résultat"
-                    className="group flex items-center gap-1 h-7 px-2 rounded-md border text-[10px] font-medium transition
-                      border-red-300/60 dark:border-red-400/30
-                      bg-white/60 dark:bg-white/10
-                      text-red-600 dark:text-red-300
-                      hover:bg-red-50 dark:hover:bg-red-500/15 hover:text-red-700 dark:hover:text-red-200
-                      focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-transparent"
+                    className="flex items-center gap-1 h-7 px-2 rounded-md border text-[10px] font-medium transition
+                      border-gray-300/70 dark:border-white/15
+                      bg-white/70 dark:bg-white/10
+                      text-gray-700 dark:text-gray-200
+                      hover:bg-gray-100 dark:hover:bg-white/15 hover:text-gray-900 dark:hover:text-white
+                      focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-transparent"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M3 6h18" />
