@@ -102,6 +102,7 @@ export default function TransactionalAgentWorkflow({ agent }) {
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
   const [autoTriggered, setAutoTriggered] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const resultPanelRef = useRef(null);
   const resultEndRef = useRef(null);
   const resultScrollAreaRef = useRef(null);
@@ -216,6 +217,18 @@ export default function TransactionalAgentWorkflow({ agent }) {
   useEffect(() => {
     setCharCount(source.length);
   }, [source]);
+
+  // Affiche le bouton de retour haut seulement si on a défilé
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const onScroll = () => {
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      setShowScrollTop(y > 160); // seuil de 160px
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   // Auto scroll inside the result panel to the bottom when new result appears (more robust)
   useEffect(() => {
@@ -593,7 +606,7 @@ export default function TransactionalAgentWorkflow({ agent }) {
         <Toast message={showToast} onDone={() => setShowToast(null)} />
       )}
       {/* Bouton flotant pour remonter à la source */}
-      {result && (
+  {result && showScrollTop && (
         <button
           type="button"
           onClick={() => {
