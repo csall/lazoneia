@@ -2,6 +2,10 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import Image from "next/image";
+import LanguageSelector from "./LanguageSelector";
+import ToneSelect from "./ToneSelect";
+import Toast from "@/components/ui/Toast";
+import { usePersistentState } from "@/hooks/usePersistentState";
 import Header from "./AgentAudioWorkflow/Header";
 
 export default function TransactionalAgentWorkflow({ agent }) {
@@ -43,7 +47,7 @@ export default function TransactionalAgentWorkflow({ agent }) {
   // Header requires these props; keep minimal implementations
   const [messages, setMessages] = useState([]); // no chat history for transactional, stays empty
   const clearHistory = () => setMessages([]);
-  const [targetLang, setTargetLang] = useState("français");
+  const [targetLang, setTargetLang] = usePersistentState("txn_target_lang", "français");
   const handleLanguageChange = (e) => setTargetLang(e.target?.value || targetLang);
   // Langues simplifiées (réduites)
   const languagesRaw = useMemo(() => ([
@@ -66,7 +70,10 @@ export default function TransactionalAgentWorkflow({ agent }) {
   const selectLang = (val) => { setTargetLang(val); setShowLang(false); };
 
   const [source, setSource] = useState("");
-  const [tone, setTone] = useState(tones[0]?.value || "");
+  const [tone, setTone] = usePersistentState("txn_tone", tones[0]?.value || "");
+  const [showToast, setShowToast] = useState(null);
+  const [charCount, setCharCount] = useState(0);
+  const maxChars = 4000;
   const [result, setResult] = useState("");
   const [highlightResult, setHighlightResult] = useState(false);
   const [showBottomFade, setShowBottomFade] = useState(false);
@@ -114,7 +121,8 @@ export default function TransactionalAgentWorkflow({ agent }) {
     if (!result) return;
     navigator.clipboard.writeText(result);
     setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    setShowToast("Résultat copié");
+    setTimeout(() => setCopied(false), 1200);
   };
 
   const handleSourceKeyDown = (e) => {
@@ -147,6 +155,9 @@ export default function TransactionalAgentWorkflow({ agent }) {
     }
   // only reacts to targetLang change intentionally
   }, [targetLang]);
+
+  // Met à jour le compteur de caractères
+  useEffect(() => { setCharCount(source.length); }, [source]);
 
   // Auto scroll inside the result panel to the bottom when new result appears (more robust)
   useEffect(() => {
@@ -220,8 +231,9 @@ export default function TransactionalAgentWorkflow({ agent }) {
                 <button
                   disabled={!source}
                   onClick={() => setSource("")}
-                  className="text-xs px-2 py-1 rounded border border-gray-300/70 dark:border-white/15 hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-40"
+                  className="text-xs px-2 py-1 rounded border border-gray-300/70 dark:border-white/15 hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-40 flex items-center gap-1"
                 >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M8 6V4h8v2" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M5 6l1 14c.1 1.1.9 2 2 2h8c1.1 0 1.9-.9 2-2l1-14" /></svg>
                   Effacer
                 </button>
               </div>
@@ -230,12 +242,13 @@ export default function TransactionalAgentWorkflow({ agent }) {
               className={`flex-1 w-full resize-none rounded-md border bg-transparent p-3 text-sm leading-relaxed focus:outline-none focus:ring-2 ${isLight ? 'border-gray-300 focus:ring-indigo-300' : 'border-white/15 focus:ring-fuchsia-500/40'}`}
               placeholder={placeholder}
               value={source}
-              onChange={(e) => setSource(e.target.value)}
+              onChange={(e) => setSource(e.target.value.slice(0, maxChars))}
               onKeyDown={handleSourceKeyDown}
             />
             <div className="mt-2 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400 select-none">
               <span className="hidden sm:inline">Entrée pour envoyer • Shift+Entrée pour nouvelle ligne</span>
               <span className="sm:hidden">Entrée = envoyer</span>
+              <span className={`ml-auto mr-2 tabular-nums ${charCount > maxChars*0.9 ? 'text-red-500 dark:text-red-400' : ''}`}>{charCount}/{maxChars}</span>
               {autoTriggered && (
                 <span className="ml-2 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-medium bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-300 dark:border-indigo-400/40 animate-pulse" title="Envoi automatique après changement de langue">Auto</span>
               )}
@@ -267,44 +280,11 @@ export default function TransactionalAgentWorkflow({ agent }) {
 
           {/* Résultat */}
           <div ref={resultPanelRef} className={`relative flex flex-col rounded-xl border backdrop-blur-sm ${isLight ? 'bg-white/70 border-gray-200 shadow-sm' : 'bg-white/5 border-white/10'} p-4 min-h-[420px]`}>
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
               <h2 className="text-sm font-medium uppercase tracking-wide opacity-70">Résultat</h2>
-              <div className="flex gap-2 items-center">
-                <button
-                  type="button"
-                  onClick={toggleLang}
-                  className="flex items-center gap-1 px-2 py-1 h-7 rounded-md text-[10px] font-medium border border-gray-300/70 dark:border-white/15 bg-white/70 dark:bg-white/10 hover:bg-white/90 dark:hover:bg-white/20 transition leading-none"
-                  aria-haspopup="listbox"
-                  aria-expanded={showLang}
-                >
-                  <span className="flex items-center justify-center w-4 h-4 rounded overflow-hidden bg-white/20 ring-1 ring-black/5 dark:ring-white/10">
-                    <Image
-                      src={`https://flagcdn.com/${languages.find(l=>l.value===targetLang)?.flag || 'fr'}.svg`}
-                      alt={targetLang}
-                      width={16}
-                      height={16}
-                      className="w-full h-full object-cover"
-                      unoptimized
-                    />
-                  </span>
-                  <span className="uppercase tracking-wide">{languages.find(l=>l.value===targetLang)?.label || 'LANG'}</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" className={`h-3 w-3 ml-0.5 opacity-70 transition-transform ${showLang ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z"/></svg>
-                </button>
-                {tones.length > 0 && (
-                  <label className="relative" title="Sélection du ton">
-                    <span className="sr-only">Ton</span>
-                    <select
-                      value={tone}
-                      onChange={(e)=>setTone(e.target.value)}
-                      className={`appearance-none pr-6 pl-2.5 py-1.5 rounded-md text-[10px] font-medium border bg-white/70 dark:bg-white/10 border-gray-300/70 dark:border-white/15 hover:bg-white/90 dark:hover:bg-white/20 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60 ${isLight ? 'focus-visible:ring-offset-2 focus-visible:ring-offset-white' : 'focus-visible:ring-offset-0'} cursor-pointer`}
-                    >
-                      {tones.map(t => (
-                        <option key={t.value} value={t.value}>{t.label}</option>
-                      ))}
-                    </select>
-                    <svg className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 h-3 w-3 opacity-70" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z"/></svg>
-                  </label>
-                )}
+              <div className="flex flex-wrap items-center gap-2">
+                <LanguageSelector languages={languages} value={targetLang} onChange={val=>setTargetLang(val)} isLight={isLight} />
+                <ToneSelect tones={tones} value={tone} onChange={setTone} isLight={isLight} />
                 <button
                   onClick={copyResult}
                   disabled={!result}
@@ -332,7 +312,6 @@ export default function TransactionalAgentWorkflow({ agent }) {
                       <path d="M14 11v6" />
                       <path d="M5 6l1 14c.1 1.1.9 2 2 2h8c1.1 0 1.9-.9 2-2l1-14" />
                     </svg>
-                    <span className="tracking-wide">Vider</span>
                   </button>
                 )}
               </div>
@@ -393,6 +372,7 @@ export default function TransactionalAgentWorkflow({ agent }) {
       <div className="sr-only" aria-live="polite">
         {loading ? 'Traitement en cours…' : result ? 'Résultat mis à jour.' : error ? 'Erreur lors du traitement.' : ''}
       </div>
+  {showToast && <Toast message={showToast} onDone={()=>setShowToast(null)} />}
       {/* Bouton flotant pour remonter à la source */}
       {result && (
         <button
