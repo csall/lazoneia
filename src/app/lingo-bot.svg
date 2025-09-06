@@ -24,8 +24,7 @@
     <path id="floatPath" d="M40 40 C120 -10 180 10 200 40 C220 70 180 110 120 120 C60 130 40 90 60 70 Z" />
     <style><![CDATA[
   .ring { stroke-dasharray: 12 14; }
-      .face-eye { animation: blink 6s ease-in-out infinite; transform-origin: center; }
-      .face-eye.right { animation-delay: 2s; }
+  .face-eye { animation: blink 6.5s ease-in-out infinite; transform-origin: center; }
       .mouth { animation: talk 3.8s ease-in-out infinite; transform-origin: 120px 150px; }
       .float { animation: drift 7s ease-in-out infinite; }
       .float:nth-child(2) { animation-delay: 1.4s; }
@@ -36,7 +35,7 @@
       .glyph:nth-child(4) { animation-delay: 3s; }
       .halo { animation: pulse 5s ease-in-out infinite; }
   /* spin & hue animations removed to keep ring static */
-      @keyframes blink { 0%,5%,95%,100% { transform: scaleY(1);} 2%,3% { transform: scaleY(0.1);} }
+    @keyframes blink { 0%,6%,94%,100% { clip-path:inset(0% 0% 0% 0%);} 3%,4% { clip-path:inset(45% 0% 45% 0%);} }
       @keyframes talk { 0%,100% { transform: scale(1);} 50% { transform: scale(1.07);} }
       @keyframes drift { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-18px);} }
       @keyframes bob { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-8px);} }
@@ -50,11 +49,11 @@
   <circle cx="120" cy="120" r="92" fill="url(#lingoFace)" filter="url(#innerShadow)" />
   <!-- Eyes -->
   <g>
-    <g class="face-eye left">
+  <g class="face-eye left">
       <circle cx="85" cy="108" r="17" fill="#FFF" />
       <circle cx="85" cy="108" r="7" fill="#7A3A00" />
     </g>
-    <g class="face-eye right">
+  <g class="face-eye right">
       <circle cx="155" cy="108" r="17" fill="#FFF" />
       <circle cx="155" cy="108" r="7" fill="#7A3A00" />
     </g>

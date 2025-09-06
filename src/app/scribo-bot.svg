@@ -27,7 +27,7 @@
     </pattern>
     <style><![CDATA[
   .sc-ring { stroke-dasharray: 10 18; }
-      .sc-eye { animation: sc-blink 6.5s ease-in-out infinite; }
+  .sc-eye { animation: blink 6.5s ease-in-out infinite; }
       .sc-mouth { animation: sc-talk 4s ease-in-out infinite; }
       .sc-quill { animation: sc-quill 6s ease-in-out infinite; transform-origin:60px 72px; }
       .sc-lines line { animation: sc-lines 5s ease-in-out infinite; }
@@ -36,7 +36,7 @@
       .sc-glasses { animation: sc-bob 5s ease-in-out infinite; transform-origin:120px 108px; }
       .sc-halo { animation: sc-halo 6s ease-in-out infinite; }
   /* sc-spin & sc-hue removed: ring static */
-      @keyframes sc-blink { 0%,6%,94%,100% { transform: scaleY(1);} 3%,4% { transform: scaleY(.12);} }
+  @keyframes blink { 0%,6%,94%,100% { clip-path:inset(0% 0% 0% 0%);} 3%,4% { clip-path:inset(45% 0% 45% 0%);} }
       @keyframes sc-talk { 0%,100% { transform: scale(1);} 50% { transform: scale(1.06);} }
       @keyframes sc-quill { 0%,100% { transform: translateY(0) rotate(-4deg);} 50% { transform: translateY(-14px) rotate(6deg);} }
       @keyframes sc-lines { 0%,100% { stroke-dashoffset:0;} 50% { stroke-dashoffset:40;} }
@@ -53,7 +53,7 @@
     <circle cx="90" cy="110" r="15" fill="#FFF" />
     <circle cx="90" cy="110" r="6" fill="#134E4A" />
   </g>
-  <g class="sc-eye" style="animation-delay:1.2s">
+  <g class="sc-eye r">
     <circle cx="150" cy="110" r="15" fill="#FFF" />
     <circle cx="150" cy="110" r="6" fill="#134E4A" />
   </g>

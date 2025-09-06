@@ -27,8 +27,7 @@
     </pattern>
     <style><![CDATA[
   .p-ring { stroke-dasharray: 10 16; }
-      .p-eye { animation: pr-blink 6s ease-in-out infinite; transform-origin: center; }
-      .p-eye.wink path { animation: pr-wink 6s ease-in-out infinite; }
+  .p-eye { animation: blink 6.5s ease-in-out infinite; transform-origin:center; }
       .p-mouth { animation: pr-talk 3.4s ease-in-out infinite; transform-origin: 120px 150px; }
       .p-burst { animation: pr-bob 4.2s ease-in-out infinite; }
       .p-burst:nth-child(2) { animation-delay:1.2s; }
@@ -36,8 +35,7 @@
       .p-bow { animation: pr-pulse 5.5s ease-in-out infinite; transform-origin:120px 128px; }
       .p-halo { animation: pr-halo 5s ease-in-out infinite; }
   /* pr-spin & pr-hue removed: ring static */
-      @keyframes pr-blink { 0%,5%,95%,100% { transform: scaleY(1);} 2%,3% { transform: scaleY(.12);} }
-      @keyframes pr-wink { 0%,10%,90%,100% { stroke-dasharray:40 0; } 45%,55% { stroke-dasharray:0 40; } }
+  @keyframes blink { 0%,6%,94%,100% { clip-path:inset(0% 0% 0% 0%);} 3%,4% { clip-path:inset(45% 0% 45% 0%);} }
       @keyframes pr-talk { 0%,100% { transform: scale(1);} 50% { transform: scale(1.08);} }
       @keyframes pr-bob { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-10px);} }
       @keyframes pr-bounce { 0%,100% { transform: translateY(0);} 35% { transform: translateY(-14px);} 70% { transform: translateY(-6px);} }
@@ -51,14 +49,14 @@
   <circle cx="120" cy="120" r="92" fill="url(#punchyFace)" filter="url(#punchyInnerShadow)" />
   <!-- Pattern overlay -->
   <circle cx="120" cy="120" r="92" fill="url(#punchyDots)" opacity="0.12" />
-  <!-- Eyes (left full) -->
+  <!-- Eyes unified blink -->
   <g class="p-eye">
     <circle cx="84" cy="108" r="17" fill="#FFF" />
     <circle cx="84" cy="108" r="7" fill="#4C1D95" />
   </g>
-  <!-- Wink (animated via stroke-dasharray) -->
-  <g class="p-eye wink">
-    <path d="M150 108 C156 104 164 104 170 108" stroke="#F0ABFC" stroke-width="8" stroke-linecap="round" />
+  <g class="p-eye">
+    <circle cx="156" cy="108" r="17" fill="#FFF" />
+    <circle cx="156" cy="108" r="7" fill="#4C1D95" />
   </g>
   <!-- Brows -->
   <path d="M62 80 C78 72 94 72 106 80" stroke="#E9D5FF" stroke-width="8" stroke-linecap="round" />

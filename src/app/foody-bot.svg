@@ -27,7 +27,7 @@
     </pattern>
     <style><![CDATA[
   .fd-ring { stroke-dasharray: 12 16; }
-      .fd-eye { animation: fd-blink 6.5s ease-in-out infinite; }
+  .fd-eye { animation: blink 6.5s ease-in-out infinite; }
       .fd-mouth { animation: fd-mouth 4s ease-in-out infinite; }
       .fd-hat { animation: fd-hat 6s ease-in-out infinite; transform-origin:120px 60px; }
       .fd-steam path { animation: fd-steam 5s ease-in-out infinite; }
@@ -35,7 +35,7 @@
       .fd-utl { animation: fd-utl 8s linear infinite; transform-origin:120px 180px; }
       .fd-halo { animation: fd-halo 6s ease-in-out infinite; }
   /* fd-spin & fd-hue removed: ring static */
-      @keyframes fd-blink { 0%,6%,94%,100% { transform:scaleY(1);} 3%,4% { transform:scaleY(.12);} }
+  @keyframes blink { 0%,6%,94%,100% { clip-path:inset(0% 0% 0% 0%);} 3%,4% { clip-path:inset(45% 0% 45% 0%);} }
       @keyframes fd-mouth { 0%,100% { transform:scale(1);} 50% { transform:scale(1.06);} }
       @keyframes fd-hat { 0%,100% { transform:translateY(0);} 50% { transform:translateY(-10px);} }
       @keyframes fd-steam { 0%,100% { opacity:0; transform:translateY(6px);} 50% { opacity:0.9; transform:translateY(-10px);} }
@@ -60,7 +60,7 @@
   </g>
   <!-- Eyes -->
   <g class="fd-eye"><circle cx="92" cy="112" r="14" fill="#FFF" /><circle cx="92" cy="112" r="6" fill="#92400E" /></g>
-  <g class="fd-eye" style="animation-delay:1.4s"><circle cx="148" cy="112" r="14" fill="#FFF" /><circle cx="148" cy="112" r="6" fill="#92400E" /></g>
+    <g class="fd-eye r"><circle cx="148" cy="112" r="14" fill="#FFF" /><circle cx="148" cy="112" r="6" fill="#92400E" /></g>
   <!-- Mouth -->
   <path class="fd-mouth" d="M84 162 Q120 188 156 162" stroke="#FEF3C7" stroke-width="8" stroke-linecap="round" fill="none" />
   <!-- Utensils rotating group -->

@@ -27,7 +27,7 @@
     </pattern>
     <style><![CDATA[
   .pi-ring { stroke-dasharray: 12 18; }
-      .pi-eye { animation: pi-blink 7s ease-in-out infinite; }
+  .pi-eye { animation: blink 6.5s ease-in-out infinite; }
       .pi-mouth { animation: pi-talk 4s ease-in-out infinite; }
       .pi-bulb { animation: pi-pulse 5s ease-in-out infinite; transform-origin:120px 54px; }
       .pi-chart { animation: pi-rise 6s ease-in-out infinite; }
@@ -36,7 +36,7 @@
       .pi-bubble:nth-child(3) { animation-delay:3s; }
       .pi-halo { animation: pi-halo 6s ease-in-out infinite; }
   /* pi-spin & pi-hue removed: ring static */
-      @keyframes pi-blink { 0%,6%,94%,100% { transform: scaleY(1);} 3%,4% { transform: scaleY(.1);} }
+  @keyframes blink { 0%,6%,94%,100% { clip-path:inset(0% 0% 0% 0%);} 3%,4% { clip-path:inset(45% 0% 45% 0%);} }
       @keyframes pi-talk { 0%,100% { transform: scale(1);} 50% { transform: scale(1.07);} }
       @keyframes pi-pulse { 0%,100% { transform: scale(1);} 50% { transform: scale(1.15);} }
       @keyframes pi-rise { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-14px);} }
@@ -53,7 +53,7 @@
     <circle cx="90" cy="110" r="15" fill="#FFF" />
     <circle cx="90" cy="110" r="6" fill="#064E3B" />
   </g>
-  <g class="pi-eye" style="animation-delay:1.5s">
+    <g class="pi-eye r">
     <circle cx="150" cy="110" r="15" fill="#FFF" />
     <circle cx="150" cy="110" r="6" fill="#064E3B" />
   </g>

@@ -69,7 +69,7 @@ const agentConfigs = {
   },
   punchy: {
     title: 'Punchy Bot',
-    desc: 'Energetic avatar with wink and punctuation bursts.',
+    desc: 'Energetic avatar with punctuation bursts.',
     faceGradient: (
       <radialGradient id="faceGrad" cx="0.5" cy="0.5" r="0.55">
         <stop offset="0%" stopColor="#C084FC" />
@@ -164,8 +164,8 @@ const agentConfigs = {
 const sharedStyles = `
   .ring { stroke-dasharray: 12 14; }
   .halo { animation: pulse 5s ease-in-out infinite; }
-  .eye { animation: blink 6s ease-in-out infinite; transform-origin:center; }
-  .eye.right { animation-delay: 2s; }
+  .eye { transform-origin:center; }
+  .eye { animation: blink 6.5s ease-in-out infinite; will-change:clip-path; }
   .mouth { animation: talk 3.8s ease-in-out infinite; transform-origin:120px 150px; }
   .glyph { animation: bob 4.5s ease-in-out infinite; }
   .glyph:nth-child(2) { animation-delay:1s; }
@@ -179,10 +179,10 @@ const sharedStyles = `
   .p-mic { animation: pr-bounce 5s ease-in-out infinite; transform-origin:120px 180px; }
   .p-burst { animation: pr-bob 4.2s ease-in-out infinite; }
   .p-burst:nth-child(2) { animation-delay:1.2s; }
-  .wink path { animation: pr-wink 6s ease-in-out infinite; }
+  /* wink removed (unified blink) */
 
   /* spin & hue animations removed per request (ring static) */
-  @keyframes blink { 0%,5%,95%,100% { transform:scaleY(1);} 2%,3% { transform:scaleY(.1);} }
+  @keyframes blink { 0%,6%,94%,100% { clip-path:inset(0% 0% 0% 0%); } 3%,4% { clip-path:inset(45% 0% 45% 0%); } }
   @keyframes talk { 0%,100% { transform:scale(1);} 50% { transform:scale(1.07);} }
   @keyframes drift { 0%,100% { transform:translateY(0);} 50% { transform:translateY(-18px);} }
   @keyframes bob { 0%,100% { transform:translateY(0);} 50% { transform:translateY(-8px);} }
@@ -191,7 +191,7 @@ const sharedStyles = `
   @keyframes pr-bob { 0%,100% { transform:translateY(0);} 50% { transform:translateY(-10px);} }
   @keyframes pr-bounce { 0%,100% { transform:translateY(0);} 35% { transform:translateY(-14px);} 70% { transform:translateY(-6px);} }
   @keyframes pr-pulse { 0%,100% { transform:scale(1);} 50% { transform:scale(1.12);} }
-  @keyframes pr-wink { 0%,10%,90%,100% { stroke-dasharray:40 0; } 45%,55% { stroke-dasharray:0 40; } }
+  /* wink keyframe removed */
 `;
 
 export function AgentAvatar({ type = 'lingo', size = 180, title, desc, decorative = true, className = '' }) {
@@ -232,28 +232,16 @@ export function AgentAvatar({ type = 'lingo', size = 180, title, desc, decorativ
       {/* Face */}
       <circle cx="120" cy="120" r="92" fill="url(#faceGrad)" filter="url(#innerShadow)" />
       {/* Eyes */}
-      {type === 'punchy' ? (
-        <>
-          <g className="eye">
-            <circle cx="84" cy="108" r="17" fill="#FFF" />
-            <circle cx="84" cy="108" r="7" fill={cfg.eyeIris} />
-          </g>
-          <g className="eye wink">
-            <path d="M150 108 C156 104 164 104 170 108" stroke="#F0ABFC" strokeWidth="8" strokeLinecap="round" />
-          </g>
-        </>
-      ) : (
-        <g>
-          <g className="eye left">
-            <circle cx="85" cy="108" r="17" fill="#FFF" />
-            <circle cx="85" cy="108" r="7" fill={cfg.eyeIris} />
-          </g>
-          <g className="eye right">
-            <circle cx="155" cy="108" r="17" fill="#FFF" />
-            <circle cx="155" cy="108" r="7" fill={cfg.eyeIris} />
-          </g>
+      <g>
+        <g className="eye left" style={{animation:'none'}}>
+          <circle cx="85" cy="108" r="17" fill="#FFF" />
+          <circle cx="85" cy="108" r="7" fill={cfg.eyeIris} />
         </g>
-      )}
+        <g className="eye right">
+          <circle cx="155" cy="108" r="17" fill="#FFF" />
+          <circle cx="155" cy="108" r="7" fill={cfg.eyeIris} />
+        </g>
+      </g>
       {/* Brows */}
       <path d="M66 78 C82 70 98 70 110 78" stroke={cfg.browStroke} strokeWidth={type === 'punchy' ? 8 : 7} strokeLinecap="round" />
       <path d="M130 78 C146 70 162 70 174 78" stroke={cfg.browStroke} strokeWidth={type === 'punchy' ? 8 : 7} strokeLinecap="round" />

@@ -28,13 +28,13 @@
     <path id="planePath" d="M120 12 A108 108 0 1 1 119.9 12" />
     <style><![CDATA[
   .gb-ring { stroke-dasharray: 14 20; }
-      .gb-eye { animation: gb-blink 7s ease-in-out infinite; }
+  .gb-eye { animation: blink 6.5s ease-in-out infinite; }
       .gb-mouth { animation: gb-mouth 4.5s ease-in-out infinite; }
       .gb-plane { animation: gb-plane 9s linear infinite; }
       .gb-globe { animation: gb-globe 6s linear infinite; transform-origin:120px 172px; }
       .gb-halo { animation: gb-halo 6s ease-in-out infinite; }
   /* gb-spin & gb-hue removed: ring static */
-      @keyframes gb-blink { 0%,6%,94%,100% { transform:scaleY(1);} 3%,4% { transform:scaleY(.12);} }
+  @keyframes blink { 0%,6%,94%,100% { clip-path:inset(0% 0% 0% 0%);} 3%,4% { clip-path:inset(45% 0% 45% 0%);} }
       @keyframes gb-mouth { 0%,100% { transform:scale(1);} 50% { transform:scale(1.06);} }
       @keyframes gb-plane { to { offset-distance:100%; } }
       @keyframes gb-globe { to { transform:rotate(360deg);} }
@@ -47,7 +47,7 @@
   <circle cx="120" cy="120" r="92" fill="url(#globoDots)" opacity="0.08" />
   <!-- Eyes -->
   <g class="gb-eye"><circle cx="92" cy="110" r="14" fill="#FFF" /><circle cx="92" cy="110" r="6" fill="#075985" /></g>
-  <g class="gb-eye" style="animation-delay:1.6s"><circle cx="148" cy="110" r="14" fill="#FFF" /><circle cx="148" cy="110" r="6" fill="#075985" /></g>
+    <g class="gb-eye r"><circle cx="148" cy="110" r="14" fill="#FFF" /><circle cx="148" cy="110" r="6" fill="#075985" /></g>
   <!-- Mouth -->
   <path class="gb-mouth" d="M84 160 Q120 186 156 160" stroke="#E0F2FE" stroke-width="8" stroke-linecap="round" fill="none" />
   <!-- Globe -->

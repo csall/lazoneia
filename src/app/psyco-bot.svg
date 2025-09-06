@@ -27,14 +27,14 @@
     </pattern>
     <style><![CDATA[
   .pc-ring { stroke-dasharray: 12 18; }
-      .pc-eye { animation: pc-blink 7s ease-in-out infinite; }
+  .pc-eye { animation: blink 6.5s ease-in-out infinite; }
       .pc-mouth { animation: pc-mouth 5s ease-in-out infinite; }
       .pc-bubble { animation: pc-bob 6s ease-in-out infinite; }
       .pc-bubble.small { animation-duration:4.5s; animation-delay:1.2s; }
       .pc-bubble.tiny { animation-duration:3.8s; animation-delay:2s; }
       .pc-halo { animation: pc-halo 6s ease-in-out infinite; }
   /* pc-spin & pc-hue removed: ring static */
-      @keyframes pc-blink { 0%,6%,94%,100% { transform:scaleY(1);} 3%,4% { transform:scaleY(.12);} }
+  @keyframes blink { 0%,6%,94%,100% { clip-path:inset(0% 0% 0% 0%);} 3%,4% { clip-path:inset(45% 0% 45% 0%);} }
       @keyframes pc-mouth { 0%,100% { transform:scale(1);} 50% { transform:scale(1.05);} }
       @keyframes pc-bob { 0%,100% { transform:translateY(0);} 50% { transform:translateY(-14px);} }
       @keyframes pc-halo { 0%,100% { opacity:.22; transform:scale(1);} 50% { opacity:.4; transform:scale(1.08);} }
@@ -46,7 +46,7 @@
   <circle cx="120" cy="120" r="92" fill="url(#psycoDots)" opacity="0.08" />
   <!-- Eyes -->
   <g class="pc-eye"><circle cx="92" cy="110" r="14" fill="#FFF" /><circle cx="92" cy="110" r="6" fill="#1E3A8A" /></g>
-  <g class="pc-eye" style="animation-delay:1.6s"><circle cx="148" cy="110" r="14" fill="#FFF" /><circle cx="148" cy="110" r="6" fill="#1E3A8A" /></g>
+    <g class="pc-eye r"><circle cx="148" cy="110" r="14" fill="#FFF" /><circle cx="148" cy="110" r="6" fill="#1E3A8A" /></g>
   <!-- Mouth -->
   <path class="pc-mouth" d="M86 160 Q120 184 154 160" stroke="#DBEAFE" stroke-width="8" stroke-linecap="round" fill="none" />
   <!-- Thought bubbles -->
