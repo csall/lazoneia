@@ -40,9 +40,7 @@
       @keyframes pc-halo { 0%,100% { opacity:.22; transform:scale(1);} 50% { opacity:.4; transform:scale(1.08);} }
     ]]></style>
   </defs>
-  <g filter="url(#psycoGlow)">
-    <circle cx="120" cy="120" r="110" fill="none" stroke="url(#psycoRing)" stroke-width="8" class="pc-ring" stroke-linecap="round" />
-  </g>
+  <!-- Outer ring removed -->
   <circle cx="120" cy="120" r="100" fill="#2563EB" opacity="0.18" class="pc-halo" />
   <circle cx="120" cy="120" r="92" fill="url(#psycoFace)" filter="url(#psycoShadow)" />
   <circle cx="120" cy="120" r="92" fill="url(#psycoDots)" opacity="0.08" />

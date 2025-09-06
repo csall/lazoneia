@@ -110,6 +110,53 @@ const agentConfigs = {
         <rect x="70" y="192" width="100" height="14" rx="7" fill="#A855F7" opacity="0.35" />
       </>
     )
+  },
+  reply: {
+    title: 'Reply Bot',
+    desc: 'Messaging avatar with blinking eyes and reply bubbles.',
+    faceGradient: (
+      <radialGradient id="faceGrad" cx="0.5" cy="0.5" r="0.55">
+        <stop offset="0%" stopColor="#7DD3FC" />
+        <stop offset="55%" stopColor="#0EA5E9" />
+        <stop offset="100%" stopColor="#0369A1" />
+      </radialGradient>
+    ),
+    ringGradient: (
+      <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#BAE6FD" />
+        <stop offset="50%" stopColor="#38BDF8" />
+        <stop offset="100%" stopColor="#0369A1" />
+      </linearGradient>
+    ),
+    innerShadowColor: '#034270',
+    haloColor: '#0EA5E9',
+    eyeIris: '#0C4A6E',
+    browStroke: '#BAE6FD',
+    mouthStroke: '#BAE6FD',
+    extras: (
+      <>
+        <g className="glyph" style={{animationDelay:'1s'}}>
+          <path d="M120 54 C112 54 108 64 112 70 C116 74 124 74 128 70 C132 64 128 54 120 54 Z" fill="#7DD3FC" />
+          <circle cx="120" cy="46" r="6" fill="#7DD3FC" />
+        </g>
+        <g fontFamily="Inter, Arial" fontSize="12" fontWeight={600} fill="#0369A1">
+          <g className="float" style={{animationDelay:'0.2s'}}>
+            <rect x="56" y="60" width="54" height="30" rx="10" fill="#BAE6FD" stroke="#0369A1" strokeWidth="2" />
+            <text x="83" y="78" textAnchor="middle">Hi...</text>
+          </g>
+          <g className="float" style={{animationDelay:'2.2s'}}>
+            <rect x="130" y="60" width="54" height="30" rx="10" fill="#BAE6FD" stroke="#0369A1" strokeWidth="2" />
+            <text x="157" y="78" textAnchor="middle">OK!</text>
+          </g>
+        </g>
+        <g className="glyph" style={{animationDelay:'1.4s'}} stroke="#0EA5E9" strokeWidth="4" strokeLinecap="round">
+          <path d="M120 172 C106 172 100 168 94 162" />
+          <path d="M94 162 L98 152" />
+          <path d="M94 162 L90 152" />
+        </g>
+        <rect x="70" y="194" width="100" height="14" rx="7" fill="#0EA5E9" opacity="0.32" />
+      </>
+    )
   }
 };
 
@@ -179,10 +226,7 @@ export function AgentAvatar({ type = 'lingo', size = 180, title, desc, decorativ
         </filter>
         <style>{sharedStyles}</style>
       </defs>
-      {/* Outer ring */}
-      <g filter="url(#glow)">
-        <circle cx="120" cy="120" r="110" fill="none" stroke="url(#ringGrad)" strokeWidth="8" className="ring" strokeLinecap="round" />
-      </g>
+  {/* Outer ring removed */}
       {/* Halo */}
       <circle cx="120" cy="120" r="100" fill={cfg.haloColor} opacity="0.18" className="halo" />
       {/* Face */}

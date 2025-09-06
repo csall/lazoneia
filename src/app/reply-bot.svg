@@ -1,48 +1,90 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Unified base -->
-  <circle cx="120" cy="120" r="100" fill="url(#gradient-face-reply)" />
-  <circle cx="120" cy="120" r="120" fill="url(#patternReply)" opacity="0.25" />
-
-  <!-- Eyes -->
-  <circle cx="90" cy="100" r="14" fill="white" />
-  <circle cx="150" cy="100" r="14" fill="white" />
-  <circle cx="90" cy="100" r="7" fill="#0C4A6E" />
-  <circle cx="150" cy="100" r="7" fill="#0C4A6E" />
-  <circle cx="93" cy="97" r="2" fill="white" />
-  <circle cx="153" cy="97" r="2" fill="white" />
-
-  <!-- Eyebrows -->
-  <path d="M76 84C85 78 95 82 102 86" stroke="#0C4A6E" stroke-width="5" stroke-linecap="round" />
-  <path d="M164 84C155 78 145 82 138 86" stroke="#0C4A6E" stroke-width="5" stroke-linecap="round" />
-
-  <!-- Smile -->
-  <path d="M95 148C108 158 132 158 145 148" stroke="#0C4A6E" stroke-width="5" stroke-linecap="round" />
-
-  <!-- Speech bubbles simplified -->
-  <g opacity="0.9">
-    <path d="M58 72C50 72 50 80 58 84L72 88V80C82 76 82 66 72 66H58V72Z" fill="#BAE6FD" stroke="#0369A1" stroke-width="1.5" />
-    <path d="M182 72C190 72 190 80 182 84L168 88V80C158 76 158 66 168 66H182V72Z" fill="#BAE6FD" stroke="#0369A1" stroke-width="1.5" />
-  </g>
-
-  <!-- Forehead icon -->
-  <path d="M120 58C112 58 108 66 112 72C116 76 124 76 128 72C132 66 128 58 120 58Z" fill="#7DD3FC" />
-  <circle cx="120" cy="50" r="6" fill="#7DD3FC" />
-
-  <!-- Reply arrows -->
-  <g stroke="#0EA5E9" stroke-width="3" stroke-linecap="round">
-    <path d="M120 170C102 170 97 165 92 160" />
-    <path d="M92 160L97 150" />
-    <path d="M92 160L87 150" />
-  </g>
-
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-labelledby="rtitle rdesc" role="img">
+  <title id="rtitle">Reply Bot</title>
+  <desc id="rdesc">Responsive messaging avatar with static outer ring, blinking eyes, talking mouth and floating reply bubbles.</desc>
   <defs>
-    <linearGradient id="gradient-face-reply" x1="60" y1="60" x2="180" y2="180" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#0EA5E9" />
+    <radialGradient id="replyFace" cx="0.5" cy="0.5" r="0.55">
+      <stop offset="0%" stop-color="#7DD3FC" />
+      <stop offset="55%" stop-color="#0EA5E9" />
+      <stop offset="100%" stop-color="#0369A1" />
+    </radialGradient>
+    <linearGradient id="replyRing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#BAE6FD" />
+      <stop offset="50%" stop-color="#38BDF8" />
       <stop offset="100%" stop-color="#0369A1" />
     </linearGradient>
-    <pattern id="patternReply" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-      <circle cx="10" cy="10" r="1" fill="#BAE6FD" />
+    <filter id="replyGlow" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.5  0 0 0 0 0.8  0 0 0 0 1  0 0 0 0.55 0" result="col" />
+      <feBlend in="SourceGraphic" in2="col" mode="screen" />
+    </filter>
+    <filter id="replyShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#034270" flood-opacity="0.55" />
+    </filter>
+    <pattern id="replyDots" width="18" height="18" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="1" fill="#BAE6FD" />
+      <circle cx="12" cy="12" r="1" fill="#7DD3FC" />
     </pattern>
+    <style><![CDATA[
+      .r-ring { stroke-dasharray: 12 14; }
+      .r-halo { animation: r-halo 6s ease-in-out infinite; }
+      .r-eye { animation: r-blink 6.5s ease-in-out infinite; transform-origin:center; }
+      .r-eye.right { animation-delay:1.8s; }
+      .r-mouth { animation: r-talk 4.2s ease-in-out infinite; transform-origin:120px 148px; }
+      .r-bubble { animation: r-bob 6s ease-in-out infinite; }
+      .r-bubble.right { animation-delay:2.2s; }
+      .r-fore { animation: r-fore 5.5s ease-in-out infinite; transform-origin:120px 58px; }
+      .r-arrows { animation: r-arrows 5.8s ease-in-out infinite; transform-origin:120px 170px; }
+      @keyframes r-blink { 0%,6%,94%,100% { transform:scaleY(1);} 3%,4% { transform:scaleY(.12);} }
+      @keyframes r-talk { 0%,100% { transform:scale(1);} 50% { transform:scale(1.07);} }
+      @keyframes r-bob { 0%,100% { transform:translateY(0);} 50% { transform:translateY(-10px);} }
+      @keyframes r-fore { 0%,100% { transform:translateY(0);} 50% { transform:translateY(-8px);} }
+      @keyframes r-arrows { 0%,100% { transform:translateY(0);} 50% { transform:translateY(-6px);} }
+      @keyframes r-halo { 0%,100% { opacity:.22; transform:scale(1);} 50% { opacity:.42; transform:scale(1.07);} }
+    ]]></style>
   </defs>
+  <!-- Outer ring removed -->
+  <!-- Halo -->
+  <circle cx="120" cy="120" r="100" fill="#0EA5E9" opacity="0.18" class="r-halo" />
+  <!-- Face -->
+  <circle cx="120" cy="120" r="92" fill="url(#replyFace)" filter="url(#replyShadow)" />
+  <circle cx="120" cy="120" r="92" fill="url(#replyDots)" opacity="0.08" />
+  <!-- Eyes -->
+  <g class="r-eye left">
+    <circle cx="90" cy="108" r="16" fill="#FFF" />
+    <circle cx="90" cy="108" r="7" fill="#0C4A6E" />
+  </g>
+  <g class="r-eye right">
+    <circle cx="150" cy="108" r="16" fill="#FFF" />
+    <circle cx="150" cy="108" r="7" fill="#0C4A6E" />
+  </g>
+  <!-- Brows -->
+  <path d="M76 86 C86 80 96 82 102 88" stroke="#BAE6FD" stroke-width="7" stroke-linecap="round" />
+  <path d="M138 88 C144 82 154 80 164 86" stroke="#BAE6FD" stroke-width="7" stroke-linecap="round" />
+  <!-- Mouth -->
+  <path class="r-mouth" d="M92 158 Q120 180 148 158" stroke="#BAE6FD" stroke-width="7" stroke-linecap="round" fill="none" />
+  <!-- Forehead reply glyph -->
+  <g class="r-fore">
+    <path d="M120 54 C112 54 108 64 112 70 C116 74 124 74 128 70 C132 64 128 54 120 54 Z" fill="#7DD3FC" />
+    <circle cx="120" cy="46" r="6" fill="#7DD3FC" />
+  </g>
+  <!-- Speech bubbles -->
+  <g font-family="Inter, Arial" font-size="12" font-weight="600" fill="#0369A1">
+    <g class="r-bubble" opacity="0.95">
+      <rect x="58" y="60" width="54" height="30" rx="10" fill="#BAE6FD" stroke="#0369A1" stroke-width="2" />
+      <text x="85" y="78" text-anchor="middle">Hi...</text>
+    </g>
+    <g class="r-bubble right" opacity="0.95">
+      <rect x="128" y="60" width="54" height="30" rx="10" fill="#BAE6FD" stroke="#0369A1" stroke-width="2" />
+      <text x="155" y="78" text-anchor="middle">OK!</text>
+    </g>
+  </g>
+  <!-- Reply arrows bottom -->
+  <g class="r-arrows" stroke="#0EA5E9" stroke-width="4" stroke-linecap="round">
+    <path d="M120 172 C106 172 100 168 94 162" />
+    <path d="M94 162 L98 152" />
+    <path d="M94 162 L90 152" />
+  </g>
+  <!-- Base plate -->
+  <rect x="70" y="194" width="100" height="14" rx="7" fill="#0EA5E9" opacity="0.32" />
 </svg>

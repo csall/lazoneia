@@ -44,9 +44,7 @@
       @keyframes tk-halo { 0%,100% { opacity:.22; transform:scale(1);} 50% { opacity:.4; transform:scale(1.07);} }
     ]]></style>
   </defs>
-  <g filter="url(#talkoGlow)">
-    <circle cx="120" cy="120" r="110" fill="none" stroke="url(#talkoRing)" stroke-width="8" class="tk-ring" stroke-linecap="round" />
-  </g>
+  <!-- Outer ring removed -->
   <circle cx="120" cy="120" r="100" fill="#A855F7" opacity="0.18" class="tk-halo" />
   <circle cx="120" cy="120" r="92" fill="url(#talkoFace)" filter="url(#talkoShadow)" />
   <circle cx="120" cy="120" r="92" fill="url(#talkoDots)" opacity="0.08" />

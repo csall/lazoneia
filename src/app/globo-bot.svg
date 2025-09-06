@@ -41,9 +41,7 @@
       @keyframes gb-halo { 0%,100% { opacity:.2; transform:scale(1);} 50% { opacity:.38; transform:scale(1.08);} }
     ]]></style>
   </defs>
-  <g filter="url(#globoGlow)">
-    <circle cx="120" cy="120" r="110" fill="none" stroke="url(#globoRing)" stroke-width="8" class="gb-ring" stroke-linecap="round" />
-  </g>
+  <!-- Outer ring removed -->
   <circle cx="120" cy="120" r="100" fill="#0EA5E9" opacity="0.18" class="gb-halo" />
   <circle cx="120" cy="120" r="92" fill="url(#globoFace)" filter="url(#globoShadow)" />
   <circle cx="120" cy="120" r="92" fill="url(#globoDots)" opacity="0.08" />

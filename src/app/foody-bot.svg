@@ -43,9 +43,7 @@
       @keyframes fd-halo { 0%,100% { opacity:.25; transform:scale(1);} 50% { opacity:.4; transform:scale(1.07);} }
     ]]></style>
   </defs>
-  <g filter="url(#foodyGlow)">
-    <circle cx="120" cy="120" r="110" fill="none" stroke="url(#foodyRing)" stroke-width="8" class="fd-ring" stroke-linecap="round" />
-  </g>
+  <!-- Outer ring removed -->
   <circle cx="120" cy="120" r="100" fill="#FBBF24" opacity="0.2" class="fd-halo" />
   <circle cx="120" cy="120" r="92" fill="url(#foodyFace)" filter="url(#foodyShadow)" />
   <circle cx="120" cy="120" r="92" fill="url(#foodyDots)" opacity="0.08" />

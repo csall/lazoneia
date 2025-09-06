@@ -131,7 +131,7 @@ export default function AnimatedCard({ title, description, icon, animationData, 
   
   const styles = getCardStyles();
   const botImage = getBotImage();
-  const useAvatarComponent = ["lingo","punchy"].includes(botType.toLowerCase());
+  const useAvatarComponent = ["lingo","punchy","reply"].includes(botType.toLowerCase());
 
   return (
     <motion.div

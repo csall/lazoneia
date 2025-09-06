@@ -49,9 +49,7 @@
       @keyframes gl-halo { 0%,100% { opacity:.25; transform:scale(1);} 50% { opacity:.45; transform:scale(1.08);} }
     ]]></style>
   </defs>
-  <g filter="url(#glowOuter)">
-    <circle cx="120" cy="120" r="110" fill="none" stroke="url(#glowRing)" stroke-width="8" class="gl-ring" stroke-linecap="round" />
-  </g>
+  <!-- Outer ring removed -->
   <circle cx="120" cy="120" r="100" fill="#EC4899" opacity="0.18" class="gl-halo" />
   <circle cx="120" cy="120" r="92" fill="url(#glowFace)" filter="url(#glowShadow)" />
   <circle cx="120" cy="120" r="92" fill="url(#glowDots)" opacity="0.1" />

@@ -41,9 +41,7 @@
       @keyframes fz-halo { 0%,100% { opacity:.22; transform:scale(1);} 50% { opacity:.4; transform:scale(1.08);} }
     ]]></style>
   </defs>
-  <g filter="url(#fitzyGlow)">
-    <circle cx="120" cy="120" r="110" fill="none" stroke="url(#fitzyRing)" stroke-width="8" class="fz-ring" stroke-linecap="round" />
-  </g>
+  <!-- Outer ring removed -->
   <circle cx="120" cy="120" r="100" fill="#10B981" opacity="0.18" class="fz-halo" />
   <circle cx="120" cy="120" r="92" fill="url(#fitzyFace)" filter="url(#fitzyShadow)" />
   <circle cx="120" cy="120" r="92" fill="url(#fitzyDots)" opacity="0.08" />

@@ -44,9 +44,7 @@
       @keyframes pi-halo { 0%,100% { opacity:.25; transform:scale(1);} 50% { opacity:.45; transform:scale(1.08);} }
     ]]></style>
   </defs>
-  <g filter="url(#pitchyGlow)">
-    <circle cx="120" cy="120" r="110" fill="none" stroke="url(#pitchyRing)" stroke-width="8" class="pi-ring" stroke-linecap="round" />
-  </g>
+  <!-- Outer ring removed -->
   <circle cx="120" cy="120" r="100" fill="#10B981" opacity="0.18" class="pi-halo" />
   <circle cx="120" cy="120" r="92" fill="url(#pitchyFace)" filter="url(#pitchyShadow)" />
   <circle cx="120" cy="120" r="92" fill="url(#pitchyDots)" opacity="0.1" />

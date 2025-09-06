@@ -43,10 +43,7 @@
       @keyframes pulse { 0%,100% { opacity:0.25; transform: scale(1);} 50% {opacity:0.45; transform: scale(1.08);} }
     ]]></style>
   </defs>
-  <!-- Outer animated ring -->
-  <g filter="url(#softGlow)">
-    <circle cx="120" cy="120" r="110" fill="none" stroke="url(#outerRing)" stroke-width="8" class="ring" stroke-linecap="round" stroke-linejoin="round" />
-  </g>
+  <!-- Outer ring removed -->
   <!-- Halo -->
   <circle cx="120" cy="120" r="100" fill="#F59E0B" opacity="0.18" class="halo" />
   <!-- Face -->

@@ -45,10 +45,7 @@
       @keyframes pr-halo { 0%,100% { opacity:.25; transform:scale(1);} 50% { opacity:.45; transform:scale(1.08);} }
     ]]></style>
   </defs>
-  <!-- Outer rotating ring -->
-  <g filter="url(#punchyGlow)">
-    <circle cx="120" cy="120" r="110" fill="none" stroke="url(#punchyRing)" stroke-width="8" class="p-ring" stroke-linecap="round" />
-  </g>
+  <!-- Outer ring removed -->
   <circle cx="120" cy="120" r="100" fill="#7C3AED" opacity="0.18" class="p-halo" />
   <!-- Face -->
   <circle cx="120" cy="120" r="92" fill="url(#punchyFace)" filter="url(#punchyInnerShadow)" />
