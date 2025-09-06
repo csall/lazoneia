@@ -123,25 +123,25 @@ export default function LanguageSelector({
                     <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' className='w-4 h-4' stroke='currentColor' strokeWidth='2' fill='none' strokeLinecap='round' strokeLinejoin='round'><path d='M18 6 6 18'/><path d='M6 6l12 12'/></svg>
                   </button>
                 </div>
-                <div ref={listRef} className="p-3 overflow-y-auto grid grid-cols-4 gap-2">
+                <div ref={listRef} className="p-3 overflow-y-auto flex flex-col gap-1.5">
                   {languages.map(lang => {
                     const selected = lang.value === value;
+                    const abbr = (lang.label || '').slice(0,2).toUpperCase();
                     return (
                       <button
                         key={lang.value}
                         data-lang-item
                         data-selected={selected}
                         onClick={() => { onChange?.(lang.value); close(); }}
-                        className={`flex flex-col items-center gap-1 px-1.5 py-1.5 rounded-md border text-[10px] font-medium transition active:scale-[0.95] ${selected ? 'bg-gradient-to-br from-indigo-500/25 to-violet-500/25 text-indigo-700 dark:text-indigo-300 border-indigo-400/40 shadow-sm' : 'border-gray-200 dark:border-white/10 bg-white/70 dark:bg-white/5 hover:bg-indigo-50/50 dark:hover:bg-indigo-500/10'}`}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-md border text-xs font-medium transition active:scale-[0.97] ${selected ? 'bg-gradient-to-r from-indigo-500/15 to-violet-500/15 text-indigo-700 dark:text-indigo-300 border-indigo-400/40 shadow-sm' : 'border-gray-200 dark:border-white/10 bg-white/70 dark:bg-white/5 hover:bg-indigo-50/70 dark:hover:bg-indigo-500/10'}`}
                       >
-                        <Image src={`https://flagcdn.com/${lang.flag}.svg`} alt={lang.label} width={28} height={28} className="rounded object-cover w-7 h-7" unoptimized />
-                        <span className="truncate w-full text-center leading-tight">{lang.label}</span>
-                        {selected && <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 dark:bg-indigo-300" />}
+                        <span className="flex-1 text-left truncate leading-tight">{lang.value}</span>
+                        <span className={`ml-3 text-[10px] font-semibold tracking-wide px-1.5 py-0.5 rounded border ${selected ? 'bg-indigo-600/20 border-indigo-500/40 text-indigo-700 dark:text-indigo-200' : 'bg-gray-100 dark:bg-white/10 border-gray-300/70 dark:border-white/10 text-gray-600 dark:text-gray-300'}`}>{abbr}</span>
                       </button>
                     );
                   })}
                   {!languages.length && (
-                    <div className='col-span-4 text-center text-xs text-gray-500 dark:text-gray-400 py-6'>Aucune langue</div>
+                    <div className='text-center text-xs text-gray-500 dark:text-gray-400 py-6'>Aucune langue</div>
                   )}
                 </div>
               </div>
