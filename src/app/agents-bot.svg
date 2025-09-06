@@ -1,238 +1,110 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Définition des animations -->
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-labelledby="agTitle agDesc" role="img">
+  <title id="agTitle">Agents Hub</title>
+  <desc id="agDesc">Unified animated hub avatar showing all agents orbiting with color cycling and connection pulses.</desc>
   <defs>
-    <!-- Animation de rotation -->
-    <animate id="rotateAnim" attributeName="transform" attributeType="XML" type="rotate" 
-             from="0 120 120" to="360 120 120" dur="20s" repeatCount="indefinite" />
-    
-    <!-- Animation de couleur -->
-    <animate id="colorAnim" attributeName="fill" 
-             values="#EC4899;#8B5CF6;#0EA5E9;#14B8A6;#FBBF24;#10B981;#EC4899" 
-             dur="14s" repeatCount="indefinite" />
-             
-    <!-- Animation de pulsation -->
-    <animate id="pulseAnim" attributeName="r" 
-             values="90;95;90" dur="3s" repeatCount="indefinite" />
-    
-    <!-- Animation d'opacité -->
-    <animate id="opacityAnim" attributeName="opacity" 
-             values="0.8;1;0.8" dur="3s" repeatCount="indefinite" />
-             
-    <!-- Gradients pour les différents agents -->
-    <linearGradient id="gradient-glow" x1="60" y1="60" x2="180" y2="180" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#F472B6">
-        <animate attributeName="stop-color" 
-                 values="#F472B6;#A78BFA;#0EA5E9;#14B8A6;#FBBF24;#10B981;#F472B6" 
-                 dur="14s" repeatCount="indefinite" />
-      </stop>
-      <stop offset="100%" stop-color="#9D174D">
-        <animate attributeName="stop-color" 
-                 values="#9D174D;#4C1D95;#0369A1;#0F766E;#B45309;#065F46;#9D174D" 
-                 dur="14s" repeatCount="indefinite" />
-      </stop>
+    <radialGradient id="hubFace" cx="0.5" cy="0.5" r="0.55">
+      <stop offset="0%" stop-color="#F9A8D4" />
+      <stop offset="55%" stop-color="#A78BFA" />
+      <stop offset="100%" stop-color="#4C1D95" />
+    </radialGradient>
+    <linearGradient id="hubRing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F472B6" />
+      <stop offset="40%" stop-color="#0EA5E9" />
+      <stop offset="70%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#FBBF24" />
     </linearGradient>
-    
-    <pattern id="bgPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-      <circle cx="10" cy="10" r="1" fill="white"/>
-    </pattern>
-
-    <!-- Filtre pour l'effet de brillance -->
-    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="3" result="blur" />
-      <feFlood flood-color="#FFFFFF" result="color" />
-      <feComposite operator="in" in="color" in2="blur" result="glow" />
-      <feMerge>
-        <feMergeNode in="glow" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
+    <filter id="hubGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="b" />
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 1  0 0 0 0 0.6  0 0 0 0 1  0 0 0 0.55 0" result="c" />
+      <feBlend in="SourceGraphic" in2="c" mode="screen" />
     </filter>
+    <filter id="hubShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#4C1D95" flood-opacity="0.55" />
+    </filter>
+    <pattern id="hubDots" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="1" fill="#F5D0FE" />
+      <circle cx="12" cy="12" r="1" fill="#E9D5FF" />
+    </pattern>
+    <style><![CDATA[
+  .hub-ring { stroke-dasharray: 16 22; }
+      .hub-halo { animation: hub-halo 7s ease-in-out infinite; }
+      .hub-face { animation: hub-pulse 5.5s ease-in-out infinite; }
+      .hub-eye { animation: hub-blink 7s ease-in-out infinite; }
+      .hub-eye.r { animation-delay:1.8s; }
+      .hub-mouth { animation: hub-talk 5s ease-in-out infinite; }
+      .hub-orbit { animation: hub-orbit 16s linear infinite; transform-origin:120px 120px; }
+      .hub-orbit.fast { animation-duration:12s; }
+      .hub-orbit.slow { animation-duration:20s; }
+      .hub-conn line { animation: hub-conn 6s ease-in-out infinite; }
+      .hub-conn line:nth-child(2) { animation-delay:1.5s; }
+      .hub-conn line:nth-child(3) { animation-delay:3s; }
+      .hub-conn line:nth-child(4) { animation-delay:4.5s; }
+      .hub-conn line:nth-child(5) { animation-delay:2.2s; }
+      .hub-center { animation: hub-center 10s linear infinite; transform-origin:120px 120px; }
+      .hub-text { animation: hub-text 14s linear infinite; }
+      .hub-outer { animation: hub-outer 60s linear infinite, hub-color 18s linear infinite; }
+  /* hub-spin & hub-hue removed: ring static */
+      @keyframes hub-pulse { 0%,100% { transform:scale(1);} 50% { transform:scale(1.03);} }
+      @keyframes hub-halo { 0%,100% { opacity:.22; transform:scale(1);} 50% { opacity:.42; transform:scale(1.07);} }
+      @keyframes hub-blink { 0%,6%,94%,100% { transform:scaleY(1);} 3%,4% { transform:scaleY(.12);} }
+      @keyframes hub-talk { 0%,100% { transform:scale(1);} 50% { transform:scale(1.05);} }
+      @keyframes hub-orbit { to { transform:rotate(360deg);} }
+      @keyframes hub-conn { 0%,100% { stroke-opacity:.25;} 50% { stroke-opacity:.85;} }
+      @keyframes hub-center { to { transform:rotate(360deg);} }
+      @keyframes hub-text { to { filter:hue-rotate(360deg);} }
+      @keyframes hub-outer { to { transform:rotate(-360deg);} }
+      @keyframes hub-color { 0% { stroke:#F472B6;} 25% { stroke:#0EA5E9;} 50% { stroke:#10B981;} 75% { stroke:#FBBF24;} 100% { stroke:#F472B6;} }
+    ]]></style>
   </defs>
-  
-  <!-- Background elements -->
-  <circle cx="120" cy="120" r="120" fill="url(#bgPattern)" opacity="0.3" />
-  
-  <!-- Face/Head base avec animation de pulsation -->
-  <circle cx="120" cy="120" r="90" fill="url(#gradient-glow)">
-    <animate attributeName="r" values="90;95;90" dur="4s" repeatCount="indefinite" />
-  </circle>
-  
-  <!-- Cercle externe animé qui tourne -->
-  <g>
-    <circle cx="120" cy="120" r="100" stroke="#FFFFFF" stroke-width="1" stroke-dasharray="4 4" fill="none" opacity="0.4">
-      <animateTransform attributeName="transform" type="rotate" 
-                        from="0 120 120" to="360 120 120" dur="30s" repeatCount="indefinite" />
-    </circle>
+  <!-- Rotating multi-color ring -->
+  <g filter="url(#hubGlow)">
+    <circle cx="120" cy="120" r="112" fill="none" stroke="url(#hubRing)" stroke-width="10" class="hub-ring" stroke-linecap="round" />
   </g>
-  
-  <!-- Petits cercles orbitaux représentant les différents agents -->
-  <g>
-    <!-- Glow (rose) -->
-    <circle cx="120" cy="35" r="12" fill="#F472B6" filter="url(#glow)">
-      <animate attributeName="fill" 
-               values="#F472B6;#F472B6;#F472B6;#F472B6;#F472B6;#F472B6;#F472B6" 
-               dur="14s" repeatCount="indefinite" />
-      <animateTransform attributeName="transform" type="rotate" 
-                      from="0 120 120" to="360 120 120" dur="14s" repeatCount="indefinite" />
-    </circle>
-    
-    <!-- Punchy (violet) -->
-    <circle cx="195" cy="120" r="12" fill="#A78BFA" filter="url(#glow)">
-      <animate attributeName="fill" 
-               values="#A78BFA;#A78BFA;#A78BFA;#A78BFA;#A78BFA;#A78BFA;#A78BFA" 
-               dur="14s" repeatCount="indefinite" />
-      <animateTransform attributeName="transform" type="rotate" 
-                      from="60 120 120" to="420 120 120" dur="14s" repeatCount="indefinite" />
-    </circle>
-    
-    <!-- Reply (bleu) -->
-    <circle cx="120" cy="205" r="12" fill="#0EA5E9" filter="url(#glow)">
-      <animate attributeName="fill" 
-               values="#0EA5E9;#0EA5E9;#0EA5E9;#0EA5E9;#0EA5E9;#0EA5E9;#0EA5E9" 
-               dur="14s" repeatCount="indefinite" />
-      <animateTransform attributeName="transform" type="rotate" 
-                      from="120 120 120" to="480 120 120" dur="14s" repeatCount="indefinite" />
-    </circle>
-    
-    <!-- Scribo (teal) -->
-    <circle cx="45" cy="120" r="12" fill="#14B8A6" filter="url(#glow)">
-      <animate attributeName="fill" 
-               values="#14B8A6;#14B8A6;#14B8A6;#14B8A6;#14B8A6;#14B8A6;#14B8A6" 
-               dur="14s" repeatCount="indefinite" />
-      <animateTransform attributeName="transform" type="rotate" 
-                      from="180 120 120" to="540 120 120" dur="14s" repeatCount="indefinite" />
-    </circle>
-    
-    <!-- Lingo (ambre) -->
-    <circle cx="180" cy="180" r="12" fill="#FBBF24" filter="url(#glow)">
-      <animate attributeName="fill" 
-               values="#FBBF24;#FBBF24;#FBBF24;#FBBF24;#FBBF24;#FBBF24;#FBBF24" 
-               dur="14s" repeatCount="indefinite" />
-      <animateTransform attributeName="transform" type="rotate" 
-                      from="240 120 120" to="600 120 120" dur="14s" repeatCount="indefinite" />
-    </circle>
-    
-    <!-- Pitchy (vert) -->
-    <circle cx="60" cy="180" r="12" fill="#10B981" filter="url(#glow)">
-      <animate attributeName="fill" 
-               values="#10B981;#10B981;#10B981;#10B981;#10B981;#10B981;#10B981" 
-               dur="14s" repeatCount="indefinite" />
-      <animateTransform attributeName="transform" type="rotate" 
-                      from="300 120 120" to="660 120 120" dur="14s" repeatCount="indefinite" />
-    </circle>
+  <!-- Halo -->
+  <circle cx="120" cy="120" r="102" fill="#C084FC" opacity="0.18" class="hub-halo" />
+  <!-- Face core -->
+  <circle cx="120" cy="120" r="94" fill="url(#hubFace)" filter="url(#hubShadow)" class="hub-face" />
+  <circle cx="120" cy="120" r="94" fill="url(#hubDots)" opacity="0.08" />
+  <!-- Eyes -->
+  <g class="hub-eye"><circle cx="92" cy="112" r="16" fill="#FFF" /><circle cx="92" cy="112" r="7" fill="#4C1D95" /></g>
+  <g class="hub-eye r"><circle cx="148" cy="112" r="16" fill="#FFF" /><circle cx="148" cy="112" r="7" fill="#4C1D95" /></g>
+  <!-- Mouth -->
+  <path class="hub-mouth" d="M90 164 Q120 188 150 164" stroke="#F5D0FE" stroke-width="8" stroke-linecap="round" fill="none" />
+  <!-- Center rotating glyph -->
+  <g class="hub-center">
+    <path d="M120 120 L108 140 H132 Z" fill="#F472B6" opacity="0.9" />
+    <circle cx="120" cy="120" r="10" fill="#0EA5E9" opacity="0.5" />
   </g>
-
-  <!-- Eyes with color animation -->
-  <g>
-    <circle cx="90" cy="100" r="12" fill="white" />
-    <circle cx="150" cy="100" r="12" fill="white" />
-    
-    <circle cx="90" cy="100" r="6">
-      <animate attributeName="fill" 
-               values="#9D174D;#4C1D95;#0369A1;#0F766E;#B45309;#065F46;#9D174D" 
-               dur="14s" repeatCount="indefinite" />
-    </circle>
-    
-    <circle cx="150" cy="100" r="6">
-      <animate attributeName="fill" 
-               values="#9D174D;#4C1D95;#0369A1;#0F766E;#B45309;#065F46;#9D174D" 
-               dur="14s" repeatCount="indefinite" />
-    </circle>
-    
-    <circle cx="92" cy="98" r="2" fill="white" />
-    <circle cx="152" cy="98" r="2" fill="white" />
+  <!-- Connection lines -->
+  <g class="hub-conn" stroke="#F472B6" stroke-width="3" stroke-linecap="round">
+    <line x1="120" y1="28" x2="120" y2="80" />
+    <line x1="200" y1="120" x2="160" y2="120" />
+    <line x1="120" y1="212" x2="120" y2="170" />
+    <line x1="40" y1="120" x2="80" y2="120" />
+    <line x1="180" y1="180" x2="150" y2="150" />
   </g>
-  
-  <!-- Eyebrows -->
-  <g>
-    <path d="M78 85C85 80 95 83 100 85" stroke-width="4" stroke-linecap="round">
-      <animate attributeName="stroke" 
-               values="#9D174D;#4C1D95;#0369A1;#0F766E;#B45309;#065F46;#9D174D" 
-               dur="14s" repeatCount="indefinite" />
-    </path>
-    
-    <path d="M162 85C155 80 145 83 140 85" stroke-width="4" stroke-linecap="round">
-      <animate attributeName="stroke" 
-               values="#9D174D;#4C1D95;#0369A1;#0F766E;#B45309;#065F46;#9D174D" 
-               dur="14s" repeatCount="indefinite" />
-    </path>
+  <!-- Orbits (groups with small colored nodes) -->
+  <g class="hub-orbit">
+    <circle cx="120" cy="32" r="12" fill="#F472B6" />
   </g>
-  
-  <!-- Smile/mouth with animation -->
-  <path d="M90 140C105 152 135 152 150 140" stroke-width="4" stroke-linecap="round">
-    <animate attributeName="stroke" 
-             values="#9D174D;#4C1D95;#0369A1;#0F766E;#B45309;#065F46;#9D174D" 
-             dur="14s" repeatCount="indefinite" />
-    <animate attributeName="d" 
-             values="M90 140C105 152 135 152 150 140;M90 145C105 155 135 155 150 145;M90 140C105 152 135 152 150 140" 
-             dur="5s" repeatCount="indefinite" />
-  </path>
-  
-  <!-- Iconic elements au centre -->
-  <g>
-    <path d="M120 120L115 130H125L120 120Z">
-      <animate attributeName="fill" 
-               values="#F472B6;#A78BFA;#0EA5E9;#14B8A6;#FBBF24;#10B981;#F472B6" 
-               dur="14s" repeatCount="indefinite" />
-      <animateTransform attributeName="transform" type="rotate" 
-                      from="0 120 120" to="360 120 120" dur="10s" repeatCount="indefinite" />
-    </path>
+  <g class="hub-orbit fast">
+    <circle cx="204" cy="120" r="12" fill="#A78BFA" />
   </g>
-  
-  <!-- AI / Connexion Pattern -->
-  <g opacity="0.7" stroke-width="1" stroke-linecap="round">
-    <line x1="120" y1="35" x2="120" y2="80">
-      <animate attributeName="stroke" 
-               values="#F472B6;#A78BFA;#0EA5E9;#14B8A6;#FBBF24;#10B981;#F472B6" 
-               dur="14s" repeatCount="indefinite" />
-      <animate attributeName="opacity" values="0.2;0.8;0.2" dur="3s" repeatCount="indefinite" />
-    </line>
-    <line x1="195" y1="120" x2="160" y2="120">
-      <animate attributeName="stroke" 
-               values="#A78BFA;#0EA5E9;#14B8A6;#FBBF24;#10B981;#F472B6;#A78BFA" 
-               dur="14s" repeatCount="indefinite" />
-      <animate attributeName="opacity" values="0.3;0.9;0.3" dur="4s" repeatCount="indefinite" />
-    </line>
-    <line x1="120" y1="205" x2="120" y2="170">
-      <animate attributeName="stroke" 
-               values="#0EA5E9;#14B8A6;#FBBF24;#10B981;#F472B6;#A78BFA;#0EA5E9" 
-               dur="14s" repeatCount="indefinite" />
-      <animate attributeName="opacity" values="0.4;1;0.4" dur="3.5s" repeatCount="indefinite" />
-    </line>
-    <line x1="45" y1="120" x2="80" y2="120">
-      <animate attributeName="stroke" 
-               values="#14B8A6;#FBBF24;#10B981;#F472B6;#A78BFA;#0EA5E9;#14B8A6" 
-               dur="14s" repeatCount="indefinite" />
-      <animate attributeName="opacity" values="0.2;0.8;0.2" dur="4.5s" repeatCount="indefinite" />
-    </line>
-    <line x1="180" y1="180" x2="150" y2="150">
-      <animate attributeName="stroke" 
-               values="#FBBF24;#10B981;#F472B6;#A78BFA;#0EA5E9;#14B8A6;#FBBF24" 
-               dur="14s" repeatCount="indefinite" />
-      <animate attributeName="opacity" values="0.3;0.9;0.3" dur="5s" repeatCount="indefinite" />
-    </line>
-    <line x1="60" y1="180" x2="90" y2="150">
-      <animate attributeName="stroke" 
-               values="#10B981;#F472B6;#A78BFA;#0EA5E9;#14B8A6;#FBBF24;#10B981" 
-               dur="14s" repeatCount="indefinite" />
-      <animate attributeName="opacity" values="0.2;0.8;0.2" dur="3.2s" repeatCount="indefinite" />
-    </line>
+  <g class="hub-orbit slow">
+    <circle cx="120" cy="208" r="12" fill="#0EA5E9" />
   </g>
-  
-  <!-- Texte animé -->
-  <text x="120" y="220" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">
-    <animate attributeName="fill" 
-             values="#F472B6;#A78BFA;#0EA5E9;#14B8A6;#FBBF24;#10B981;#F472B6" 
-             dur="14s" repeatCount="indefinite" />
-    AGENTS
-  </text>
-  
-  <!-- Anneaux externes pour l'effet visuel -->
-  <circle cx="120" cy="120" r="110" stroke-width="1" stroke-dasharray="8 8" fill="none">
-    <animate attributeName="stroke" 
-             values="#F472B6;#A78BFA;#0EA5E9;#14B8A6;#FBBF24;#10B981;#F472B6" 
-             dur="14s" repeatCount="indefinite" />
-    <animateTransform attributeName="transform" type="rotate" 
-                    from="0 120 120" to="-360 120 120" dur="60s" repeatCount="indefinite" />
-  </circle>
+  <g class="hub-orbit" style="animation-duration:18s">
+    <circle cx="36" cy="120" r="12" fill="#14B8A6" />
+  </g>
+  <g class="hub-orbit" style="animation-duration:22s">
+    <circle cx="176" cy="176" r="12" fill="#FBBF24" />
+  </g>
+  <g class="hub-orbit" style="animation-duration:26s">
+    <circle cx="60" cy="184" r="12" fill="#10B981" />
+  </g>
+  <!-- Bottom label -->
+  <text x="120" y="224" text-anchor="middle" font-family="Inter, Arial" font-size="15" font-weight="700" fill="#F5D0FE" class="hub-text">AGENTS</text>
+  <!-- Outer dashed ring -->
+  <circle cx="120" cy="120" r="118" stroke-width="2" stroke="#F472B6" fill="none" stroke-dasharray="10 10" class="hub-outer" />
 </svg>

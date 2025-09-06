@@ -7,6 +7,7 @@ import Link from "next/link";
 import Lottie from "lottie-react";
 import { useImagePath } from "@/hooks/useImagePath";
 import OptimizedImage from "@/components/OptimizedImage";
+import AgentAvatar from "@/components/agents/AgentAvatar";
 
 export default function AnimatedCard({ title, description, icon, animationData, delay = 0, botType = "" }) {
   const [ref, inView] = useInView({
@@ -130,6 +131,7 @@ export default function AnimatedCard({ title, description, icon, animationData, 
   
   const styles = getCardStyles();
   const botImage = getBotImage();
+  const useAvatarComponent = ["lingo","punchy"].includes(botType.toLowerCase());
 
   return (
     <motion.div
@@ -153,7 +155,9 @@ export default function AnimatedCard({ title, description, icon, animationData, 
           variants={iconVariants}
           whileHover={{ scale: 1.05, rotate: [-2, 2, -2], transition: { rotate: { repeat: Infinity, duration: 2 } } }}
         >
-          {botImage ? (
+          {useAvatarComponent ? (
+            <AgentAvatar type={botType.toLowerCase()} size={180} className="drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
+          ) : botImage ? (
             <OptimizedImage
               src={botImage}
               alt={title}

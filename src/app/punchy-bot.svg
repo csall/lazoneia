@@ -1,49 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Lingo-inspired unified base -->
-  <circle cx="120" cy="120" r="100" fill="url(#faceGradient)" />
-
-  <!-- Eyes (one wink preserved) -->
-  <circle cx="80" cy="100" r="15" fill="white" />
-  <circle cx="80" cy="100" r="7" fill="#4338CA" />
-  <!-- Wink eye uses arc instead of full eye -->
-  <path d="M150 100C155 96 165 96 170 100" stroke="#4338CA" stroke-width="6" stroke-linecap="round" />
-
-  <!-- Eyebrows -->
-  <path d="M65 75C75 70 85 72 95 77" stroke="#C4B5FD" stroke-width="6" stroke-linecap="round" />
-  <path d="M145 75C155 70 165 72 175 77" stroke="#C4B5FD" stroke-width="6" stroke-linecap="round" />
-
-  <!-- Smile -->
-  <path d="M80 150C100 170 140 170 160 150" stroke="#C4B5FD" stroke-width="6" stroke-linecap="round" />
-  <path d="M80 150C100 165 140 165 160 150" fill="#A78BFA" opacity="0.35" />
-
-  <!-- Bow tie (centered) -->
-  <path d="M95 128L120 135L145 128L120 121L95 128Z" fill="#A855F7" />
-  <circle cx="120" cy="128" r="6" fill="#7C3AED" />
-
-  <!-- Microphone stylized at bottom -->
-  <rect x="115" y="155" width="10" height="28" rx="5" fill="#6D28D9" />
-  <circle cx="120" cy="190" r="14" fill="#7C3AED" />
-
-  <!-- Fun punctuation bubbles -->
-  <g opacity="0.85">
-    <path d="M182 62C192 52 202 62 192 72C202 82 192 92 182 82C172 92 162 82 172 72C162 62 172 52 182 62Z" fill="#C4B5FD" />
-    <text x="177" y="77" font-family="Arial" font-size="15" fill="#4338CA">!</text>
-    <path d="M58 62C68 52 78 62 68 72C78 82 68 92 58 82C48 92 38 82 48 72C38 62 48 52 58 62Z" fill="#C4B5FD" />
-    <text x="53" y="77" font-family="Arial" font-size="15" fill="#4338CA">?</text>
-  </g>
-
-  <!-- Background pattern circle -->
-  <circle cx="120" cy="120" r="120" fill="url(#bgPattern)" opacity="0.3" />
-
-  <!-- Gradient & pattern defs -->
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-labelledby="title desc" role="img">
+  <title id="title">Punchy Bot</title>
+  <desc id="desc">Energetic animated avatar with rotating ring, blinking wink, punctuation bursts and bouncing mic.</desc>
   <defs>
-    <radialGradient id="faceGradient" cx="0.5" cy="0.5" r="0.5" gradientUnits="objectBoundingBox">
-      <stop offset="0%" stop-color="#A78BFA" />
-      <stop offset="100%" stop-color="#4C1D95" />
+    <radialGradient id="punchyFace" cx="0.5" cy="0.5" r="0.55">
+      <stop offset="0%" stop-color="#C084FC" />
+      <stop offset="55%" stop-color="#9333EA" />
+      <stop offset="100%" stop-color="#5B21B6" />
     </radialGradient>
-    <pattern id="bgPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+    <linearGradient id="punchyRing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F0ABFC" />
+      <stop offset="40%" stop-color="#A855F7" />
+      <stop offset="100%" stop-color="#7E22CE" />
+    </linearGradient>
+    <filter id="punchyGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b" />
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 1  0 0 0 0 0.7  0 0 0 0 1  0 0 0 0.55 0" result="c" />
+      <feBlend in="SourceGraphic" in2="c" mode="screen" />
+    </filter>
+    <filter id="punchyInnerShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#4C1D95" flood-opacity="0.55" />
+    </filter>
+    <pattern id="punchyDots" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#E9D5FF" />
       <circle cx="10" cy="10" r="1" fill="#C4B5FD" />
     </pattern>
+    <style><![CDATA[
+  .p-ring { stroke-dasharray: 10 16; }
+      .p-eye { animation: pr-blink 6s ease-in-out infinite; transform-origin: center; }
+      .p-eye.wink path { animation: pr-wink 6s ease-in-out infinite; }
+      .p-mouth { animation: pr-talk 3.4s ease-in-out infinite; transform-origin: 120px 150px; }
+      .p-burst { animation: pr-bob 4.2s ease-in-out infinite; }
+      .p-burst:nth-child(2) { animation-delay:1.2s; }
+      .p-mic { animation: pr-bounce 5s ease-in-out infinite; transform-origin: 120px 180px; }
+      .p-bow { animation: pr-pulse 5.5s ease-in-out infinite; transform-origin:120px 128px; }
+      .p-halo { animation: pr-halo 5s ease-in-out infinite; }
+  /* pr-spin & pr-hue removed: ring static */
+      @keyframes pr-blink { 0%,5%,95%,100% { transform: scaleY(1);} 2%,3% { transform: scaleY(.12);} }
+      @keyframes pr-wink { 0%,10%,90%,100% { stroke-dasharray:40 0; } 45%,55% { stroke-dasharray:0 40; } }
+      @keyframes pr-talk { 0%,100% { transform: scale(1);} 50% { transform: scale(1.08);} }
+      @keyframes pr-bob { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-10px);} }
+      @keyframes pr-bounce { 0%,100% { transform: translateY(0);} 35% { transform: translateY(-14px);} 70% { transform: translateY(-6px);} }
+      @keyframes pr-pulse { 0%,100% { transform: scale(1);} 50% { transform: scale(1.12);} }
+      @keyframes pr-halo { 0%,100% { opacity:.25; transform:scale(1);} 50% { opacity:.45; transform:scale(1.08);} }
+    ]]></style>
   </defs>
+  <!-- Outer rotating ring -->
+  <g filter="url(#punchyGlow)">
+    <circle cx="120" cy="120" r="110" fill="none" stroke="url(#punchyRing)" stroke-width="8" class="p-ring" stroke-linecap="round" />
+  </g>
+  <circle cx="120" cy="120" r="100" fill="#7C3AED" opacity="0.18" class="p-halo" />
+  <!-- Face -->
+  <circle cx="120" cy="120" r="92" fill="url(#punchyFace)" filter="url(#punchyInnerShadow)" />
+  <!-- Pattern overlay -->
+  <circle cx="120" cy="120" r="92" fill="url(#punchyDots)" opacity="0.12" />
+  <!-- Eyes (left full) -->
+  <g class="p-eye">
+    <circle cx="84" cy="108" r="17" fill="#FFF" />
+    <circle cx="84" cy="108" r="7" fill="#4C1D95" />
+  </g>
+  <!-- Wink (animated via stroke-dasharray) -->
+  <g class="p-eye wink">
+    <path d="M150 108 C156 104 164 104 170 108" stroke="#F0ABFC" stroke-width="8" stroke-linecap="round" />
+  </g>
+  <!-- Brows -->
+  <path d="M62 80 C78 72 94 72 106 80" stroke="#E9D5FF" stroke-width="8" stroke-linecap="round" />
+  <path d="M134 80 C150 72 166 72 178 80" stroke="#E9D5FF" stroke-width="8" stroke-linecap="round" />
+  <!-- Mouth -->
+  <path class="p-mouth" d="M78 160 Q120 188 162 160" stroke="#E9D5FF" stroke-width="8" stroke-linecap="round" fill="none" />
+  <!-- Bow tie -->
+  <g class="p-bow">
+    <path d="M96 133 L120 140 L144 133 L120 126 Z" fill="#A855F7" />
+    <circle cx="120" cy="133" r="7" fill="#7E22CE" />
+  </g>
+  <!-- Microphone -->
+  <g class="p-mic">
+    <rect x="113" y="156" width="14" height="36" rx="7" fill="#6D28D9" />
+    <circle cx="120" cy="200" r="16" fill="#7E22CE" />
+    <circle cx="120" cy="200" r="10" fill="#A855F7" opacity="0.55" />
+  </g>
+  <!-- Punctuation bursts -->
+  <g font-family="Inter, Arial" font-weight="700" fill="#F0ABFC" font-size="20">
+    <text class="p-burst" x="184" y="70">!</text>
+    <text class="p-burst" x="48" y="70">?</text>
+  </g>
+  <!-- Bottom base plate subtle -->
+  <rect x="70" y="192" width="100" height="14" rx="7" fill="#A855F7" opacity="0.35" />
 </svg>
