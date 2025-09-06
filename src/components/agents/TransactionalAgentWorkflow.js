@@ -61,7 +61,6 @@ export default function TransactionalAgentWorkflow({ agent }) {
       { value: "wolof", label: "WO", flag: "sn" },
       { value: "espagnol", label: "ES", flag: "es" },
       { value: "allemand", label: "DE", flag: "de" },
-
       { value: "italien", label: "IT", flag: "it" },
       { value: "portuguais", label: "PT", flag: "pt" },
       { value: "arabe", label: "AR", flag: "sa" },
