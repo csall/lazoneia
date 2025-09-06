@@ -17,6 +17,8 @@ export default function LanguageSelector({
   const btnRef = useRef(null);
   const listRef = useRef(null);
   const current = languages.find(l => l.value === value);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
 
   const close = useCallback(()=> setOpen(false), []);
   const toggle = () => setOpen(o=>!o);
@@ -77,9 +79,11 @@ export default function LanguageSelector({
           border-gray-300/70 dark:border-white/15 bg-white/70 dark:bg-white/10 hover:bg-white/90 dark:hover:bg-white/20 ${buttonClass}`}
       >
         <span className="flex items-center justify-center w-4 h-4 rounded overflow-hidden bg-white/20 ring-1 ring-black/5 dark:ring-white/10">
-          <Image src={`https://flagcdn.com/${current?.flag || 'fr'}.svg`} alt={current?.label || 'Lang'} width={16} height={16} className="object-cover" unoptimized />
+          {mounted && (
+            <Image src={`https://flagcdn.com/${current?.flag || 'fr'}.svg`} alt={current?.label || 'Lang'} width={16} height={16} className="object-cover" unoptimized />
+          )}
         </span>
-        <span className="uppercase tracking-wide">{current?.label || 'LANG'}</span>
+        <span className="uppercase tracking-wide">{mounted ? (current?.label || 'LANG') : '––'}</span>
         <svg xmlns="http://www.w3.org/2000/svg" className={`h-3 w-3 ml-0.5 opacity-70 transition-transform ${open ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z"/></svg>
       </button>
       {open && !isMobile && (
@@ -111,7 +115,7 @@ export default function LanguageSelector({
           {open && isMobile && (
             <div className="fixed inset-0 z-50">
               <div className="absolute inset-0 bg-black/25 backdrop-blur-sm" onClick={close} />
-              <div className="absolute left-1/2 top-[18%] -translate-x-1/2 w-[86%] max-w-[420px] max-h-[60vh] rounded-2xl shadow-lg border border-gray-200 dark:border-white/15 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl flex flex-col animate-[fade-in_.25s_ease]" role="dialog" aria-modal="true">
+              <div className="absolute left-1/2 top-3 -translate-x-1/2 w-[94%] sm:w-[86%] max-w-[520px] max-h-[68vh] rounded-2xl shadow-xl border border-gray-200 dark:border-white/15 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl flex flex-col animate-[fade-in_.25s_ease]" role="dialog" aria-modal="true">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200/70 dark:border-white/10">
                   <h2 className="text-[11px] font-semibold uppercase tracking-wide text-indigo-600 dark:text-indigo-300">Langue</h2>
                   <button onClick={close} aria-label="Fermer" className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60">
