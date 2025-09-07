@@ -16,6 +16,7 @@ export default function MailtyWorkflow(){
   const [detail, setDetail] = useState(null);
   const [draft, setDraft] = useState("");
   const [aiReply, setAiReply] = useState("");
+  const draftRef = useRef(null);
   const aiReplyBlockRef = useRef(null);
   // Scroll to AI reply when it appears
   useEffect(() => {
@@ -146,15 +147,15 @@ export default function MailtyWorkflow(){
         }}
         tagline="Inbox intelligente"
         colors={isLight ? {
-          border: 'border-violet-300/60',
+          border: 'border-rose-300/70',
           textColor: 'text-gray-800',
-          bg: 'bg-gradient-to-r from-fuchsia-200/70 via-violet-200/65 to-transparent animate-gradient-move',
-          button: 'bg-violet-600/80'
+          bg: 'bg-gradient-to-r from-rose-200/80 via-fuchsia-200/70 to-orange-100/70 animate-gradient-move',
+          button: 'bg-gradient-to-r from-fuchsia-500 via-rose-500 to-orange-400',
         } : {
-          border: 'border-violet-500/30',
+          border: 'border-rose-500/40',
           textColor: 'text-white',
-          bg: 'bg-gradient-to-r from-violet-900/85 via-fuchsia-900/70 to-transparent animate-gradient-move',
-          button: 'bg-fuchsia-600/70'
+          bg: 'bg-gradient-to-r from-fuchsia-900/90 via-rose-900/80 to-orange-900/70 animate-gradient-move',
+          button: 'bg-gradient-to-r from-fuchsia-600 via-rose-600 to-orange-500',
         }}
         messages={[]}
         clearHistory={()=>{}}
@@ -333,7 +334,12 @@ export default function MailtyWorkflow(){
                       </div>
                       <p className="whitespace-pre-wrap text-gray-700 dark:text-fuchsia-100">{aiReply}</p>
                       <div className="flex flex-wrap gap-2">
-                        <button onClick={()=>setDraft(aiReply)} className="text-[11px] px-2 py-1 rounded-md bg-fuchsia-600 text-white hover:bg-fuchsia-500">Copier → Brouillon</button>
+                        <button onClick={() => {
+                          setDraft(aiReply);
+                          setTimeout(() => {
+                            if (draftRef.current) draftRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          }, 80);
+                        }} className="text-[11px] px-2 py-1 rounded-md bg-fuchsia-600 text-white hover:bg-fuchsia-500">Copier → Brouillon</button>
                         <button onClick={()=>setAiReply("")} className="text-[11px] px-2 py-1 rounded-md border border-fuchsia-400/40 text-fuchsia-600 dark:text-fuchsia-300 hover:bg-fuchsia-50/40 dark:hover:bg-fuchsia-500/10">Clear</button>
                       </div>
                     </div>
@@ -341,6 +347,7 @@ export default function MailtyWorkflow(){
                   <div className="space-y-2">
                     <label className="text-[11px] font-medium text-gray-600 dark:text-gray-300">Brouillon</label>
                      <textarea
+                       ref={draftRef}
                        value={draft}
                        onChange={e=>setDraft(e.target.value)}
                        rows={6}
