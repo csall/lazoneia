@@ -170,7 +170,6 @@ const AgentCard = ({
             <div className="flex items-center gap-2 mx-auto">
               <motion.h3
                 className={`text-base font-semibold leading-tight ${style.hover} transition-colors duration-300 ${isLight ? 'text-gray-900' : 'text-white'}`}
-                initial={{ y: 10, opacity: 0 }}
                 whileInView={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1 }}
               >
@@ -211,9 +210,7 @@ const AgentCard = ({
                 viewBox="0 0 24 24"
                 fill={isFavorite ? "currentColor" : "none"}
                 stroke="currentColor"
-                className={`w-4 h-4 ${
-                  isFavorite ? "text-yellow-400" : "text-gray-300"
-                }`}
+                className={`w-4 h-4 ${isFavorite ? "text-yellow-400" : "text-gray-300"}`}
                 strokeWidth={isFavorite ? "0" : "2"}
               >
                 <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
@@ -427,245 +424,238 @@ export default function AgentsPage() {
 
   const isLight = theme === 'light';
   return (
-    <main className={`min-h-screen font-sans transition-colors duration-500 ${isLight ? 'text-gray-800 bg-[radial-gradient(circle_at_20%_15%,rgba(56,189,248,0.25),transparent_55%),radial-gradient(circle_at_80%_75%,rgba(167,139,250,0.25),transparent_55%),linear-gradient(to_bottom_right,#f8fafc,#ffffff,#f5f3ff)]' : 'text-white bg-gradient-to-br from-blue-950 via-blue-900 to-purple-950'} relative overflow-hidden`}>      
-      {/* Theme animated overlay */}
-      <div className="pointer-events-none absolute inset-0 ${isLight ? 'opacity-60' : 'opacity-40'} mix-blend-overlay">
-        <div className={`absolute inset-0 ${isLight ? 'bg-[radial-gradient(circle_at_25%_30%,rgba(56,189,248,0.18),transparent_60%),radial-gradient(circle_at_75%_70%,rgba(167,139,250,0.18),transparent_60%),radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.6),transparent_65%)]' : 'bg-[radial-gradient(circle_at_20%_30%,rgba(56,189,248,0.08),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(167,139,250,0.08),transparent_60%)]'} transition-all duration-700`}></div>
-      </div>
-      <section className="relative py-6 text-center px-4 overflow-hidden">
-        {/* Background decoration */}
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5 dark:opacity-10 transition-opacity"></div>
-
-        <div className="container mx-auto mb-12 relative">
-          {/* Barre de navigation unifiée (alignée avec pages agents) */}
-          <header className="fixed top-0 left-0 w-full z-50 py-3 px-4 backdrop-blur-2xl shadow-2xl border-b border-white/10 dark:border-white/10 bg-gradient-to-r from-indigo-900/80 via-violet-900/70 to-transparent">
-            <div className="container mx-auto flex justify-end items-center gap-2">
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, delay: 0.1 }}
-                whileHover={{ scale: 1.04 }}
-              >
-                <GoogleMenu />
-              </motion.div>
-            </div>
-          </header>
-
-          {/* Espace compensateur même hauteur que header agents */}
-          <div className="h-16"></div>
-
-          {/* Titre LaZoneIA avec animations avancées */}
-          <div className="relative mb-6 mt-1 pt-2 pb-2 select-none">
-            {/* Effet de glow animé derrière le titre */}
-            <motion.div
-              className="absolute top-1/2 left-1/2 w-4/5 h-16 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/30 via-indigo-500/30 to-purple-600/30 rounded-full blur-2xl"
-              animate={{
-                width: ["60%", "75%", "60%"],
-                height: ["140%", "200%", "140%"],
-                opacity: [0.3, 0.5, 0.3],
-              }}
-              transition={{
-                duration: 6,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-
-            {/* Particules flottantes autour du titre */}
-            <div className="absolute inset-0 overflow-hidden">
-              {[
-                { x: "20%", y: "20%", size: "2px", delay: 0, duration: 7 },
-                { x: "80%", y: "30%", size: "3px", delay: 1, duration: 9 },
-                { x: "30%", y: "70%", size: "1.5px", delay: 2, duration: 8 },
-                { x: "70%", y: "80%", size: "2px", delay: 3, duration: 6 },
-                { x: "40%", y: "40%", size: "2.5px", delay: 0.5, duration: 10 },
-                { x: "60%", y: "60%", size: "1px", delay: 1.5, duration: 7 },
-                { x: "90%", y: "40%", size: "2px", delay: 2.5, duration: 8 },
-                { x: "10%", y: "50%", size: "1.5px", delay: 3.5, duration: 9 },
-              ].map((particle, i) => (
+    <>
+      <main className={`min-h-screen font-sans transition-colors duration-500 ${isLight ? 'text-gray-800 bg-[radial-gradient(circle_at_20%_15%,rgba(56,189,248,0.25),transparent_55%),radial-gradient(circle_at_80%_75%,rgba(167,139,250,0.25),transparent_55%),linear-gradient(to_bottom_right,#f8fafc,#ffffff,#f5f3ff)]' : 'text-white bg-gradient-to-br from-blue-950 via-blue-900 to-purple-950'} relative overflow-hidden`}>
+        {/* Theme animated overlay */}
+        <div className={`pointer-events-none absolute inset-0 ${isLight ? 'opacity-60' : 'opacity-40'} mix-blend-overlay`}>
+          <div className={`absolute inset-0 ${isLight ? 'bg-[radial-gradient(circle_at_25%_30%,rgba(56,189,248,0.18),transparent_60%),radial-gradient(circle_at_75%_70%,rgba(167,139,250,0.18),transparent_60%),radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.6),transparent_65%)]' : 'bg-[radial-gradient(circle_at_20%_30%,rgba(56,189,248,0.08),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(167,139,250,0.08),transparent_60%)]'} transition-all duration-700`}></div>
+        </div>
+        <section className="relative py-6 text-center px-4 overflow-hidden">
+          {/* Background decoration */}
+          <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5 dark:opacity-10 transition-opacity"></div>
+          <div className="container mx-auto mb-12 relative">
+            {/* Barre de navigation unifiée (alignée avec pages agents) */}
+            <header className="fixed top-0 left-0 w-full z-50 py-3 px-4 backdrop-blur-2xl shadow-2xl border-b border-white/10 dark:border-white/10 bg-gradient-to-r from-indigo-900/80 via-violet-900/70 to-transparent">
+              <div className="container mx-auto flex justify-end items-center gap-2">
                 <motion.div
-                  key={i}
-                  className="absolute bg-white rounded-full"
-                  style={{
-                    width: particle.size,
-                    height: particle.size,
-                    left: particle.x,
-                    top: particle.y,
-                  }}
-                  initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: [0.4, 0.8, 0.4],
-                    scale: [1, 1.5, 1],
-                    x: [0, 10, -10, 0],
-                    y: [0, -10, 10, 0],
-                  }}
-                  transition={{
-                    duration: particle.duration,
-                    delay: particle.delay,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-              ))}
-            </div>
-
-            {/* Ligne décorative avec animation */}
-            <motion.div
-              className="absolute left-1/2 -translate-x-1/2 h-[1px] bg-gradient-to-r from-transparent via-blue-400/40 to-transparent"
-              initial={{ width: "0%" }}
-              animate={{ width: ["0%", "50%", "0%"] }}
-              transition={{
-                duration: 5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              style={{ top: "calc(50% + 24px)" }}
-            />
-
-            {/* Titre principal avec animation lettre par lettre */}
-            <div className="relative flex justify-center items-center">
-              {["L", "a", "Z", "o", "n", "e", "I", "A"].map((letter, index) => (
-                <motion.span
-                  key={index}
-                  className={`text-4xl md:text-5xl font-bold transition-colors ${
-                    letter === "Z" || letter === "I" || letter === "A"
-                      ? isLight ? 'bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-violet-500' : "bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500"
-                      : isLight ? 'text-gray-900' : "text-white"
-                  }`}
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.6,
-                    delay: 0.1 * index,
-                    type: "spring",
-                    stiffness: 120,
-                  }}
-                  whileHover={{
-                    scale: 1.2,
-                    rotate: [-5, 5, 0],
-                    transition: { duration: 0.3 },
-                  }}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, delay: 0.1 }}
+                  whileHover={{ scale: 1.04 }}
                 >
-                  {letter}
-                </motion.span>
-              ))}
-            </div>
-
-            {/* Tagline animée */}
-            <motion.div
-              className={`text-sm text-center mt-2 ${isLight ? 'text-sky-600/70' : 'text-blue-200/80'}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 1] }}
-              transition={{ delay: 1, duration: 1 }}
-            >
-              <motion.span
-                animate={{ opacity: [0.7, 1, 0.7] }}
+                  <GoogleMenu />
+                </motion.div>
+              </div>
+            </header>
+            {/* Espace compensateur même hauteur que header agents */}
+            <div className="h-16"></div>
+            {/* Titre LaZoneIA avec animations avancées */}
+            <div className="relative mb-6 mt-1 pt-2 pb-2 select-none">
+              {/* Effet de glow animé derrière le titre */}
+              <motion.div
+                className="absolute top-1/2 left-1/2 w-4/5 h-16 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600/30 via-indigo-500/30 to-purple-600/30 rounded-full blur-2xl"
+                animate={{
+                  width: ["60%", "75%", "60%"],
+                  height: ["140%", "200%", "140%"],
+                  opacity: [0.3, 0.5, 0.3],
+                }}
                 transition={{
-                  duration: 4,
+                  duration: 6,
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-              >
-                L&apos;intelligence artificielle à votre service
-              </motion.span>
-            </motion.div>
-
-            {/* Accents décoratifs */}
-            <motion.div
-              className="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-10"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            >
-              <svg viewBox="0 0 100 100" className="w-full h-full opacity-30">
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="40"
-                  stroke="white"
-                  strokeWidth="1"
-                  fill="none"
-                  strokeDasharray="3 6"
-                />
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="20"
-                  stroke="white"
-                  strokeWidth="1"
-                  fill="none"
-                />
-              </svg>
-            </motion.div>
-          </div>
-
-          {/* Bloc de filtres catégorie mobile first sans bouton étoile */}
-          <FilterBar filter={filter} setFilter={setFilter} agents={agents} favorites={favorites} />
-        </div>
-
-        {/* Colorful blurred shapes */}
-  {/* Bloc unique d'affichage des agents */}
-
-        {/* Decorative elements */}
-  <div className="absolute top-20 left-10 opacity-20 dark:opacity-30 transition-opacity">
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-            <path d="M20 0L26 14H14L20 0Z" fill="white" />
-            <path d="M20 40L14 26H26L20 40Z" fill="white" />
-            <path d="M0 20L14 14V26L0 20Z" fill="white" />
-            <path d="M40 20L26 26V14L40 20Z" fill="white" />
-          </svg>
-        </div>
-  <div className="absolute bottom-20 right-10 opacity-20 dark:opacity-30 transition-opacity">
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-            <circle cx="20" cy="20" r="10" stroke="white" strokeWidth="2" />
-            <circle
-              cx="20"
-              cy="20"
-              r="20"
-              stroke="white"
-              strokeWidth="1"
-              strokeDasharray="4 4"
-            />
-          </svg>
-        </div>
-
-  {/* Grille d'agents : 5 colonnes sur écrans larges */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-2 sm:p-4 max-w-[1500px] mx-auto">
-      {agents
-            .slice()
-            .sort((a,b)=>{
-              const ia = agentDisplayOrder.indexOf(a.name);
-              const ib = agentDisplayOrder.indexOf(b.name);
-              const ra = ia === -1 ? Number.MAX_SAFE_INTEGER : ia;
-              const rb = ib === -1 ? Number.MAX_SAFE_INTEGER : ib;
-              if (ra !== rb) return ra - rb;
-              return a.name.localeCompare(b.name);
-            })
-            .filter((agent) => {
-        if (agent.hidden) return false;
-              if (filter === "all") return true;
-              if (filter === "favorites") return favorites.includes(agent.name);
-              return agent.category === filter;
-            })
-            .map((agent, i) => (
-              <div
-                key={i}
-                className="h-[270px] flex w-full flex-1 min-w-0"
-              >
-                <AgentCard
-                  name={agent.name}
-                  description={agent.description}
-                  image={agent.image}
-                  color={agent.color}
-                  link={agent.link}
-                  tagline={agent.tagline}
-                  isFavorite={favorites.includes(agent.name)}
-                  onToggleFavorite={toggleFavorite}
-                  lines={6}
-                />
+              />
+              {/* Particules flottantes autour du titre */}
+              <div className="absolute inset-0 overflow-hidden">
+                {[
+                  { x: "20%", y: "20%", size: "2px", delay: 0, duration: 7 },
+                  { x: "80%", y: "30%", size: "3px", delay: 1, duration: 9 },
+                  { x: "30%", y: "70%", size: "1.5px", delay: 2, duration: 8 },
+                  { x: "70%", y: "80%", size: "2px", delay: 3, duration: 6 },
+                  { x: "40%", y: "40%", size: "2.5px", delay: 0.5, duration: 10 },
+                  { x: "60%", y: "60%", size: "1px", delay: 1.5, duration: 7 },
+                  { x: "90%", y: "40%", size: "2px", delay: 2.5, duration: 8 },
+                  { x: "10%", y: "50%", size: "1.5px", delay: 3.5, duration: 9 },
+                ].map((particle, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute bg-white rounded-full"
+                    style={{
+                      width: particle.size,
+                      height: particle.size,
+                      left: particle.x,
+                      top: particle.y,
+                    }}
+                    initial={{ opacity: 0 }}
+                    animate={{
+                      opacity: [0.4, 0.8, 0.4],
+                      scale: [1, 1.5, 1],
+                      x: [0, 10, -10, 0],
+                      y: [0, -10, 10, 0],
+                    }}
+                    transition={{
+                      duration: particle.duration,
+                      delay: particle.delay,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                ))}
               </div>
-            ))}
-        </div>
-      </section>
-    </main>
+              {/* Ligne décorative avec animation */}
+              <motion.div
+                className="absolute left-1/2 -translate-x-1/2 h-[1px] bg-gradient-to-r from-transparent via-blue-400/40 to-transparent"
+                initial={{ width: "0%" }}
+                animate={{ width: ["0%", "50%", "0%"] }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                style={{ top: "calc(50% + 24px)" }}
+              />
+              {/* Titre principal avec animation lettre par lettre */}
+              <div className="relative flex justify-center items-center">
+                {["L", "a", "Z", "o", "n", "e", "I", "A"].map((letter, index) => (
+                  <motion.span
+                    key={index}
+                    className={`text-4xl md:text-5xl font-bold transition-colors ${
+                      letter === "Z" || letter === "I" || letter === "A"
+                        ? isLight ? 'bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-violet-500' : "bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500"
+                        : isLight ? 'text-gray-900' : "text-white"
+                    }`}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.6,
+                      delay: 0.1 * index,
+                      type: "spring",
+                      stiffness: 120,
+                    }}
+                    whileHover={{
+                      scale: 1.2,
+                      rotate: [-5, 5, 0],
+                      transition: { duration: 0.3 },
+                    }}
+                  >
+                    {letter}
+                  </motion.span>
+                ))}
+              </div>
+              {/* Tagline animée */}
+              <motion.div
+                className={`text-sm text-center mt-2 ${isLight ? 'text-sky-600/70' : 'text-blue-200/80'}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 1] }}
+                transition={{ delay: 1, duration: 1 }}
+              >
+                <motion.span
+                  animate={{ opacity: [0.7, 1, 0.7] }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                >
+                  L&apos;intelligence artificielle à votre service
+                </motion.span>
+              </motion.div>
+              {/* Accents décoratifs */}
+              <motion.div
+                className="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-10"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              >
+                <svg viewBox="0 0 100 100" className="w-full h-full opacity-30">
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    stroke="white"
+                    strokeWidth="1"
+                    fill="none"
+                    strokeDasharray="3 6"
+                  />
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="20"
+                    stroke="white"
+                    strokeWidth="1"
+                    fill="none"
+                  />
+                </svg>
+              </motion.div>
+            </div>
+            {/* Bloc de filtres catégorie mobile first sans bouton étoile */}
+            <FilterBar filter={filter} setFilter={setFilter} agents={agents} favorites={favorites} />
+          </div>
+          {/* Colorful blurred shapes */}
+          {/* Decorative elements */}
+          <div className="absolute top-20 left-10 opacity-20 dark:opacity-30 transition-opacity">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+              <path d="M20 0L26 14H14L20 0Z" fill="white" />
+              <path d="M20 40L14 26H26L20 40Z" fill="white" />
+              <path d="M0 20L14 14V26L0 20Z" fill="white" />
+              <path d="M40 20L26 26V14L40 20Z" fill="white" />
+            </svg>
+          </div>
+          <div className="absolute bottom-20 right-10 opacity-20 dark:opacity-30 transition-opacity">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+              <circle cx="20" cy="20" r="10" stroke="white" strokeWidth="2" />
+              <circle
+                cx="20"
+                cy="20"
+                r="20"
+                stroke="white"
+                strokeWidth="1"
+                strokeDasharray="4 4"
+              />
+            </svg>
+          </div>
+          {/* Grille d'agents : 5 colonnes sur écrans larges */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-2 sm:p-4 max-w-[1500px] mx-auto">
+            {agents
+              .slice()
+              .sort((a, b) => {
+                const ia = agentDisplayOrder.indexOf(a.name);
+                const ib = agentDisplayOrder.indexOf(b.name);
+                const ra = ia === -1 ? Number.MAX_SAFE_INTEGER : ia;
+                const rb = ib === -1 ? Number.MAX_SAFE_INTEGER : ib;
+                if (ra !== rb) return ra - rb;
+                return a.name.localeCompare(b.name);
+              })
+              .filter((agent) => {
+                if (agent.hidden) return false;
+                if (filter === "all") return true;
+                if (filter === "favorites") return favorites.includes(agent.name);
+                return agent.category === filter;
+              })
+              .map((agent, i) => (
+                <div
+                  key={i}
+                  className="h-[270px] flex w-full flex-1 min-w-0"
+                >
+                  <AgentCard
+                    name={agent.name}
+                    description={agent.description}
+                    image={agent.image}
+                    color={agent.color}
+                    link={agent.link}
+                    tagline={agent.tagline}
+                    isFavorite={favorites.includes(agent.name)}
+                    onToggleFavorite={toggleFavorite}
+                    lines={6}
+                  />
+                </div>
+              ))}
+          </div>
+        </section>
+      </main>
+      <footer className="w-full py-6 text-center text-xs text-gray-500 dark:text-gray-400 bg-transparent mt-12 select-none">
+        <span>&copy; {new Date().getFullYear()} Zonia</span>
+      </footer>
+
+    </>
   );
 }
