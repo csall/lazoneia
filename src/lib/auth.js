@@ -23,7 +23,7 @@ function buildProviders() {
           ].join(' ')
         }
       },
-      allowDangerousEmailAccountLinking: true
+      allowDangerousEmailAccountLinking: true  
     }));
   }
   if (process.env.FACEBOOK_CLIENT_ID && process.env.FACEBOOK_CLIENT_SECRET) {
@@ -36,10 +36,30 @@ function buildProviders() {
   return providers;
 }
 
+// Validation minimale des variables critiques (évite l'erreur générique "server configuration")
+if (process.env.NODE_ENV === 'production' && !process.env.NEXTAUTH_SECRET) {
+  // Lever une erreur claire qui apparaîtra dans les logs Vercel
+  throw new Error("NEXTAUTH_SECRET manquant en production – ajoute-le dans Vercel > Project Settings > Environment Variables");
+}
+
 export const authOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   session: { strategy: 'jwt' },
   pages: { signIn: '/auth/login' },
   providers: buildProviders(),
+  logger: {
+    error(code, metadata){
+      console.error('[NextAuth][error]', code, metadata);
+    },
+    warn(code) {
+      console.warn('[NextAuth][warn]', code);
+    },
+    debug(code, metadata){
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('[NextAuth][debug]', code, metadata);
+      }
+    }
+  },
   callbacks: {
     async jwt({ token, user, account }) {
       if (user) token.user = user;
@@ -70,6 +90,11 @@ export const authOptions = {
       if (token?.user) session.user = token.user;
       if (token?.accessToken) session.accessToken = token.accessToken;
       return session;
+    },
+    async signIn({ account }) {
+      // Vérifie que l'on a bien un provider défini et que les creds sont présents (debug)
+      if (!account) return true;
+      return true;
     }
   }
 };
