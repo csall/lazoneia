@@ -48,7 +48,9 @@ export async function GET(req) {
         subject: headerMap['subject'] || '',
         fromName: fromParsed.name,
         fromEmail: fromParsed.email,
-        snippet: metaData.snippet || ''
+        snippet: metaData.snippet || '',
+        labelIds: metaData.labelIds || [],
+        internalDate: metaData.internalDate || null
       };
     }));
 
