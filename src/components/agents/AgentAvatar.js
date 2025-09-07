@@ -158,6 +158,65 @@ const agentConfigs = {
       </>
     )
   }
+  ,
+  postoto: {
+    title: 'Postoto Bot',
+    desc: 'Automated multi-platform social posting assistant.',
+    faceGradient: (
+      <radialGradient id="faceGrad" cx="0.5" cy="0.5" r="0.55">
+        <stop offset="0%" stopColor="#FBCFE8" />
+        <stop offset="55%" stopColor="#D946EF" />
+        <stop offset="100%" stopColor="#6B21A8" />
+      </radialGradient>
+    ),
+    ringGradient: (
+      <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#F472B6" />
+        <stop offset="50%" stopColor="#D946EF" />
+        <stop offset="100%" stopColor="#9333EA" />
+      </linearGradient>
+    ),
+    innerShadowColor: '#701A75',
+    haloColor: '#D946EF',
+    eyeIris: '#6D28D9',
+    browStroke: '#FCE7F3',
+    mouthStroke: '#FCE7F3',
+    extras: (
+      <>
+        {/* Orbiting social platform nodes */}
+        <g className="po-orbit">
+          <g transform="rotate(0) translate(0 -118)">
+            <circle r="14" cx="120" cy="120" fill="#D946EF" stroke="#FCE7F3" strokeWidth="2" />
+            <text x="120" y="124" textAnchor="middle" fontFamily="Inter, Arial" fontSize="10" fontWeight={600} fill="#FCE7F3">IG</text>
+          </g>
+          <g transform="rotate(72) translate(0 -118)">
+            <circle r="14" cx="120" cy="120" fill="#9333EA" stroke="#FCE7F3" strokeWidth="2" />
+            <text x="120" y="124" textAnchor="middle" fontFamily="Inter, Arial" fontSize="10" fontWeight={600} fill="#FCE7F3">FB</text>
+          </g>
+            <g transform="rotate(144) translate(0 -118)">
+            <circle r="14" cx="120" cy="120" fill="#C026D3" stroke="#FCE7F3" strokeWidth="2" />
+            <text x="120" y="124" textAnchor="middle" fontFamily="Inter, Arial" fontSize="10" fontWeight={600} fill="#FCE7F3">IN</text>
+          </g>
+          <g transform="rotate(216) translate(0 -118)">
+            <circle r="14" cx="120" cy="120" fill="#A21CAF" stroke="#FCE7F3" strokeWidth="2" />
+            <text x="120" y="124" textAnchor="middle" fontFamily="Inter, Arial" fontSize="10" fontWeight={600} fill="#FCE7F3">X</text>
+          </g>
+          <g transform="rotate(288) translate(0 -118)">
+            <circle r="14" cx="120" cy="120" fill="#E879F9" stroke="#FCE7F3" strokeWidth="2" />
+            <text x="120" y="124" textAnchor="middle" fontFamily="Inter, Arial" fontSize="10" fontWeight={600} fill="#701A75">YT</text>
+          </g>
+        </g>
+        {/* Scheduler / timeline ring */}
+        <circle className="po-timeline" cx="120" cy="120" r="50" fill="none" stroke="#FCE7F3" strokeWidth="4" strokeLinecap="round" opacity="0.35" />
+        {/* Central pulse for publishing */}
+        <g className="po-pulse">
+          <circle cx="120" cy="120" r="34" fill="#D946EF" opacity="0.15" />
+          <circle cx="120" cy="120" r="26" fill="#D946EF" opacity="0.22" />
+          <path d="M108 118 L118 130 L134 110" fill="none" stroke="#FCE7F3" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+      </>
+    )
+  }
 };
 
 // Shared CSS animations (merged subset for the migrated agents)
@@ -192,6 +251,14 @@ const sharedStyles = `
   @keyframes pr-bounce { 0%,100% { transform:translateY(0);} 35% { transform:translateY(-14px);} 70% { transform:translateY(-6px);} }
   @keyframes pr-pulse { 0%,100% { transform:scale(1);} 50% { transform:scale(1.12);} }
   /* wink keyframe removed */
+
+  /* Postoto specific */
+  .po-orbit { animation: orbit 16s linear infinite; transform-origin:120px 120px; }
+  .po-orbit g { transform-origin:120px 120px; }
+  .po-pulse { animation: pulse 4.5s ease-in-out infinite; }
+  .po-timeline { stroke-dasharray:314; stroke-dashoffset:314; animation: timeline 10s linear infinite; }
+  @keyframes orbit { from { transform:rotate(0deg);} to { transform:rotate(360deg);} }
+  @keyframes timeline { to { stroke-dashoffset:0; } }
 `;
 
 export function AgentAvatar({ type = 'lingo', size = 180, title, desc, decorative = true, className = '' }) {

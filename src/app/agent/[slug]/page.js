@@ -9,7 +9,6 @@ export function generateStaticParams() {
 
 export default function AgentPage({ params }) {
   const { slug } = params;
-  const { theme } = useTheme();
   const agent = agents.find((a) => a.color === slug);
   if (!agent) return notFound();
   if (agent.type === "transactionnel") {
@@ -25,7 +24,6 @@ export default function AgentPage({ params }) {
       colors={agent.colors}
       tones={agent.tones}
       tagline={agent.tagline}
-      theme={theme}
     />
   );
 }

@@ -2,21 +2,19 @@
 const nextConfig = {
   // Configuration pour les images
   images: {
-    unoptimized: false, // Nous utilisons l'optimisation d'image de Next.js
-    domains: ['vercel.app', 'lazoneia.vercel.app', 'lazoneia.com', 'www.lazoneia.com'], // Domaines autorisés
+    unoptimized: false,
+    domains: [
+      'vercel.app',
+      'lazoneia.vercel.app',
+      'lazoneia.com',
+      'www.lazoneia.com',
+      'lh3.googleusercontent.com'
+    ],
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**.vercel.app',
-      },
-      {
-        protocol: 'https',
-        hostname: '*.lazoneia.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'lazoneia.com',
-      }
+      { protocol: 'https', hostname: '**.vercel.app' },
+      { protocol: 'https', hostname: '*.lazoneia.com' },
+      { protocol: 'https', hostname: 'lazoneia.com' },
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' }
     ]
   },
   // Configuration des assets statiques pour Vercel

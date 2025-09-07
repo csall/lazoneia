@@ -65,6 +65,8 @@ export default function AnimatedCard({ title, description, icon, animationData, 
   return get("/pitchy-bot.svg");
     } else if (botType === "fitzy" || title.toLowerCase().includes("fitzy")) {
   return get("/fitzy-bot.svg");
+    } else if (botType === "postoto" || title.toLowerCase().includes("postoto")) {
+  return get("/postoto-bot.svg");
     }
     // Les anciens agents ont été remplacés par les nouveaux
     return null;
@@ -119,6 +121,13 @@ export default function AnimatedCard({ title, description, icon, animationData, 
       return {
         card: "relative bg-gradient-to-br from-emerald-900/60 to-green-900/60 backdrop-blur-lg p-8 rounded-3xl shadow-lg border border-emerald-500/20 overflow-hidden group w-80",
         glow: "absolute -inset-1 bg-gradient-to-r from-emerald-500 to-green-600 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-700 rounded-3xl"
+      };
+    }
+    // Postoto - fuchsia/purple
+    else if (botType === "postoto" || title.toLowerCase().includes("postoto")) {
+      return {
+        card: "relative bg-gradient-to-br from-fuchsia-900/60 to-purple-900/60 backdrop-blur-lg p-8 rounded-3xl shadow-lg border border-fuchsia-500/20 overflow-hidden group w-80",
+        glow: "absolute -inset-1 bg-gradient-to-r from-fuchsia-500 to-purple-600 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-700 rounded-3xl"
       };
     }
     // Valeur par défaut pour tout autre type non spécifié
@@ -204,6 +213,8 @@ export default function AnimatedCard({ title, description, icon, animationData, 
           // Pitchy - green
           : (botType === "pitchy" || title.toLowerCase().includes("pitchy"))
             ? "text-white group-hover:text-emerald-200"
+          : (botType === "postoto" || title.toLowerCase().includes("postoto"))
+            ? "text-white group-hover:text-fuchsia-200"
           // Style par défaut
           : "text-white group-hover:text-blue-200"
         } transition-colors duration-300`}>
@@ -234,6 +245,8 @@ export default function AnimatedCard({ title, description, icon, animationData, 
                           ? "/agent/glow"
                           : (botType === "pitchy" || title.toLowerCase().includes("pitchy"))
                             ? "/agent/pitchy"
+                          : (botType === "postoto" || title.toLowerCase().includes("postoto"))
+                            ? "/agent/postoto"
                             // Valeur par défaut - rediriger vers la page des agents
                             : "/agents"
           } 
@@ -259,6 +272,8 @@ export default function AnimatedCard({ title, description, icon, animationData, 
             // Pitchy - emerald/green
             : (botType === "pitchy" || title.toLowerCase().includes("pitchy"))
               ? "bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700"
+            : (botType === "postoto" || title.toLowerCase().includes("postoto"))
+              ? "bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700"
             // Style par défaut (bleu)
             : "bg-gradient-to-r from-blue-500 to-sky-600 hover:from-blue-600 hover:to-sky-700"
           } text-white font-bold rounded-xl transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center`}

@@ -30,6 +30,24 @@ const AgentCard = ({
   lines = 6,
 }) => {
   const { theme } = useTheme();
+  // Suivi connexion Postoto (Instagram) pour griser le bouton si déconnecté
+  const [postotoConnected, setPostotoConnected] = useState(true);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const update = () => {
+      try {
+        const raw = localStorage.getItem('postoto_connections');
+        const parsed = raw ? JSON.parse(raw) : {};
+        setPostotoConnected(!!parsed.instagram);
+      } catch {
+        setPostotoConnected(false);
+      }
+    };
+    // Valeur initiale (optimiste: actif seulement si stockage dit connecté)
+    update();
+    window.addEventListener('storage', update);
+    return () => window.removeEventListener('storage', update);
+  }, []);
 
   const style = getCardStyle(theme, color);
   const isLight = theme === 'light';
@@ -306,31 +324,36 @@ const AgentCard = ({
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             >
-              <Link
-              href={name.split(" ")[0] === "to_be_desactivated" ? "#" : link} // Désactive le lien si Reply
-              className={`w-8 h-8 rounded-full transition-all duration-300 flex items-center justify-center text-white text-[10px] backdrop-blur-sm border border-white/10
-                ${
-                  name.split(" ")[0] === "to_be_desactivated"
-                    ? "bg-gray-500 cursor-not-allowed opacity-50 pointer-events-none"
-                    : `bg-gradient-to-r ${style.button}`
-                }`}
-              aria-label={`Ouvrir ${name}`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M14 5l7 7m0 0l-7 7m7-7H3"
-                />
-              </svg>
-              </Link>
+              {(() => {
+                const deactivated = name.split(' ')[0] === 'to_be_desactivated';
+                const postotoDisabled = name === 'Postoto' && !postotoConnected;
+                const disabled = deactivated || postotoDisabled;
+                return (
+                  <Link
+                    href={disabled ? '#' : link}
+                    className={`w-8 h-8 rounded-full transition-all duration-300 flex items-center justify-center text-white text-[10px] backdrop-blur-sm border border-white/10
+                      ${disabled ? 'bg-gray-500 cursor-not-allowed opacity-50 pointer-events-none' : `bg-gradient-to-r ${style.button}`}
+                      ${postotoDisabled ? 'grayscale' : ''}`}
+                    aria-label={`Ouvrir ${name}`}
+                    title={postotoDisabled ? 'Connecte Instagram dans Postoto pour activer' : undefined}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M14 5l7 7m0 0l-7 7m7-7H3"
+                      />
+                    </svg>
+                  </Link>
+                );
+              })()}
             </motion.div>
           </div>
         </div>
@@ -607,7 +630,7 @@ export default function AgentsPage() {
 
   {/* Grille d'agents : 5 colonnes sur écrans larges */}
   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-2 sm:p-4 max-w-[1500px] mx-auto">
-          {agents
+      {agents
             .slice()
             .sort((a,b)=>{
               const ia = agentDisplayOrder.indexOf(a.name);
@@ -618,6 +641,7 @@ export default function AgentsPage() {
               return a.name.localeCompare(b.name);
             })
             .filter((agent) => {
+        if (agent.hidden) return false;
               if (filter === "all") return true;
               if (filter === "favorites") return favorites.includes(agent.name);
               return agent.category === filter;

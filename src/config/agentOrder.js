@@ -11,7 +11,7 @@ export const agentDisplayOrder = [
   "Scribo",
   "Reply",
   "Lingo",
-  "Talko",
+  "postoto",
   "Foody",
   "Globo",
   "Fitzy",

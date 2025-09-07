@@ -134,6 +134,7 @@ const agents = [
     link: "/agent/talko",
     tagline: "Expert communication",
     category: "communication",
+  hidden: true,
     branding: {
       name: "Talko",
       gradient: "from-purple-900 to-magenta-800",
@@ -209,6 +210,49 @@ const agents = [
     placeholder: "Écrivez ou enregistrez une idée à développer...",
   sendButtonLabel: "Améliorer",
   type: "transactionnel"
+  },
+  {
+    name: "Postoto",
+    description: "Automatise et optimise la publication multi‑plateforme (Instagram, Facebook, LinkedIn...). Génère, adapte et programme des posts cohérents avec ta marque (format, ton, hashtags, call‑to‑action).",
+    image: "postoto-bot.svg",
+    color: "postoto",
+    link: "/agent/postoto",
+    tagline: "Posts synchronisés",
+    category: "automation",
+    branding: {
+      name: "Postoto",
+      gradient: "from-fuchsia-900 to-purple-900",
+      textColor: "text-white",
+      headerGradient: "from-fuchsia-200 to-purple-200",
+      botImage: "/postoto-bot.svg",
+      description: "Automatise la création et la diffusion de contenus adaptés à chaque réseau social."
+    },
+    tones: [
+      { value: "annonce", label: "Annonce" },
+      { value: "promo", label: "Promotion" },
+      { value: "engagement", label: "Engagement" },
+      { value: "evenement", label: "Événement" },
+      { value: "story", label: "Story" }
+    ],
+    colors: {
+      gradientFrom: "from-fuchsia-900",
+      gradientTo: "to-purple-900",
+      textColor: "text-white",
+      buttonGradientFrom: "from-fuchsia-500",
+      buttonGradientTo: "to-purple-600",
+      buttonHoverFrom: "hover:from-fuchsia-600",
+      buttonHoverTo: "hover:to-purple-700",
+      borderColor: "border-fuchsia-500/30",
+      placeholderColor: "placeholder-fuchsia-300",
+      responseBg: "bg-fuchsia-900/30",
+      responseBorder: "border-fuchsia-700/30",
+      ringColor: "ring-fuchsia-500",
+      shadowColor: "shadow-fuchsia-500/50"
+    },
+    endpoint: "https://cheikh06000.app.n8n.cloud/webhook/postoto",
+    placeholder: "Collez un brief ou un post, ou décrivez ce que vous voulez publier...",
+    sendButtonLabel: "Générer / Programmer",
+    type: "transactionnel"
   },
   {
     name: "Reply",

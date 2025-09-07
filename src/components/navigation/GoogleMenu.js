@@ -5,6 +5,8 @@ import { useTheme } from "@/components/theme/ThemeProvider";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSession, signOut } from "next-auth/react";
+import Image from 'next/image';
 
 const GoogleMenu = () => {
   const [open, setOpen] = useState(false);
@@ -120,6 +122,28 @@ const GoogleMenu = () => {
   const verticalVariant = true;
 
   const { theme, toggle } = useTheme();
+  const { data: session } = useSession();
+  const user = session?.user;
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
+  const userButtonRef = useRef(null);
+
+  // Fermer le menu user en cliquant dehors
+  useEffect(() => {
+    const close = (e) => {
+      if (!userMenuOpen) return;
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target) && userButtonRef.current && !userButtonRef.current.contains(e.target)) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', close);
+    return () => document.removeEventListener('mousedown', close);
+  }, [userMenuOpen]);
+
+  const handleLogout = useCallback(() => {
+    setUserMenuOpen(false);
+    signOut();
+  }, []);
   return (
     <div className="relative z-50 flex items-center gap-2">
       <motion.button
@@ -161,8 +185,80 @@ const GoogleMenu = () => {
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
           </svg>
         )}
-      </button>
-
+  </button>
+      {user && (
+        <div className="relative hidden sm:block">
+          <button
+            ref={userButtonRef}
+            onClick={() => setUserMenuOpen(o => !o)}
+            className={`group flex items-center gap-2 pl-1 pr-3 py-1.5 rounded-full max-w-[220px] backdrop-blur-xl transition-colors
+              ${theme === 'light'
+                ? 'bg-white text-gray-700 border border-gray-200 shadow-[0_2px_6px_-1px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.18)]'
+                : 'bg-white/10 text-white/90 border border-white/15 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.4)] hover:bg-white/15'}
+              focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400/60`}
+            aria-haspopup="menu"
+            aria-expanded={userMenuOpen}
+          >
+            {user.image ? (
+              <Image
+                src={user.image}
+                width={32}
+                height={32}
+                alt={user.name || user.email || 'Utilisateur'}
+                className={`w-8 h-8 rounded-full object-cover border ${theme === 'light' ? 'border-gray-200' : 'border-white/20'}`}
+              />
+            ) : (
+              <span className={`w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-semibold shadow-inner shadow-black/30
+                ${theme === 'light'
+                  ? 'bg-gradient-to-br from-fuchsia-500/90 via-purple-500/90 to-indigo-600/90 text-white'
+                  : 'bg-gradient-to-br from-fuchsia-500 via-purple-500 to-indigo-600 text-white'}`}
+              >
+                {(user.name || user.email || '?').charAt(0).toUpperCase()}
+              </span>
+            )}
+            <span className={`text-xs font-medium truncate leading-tight text-left ${theme === 'light' ? 'text-gray-700' : 'text-white/90'}`}>
+              {user.name || user.email}
+            </span>
+            <svg className={`w-3.5 h-3.5 ml-1 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M5 7l5 6 5-6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          <AnimatePresence>
+            {userMenuOpen && (
+              <motion.div
+                ref={userMenuRef}
+                initial={{ opacity: 0, y: 6, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 4, scale: 0.98 }}
+                transition={{ duration: 0.18, ease: 'easeOut' }}
+                className="absolute right-0 mt-2 w-60 p-2 rounded-2xl bg-gradient-to-br from-fuchsia-900/85 via-purple-900/85 to-indigo-900/85 backdrop-blur-2xl border border-white/15 shadow-[0_8px_24px_-6px_rgba(0,0,0,0.55)] flex flex-col gap-1 text-sm"
+                role="menu"
+              >
+                <div className="px-2.5 py-2 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3">
+                  {user.image ? (
+                    <Image src={user.image} width={36} height={36} alt="avatar" className="w-9 h-9 rounded-full object-cover border border-white/20" />
+                  ) : (
+                    <span className="w-9 h-9 rounded-full bg-gradient-to-br from-fuchsia-500 via-purple-500 to-indigo-600 flex items-center justify-center text-[12px] font-semibold text-white shadow-inner shadow-black/30">
+                      {(user.name || user.email || '?').charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-white font-medium truncate leading-tight">{user.name || 'Utilisateur'}</span>
+                    <span className="text-[11px] text-white/60 truncate leading-tight">{user.email}</span>
+                  </div>
+                </div>
+                {/* Liens Profil & Paramètres retirés */}
+                <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-white/85 hover:text-white hover:bg-rose-500/15 border border-transparent hover:border-rose-400/40 transition text-left" role="menuitem">
+                  <span className="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-rose-500/70 via-pink-500/70 to-amber-500/70 text-white shadow-inner shadow-black/30">
+                    <svg viewBox="0 0 24 24" className="w-4.5 h-4.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v4"/><path d="M10 14 21 3"/><path d="M21 10v11a2 2 0 0 1-2 2h-4"/><path d="M7 21H5a2 2 0 0 1-2-2v-4"/><path d="M3 9V5a2 2 0 0 1 2-2h4"/><path d="M10 3h4"/><path d="M3 10h4"/></svg>
+                  </span>
+                  Déconnexion
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
       <AnimatePresence>
   {/* Variante horizontale supprimée: toujours vertical */}
         {open && verticalVariant && (
@@ -197,6 +293,24 @@ const GoogleMenu = () => {
                   </Link>
                 );
               })}
+              <div className="mt-2 pt-2 border-t border-white/15 flex flex-col gap-2">
+                {!session && (
+                  <Link href="/auth/login" onClick={handleSelect} className="relative group flex items-center gap-3 px-3 py-2 rounded-xl transition-colors border bg-white/5 border-white/10 hover:bg-white/10 hover:border-fuchsia-400/30" role="menuitem">
+                    <span className="w-9 h-9 rounded-full flex items-center justify-center bg-gradient-to-br from-fuchsia-500 via-purple-500 to-indigo-500 text-white text-[11px]">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M15 3h4a2 2 0 0 1 2 2v4"/><path d="M10 14 21 3"/><path d="M21 10v11a2 2 0 0 1-2 2h-4"/><path d="M3 15v-3a4 4 0 0 1 4-4h4"/><path d="M3 21v-3a4 4 0 0 1 4-4h4"/></svg>
+                    </span>
+                    <span className="text-sm font-medium text-white flex-1">Se connecter</span>
+                  </Link>
+                )}
+                {session && (
+                  <button onClick={() => { signOut(); handleSelect(); }} className="relative group flex items-center gap-3 px-3 py-2 rounded-xl transition-colors border bg-white/5 border-white/10 hover:bg-white/10 hover:border-rose-400/40 text-left" role="menuitem">
+                    <span className="w-9 h-9 rounded-full flex items-center justify-center bg-gradient-to-br from-rose-500 via-pink-500 to-amber-500 text-white text-[11px]">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M15 3h4a2 2 0 0 1 2 2v4"/><path d="M10 14 21 3"/><path d="M21 10v11a2 2 0 0 1-2 2h-4"/><path d="M7 21H5a2 2 0 0 1-2-2v-4"/><path d="M3 9V5a2 2 0 0 1 2-2h4"/><path d="M10 3h4"/><path d="M3 10h4"/></svg>
+                    </span>
+                    <span className="text-sm font-medium text-white flex-1">Se déconnecter</span>
+                  </button>
+                )}
+              </div>
             </div>
             {/* Bouton fermer supprimé selon la demande */}
           </motion.nav>

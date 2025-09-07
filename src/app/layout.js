@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { SessionProviderWrapper } from "@/components/theme/SessionProviderWrapper";
 import "./globals.css";
 import "./mobile-fixes.css";
 
@@ -47,7 +48,9 @@ export default function RootLayout({ children }) {
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider>
-          {children}
+          <SessionProviderWrapper>
+            {children}
+          </SessionProviderWrapper>
         </ThemeProvider>
       </body>
     </html>
