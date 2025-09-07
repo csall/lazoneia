@@ -8,15 +8,20 @@ function LoginInner() {
   const callbackUrl = params.get('callbackUrl') || '/';
   const router = useRouter();
   const [error] = useState("");
+  // Utiliser uniquement des variables NEXT_PUBLIC pour éviter divergences SSR/Client
+  const showOAuth = (process.env.NEXT_PUBLIC_SHOW_OAUTH ?? '1') === '1';
+  const showGoogle = (process.env.NEXT_PUBLIC_GOOGLE_LOGIN ?? '1') === '1';
+  const showFacebook = (process.env.NEXT_PUBLIC_FACEBOOK_LOGIN ?? '1') === '1';
+  const showInstagram = (process.env.NEXT_PUBLIC_INSTAGRAM_LOGIN ?? '0') === '1';
 
   return (
     <div className="w-full max-w-sm space-y-5 p-8 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/15 shadow-2xl">
       <h1 className="text-2xl font-semibold tracking-wide text-center">Connexion</h1>
       {error && <p className="text-sm text-rose-300 text-center">{error}</p>}
       <div className="flex flex-col gap-3">
-        {(process.env.NEXT_PUBLIC_SHOW_OAUTH ?? '1') === '1' && (
+        {showOAuth && (
           <>
-            {(process.env.NEXT_PUBLIC_GOOGLE_LOGIN ?? '1') === '1' && (
+            {showGoogle && (
               <button type="button" onClick={()=>signIn('google',{callbackUrl})} className="w-full flex items-center gap-3 rounded-lg px-4 py-2.5 bg-white text-gray-800 text-sm font-medium shadow hover:bg-gray-50 transition">
                 <span className="w-5 h-5">
                   <svg viewBox="0 0 24 24" className="w-5 h-5"><path fill="#EA4335" d="M12 11.8v2.9h6.9c-.3 1.8-2.1 5.3-6.9 5.3-4.1 0-7.4-3.4-7.4-7.5S7.9 5 12 5c2.3 0 3.8 1 4.7 1.9l2.2-2.1C17.3 3.2 14.9 2 12 2 6.5 2 2 6.5 2 12s4.5 10 10 10c5.8 0 9.6-4.1 9.6-9.9 0-.7-.1-1.2-.2-1.7H12z"/></svg>
@@ -24,12 +29,20 @@ function LoginInner() {
                 <span>Continuer avec Google</span>
               </button>
             )}
-            {process.env.FACEBOOK_CLIENT_ID && (
+            {showFacebook && (
               <button type="button" onClick={()=>signIn('facebook',{callbackUrl})} className="w-full flex items-center gap-3 rounded-lg px-4 py-2.5 bg-[#1877F2] text-white text-sm font-medium shadow hover:brightness-110 transition">
                 <span className="w-5 h-5">
                   <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor"><path d="M22 12.07C22 6.48 17.52 2 11.93 2S1.86 6.48 1.86 12.07c0 5 3.66 9.13 8.44 9.93v-7.03H7.9v-2.9h2.4V9.85c0-2.37 1.42-3.68 3.58-3.68 1.04 0 2.13.19 2.13.19v2.34h-1.2c-1.18 0-1.55.73-1.55 1.48v1.78h2.64l-.42 2.9h-2.22V22c4.78-.8 8.44-4.93 8.44-9.93z"/></svg>
                 </span>
                 <span>Continuer avec Facebook</span>
+              </button>
+            )}
+            {showInstagram && (
+              <button type="button" onClick={()=>signIn('instagram',{callbackUrl})} className="w-full flex items-center gap-3 rounded-lg px-4 py-2.5 bg-gradient-to-r from-pink-500 to-fuchsia-600 text-white text-sm font-medium shadow hover:opacity-90 transition">
+                <span className="w-5 h-5">
+                  <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5ZM12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm0 1.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Zm5.25-.88a.88.88 0 1 1 0 1.76.88.88 0 0 1 0-1.76Z"/></svg>
+                </span>
+                <span>Continuer avec Instagram</span>
               </button>
             )}
           </>

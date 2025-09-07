@@ -1,14 +1,10 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
-import { compare } from "bcryptjs";
+import InstagramProvider from "next-auth/providers/instagram";
 import { getServerSession } from "next-auth";
 
-// Simple in-memory user store placeholder (replace with DB)
-const users = [
-  { id: '1', name: 'Demo User', email: 'demo@lazoneia.com', passwordHash: '$2a$10$uNH4YglpYqcjwx3arofS4OAoJ8aeJYfGrd/7s2SUrIUMumRbquvSG' } // password: demo123
-];
-// Stockage utilisateurs locaux retiré (connexion email désactivée)
+// Auth email/mot de passe retirée – uniquement OAuth.
 
 // Construction dynamique des providers OAuth selon variables d'env présentes
 function buildProviders() {
@@ -17,6 +13,16 @@ function buildProviders() {
     providers.push(GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          scope: [
+            'openid','email','profile',
+            'https://www.googleapis.com/auth/gmail.readonly',
+            'https://www.googleapis.com/auth/gmail.modify',
+            'https://www.googleapis.com/auth/gmail.send'
+          ].join(' ')
+        }
+      },
       allowDangerousEmailAccountLinking: true
     }));
   }
@@ -35,12 +41,34 @@ export const authOptions = {
   pages: { signIn: '/auth/login' },
   providers: buildProviders(),
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) token.user = user;
+      if (account && account.provider === 'google') {
+        token.accessToken = account.access_token;
+        token.refreshToken = account.refresh_token || token.refreshToken;
+        token.expiresAt = Date.now() + (account.expires_in ? account.expires_in * 1000 : 3600*1000);
+      }
+      if (token.expiresAt && Date.now() > token.expiresAt - 60_000 && token.refreshToken) {
+        try {
+          const params = new URLSearchParams({
+            client_id: process.env.GOOGLE_CLIENT_ID || '',
+            client_secret: process.env.GOOGLE_CLIENT_SECRET || '',
+            grant_type: 'refresh_token',
+            refresh_token: token.refreshToken
+          });
+          const r = await fetch('https://oauth2.googleapis.com/token', { method: 'POST', headers: { 'Content-Type':'application/x-www-form-urlencoded' }, body: params });
+          if (r.ok) {
+            const data = await r.json();
+            token.accessToken = data.access_token;
+            token.expiresAt = Date.now() + data.expires_in * 1000;
+          }
+        } catch {}
+      }
       return token;
     },
     async session({ session, token }) {
       if (token?.user) session.user = token.user;
+      if (token?.accessToken) session.accessToken = token.accessToken;
       return session;
     }
   }

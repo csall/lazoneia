@@ -459,6 +459,48 @@ const agents = [
     sendButtonLabel: "séduire",
     type: "conversationnel"
   }
+  ,
+  {
+    name: "Mailty",
+    description: "Assistant email Gmail: liste, lit, résume et rédige des réponses intelligentes.",
+    image: "mailty-bot.svg",
+    color: "violet",
+    link: "/agent/mailty",
+    tagline: "Inbox intelligente",
+    category: "automation",
+    branding: {
+      name: "Mailty",
+      gradient: "from-violet-900 to-fuchsia-900",
+      textColor: "text-white",
+      headerGradient: "from-violet-200 to-fuchsia-200",
+      botImage: "/mailty-bot.svg",
+      description: "Assistant email Gmail: classement, résumé rapide et réponse assistée par IA."
+    },
+    tones: [
+      { value: "professionnel", label: "Professionnel" },
+      { value: "amical", label: "Amical" },
+      { value: "synthese", label: "Synthèse" }
+    ],
+    colors: {
+      gradientFrom: "from-violet-900",
+      gradientTo: "to-fuchsia-900",
+      textColor: "text-white",
+      buttonGradientFrom: "from-violet-500",
+      buttonGradientTo: "to-fuchsia-600",
+      buttonHoverFrom: "hover:from-violet-600",
+      buttonHoverTo: "hover:to-fuchsia-700",
+      borderColor: "border-violet-500/30",
+      placeholderColor: "placeholder-violet-300",
+      responseBg: "bg-violet-900/30",
+      responseBorder: "border-violet-700/30",
+      ringColor: "ring-violet-500",
+      shadowColor: "shadow-violet-500/50"
+    },
+    endpoint: "",
+    placeholder: "Rechercher ou sélectionner un email...",
+    sendButtonLabel: "Envoyer",
+    type: "transactionnel"
+  }
 ];
 
 export default agents;
