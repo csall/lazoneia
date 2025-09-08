@@ -174,10 +174,6 @@ export default function MailtyWorkflow(){
                   aria-label="Rechercher dans les emails"
                 />
                 <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-violet-500 dark:text-violet-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
-                <div className="absolute -bottom-5 left-2 hidden sm:flex gap-3 text-[10px] text-violet-500 dark:text-violet-300/80 font-medium">
-                  <span className="inline-flex items-center gap-1"><kbd className="px-1.5 py-0.5 rounded bg-violet-100 dark:bg-violet-500/20">ENTER</kbd><span className="opacity-70">ouvrir</span></span>
-                  <span className="inline-flex items-center gap-1"><kbd className="px-1.5 py-0.5 rounded bg-violet-100 dark:bg-violet-500/20">ESC</kbd><span className="opacity-70">retour</span></span>
-                </div>
               </div>
               <button
                 onClick={()=> setUnreadOnly(u=>!u)}
