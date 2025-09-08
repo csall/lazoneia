@@ -223,53 +223,28 @@ export default function PostotoWorkflow({ agent }) {
         targetLang={targetLang}
         handleLanguageChange={(e) => setTargetLang(e.target?.value)}
         colors={mergedColors}
-        messages={[]} // no chat history
+        messages={[]}
         clearHistory={() => {}}
         fixed={false}
       />
-
-      <div className="mx-auto w-full max-w-7xl px-4 pb-32 pt-8 flex flex-col gap-10">
-        {/* Top layout: Brief + Settings / Connections */}
-        <section className="grid gap-8 md:grid-cols-3 items-start">
-          <div className={`md:col-span-2 rounded-2xl border backdrop-blur-sm p-5 flex flex-col gap-4 ${isLight ? "bg-white/70 border-gray-200" : "bg-white/5 border-white/10"}`}>
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold uppercase tracking-wide opacity-80 flex items-center gap-2">Brief</h2>
-              {/* Sélecteur de persona supprimé */}
-            </div>
+      <div className="mx-auto w-full max-w-7xl px-4 pb-32 pt-8 grid md:grid-cols-3 gap-10">
+        {/* Colonne principale */}
+        <div className="md:col-span-2 flex flex-col gap-8">
+          {/* Bloc Brief */}
+          <section className={`rounded-2xl border backdrop-blur-sm p-6 flex flex-col gap-4 ${isLight ? "bg-white/70 border-gray-200" : "bg-white/5 border-white/10"}`}>
+            <h2 className="text-lg font-bold tracking-wide mb-2">Brief</h2>
             <textarea
               value={brief}
               onChange={(e) => setBrief(e.target.value.slice(0, 6000))}
               placeholder={placeholder}
-              className={`min-h-[180px] resize-none rounded-lg border p-4 text-sm leading-relaxed focus:outline-none focus:ring-2 ${isLight ? "border-gray-300 focus:ring-fuchsia-300 bg-white/80" : "border-white/15 focus:ring-fuchsia-500/40 bg-white/5"}`}
+              className={`min-h-[180px] resize-none rounded-lg border p-4 text-base leading-relaxed focus:outline-none focus:ring-2 ${isLight ? "border-gray-300 focus:ring-fuchsia-300 bg-white/80" : "border-white/15 focus:ring-fuchsia-500/40 bg-white/5"}`}
             />
-              <div className="flex flex-wrap items-center gap-3">
-              {/* Instagram platform selection buttons removed as requested */}
-              <div className="ml-auto flex items-center gap-3 flex-wrap justify-end">
-                <div className="flex items-center gap-2">
-                  <input ref={draftNameRef} placeholder="Nom brouillon" className={`h-11 w-40 rounded-md px-3 text-xs border bg-transparent focus:outline-none focus:ring-2 ${isLight?"border-gray-300 focus:ring-fuchsia-300":"border-white/15 focus:ring-fuchsia-500/40"}`} />
-                  <button onClick={saveDraft} type="button" className={`h-11 px-4 rounded-lg text-xs font-medium border ${isLight?"bg-white border-gray-300 hover:bg-gray-100":"bg-white/10 border-white/15 hover:bg-white/15"}`}>Sauver</button>
-                  {mounted && drafts.length > 0 && (
-                    <div className="relative group">
-                      <button type="button" className={`h-11 px-4 rounded-lg text-xs font-medium border ${isLight?"bg-white border-gray-300 hover:bg-gray-100":"bg-white/10 border-white/15 hover:bg-white/15"}`}>Brouillons ({drafts.length})</button>
-                      <div className={`absolute z-30 hidden group-hover:flex flex-col max-h-72 overflow-y-auto right-0 top-full mt-1 w-56 rounded-lg border p-2 backdrop-blur-xl ${isLight?"bg-white/90 border-gray-200":"bg-white/10 border-white/15"}`}>
-                        {drafts.map(d=> (
-                          <div key={d.id} className={`flex items-center gap-2 text-[11px] py-1 border-b last:border-b-0 ${isLight?"border-gray-200":"border-white/10"}`}>
-                            <button onClick={()=>loadDraft(d.id)} className="flex-1 text-left truncate hover:underline">{d.name}</button>
-                            <button onClick={()=>deleteDraft(d.id)} className="text-red-500 hover:opacity-70" title="Supprimer">✕</button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                {/* Bouton Générer supprimé */}
-                <button onClick={publish} type="button" className={`h-11 px-5 rounded-lg text-sm font-medium border ${isLight?"bg-white border-gray-300 hover:bg-gray-100":"bg-white/10 border-white/15 hover:bg-white/15"}`}>Publier</button>
-                {/* Boutons Copier JSON et Exporter supprimés */}
-              </div>
-            </div>
-            {error && <p className="text-sm text-red-500">{error}</p>}
+          </section>
+          {/* Bloc Planification & Publication */}
+          <section className={`rounded-2xl border backdrop-blur-sm p-6 flex flex-col gap-4 ${isLight ? "bg-white/70 border-gray-200" : "bg-white/5 border-white/10"}`}> 
+            <h3 className="text-base font-semibold mb-2">Planification & Publication</h3>
             {scheduleEnabled && (
-              <div className="grid sm:grid-cols-3 gap-4 mt-2">
+              <div className="grid sm:grid-cols-3 gap-4">
                 <div className="flex flex-col gap-1">
                   <label className="text-[11px] uppercase font-semibold opacity-70">Date & heure</label>
                   <input type="datetime-local" value={scheduleDate} onChange={(e) => setScheduleDate(e.target.value)} className={`rounded-md px-2 py-2 text-sm border bg-transparent focus:outline-none focus:ring-2 ${isLight ? "border-gray-300 focus:ring-fuchsia-300" : "border-white/15 focus:ring-fuchsia-500/40"}`} />
@@ -287,33 +262,54 @@ export default function PostotoWorkflow({ agent }) {
               </div>
             )}
             {!scheduleEnabled && (
-              <button onClick={() => setScheduleEnabled(true)} className={`mt-1 self-start text-xs px-3 py-1.5 rounded-full border ${isLight ? "border-fuchsia-300 text-fuchsia-700 hover:bg-fuchsia-50" : "border-fuchsia-500/40 text-fuchsia-300 hover:bg-fuchsia-500/15"}`}>Programmer une publication</button>
+              <button onClick={() => setScheduleEnabled(true)} className={`self-start text-xs px-3 py-1.5 rounded-full border ${isLight ? "border-fuchsia-300 text-fuchsia-700 hover:bg-fuchsia-50" : "border-fuchsia-500/40 text-fuchsia-300 hover:bg-fuchsia-500/15"}`}>Programmer une publication</button>
             )}
-
-            {/* Media uploader */}
-            <div className="mt-4 flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-semibold uppercase tracking-wide opacity-80">Médias ({media.length}/5)</h4>
-                <label className={`cursor-pointer h-8 px-3 rounded-md text-[11px] font-semibold border flex items-center gap-1 ${isLight?"bg-white border-gray-300 hover:bg-gray-100":"bg-white/10 border-white/15 hover:bg-white/15"}`}>
-                  <input type="file" multiple accept="image/*,video/*" onChange={handleMediaChange} className="hidden" />Ajouter
-                </label>
-              </div>
-              {media.length === 0 && <p className="text-[11px] opacity-60">Ajoutez jusqu&apos;à 5 images / vidéos (2 Mo max chacun) pour contextualiser.</p>}
-              {media.length > 0 && (
-                <div className="flex flex-wrap gap-3">
-                  {media.map(m => (
-                    <div key={m.id} className={`relative w-24 h-24 rounded-lg overflow-hidden border group ${isLight?"border-gray-300 bg-white/70":"border-white/10 bg-white/5"}`}>
-                      {m.type.startsWith('image') ? <Image src={m.data} alt={m.name} fill sizes="96px" className="object-cover" /> : <video src={m.data} className="object-cover w-full h-full" />}
-                      <button onClick={()=>removeMedia(m.id)} className="absolute top-1 right-1 text-[10px] bg-black/60 text-white rounded px-1 opacity-0 group-hover:opacity-100">✕</button>
-                    </div>
-                  ))}
+            <div className="flex flex-wrap items-center gap-3 mt-2">
+              <input ref={draftNameRef} placeholder="Nom brouillon" className={`h-11 w-40 rounded-md px-3 text-xs border bg-transparent focus:outline-none focus:ring-2 ${isLight?"border-gray-300 focus:ring-fuchsia-300":"border-white/15 focus:ring-fuchsia-500/40"}`} />
+              <button onClick={saveDraft} type="button" className={`h-11 px-4 rounded-lg text-xs font-medium border ${isLight?"bg-white border-gray-300 hover:bg-gray-100":"bg-white/10 border-white/15 hover:bg-white/15"}`}>Sauver</button>
+              {mounted && drafts.length > 0 && (
+                <div className="relative group">
+                  <button type="button" className={`h-11 px-4 rounded-lg text-xs font-medium border ${isLight?"bg-white border-gray-300 hover:bg-gray-100":"bg-white/10 border-white/15 hover:bg-white/15"}`}>Brouillons ({drafts.length})</button>
+                  <div className={`absolute z-30 hidden group-hover:flex flex-col max-h-72 overflow-y-auto right-0 top-full mt-1 w-56 rounded-lg border p-2 backdrop-blur-xl ${isLight?"bg-white/90 border-gray-200":"bg-white/10 border-white/15"}`}>
+                    {drafts.map(d=> (
+                      <div key={d.id} className={`flex items-center gap-2 text-[11px] py-1 border-b last:border-b-0 ${isLight?"border-gray-200":"border-white/10"}`}>
+                        <button onClick={()=>loadDraft(d.id)} className="flex-1 text-left truncate hover:underline">{d.name}</button>
+                        <button onClick={()=>deleteDraft(d.id)} className="text-red-500 hover:opacity-70" title="Supprimer">✕</button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
+              <button onClick={publish} type="button" className={`h-11 px-5 rounded-lg text-sm font-medium border ${isLight?"bg-white border-gray-300 hover:bg-gray-100":"bg-white/10 border-white/15 hover:bg-white/15"}`}>Publier</button>
             </div>
-          </div>
-          {/* Connections */}
-          <div className={`rounded-2xl border backdrop-blur-sm p-5 flex flex-col gap-5 ${isLight ? "bg-white/70 border-gray-200" : "bg-white/5 border-white/10"}`}>
-            <h3 className="text-sm font-semibold uppercase tracking-wide opacity-80">Connexions</h3>
+            {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
+          </section>
+          {/* Bloc Médias */}
+          <section className={`rounded-2xl border backdrop-blur-sm p-6 flex flex-col gap-4 ${isLight ? "bg-white/70 border-gray-200" : "bg-white/5 border-white/10"}`}> 
+            <h3 className="text-base font-semibold mb-2">Médias</h3>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wide opacity-80">{media.length}/5 fichiers</span>
+              <label className={`cursor-pointer h-8 px-3 rounded-md text-[11px] font-semibold border flex items-center gap-1 ${isLight?"bg-white border-gray-300 hover:bg-gray-100":"bg-white/10 border-white/15 hover:bg-white/15"}`}>
+                <input type="file" multiple accept="image/*,video/*" onChange={handleMediaChange} className="hidden" />Ajouter
+              </label>
+            </div>
+            {media.length === 0 && <p className="text-[11px] opacity-60">Ajoutez jusqu&apos;à 5 images / vidéos (2 Mo max chacun) pour contextualiser.</p>}
+            {media.length > 0 && (
+              <div className="flex flex-wrap gap-3">
+                {media.map(m => (
+                  <div key={m.id} className={`relative w-24 h-24 rounded-lg overflow-hidden border group ${isLight?"border-gray-300 bg-white/70":"border-white/10 bg-white/5"}`}>
+                    {m.type.startsWith('image') ? <Image src={m.data} alt={m.name} fill sizes="96px" className="object-cover" /> : <video src={m.data} className="object-cover w-full h-full" />}
+                    <button onClick={()=>removeMedia(m.id)} className="absolute top-1 right-1 text-[10px] bg-black/60 text-white rounded px-1 opacity-0 group-hover:opacity-100">✕</button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        </div>
+        {/* Colonne droite : Connexions et programmés */}
+        <aside className={`rounded-2xl border backdrop-blur-sm p-6 flex flex-col gap-8 ${isLight ? "bg-white/70 border-gray-200" : "bg-white/5 border-white/10"}`}>
+          <section>
+            <h3 className="text-base font-semibold mb-2">Connexions</h3>
             <ul className="flex flex-col gap-3">
               <li className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
@@ -324,34 +320,32 @@ export default function PostotoWorkflow({ agent }) {
                 <button onClick={() => connect('instagram')} disabled={connecting === 'instagram'} className={`h-8 px-3 rounded-md text-[11px] font-semibold border flex items-center gap-1 transition ${connections.instagram ? (isLight ? "bg-white border-gray-300 text-gray-600 hover:bg-gray-100" : "bg-white/10 border-white/15 text-white/70 hover:bg-white/15") : (isLight ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white border-fuchsia-400 shadow hover:shadow-md" : "bg-gradient-to-r from-fuchsia-600 to-purple-700 text-white border-fuchsia-400/40 hover:opacity-90")}`}>{connecting === 'instagram' ? '...' : connections.instagram ? 'Déconnecter' : 'Connecter'}</button>
               </li>
             </ul>
-            <p className="text-[11px] leading-relaxed opacity-60">Connexion réelle Instagram via OAuth Basic Display. Configurez les variables d&apos;environnement INSTAGRAM_CLIENT_ID / SECRET / REDIRECT_URI.</p>
-
-            {/* Scheduled drafts overview */}
-            {drafts.filter(d=>d.schedule && new Date(d.schedule.date) > Date.now()).length > 0 && (
-              <div className="mt-4 flex flex-col gap-2">
-                <h4 className="text-xs font-semibold uppercase tracking-wide opacity-80">Programmés</h4>
-                <div className="flex flex-col gap-2 max-h-56 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-fuchsia-400/40 dark:scrollbar-thumb-fuchsia-500/40">
-                  {drafts.filter(d=>d.schedule && new Date(d.schedule.date) > Date.now()).sort((a,b)=> new Date(a.schedule.date) - new Date(b.schedule.date)).slice(0,15).map(d => (
-                    <div key={d.id} className={`flex items-center gap-2 p-2 rounded-md border ${isLight?"bg-white/70 border-gray-200":"bg-white/5 border-white/10"}`}>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-[11px] font-medium truncate">{d.name}</div>
-                        <div className="text-[10px] opacity-60 flex flex-wrap gap-1">
-                          {d.platforms.map(p=> <span key={p} className="px-1 py-0.5 rounded bg-fuchsia-500/10 text-fuchsia-500 text-[9px]">{PLATFORM_META[p]?.label?.slice(0,3)}</span>)}
-                          <span>{new Date(d.schedule.date).toLocaleString()}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <button onClick={()=>loadDraft(d.id)} className={`h-6 px-2 rounded-md text-[10px] font-semibold border ${isLight?"bg-white border-gray-300":"bg-white/10 border-white/15"}`}>↺</button>
-                        <button onClick={()=>deleteDraft(d.id)} className={`h-6 px-2 rounded-md text-[10px] font-semibold border text-red-500 border-red-400/40 bg-red-500/10 hover:bg-red-500/20`}>✕</button>
+            <p className="text-[11px] leading-relaxed opacity-60 mt-2">Connexion réelle Instagram via OAuth Basic Display. Configurez les variables d&apos;environnement INSTAGRAM_CLIENT_ID / SECRET / REDIRECT_URI.</p>
+          </section>
+          {/* Programmés */}
+          {drafts.filter(d=>d.schedule && new Date(d.schedule.date) > Date.now()).length > 0 && (
+            <section>
+              <h4 className="text-xs font-semibold uppercase tracking-wide opacity-80 mb-2">Programmés</h4>
+              <div className="flex flex-col gap-2 max-h-56 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-fuchsia-400/40 dark:scrollbar-thumb-fuchsia-500/40">
+                {drafts.filter(d=>d.schedule && new Date(d.schedule.date) > Date.now()).sort((a,b)=> new Date(a.schedule.date) - new Date(b.schedule.date)).slice(0,15).map(d => (
+                  <div key={d.id} className={`flex items-center gap-2 p-2 rounded-md border ${isLight?"bg-white/70 border-gray-200":"bg-white/5 border-white/10"}`}>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[11px] font-medium truncate">{d.name}</div>
+                      <div className="text-[10px] opacity-60 flex flex-wrap gap-1">
+                        {d.platforms.map(p=> <span key={p} className="px-1 py-0.5 rounded bg-fuchsia-500/10 text-fuchsia-500 text-[9px]">{PLATFORM_META[p]?.label?.slice(0,3)}</span>)}
+                        <span>{new Date(d.schedule.date).toLocaleString()}</span>
                       </div>
                     </div>
-                  ))}
-                </div>
+                    <div className="flex items-center gap-1">
+                      <button onClick={()=>loadDraft(d.id)} className={`h-6 px-2 rounded-md text-[10px] font-semibold border ${isLight?"bg-white border-gray-300":"bg-white/10 border-white/15"}`}>↺</button>
+                      <button onClick={()=>deleteDraft(d.id)} className={`h-6 px-2 rounded-md text-[10px] font-semibold border text-red-500 border-red-400/40 bg-red-500/10 hover:bg-red-500/20`}>✕</button>
+                    </div>
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
-        </section>
-
+            </section>
+          )}
+        </aside>
       </div>
       {showToast && <Toast message={showToast} onDone={() => setShowToast(null)} />}
     </main>
