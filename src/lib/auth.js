@@ -29,7 +29,12 @@ function buildProviders() {
   if (process.env.FACEBOOK_CLIENT_ID && process.env.FACEBOOK_CLIENT_SECRET) {
     providers.push(FacebookProvider({
       clientId: process.env.FACEBOOK_CLIENT_ID,
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+      authorization: {
+        params: {
+          scope: 'email,pages_manage_posts'
+        }
+      }
     }));
   }
   // Provider credentials retiré (auth email/mot de passe désactivée)
