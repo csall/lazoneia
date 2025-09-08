@@ -35,6 +35,8 @@ const PERSONAS = [
 ];
 
 export default function PostotoWorkflow({ agent }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
   const { theme } = useTheme();
   const isLight = theme === "light";
   const {
@@ -246,7 +248,7 @@ export default function PostotoWorkflow({ agent }) {
                 <div className="flex items-center gap-2">
                   <input ref={draftNameRef} placeholder="Nom brouillon" className={`h-11 w-40 rounded-md px-3 text-xs border bg-transparent focus:outline-none focus:ring-2 ${isLight?"border-gray-300 focus:ring-fuchsia-300":"border-white/15 focus:ring-fuchsia-500/40"}`} />
                   <button onClick={saveDraft} type="button" className={`h-11 px-4 rounded-lg text-xs font-medium border ${isLight?"bg-white border-gray-300 hover:bg-gray-100":"bg-white/10 border-white/15 hover:bg-white/15"}`}>Sauver</button>
-                  {drafts.length>0 && (
+                  {mounted && drafts.length > 0 && (
                     <div className="relative group">
                       <button type="button" className={`h-11 px-4 rounded-lg text-xs font-medium border ${isLight?"bg-white border-gray-300 hover:bg-gray-100":"bg-white/10 border-white/15 hover:bg-white/15"}`}>Brouillons ({drafts.length})</button>
                       <div className={`absolute z-30 hidden group-hover:flex flex-col max-h-72 overflow-y-auto right-0 top-full mt-1 w-56 rounded-lg border p-2 backdrop-blur-xl ${isLight?"bg-white/90 border-gray-200":"bg-white/10 border-white/15"}`}>
