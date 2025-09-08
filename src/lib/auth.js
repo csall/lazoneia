@@ -8,6 +8,17 @@ import { getServerSession } from "next-auth";
 
 // Construction dynamique des providers OAuth selon variables d'env présentes
 function buildProviders() {
+  if (process.env.INSTAGRAM_CLIENT_ID && process.env.INSTAGRAM_CLIENT_SECRET) {
+    providers.push(InstagramProvider({
+      clientId: process.env.INSTAGRAM_CLIENT_ID,
+      clientSecret: process.env.INSTAGRAM_CLIENT_SECRET,
+      authorization: {
+        params: {
+          scope: 'user_profile,user_media'
+        }
+      }
+    }));
+  }
   const providers = [];
   if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
     providers.push(GoogleProvider({
@@ -32,7 +43,7 @@ function buildProviders() {
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
       authorization: {
         params: {
-          scope: 'email,pages_manage_posts'
+          scope: 'email'
         }
       }
     }));

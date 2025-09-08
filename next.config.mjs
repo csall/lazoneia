@@ -8,13 +8,15 @@ const nextConfig = {
       'lazoneia.vercel.app',
       'lazoneia.com',
       'www.lazoneia.com',
-      'lh3.googleusercontent.com'
+      'lh3.googleusercontent.com',
+      'platform-lookaside.fbsbx.com'
     ],
     remotePatterns: [
       { protocol: 'https', hostname: '**.vercel.app' },
       { protocol: 'https', hostname: '*.lazoneia.com' },
       { protocol: 'https', hostname: 'lazoneia.com' },
-      { protocol: 'https', hostname: 'lh3.googleusercontent.com' }
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+      { protocol: 'https', hostname: 'platform-lookaside.fbsbx.com' }
     ]
   },
   // Configuration des assets statiques pour Vercel
