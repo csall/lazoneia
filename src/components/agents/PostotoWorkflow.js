@@ -129,32 +129,7 @@ export default function PostotoWorkflow({ agent }) {
     setHashtagPool(base);
   }, []);
 
-  const handleGenerate = useCallback(async () => {
-    if (!canGenerate) return;
-    setLoading(true); setError(""); setBaseResult(""); setVariants({});
-    try {
-      const r = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: brief, persona, platforms, schedule: scheduleEnabled ? { date: scheduleDate, timezone } : null, media: media.map(m => ({ name: m.name, type: m.type, size: m.size })) }),
-      });
-      if (!r.ok) throw new Error("Erreur serveur");
-      const data = await r.json().catch(() => ({}));
-      const text = data.result || data.output || data[0]?.text || JSON.stringify(data, null, 2);
-      setBaseResult(text);
-      // Build simple variants
-      const built = {};
-      platforms.forEach((p) => { built[p] = adaptForPlatform(text, p, tone, hashtagPool, { personaPrefix }); });
-      setVariants(built);
-      if (!platforms.includes(activeTab) && platforms.length) setActiveTab(platforms[0]);
-      if (!hashtagPool.length) autoExtractHashtags(text);
-      if (!ctaSuggestions.length) buildCtas();
-    } catch (e) {
-      setError(e.message || "Erreur");
-    } finally {
-      setLoading(false);
-    }
-  }, [brief, persona, platforms, scheduleEnabled, scheduleDate, timezone, endpoint, canGenerate, hashtagPool, ctaSuggestions.length, activeTab, autoExtractHashtags, personaPrefix, media]);
+  // ...existing code...
 
   const normalize = (w) => w.normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/[^a-z0-9]/gi, "").slice(0, 24);
 
@@ -219,10 +194,7 @@ export default function PostotoWorkflow({ agent }) {
   };
   const removeMedia = (id) => setMedia(m => m.filter(x => x.id !== id));
 
-  // Export JSON
-  const getExportPayload = () => ({ brief, persona, platforms, schedule: scheduleEnabled ? { date: scheduleDate, timezone } : null, variants, media: media.map(m => ({ name: m.name, type: m.type, size: m.size, data: m.data })) });
-  const copyJson = () => { try { const json = JSON.stringify(getExportPayload(), null, 2); navigator.clipboard.writeText(json); setShowToast("JSON copié"); } catch { setShowToast("Échec copie JSON"); } };
-  const downloadJson = () => { try { const blob = new Blob([JSON.stringify(getExportPayload(), null, 2)], { type:"application/json" }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `postoto_export_${Date.now()}.json`; a.click(); setShowToast("Exporté"); } catch { setShowToast("Échec export"); } };
+  // ...existing code...
 
   // Auto adapt when baseResult changes (e.g. new generation) handled inside generate
   useEffect(() => {
@@ -260,12 +232,7 @@ export default function PostotoWorkflow({ agent }) {
           <div className={`md:col-span-2 rounded-2xl border backdrop-blur-sm p-5 flex flex-col gap-4 ${isLight ? "bg-white/70 border-gray-200" : "bg-white/5 border-white/10"}`}>
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-semibold uppercase tracking-wide opacity-80 flex items-center gap-2">Brief</h2>
-              <div className="flex gap-2">
-                {/* Sélecteurs ton & langue retirés */}
-                  <select value={persona} onChange={(e)=>setPersona(e.target.value)} className={`h-11 rounded-md px-3 text-xs font-medium border focus:outline-none focus:ring-2 ${isLight?"bg-white border-gray-300 focus:ring-fuchsia-300":"bg-white/10 border-white/15 focus:ring-fuchsia-500/40"}`} title="Persona">
-                    {PERSONAS.map(p=> <option key={p.id} value={p.id}>{p.label}</option>)}
-                  </select>
-              </div>
+              {/* Sélecteur de persona supprimé */}
             </div>
             <textarea
               value={brief}
@@ -274,20 +241,7 @@ export default function PostotoWorkflow({ agent }) {
               className={`min-h-[180px] resize-none rounded-lg border p-4 text-sm leading-relaxed focus:outline-none focus:ring-2 ${isLight ? "border-gray-300 focus:ring-fuchsia-300 bg-white/80" : "border-white/15 focus:ring-fuchsia-500/40 bg-white/5"}`}
             />
               <div className="flex flex-wrap items-center gap-3">
-              {platforms.filter(p=>PLATFORM_META[p]).map((k) => {
-                const meta = PLATFORM_META[k];
-                const active = activeTab === k;
-                const Connected = connections[k];
-                return (
-                  <button key={k} onClick={() => setActiveTab(k)} className={`group relative h-10 px-4 rounded-full text-xs font-semibold tracking-wide flex items-center gap-2 border transition ${active ? (isLight ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white border-fuchsia-400" : "bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white border-fuchsia-400/40") : (isLight ? "bg-white border-gray-300 text-gray-600 hover:text-gray-900" : "bg-white/5 border-white/10 text-white/60 hover:text-white")}`}>
-                    <span className="relative flex items-center gap-1.5">
-                      {meta?.icon && meta.icon({ className: "w-4 h-4" })}
-                      {meta?.label || k}
-                      {Connected && <span className="ml-1 w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_0_2px_rgba(255,255,255,0.35)]" title="Connecté" />}
-                    </span>
-                  </button>
-                );
-              })}
+              {/* Instagram platform selection buttons removed as requested */}
               <div className="ml-auto flex items-center gap-3 flex-wrap justify-end">
                 <div className="flex items-center gap-2">
                   <input ref={draftNameRef} placeholder="Nom brouillon" className={`h-11 w-40 rounded-md px-3 text-xs border bg-transparent focus:outline-none focus:ring-2 ${isLight?"border-gray-300 focus:ring-fuchsia-300":"border-white/15 focus:ring-fuchsia-500/40"}`} />
@@ -306,17 +260,9 @@ export default function PostotoWorkflow({ agent }) {
                     </div>
                   )}
                 </div>
-                <button
-                  disabled={!canGenerate}
-                  onClick={handleGenerate}
-                  className={`h-11 px-6 rounded-lg text-sm font-medium flex items-center gap-2 transition ${canGenerate ? (isLight ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white shadow hover:shadow-md active:scale-[0.97]" : "bg-gradient-to-r from-fuchsia-600 to-purple-700 text-white hover:opacity-90 active:scale-[0.97]") : "bg-gray-300 dark:bg-white/10 text-gray-500 dark:text-gray-400 cursor-not-allowed"}`}
-                >
-                  {loading && <span className="w-4 h-4 border-2 border-white/40 border-t-white animate-spin rounded-full" />}
-                  Générer
-                </button>
+                {/* Bouton Générer supprimé */}
                 <button onClick={publish} type="button" className={`h-11 px-5 rounded-lg text-sm font-medium border ${isLight?"bg-white border-gray-300 hover:bg-gray-100":"bg-white/10 border-white/15 hover:bg-white/15"}`}>Publier</button>
-                <button onClick={copyJson} type="button" className={`h-11 px-4 rounded-lg text-xs font-medium border ${isLight?"bg-white border-gray-300 hover:bg-gray-100":"bg-white/10 border-white/15 hover:bg-white/15"}`}>Copier JSON</button>
-                <button onClick={downloadJson} type="button" className={`h-11 px-4 rounded-lg text-xs font-medium border ${isLight?"bg-white border-gray-300 hover:bg-gray-100":"bg-white/10 border-white/15 hover:bg-white/15"}`}>Exporter</button>
+                {/* Boutons Copier JSON et Exporter supprimés */}
               </div>
             </div>
             {error && <p className="text-sm text-red-500">{error}</p>}
@@ -404,58 +350,6 @@ export default function PostotoWorkflow({ agent }) {
           </div>
         </section>
 
-        {/* Variants & Preview */}
-  <section className="flex flex-col gap-5">
-          <div className="flex flex-wrap items-center gap-2 border-b border-white/10 pb-2">
-            {platforms
-              .filter((p) => PLATFORM_META[p])
-              .map((p) => {
-                const meta = PLATFORM_META[p];
-                if (!meta) return null;
-                const active = activeTab === p;
-                return (
-                  <button
-                    key={p}
-                    onClick={() => setActiveTab(p)}
-                    className={`relative px-4 h-10 rounded-full text-xs font-semibold tracking-wide flex items-center gap-2 transition ${active
-                      ? (isLight
-                        ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white shadow"
-                        : "bg-gradient-to-r from-fuchsia-600 to-purple-700 text-white")
-                      : (isLight
-                        ? "bg-white border border-gray-300 text-gray-600 hover:text-gray-900"
-                        : "bg-white/5 border border-white/10 text-white/60 hover:text-white")}`}
-                  >
-                    {meta?.icon && meta.icon({ className: "w-4 h-4" })}
-                    {meta?.label || p}
-                    {variants[p] && <span className="ml-1 w-2 h-2 rounded-full bg-emerald-400" />}
-                  </button>
-                );
-              })}
-          </div>
-          <div className="grid gap-6 lg:grid-cols-3 items-start">
-            <div className="lg:col-span-2 flex flex-col gap-4">
-              <VariantEditor
-                platform={activeTab}
-                meta={PLATFORM_META[activeTab]}
-                value={variants[activeTab] || ""}
-                setValue={(val) => setVariants((v) => ({ ...v, [activeTab]: val }))}
-                max={PLATFORM_META[activeTab]?.max}
-                loading={loading}
-                regenerate={() => regenerateVariant(activeTab)}
-                copy={() => copyVariant(activeTab)}
-                isLight={isLight}
-              />
-              <PreviewMock platform={activeTab} content={variants[activeTab] || ""} isLight={isLight} />
-            </div>
-            <aside className="flex flex-col gap-6">
-              <HashtagPanel pool={hashtagPool} setPool={setHashtagPool} apply={(tags) => {
-                if (!activeTab) return;
-                setVariants((v) => ({ ...v, [activeTab]: (v[activeTab] || "") + "\n\n" + tags.join(" ") }));
-              }} isLight={isLight} />
-              <CtaPanel ctas={ctaSuggestions} onClick={(cta) => setVariants((v) => ({ ...v, [activeTab]: (v[activeTab] || "") + "\n\n" + cta }))} isLight={isLight} />
-            </aside>
-          </div>
-        </section>
       </div>
       {showToast && <Toast message={showToast} onDone={() => setShowToast(null)} />}
     </main>
@@ -483,13 +377,7 @@ function VariantEditor({ platform, meta, value, setValue, max, loading, regenera
   const count = value.length;
   return (
     <div className={`relative rounded-2xl border backdrop-blur-sm p-5 flex flex-col gap-3 ${isLight ? "bg-white/70 border-gray-200" : "bg-white/5 border-white/10"}`}>
-      <div className="flex items-center justify-between">
-        <h4 className="text-sm font-semibold uppercase tracking-wide opacity-80 flex items-center gap-2">{meta?.label} – Variante</h4>
-        <div className="flex items-center gap-2">
-          <button onClick={regenerate} disabled={loading || !value} className={`h-8 px-3 rounded-md text-[11px] font-semibold border ${isLight ? "bg-white border-gray-300 text-gray-700 hover:bg-gray-100" : "bg-white/10 border-white/15 text-white/70 hover:bg-white/15"}`}>↻</button>
-          <button onClick={copy} disabled={!value} className={`h-8 px-3 rounded-md text-[11px] font-semibold border ${isLight ? "bg-white border-gray-300 text-gray-700 hover:bg-gray-100" : "bg-white/10 border-white/15 text-white/70 hover:bg-white/15"}`}>Copier</button>
-        </div>
-      </div>
+      {/* Boutons au-dessus du textarea supprimés */}
       <textarea
         value={value}
         onChange={(e) => setValue(e.target.value.slice(0, max))}
@@ -497,7 +385,7 @@ function VariantEditor({ platform, meta, value, setValue, max, loading, regenera
         className={`min-h-[320px] resize-none rounded-lg border p-4 text-sm leading-relaxed focus:outline-none focus:ring-2 ${isLight ? "border-gray-300 focus:ring-fuchsia-300 bg-white/80" : "border-white/15 focus:ring-fuchsia-500/40 bg-white/5"}`}
       />
       <div className="flex items-center justify-between text-[11px] opacity-70">
-        <span>Limite {max.toLocaleString()} caractères</span>
+        <span>Limite {max.toLocaleString('fr-FR')} caractères</span>
         <span className={`${count > max * 0.9 ? "text-red-500 dark:text-red-400" : ""}`}>{count}/{max}</span>
       </div>
     </div>
