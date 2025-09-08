@@ -1,8 +1,28 @@
+// Unique Mailty palette (cyan/lime, distinct from all others)
+const mailtyDark = {
+	bg: "bg-gradient-to-br from-violet-700 to-fuchsia-600",
+	border: "border-fuchsia-400/80",
+	glow: "from-fuchsia-400 to-violet-400",
+	button: "from-fuchsia-500 to-violet-500 hover:from-fuchsia-400 hover:to-violet-400",
+	hover: "group-hover:text-fuchsia-100",
+	accent: "bg-fuchsia-400",
+	mesh: "from-fuchsia-400/40 via-violet-500/30 to-fuchsia-400/40"
+};
+const mailtyLight = {
+	bg: "bg-gradient-to-br from-violet-400 to-fuchsia-300",
+	border: "border-violet-400/60",
+	glow: "from-violet-500 to-fuchsia-400",
+	button: "from-violet-500 to-fuchsia-400 hover:from-violet-600 hover:to-fuchsia-500",
+	hover: "group-hover:text-fuchsia-700",
+	accent: "bg-violet-500",
+	mesh: "from-violet-400/40 via-fuchsia-300/30 to-violet-400/40"
+};
 // Centralized card style palettes for agents (light & dark)
 // Usage: import { getCardStyle } from '@/styles/cardStyles';
 // const style = getCardStyle(theme, colorKey);
 
 export const cardStylesDark = {
+	mailty: mailtyDark,
 	charm: { bg:"bg-gradient-to-br from-pink-900/60 to-rose-900/60", border:"border-pink-500/20", glow:"from-pink-500 to-rose-600", button:"from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700", hover:"group-hover:text-pink-200", accent:"bg-pink-500", mesh:"from-pink-500/40 via-rose-600/30 to-pink-500/40" },
 	glow:  { bg:"bg-gradient-to-br from-pink-900/60 to-rose-900/60", border:"border-pink-500/20", glow:"from-pink-500 to-rose-600", button:"from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700", hover:"group-hover:text-pink-200", accent:"bg-pink-500", mesh:"from-pink-500/40 via-rose-600/30 to-pink-500/40" },
 	punchy:{ bg:"bg-gradient-to-br from-indigo-900/60 to-violet-900/60", border:"border-violet-500/20", glow:"from-violet-500 to-indigo-600", button:"from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700", hover:"group-hover:text-indigo-200", accent:"bg-indigo-500", mesh:"from-violet-500/40 via-indigo-600/30 to-violet-500/40" },
@@ -18,6 +38,7 @@ export const cardStylesDark = {
 };
 
 export const cardStylesLight = {
+	mailty: mailtyLight,
 	charm: { bg:"bg-gradient-to-br from-pink-300 to-rose-400", border:"border-pink-400/50", glow:"from-pink-500 to-rose-600", button:"from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700", hover:"group-hover:text-pink-800", accent:"bg-pink-500", mesh:"from-pink-300/40 via-rose-400/30 to-pink-300/40" },
 	glow:  { bg:"bg-gradient-to-br from-pink-300 to-rose-400", border:"border-pink-400/50", glow:"from-pink-500 to-rose-600", button:"from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700", hover:"group-hover:text-pink-800", accent:"bg-pink-500", mesh:"from-pink-300/40 via-rose-400/30 to-pink-300/40" },
 	punchy:{ bg:"bg-gradient-to-br from-indigo-300 to-violet-400", border:"border-violet-400/50", glow:"from-violet-500 to-indigo-600", button:"from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700", hover:"group-hover:text-indigo-800", accent:"bg-indigo-500", mesh:"from-violet-300/40 via-indigo-400/30 to-violet-300/40" },
@@ -33,5 +54,6 @@ export const cardStylesLight = {
 
 export function getCardStyle(theme, key) {
 	const source = theme === 'light' ? cardStylesLight : cardStylesDark;
-	return source[key] || cardStylesDark['globo'];
+		if (key === 'violet') return source['mailty'];
+		return source[key] || cardStylesDark['globo'];
 }

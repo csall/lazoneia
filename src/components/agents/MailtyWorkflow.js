@@ -3,8 +3,11 @@ import { useSession, signIn } from "next-auth/react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import Header from "./AgentAudioWorkflow/Header";
+import agents from "@/config/agents";
 
 export default function MailtyWorkflow(){
+  // Récupère la config Mailty dynamiquement
+  const mailtyConfig = agents.find(a => a.name === "Mailty");
   const { theme } = useTheme();
   const isLight = theme === 'light';
   const { data: session, status } = useSession();
@@ -140,23 +143,9 @@ export default function MailtyWorkflow(){
   return (
     <>
       <Header
-        branding={{
-          name: 'Mailty',
-          botImage: '/mailty-bot.svg',
-          description: 'Assistant email Gmail: lecture, synthèse et réponses assistées.',
-        }}
-        tagline="Inbox intelligente"
-        colors={isLight ? {
-          border: 'border-rose-300/70',
-          textColor: 'text-gray-800',
-          bg: 'bg-gradient-to-r from-rose-200/80 via-fuchsia-200/70 to-orange-100/70 animate-gradient-move',
-          button: 'bg-gradient-to-r from-fuchsia-500 via-rose-500 to-orange-400',
-        } : {
-          border: 'border-rose-500/40',
-          textColor: 'text-white',
-          bg: 'bg-gradient-to-r from-fuchsia-900/90 via-rose-900/80 to-orange-900/70 animate-gradient-move',
-          button: 'bg-gradient-to-r from-fuchsia-600 via-rose-600 to-orange-500',
-        }}
+        branding={mailtyConfig?.branding}
+        tagline={mailtyConfig?.tagline}
+        colors={mailtyConfig?.colors}
         messages={[]}
         clearHistory={()=>{}}
         fixed={false}

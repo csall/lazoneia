@@ -45,47 +45,6 @@ const agents = [
     sendButtonLabel: "Faire une blague"
   },
   {
-    name: "Foody",
-    description: "Votre expert culinaire pour des recettes, conseils nutritionnels et astuces de cuisine.",
-    image: "foody-bot.svg",
-    color: "foody",
-    link: "/agent/foody",
-    tagline: "Expert culinaire",
-    category: "marketing",
-    branding: {
-      name: "Foody",
-      gradient: "from-yellow-900 to-amber-800",
-      textColor: "text-white",
-      headerGradient: "from-yellow-200 to-amber-300",
-      botImage: "/foody-bot.svg",
-      description: "Votre expert culinaire pour des recettes, conseils nutritionnels et astuces de cuisine."
-    },
-    tones: [
-      { value: "recette", label: "Recette" },
-      { value: "nutrition", label: "Nutrition" },
-      { value: "astuce", label: "Astuce" }
-    ],
-  colors: {
-      gradientFrom: "from-yellow-900",
-      gradientTo: "to-amber-800",
-      textColor: "text-white",
-      buttonGradientFrom: "from-yellow-500",
-      buttonGradientTo: "to-amber-600",
-      buttonHoverFrom: "hover:from-yellow-600",
-      buttonHoverTo: "hover:to-amber-700",
-      borderColor: "border-yellow-500/30",
-      placeholderColor: "placeholder-yellow-300",
-      responseBg: "bg-yellow-900/30",
-      responseBorder: "border-yellow-700/30",
-      ringColor: "ring-yellow-500",
-      shadowColor: "shadow-yellow-500/50"
-    },
-    endpoint: "https://cheikh06000.app.n8n.cloud/webhook/foody",
-    placeholder: "Écrivez ou enregistrez vos questions culinaires ou nutritionnelles...",
-  sendButtonLabel: "Obtenir des conseils",
-  type: "conversationnel"
-  },
-  {
     name: "Psyco",
     description: "Votre psychologue virtuel pour un soutien émotionnel et des conseils personnalisés.",
     image: "psyco-bot.svg",
@@ -482,19 +441,19 @@ const agents = [
       { value: "synthese", label: "Synthèse" }
     ],
     colors: {
-      gradientFrom: "from-rose-500",
-      gradientTo: "to-orange-400",
-      textColor: "text-white",
-      buttonGradientFrom: "from-fuchsia-500",
-      buttonGradientTo: "to-orange-400",
-      buttonHoverFrom: "hover:from-fuchsia-600",
-      buttonHoverTo: "hover:to-orange-500",
-      borderColor: "border-rose-400/60",
-      placeholderColor: "placeholder-rose-300",
-      responseBg: "bg-rose-900/30",
-      responseBorder: "border-rose-700/30",
-      ringColor: "ring-rose-400",
-      shadowColor: "shadow-rose-400/40"
+  gradientFrom: "from-cyan-900",
+  gradientTo: "to-lime-700",
+  textColor: "text-black",
+  buttonGradientFrom: "from-cyan-500",
+  buttonGradientTo: "to-lime-400",
+  buttonHoverFrom: "hover:from-cyan-600",
+  buttonHoverTo: "hover:to-lime-500",
+  borderColor: "border-cyan-400/60",
+  placeholderColor: "placeholder-lime-300",
+  responseBg: "bg-cyan-900/30",
+  responseBorder: "border-lime-700/30",
+  ringColor: "ring-lime-400",
+  shadowColor: "shadow-lime-400/40"
     },
     endpoint: "",
     placeholder: "Rechercher ou sélectionner un email...",
