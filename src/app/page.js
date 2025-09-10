@@ -33,10 +33,10 @@ const AgentCard = ({
   // Suivi connexion Postoto (Instagram) pour griser le bouton si déconnecté
   const [postotoConnected, setPostotoConnected] = useState(true);
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
     const update = () => {
       try {
-        const raw = localStorage.getItem('postoto_connections');
+        const raw = localStorage.getItem("postoto_connections");
         const parsed = raw ? JSON.parse(raw) : {};
         setPostotoConnected(!!parsed.instagram);
       } catch {
@@ -45,17 +45,19 @@ const AgentCard = ({
     };
     // Valeur initiale (optimiste: actif seulement si stockage dit connecté)
     update();
-    window.addEventListener('storage', update);
-    return () => window.removeEventListener('storage', update);
+    window.addEventListener("storage", update);
+    return () => window.removeEventListener("storage", update);
   }, []);
 
   const style = getCardStyle(theme, color);
-  const isLight = theme === 'light';
-  const textSecondary = isLight ? 'text-gray-600 group-hover:text-gray-800' : 'text-gray-300 group-hover:text-white';
+  const isLight = theme === "light";
+  const textSecondary = isLight
+    ? "text-gray-600 group-hover:text-gray-800"
+    : "text-gray-300 group-hover:text-white";
 
   // Per-agent background: light uses direct gradient class, dark keeps layered radial for depth
   const cardBackground = isLight
-    ? 'transparent'
+    ? "transparent"
     : `radial-gradient(circle at 50% 0%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 55%, rgba(0,0,0,0) 75%),
        radial-gradient(circle at 85% 140%, rgba(255,255,255,0.08), rgba(0,0,0,0) 70%),
        linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0.55) 95%)`;
@@ -70,8 +72,14 @@ const AgentCard = ({
       whileHover={{ scale: 1.02 }}
     >
       <motion.div
-  className={`relative backdrop-blur-xl px-2 py-1 sm:px-3 sm:py-2 rounded-xl overflow-hidden border ${style.border} group w-full flex flex-col h-full transition-shadow
-    ${isLight ? `${style.bg} shadow-[0_2px_6px_-1px_rgba(0,0,0,0.08),0_0_0_1px_rgba(0,0,0,0.05)] hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.06)]` : 'shadow-[0_0_0_1px_rgba(255,255,255,0.05)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.08)]'}`}
+        className={`relative backdrop-blur-xl px-2 py-1 sm:px-3 sm:py-2 rounded-xl overflow-hidden border ${
+          style.border
+        } group w-full flex flex-col h-full transition-shadow
+    ${
+      isLight
+        ? `${style.bg} shadow-[0_2px_6px_-1px_rgba(0,0,0,0.08),0_0_0_1px_rgba(0,0,0,0.05)] hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.06)]`
+        : "shadow-[0_0_0_1px_rgba(255,255,255,0.05)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.08)]"
+    }`}
         style={isLight ? undefined : { background: cardBackground }}
         whileHover={{
           y: -15,
@@ -82,19 +90,37 @@ const AgentCard = ({
         {/* Unified contour overlay for both themes */}
         <div className="pointer-events-none absolute inset-0 rounded-xl">
           {/* Outer ring (tinted approach inspired by Punchy) */}
-          <div className={`absolute inset-0 rounded-xl ring-1 ${isLight ? 'ring-white/40' : 'ring-white/25'}`}></div>
+          <div
+            className={`absolute inset-0 rounded-xl ring-1 ${
+              isLight ? "ring-white/40" : "ring-white/25"
+            }`}
+          ></div>
           {/* Light mode subtle colored glow overlay */}
           {isLight && (
-            <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${style.glow} opacity-20 mix-blend-multiply`}></div>
+            <div
+              className={`absolute inset-0 rounded-xl bg-gradient-to-br ${style.glow} opacity-20 mix-blend-multiply`}
+            ></div>
           )}
           {/* Radial soft highlight */}
-          <div className={`absolute inset-0 rounded-xl mix-blend-overlay ${isLight ? 'opacity-35' : 'opacity-45'} bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.45),transparent_65%)]`}></div>
+          <div
+            className={`absolute inset-0 rounded-xl mix-blend-overlay ${
+              isLight ? "opacity-35" : "opacity-45"
+            } bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.45),transparent_65%)]`}
+          ></div>
           {/* Dark mode glow gradient */}
           {!isLight && (
-            <div className={`absolute -inset-[2px] rounded-[0.9rem] blur-[10px] opacity-35 bg-gradient-to-r ${style.glow}`}></div>
+            <div
+              className={`absolute -inset-[2px] rounded-[0.9rem] blur-[10px] opacity-35 bg-gradient-to-r ${style.glow}`}
+            ></div>
           )}
           {/* Inner subtle border */}
-          <div className={`absolute inset-px rounded-[0.65rem] border ${isLight ? 'border-white/10 opacity-20' : 'border-white/15 opacity-40'}`}></div>
+          <div
+            className={`absolute inset-px rounded-[0.65rem] border ${
+              isLight
+                ? "border-white/10 opacity-20"
+                : "border-white/15 opacity-40"
+            }`}
+          ></div>
         </div>
         {/* Mesh gradient background (only dark mode needs overlay; light uses direct bg class) */}
         {!isLight && (
@@ -106,7 +132,9 @@ const AgentCard = ({
           className={`absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10`}
         ></div>
         <div
-          className={`absolute -inset-[100%] bg-gradient-conic ${style.mesh} ${isLight ? 'opacity-20' : 'opacity-30'} blur-3xl animate-slow-spin`}
+          className={`absolute -inset-[100%] bg-gradient-conic ${style.mesh} ${
+            isLight ? "opacity-20" : "opacity-30"
+          } blur-3xl animate-slow-spin`}
         ></div>
 
         {/* Floating particles */}
@@ -169,7 +197,11 @@ const AgentCard = ({
             {/* Name & Tagline */}
             <div className="flex items-center gap-2 mx-auto">
               <motion.h3
-                className={`text-base font-semibold leading-tight ${style.hover} transition-colors duration-300 ${isLight ? 'text-gray-900' : 'text-white'}`}
+                className={`text-base font-semibold leading-tight ${
+                  style.hover
+                } transition-colors duration-300 ${
+                  isLight ? "text-gray-900" : "text-white"
+                }`}
                 whileInView={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1 }}
               >
@@ -177,9 +209,11 @@ const AgentCard = ({
               </motion.h3>
               <motion.span
                 className={`text-[10px] py-0.5 px-2 rounded-full leading-none relative overflow-hidden text-white
-                  ${isLight
-                    ? `bg-gradient-to-r ${style.button} shadow-[0_2px_4px_-1px_rgba(0,0,0,0.25)] ring-1 ring-white/40`
-                    : `${style.accent} opacity-95 shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_2px_6px_-1px_rgba(0,0,0,0.5)]`}
+                  ${
+                    isLight
+                      ? `bg-gradient-to-r ${style.button} shadow-[0_2px_4px_-1px_rgba(0,0,0,0.25)] ring-1 ring-white/40`
+                      : `${style.accent} opacity-95 shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_2px_6px_-1px_rgba(0,0,0,0.5)]`
+                  }
                 `}
                 initial={{ x: -20, opacity: 0 }}
                 whileInView={{ x: 0, opacity: 1 }}
@@ -187,7 +221,13 @@ const AgentCard = ({
               >
                 {/* subtle inner shine for dark mode */}
                 {!isLight && (
-                  <span className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-60" style={{background: 'linear-gradient(140deg, rgba(255,255,255,0.35), rgba(255,255,255,0) 60%)'}} />
+                  <span
+                    className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-60"
+                    style={{
+                      background:
+                        "linear-gradient(140deg, rgba(255,255,255,0.35), rgba(255,255,255,0) 60%)",
+                    }}
+                  />
                 )}
                 {tagline}
               </motion.span>
@@ -210,7 +250,9 @@ const AgentCard = ({
                 viewBox="0 0 24 24"
                 fill={isFavorite ? "currentColor" : "none"}
                 stroke="currentColor"
-                className={`w-4 h-4 ${isFavorite ? "text-yellow-400" : "text-gray-300"}`}
+                className={`w-4 h-4 ${
+                  isFavorite ? "text-yellow-400" : "text-gray-300"
+                }`}
                 strokeWidth={isFavorite ? "0" : "2"}
               >
                 <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
@@ -220,90 +262,95 @@ const AgentCard = ({
 
           {/* Image centrée style PlayStation */}
           <div className="w-full flex flex-col items-center my-1">
-          <motion.div
-            className="h-16 flex items-center justify-center relative"
-            whileHover={{
-              scale: 1.05,
-              rotateZ: [0, -2, 2, -2, 0],
-              transition: {
-                rotateZ: {
-                  repeat: Infinity,
-                  duration: 3,
-                  ease: "easeInOut",
+            <motion.div
+              className="h-16 flex items-center justify-center relative"
+              whileHover={{
+                scale: 1.05,
+                rotateZ: [0, -2, 2, -2, 0],
+                transition: {
+                  rotateZ: {
+                    repeat: Infinity,
+                    duration: 3,
+                    ease: "easeInOut",
+                  },
                 },
-              },
-            }}
-          >
-            {/* Glow behind image */}
-            <motion.div
-              className={`absolute w-16 h-16 rounded-full bg-gradient-to-r ${style.glow} blur-2xl opacity-25 group-hover:opacity-40 transition-opacity duration-700`}
-              animate={{
-                scale: [1, 1.2, 1],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-
-            <motion.div
-              animate={{
-                y: [0, -5, 0],
-              }}
-              transition={{
-                duration: 3.5,
-                repeat: Infinity,
-                ease: "easeInOut",
               }}
             >
-              <Image
-                src={normalizeImagePath(image)}
-                alt={name}
-                width={56}
-                height={56}
-                className="object-contain w-[56px] h-[56px] sm:w-[90px] sm:h-[90px]"
-                priority
-                unoptimized
-              />
-            </motion.div>
-
-            {/* Orbiting particles */}
-            <motion.div
-              className="absolute w-full h-full pointer-events-none"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-            >
+              {/* Glow behind image */}
               <motion.div
-                className={`absolute w-2 h-2 rounded-full ${style.accent} top-0 left-1/2 -translate-x-1/2`}
-                animate={{ opacity: [0.7, 0.2, 0.7] }}
-                transition={{ duration: 2, repeat: Infinity }}
+                className={`absolute w-16 h-16 rounded-full bg-gradient-to-r ${style.glow} blur-2xl opacity-25 group-hover:opacity-40 transition-opacity duration-700`}
+                animate={{
+                  scale: [1, 1.2, 1],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
               />
-            </motion.div>
-            <motion.div
-              className="absolute w-full h-full pointer-events-none"
-              animate={{ rotate: -360 }}
-              transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-            >
+
               <motion.div
-                className={`absolute w-1.5 h-1.5 rounded-full ${style.accent} bottom-0 left-1/2 -translate-x-1/2`}
-                animate={{ opacity: [0.5, 0.1, 0.5] }}
-                transition={{ duration: 3, repeat: Infinity }}
-              />
+                animate={{
+                  y: [0, -5, 0],
+                }}
+                transition={{
+                  duration: 3.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <Image
+                  src={normalizeImagePath(image)}
+                  alt={name}
+                  width={56}
+                  height={56}
+                  className="object-contain w-[56px] h-[56px] sm:w-[90px] sm:h-[90px]"
+                  priority
+                  unoptimized
+                />
+              </motion.div>
+
+              {/* Orbiting particles */}
+              <motion.div
+                className="absolute w-full h-full pointer-events-none"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+              >
+                <motion.div
+                  className={`absolute w-2 h-2 rounded-full ${style.accent} top-0 left-1/2 -translate-x-1/2`}
+                  animate={{ opacity: [0.7, 0.2, 0.7] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+              </motion.div>
+              <motion.div
+                className="absolute w-full h-full pointer-events-none"
+                animate={{ rotate: -360 }}
+                transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+              >
+                <motion.div
+                  className={`absolute w-1.5 h-1.5 rounded-full ${style.accent} bottom-0 left-1/2 -translate-x-1/2`}
+                  animate={{ opacity: [0.5, 0.1, 0.5] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                />
+              </motion.div>
             </motion.div>
-          </motion.div>
-          {/* Description sous l'image (marge ajoutée) */}
-          <div className="relative overflow-hidden mt-3 mb-7 pb-3 w-full px-1">
-            <motion.p
-              className={`text-[11px] leading-snug transition-colors duration-500 ${textSecondary}`}
-              style={{ display: '-webkit-box', WebkitLineClamp: lines, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
-              initial={{ y: 10, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              {description}
-            </motion.p>
-          </div>
+            {/* Description sous l'image (marge ajoutée) */}
+            <div className="relative overflow-hidden mt-3 mb-7 pb-3 w-full px-1">
+              <motion.p
+                className={`text-[11px] leading-snug transition-colors duration-500 ${textSecondary}`}
+                style={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: lines,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
+                initial={{ y: 10, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                {description}
+              </motion.p>
+            </div>
           </div>
 
           {/* Bouton pour réduire la description (visible uniquement sur mobile quand étendu) */}
@@ -312,27 +359,40 @@ const AgentCard = ({
           {/* Button */}
           {/* Séparateur et bouton */}
           <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between pointer-events-none">
-            <span className={`h-px w-full mr-2 rounded-sm ${isLight ? 'bg-gray-300/70' : 'bg-white/10'}`} />
+            <span
+              className={`h-px w-full mr-2 rounded-sm ${
+                isLight ? "bg-gray-300/70" : "bg-white/10"
+              }`}
+            />
             <motion.div
               className="pointer-events-auto"
-            initial={{ y: 10, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+              initial={{ y: 10, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
             >
               {(() => {
-                const deactivated = name.split(' ')[0] === 'to_be_desactivated';
-                const postotoDisabled = name === 'Postotoo' && !postotoConnected;
+                const deactivated = name.split(" ")[0] === "to_be_desactivated";
+                const postotoDisabled =
+                  name === "Postotoo" && !postotoConnected;
                 const disabled = deactivated || postotoDisabled;
                 return (
                   <Link
-                    href={disabled ? '#' : link}
+                    href={disabled ? "#" : link}
                     className={`w-8 h-8 rounded-full transition-all duration-300 flex items-center justify-center text-white text-[10px] backdrop-blur-sm border border-white/10
-                      ${disabled ? 'bg-gray-500 cursor-not-allowed opacity-50 pointer-events-none' : `bg-gradient-to-r ${style.button}`}
-                      ${postotoDisabled ? 'grayscale' : ''}`}
+                      ${
+                        disabled
+                          ? "bg-gray-500 cursor-not-allowed opacity-50 pointer-events-none"
+                          : `bg-gradient-to-r ${style.button}`
+                      }
+                      ${postotoDisabled ? "grayscale" : ""}`}
                     aria-label={`Ouvrir ${name}`}
-                    title={postotoDisabled ? 'Connecte Instagram dans Postoto pour activer' : undefined}
+                    title={
+                      postotoDisabled
+                        ? "Connecte Instagram dans Postoto pour activer"
+                        : undefined
+                    }
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -422,13 +482,29 @@ export default function AgentsPage() {
     });
   };
 
-  const isLight = theme === 'light';
+  const isLight = theme === "light";
   return (
     <>
-      <main className={`min-h-screen font-sans transition-colors duration-500 ${isLight ? 'text-gray-800 bg-[radial-gradient(circle_at_20%_15%,rgba(56,189,248,0.25),transparent_55%),radial-gradient(circle_at_80%_75%,rgba(167,139,250,0.25),transparent_55%),linear-gradient(to_bottom_right,#f8fafc,#ffffff,#f5f3ff)]' : 'text-white bg-gradient-to-br from-blue-950 via-blue-900 to-purple-950'} relative overflow-hidden`}>
+      <main
+        className={`min-h-screen font-sans transition-colors duration-500 ${
+          isLight
+            ? "text-gray-800 bg-[radial-gradient(circle_at_20%_15%,rgba(56,189,248,0.25),transparent_55%),radial-gradient(circle_at_80%_75%,rgba(167,139,250,0.25),transparent_55%),linear-gradient(to_bottom_right,#f8fafc,#ffffff,#f5f3ff)]"
+            : "text-white bg-gradient-to-br from-blue-950 via-blue-900 to-purple-950"
+        } relative overflow-hidden`}
+      >
         {/* Theme animated overlay */}
-        <div className={`pointer-events-none absolute inset-0 ${isLight ? 'opacity-60' : 'opacity-40'} mix-blend-overlay`}>
-          <div className={`absolute inset-0 ${isLight ? 'bg-[radial-gradient(circle_at_25%_30%,rgba(56,189,248,0.18),transparent_60%),radial-gradient(circle_at_75%_70%,rgba(167,139,250,0.18),transparent_60%),radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.6),transparent_65%)]' : 'bg-[radial-gradient(circle_at_20%_30%,rgba(56,189,248,0.08),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(167,139,250,0.08),transparent_60%)]'} transition-all duration-700`}></div>
+        <div
+          className={`pointer-events-none absolute inset-0 ${
+            isLight ? "opacity-60" : "opacity-40"
+          } mix-blend-overlay`}
+        >
+          <div
+            className={`absolute inset-0 ${
+              isLight
+                ? "bg-[radial-gradient(circle_at_25%_30%,rgba(56,189,248,0.18),transparent_60%),radial-gradient(circle_at_75%_70%,rgba(167,139,250,0.18),transparent_60%),radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.6),transparent_65%)]"
+                : "bg-[radial-gradient(circle_at_20%_30%,rgba(56,189,248,0.08),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(167,139,250,0.08),transparent_60%)]"
+            } transition-all duration-700`}
+          ></div>
         </div>
         <section className="relative py-6 text-center px-4 overflow-hidden">
           {/* Background decoration */}
@@ -472,10 +548,22 @@ export default function AgentsPage() {
                   { x: "80%", y: "30%", size: "3px", delay: 1, duration: 9 },
                   { x: "30%", y: "70%", size: "1.5px", delay: 2, duration: 8 },
                   { x: "70%", y: "80%", size: "2px", delay: 3, duration: 6 },
-                  { x: "40%", y: "40%", size: "2.5px", delay: 0.5, duration: 10 },
+                  {
+                    x: "40%",
+                    y: "40%",
+                    size: "2.5px",
+                    delay: 0.5,
+                    duration: 10,
+                  },
                   { x: "60%", y: "60%", size: "1px", delay: 1.5, duration: 7 },
                   { x: "90%", y: "40%", size: "2px", delay: 2.5, duration: 8 },
-                  { x: "10%", y: "50%", size: "1.5px", delay: 3.5, duration: 9 },
+                  {
+                    x: "10%",
+                    y: "50%",
+                    size: "1.5px",
+                    delay: 3.5,
+                    duration: 9,
+                  },
                 ].map((particle, i) => (
                   <motion.div
                     key={i}
@@ -516,35 +604,43 @@ export default function AgentsPage() {
               />
               {/* Titre principal avec animation lettre par lettre */}
               <div className="relative flex justify-center items-center">
-                {["L", "a", "Z", "o", "n", "e", "I", "A"].map((letter, index) => (
-                  <motion.span
-                    key={index}
-                    className={`text-4xl md:text-5xl font-bold transition-colors ${
-                      letter === "Z" || letter === "I" || letter === "A"
-                        ? isLight ? 'bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-violet-500' : "bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500"
-                        : isLight ? 'text-gray-900' : "text-white"
-                    }`}
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.6,
-                      delay: 0.1 * index,
-                      type: "spring",
-                      stiffness: 120,
-                    }}
-                    whileHover={{
-                      scale: 1.2,
-                      rotate: [-5, 5, 0],
-                      transition: { duration: 0.3 },
-                    }}
-                  >
-                    {letter}
-                  </motion.span>
-                ))}
+                {["L", "a", "Z", "o", "n", "e", "I", "A"].map(
+                  (letter, index) => (
+                    <motion.span
+                      key={index}
+                      className={`text-4xl md:text-5xl font-bold transition-colors ${
+                        letter === "Z" || letter === "I" || letter === "A"
+                          ? isLight
+                            ? "bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-violet-500"
+                            : "bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500"
+                          : isLight
+                          ? "text-gray-900"
+                          : "text-white"
+                      }`}
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.6,
+                        delay: 0.1 * index,
+                        type: "spring",
+                        stiffness: 120,
+                      }}
+                      whileHover={{
+                        scale: 1.2,
+                        rotate: [-5, 5, 0],
+                        transition: { duration: 0.3 },
+                      }}
+                    >
+                      {letter}
+                    </motion.span>
+                  )
+                )}
               </div>
               {/* Tagline animée */}
               <motion.div
-                className={`text-sm text-center mt-2 ${isLight ? 'text-sky-600/70' : 'text-blue-200/80'}`}
+                className={`text-sm text-center mt-2 ${
+                  isLight ? "text-sky-600/70" : "text-blue-200/80"
+                }`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: [0, 1] }}
                 transition={{ delay: 1, duration: 1 }}
@@ -588,7 +684,12 @@ export default function AgentsPage() {
               </motion.div>
             </div>
             {/* Bloc de filtres catégorie mobile first sans bouton étoile */}
-            <FilterBar filter={filter} setFilter={setFilter} agents={agents} favorites={favorites} />
+            <FilterBar
+              filter={filter}
+              setFilter={setFilter}
+              agents={agents}
+              favorites={favorites}
+            />
           </div>
           {/* Colorful blurred shapes */}
           {/* Decorative elements */}
@@ -628,14 +729,12 @@ export default function AgentsPage() {
               .filter((agent) => {
                 if (agent.hidden) return false;
                 if (filter === "all") return true;
-                if (filter === "favorites") return favorites.includes(agent.name);
+                if (filter === "favorites")
+                  return favorites.includes(agent.name);
                 return agent.category === filter;
               })
               .map((agent, i) => (
-                <div
-                  key={i}
-                  className="h-[270px] flex w-full flex-1 min-w-0"
-                >
+                <div key={i} className="h-[270px] flex w-full flex-1 min-w-0">
                   <AgentCard
                     name={agent.name}
                     description={agent.description}
@@ -654,8 +753,13 @@ export default function AgentsPage() {
       </main>
       <footer className="w-full py-6 text-center text-xs text-gray-500 dark:text-gray-400 bg-transparent mt-12 select-none">
         <span>&copy; {new Date().getFullYear()} Zonia</span>
+        <Link
+          href="/privacy-policy"
+          className="underline hover:text-gray-700 dark:hover:text-gray-300 ml-2"
+        >
+          Politique de confidentialité
+        </Link>
       </footer>
-
     </>
   );
 }
