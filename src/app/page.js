@@ -753,11 +753,19 @@ export default function AgentsPage() {
       </main>
       <footer className="w-full py-6 text-center text-xs text-gray-500 dark:text-gray-400 bg-transparent mt-12 select-none">
         <span>&copy; {new Date().getFullYear()} Zonia</span>
+          <span className="mx-1">|</span>
         <Link
           href="/privacy-policy"
           className="underline hover:text-gray-700 dark:hover:text-gray-300 ml-2"
         >
           Politique de confidentialité
+        </Link>
+        <span className="mx-1">|</span>
+        <Link
+          href="/delete-data"
+          className="underline hover:text-gray-700 dark:hover:text-gray-300 ml-2"
+        >
+          Suppression des données
         </Link>
       </footer>
     </>
