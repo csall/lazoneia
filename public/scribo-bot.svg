@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-labelledby="stitle sdesc" role="img">
+  <title id="stitle">Scribo Bot</title>
+  <desc id="sdesc">Creative writer avatar with rotating ring, blinking glasses, floating quill and animated text lines.</desc>
+  <defs>
+    <radialGradient id="scriboFace" cx="0.5" cy="0.5" r="0.55">
+      <stop offset="0%" stop-color="#5EEAD4" />
+      <stop offset="55%" stop-color="#14B8A6" />
+      <stop offset="100%" stop-color="#0F766E" />
+    </radialGradient>
+    <linearGradient id="scriboRing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#99F6E4" />
+      <stop offset="50%" stop-color="#2DD4BF" />
+      <stop offset="100%" stop-color="#0D9488" />
+    </linearGradient>
+    <filter id="scriboGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b" />
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 0.5  0 0 0 0 1  0 0 0 0 0.9  0 0 0 0.55 0" result="c" />
+      <feBlend in="SourceGraphic" in2="c" mode="screen" />
+    </filter>
+    <filter id="scriboShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0F766E" flood-opacity="0.55" />
+    </filter>
+    <pattern id="scriboDots" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="1" fill="#99F6E4" />
+      <circle cx="12" cy="12" r="1" fill="#5EEAD4" />
+    </pattern>
+    <style><![CDATA[
+  .sc-ring { stroke-dasharray: 10 18; }
+  .sc-eye { animation: blink 6.5s ease-in-out infinite; }
+      .sc-mouth { animation: sc-talk 4s ease-in-out infinite; }
+      .sc-quill { animation: sc-quill 6s ease-in-out infinite; transform-origin:60px 72px; }
+      .sc-lines line { animation: sc-lines 5s ease-in-out infinite; }
+      .sc-lines line:nth-child(2) { animation-delay:1s; }
+      .sc-lines line:nth-child(3) { animation-delay:2s; }
+      .sc-glasses { animation: sc-bob 5s ease-in-out infinite; transform-origin:120px 108px; }
+      .sc-halo { animation: sc-halo 6s ease-in-out infinite; }
+  /* sc-spin & sc-hue removed: ring static */
+  @keyframes blink { 0%,6%,94%,100% { clip-path:inset(0% 0% 0% 0%);} 3%,4% { clip-path:inset(45% 0% 45% 0%);} }
+      @keyframes sc-talk { 0%,100% { transform: scale(1);} 50% { transform: scale(1.06);} }
+      @keyframes sc-quill { 0%,100% { transform: translateY(0) rotate(-4deg);} 50% { transform: translateY(-14px) rotate(6deg);} }
+      @keyframes sc-lines { 0%,100% { stroke-dashoffset:0;} 50% { stroke-dashoffset:40;} }
+      @keyframes sc-bob { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-10px);} }
+      @keyframes sc-halo { 0%,100% { opacity:.25; transform:scale(1);} 50% { opacity:.4; transform:scale(1.07);} }
+    ]]></style>
+  </defs>
+  <!-- Outer ring removed -->
+  <circle cx="120" cy="120" r="100" fill="#14B8A6" opacity="0.2" class="sc-halo" />
+  <circle cx="120" cy="120" r="92" fill="url(#scriboFace)" filter="url(#scriboShadow)" />
+  <circle cx="120" cy="120" r="92" fill="url(#scriboDots)" opacity="0.08" />
+  <!-- Eyes -->
+  <g class="sc-eye">
+    <circle cx="90" cy="110" r="15" fill="#FFF" />
+    <circle cx="90" cy="110" r="6" fill="#134E4A" />
+  </g>
+  <g class="sc-eye r">
+    <circle cx="150" cy="110" r="15" fill="#FFF" />
+    <circle cx="150" cy="110" r="6" fill="#134E4A" />
+  </g>
+  <!-- Glasses -->
+  <g class="sc-glasses" stroke="#134E4A" stroke-width="3" fill="none">
+    <rect x="72" y="96" width="36" height="24" rx="6" />
+    <rect x="132" y="96" width="36" height="24" rx="6" />
+    <line x1="108" y1="108" x2="132" y2="108" />
+  </g>
+  <!-- Brows -->
+  <path d="M74 90 C84 84 96 86 102 90" stroke="#99F6E4" stroke-width="7" stroke-linecap="round" />
+  <path d="M138 90 C148 84 160 86 166 90" stroke="#99F6E4" stroke-width="7" stroke-linecap="round" />
+  <!-- Mouth -->
+  <path class="sc-mouth" d="M96 164 Q120 178 144 164" stroke="#99F6E4" stroke-width="7" stroke-linecap="round" fill="none" />
+  <!-- Quill -->
+  <g class="sc-quill" stroke="#2DD4BF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M48 68 L62 54 L76 68 L62 112" />
+    <path d="M62 112 L56 118 L62 124 L68 118 L62 112" fill="#2DD4BF" stroke="none" />
+  </g>
+  <!-- Notebook / lines -->
+  <g class="sc-lines" stroke="#0F766E" stroke-width="3" stroke-linecap="round" stroke-dasharray="40 40">
+    <line x1="160" y1="60" x2="190" y2="60" />
+    <line x1="160" y1="70" x2="185" y2="70" />
+    <line x1="160" y1="80" x2="178" y2="80" />
+  </g>
+  <!-- Decorative text droplets -->
+  <g fill="#5EEAD4">
+    <path d="M80 178 C80 172 86 172 90 178 C94 172 100 172 100 178 C100 184 90 190 90 190 C90 190 80 184 80 178 Z" />
+    <path d="M140 178 C140 172 146 172 150 178 C154 172 160 172 160 178 C160 184 150 190 150 190 C150 190 140 184 140 178 Z" />
+  </g>
+  <!-- Pen top center -->
+  <g>
+    <path d="M120 52 L114 64 H126 L120 52 Z" fill="#2DD4BF" />
+    <rect x="114" y="64" width="12" height="16" rx="2" fill="#14B8A6" />
+  </g>
+  <rect x="70" y="194" width="100" height="14" rx="7" fill="#14B8A6" opacity="0.3" />
+</svg>

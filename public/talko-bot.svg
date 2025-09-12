@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-labelledby="ttitle tdesc" role="img">
+  <title id="ttitle">Talko Bot</title>
+  <desc id="tdesc">Communication avatar with rotating ring, animated dialogue bubbles, scrolling ticker and blinking eyes.</desc>
+  <defs>
+    <radialGradient id="talkoFace" cx="0.5" cy="0.5" r="0.55">
+      <stop offset="0%" stop-color="#F0ABFC" />
+      <stop offset="55%" stop-color="#C026D3" />
+      <stop offset="100%" stop-color="#701A75" />
+    </radialGradient>
+    <linearGradient id="talkoRing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F5D0FE" />
+      <stop offset="50%" stop-color="#A855F7" />
+      <stop offset="100%" stop-color="#6B21A8" />
+    </linearGradient>
+    <filter id="talkoGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b" />
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 1  0 0 0 0 0.7  0 0 0 0 1  0 0 0 0.55 0" result="c" />
+      <feBlend in="SourceGraphic" in2="c" mode="screen" />
+    </filter>
+    <filter id="talkoShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#581C87" flood-opacity="0.55" />
+    </filter>
+    <pattern id="talkoDots" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="1" fill="#F5D0FE" />
+      <circle cx="12" cy="12" r="1" fill="#E9D5FF" />
+    </pattern>
+    <style><![CDATA[
+  .tk-ring { stroke-dasharray: 14 18; }
+  .tk-eye { animation: blink 6.5s ease-in-out infinite; }
+      .tk-mouth { animation: tk-mouth 4.4s ease-in-out infinite; }
+      .tk-bubble { animation: tk-bob 6s ease-in-out infinite; }
+      .tk-bubble.right { animation-delay:2.2s; }
+      .tk-ticker { animation: tk-scroll 7s linear infinite; }
+      .tk-wave path { animation: tk-wave 5s ease-in-out infinite; }
+      .tk-wave path:nth-child(2) { animation-delay:1.5s; }
+      .tk-halo { animation: tk-halo 6s ease-in-out infinite; }
+  /* tk-spin & tk-hue removed: ring static */
+  @keyframes blink { 0%,6%,94%,100% { clip-path:inset(0% 0% 0% 0%);} 3%,4% { clip-path:inset(45% 0% 45% 0%);} }
+      @keyframes tk-mouth { 0%,100% { transform:scale(1);} 50% { transform:scale(1.06);} }
+      @keyframes tk-bob { 0%,100% { transform:translateY(0);} 50% { transform:translateY(-12px);} }
+      @keyframes tk-scroll { 0% { transform:translateX(0);} 100% { transform:translateX(-36px);} }
+      @keyframes tk-wave { 0%,100% { opacity:.4;} 50% { opacity:.9;} }
+      @keyframes tk-halo { 0%,100% { opacity:.22; transform:scale(1);} 50% { opacity:.4; transform:scale(1.07);} }
+    ]]></style>
+  </defs>
+  <!-- Outer ring removed -->
+  <circle cx="120" cy="120" r="100" fill="#A855F7" opacity="0.18" class="tk-halo" />
+  <circle cx="120" cy="120" r="92" fill="url(#talkoFace)" filter="url(#talkoShadow)" />
+  <circle cx="120" cy="120" r="92" fill="url(#talkoDots)" opacity="0.08" />
+  <!-- Eyes -->
+  <g class="tk-eye"><circle cx="92" cy="110" r="16" fill="#FFF" /><circle cx="92" cy="110" r="7" fill="#581C87" /></g>
+  <g class="tk-eye r"><circle cx="148" cy="110" r="16" fill="#FFF" /><circle cx="148" cy="110" r="7" fill="#581C87" /></g>
+  <!-- Brows -->
+  <path d="M72 88 C84 80 98 82 104 88" stroke="#F5D0FE" stroke-width="8" stroke-linecap="round" />
+  <path d="M136 88 C148 80 162 82 168 88" stroke="#F5D0FE" stroke-width="8" stroke-linecap="round" />
+  <!-- Mouth -->
+  <path class="tk-mouth" d="M98 164 Q120 178 142 164" stroke="#F5D0FE" stroke-width="8" stroke-linecap="round" fill="none" />
+  <!-- Dialogue bubbles -->
+  <g font-family="Inter, Arial" font-size="12" font-weight="600" fill="#F5D0FE">
+    <g class="tk-bubble">
+      <rect x="56" y="60" width="52" height="30" rx="10" stroke="#F5D0FE" stroke-width="2" fill="none" />
+      <text x="82" y="79" text-anchor="middle">Hi...</text>
+    </g>
+    <g class="tk-bubble right" style="animation-delay:2.2s">
+      <rect x="132" y="60" width="52" height="30" rx="10" stroke="#F5D0FE" stroke-width="2" fill="none" />
+      <text x="158" y="79" text-anchor="middle">Yo!</text>
+    </g>
+  </g>
+  <!-- Waves -->
+  <g class="tk-wave" stroke="#F5D0FE" stroke-width="4" stroke-linecap="round" fill="none" stroke-opacity="0.55">
+    <path d="M120 52 c18 0 32 8 46 20" />
+    <path d="M120 44 c26 0 46 10 66 26" stroke-opacity="0.3" />
+  </g>
+  <!-- Ticker -->
+  <g transform="translate(96,166)">
+    <rect x="-26" y="-12" width="100" height="26" rx="10" fill="#7E22CE" stroke="#F5D0FE" stroke-width="2" />
+    <g class="tk-ticker" font-family="Inter, Arial" font-size="12" font-weight="600" fill="#F5D0FE">
+      <text x="-14" y="6">INFO • CHAT • LIVE • </text>
+    </g>
+  </g>
+  <rect x="70" y="194" width="100" height="14" rx="7" fill="#A855F7" opacity="0.35" />
+</svg>

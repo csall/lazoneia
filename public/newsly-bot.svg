@@ -1,0 +1,28 @@
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Face background with gradient -->
+  <circle cx="120" cy="120" r="100" fill="url(#faceGradient)"/>
+
+  <!-- Eyes - professional -->
+  <path d="M75 95C75 95 80 85 90 85C100 85 105 95 105 95" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <path d="M135 95C135 95 140 85 150 85C160 85 165 95 165 95" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="90" cy="100" r="10" fill="white"/>
+  <circle cx="150" cy="100" r="10" fill="white"/>
+  <circle cx="90" cy="100" r="5" fill="#f97316"/>
+  <circle cx="150" cy="100" r="5" fill="#f97316"/>
+
+  <!-- Subtle eyelashes -->
+  <line x1="80" y1="85" x2="75" y2="78" stroke="white" stroke-width="2"/>
+  <line x1="90" y1="85" x2="90" y2="75" stroke="white" stroke-width="2"/>
+  <line x1="100" y1="85" x2="105" y2="78" stroke="white" stroke-width="2"/>
+  <line x1="140" y1="85" x2="135" y2="78" stroke="white" stroke-width="2"/>
+  <line x1="150" y1="85" x2="150" y2="75" stroke="white" stroke-width="2"/>
+  <line x1="160" y1="85" x2="165" y2="78" stroke="white" stroke-width="2"/>
+
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="faceGradient" x1="0" y1="0" x2="1" y2="1" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f97316" /> <!-- Orange -->
+      <stop offset="100%" stop-color="#b91c1c" /> <!-- Deep Red -->
+    </linearGradient>
+  </defs>
+</svg>

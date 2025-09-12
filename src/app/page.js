@@ -375,7 +375,7 @@ const AgentCard = ({
               {(() => {
                 const deactivated = name.split(" ")[0] === "to_be_desactivated";
                 const postotoDisabled =
-                  name === "Postotoo" && !postotoConnected;
+                  name === "postoto" && !postotoConnected;
                 const disabled = deactivated || postotoDisabled;
                 return (
                   <Link

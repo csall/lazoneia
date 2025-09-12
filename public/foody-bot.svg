@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-labelledby="foodTitle foodDesc" role="img">
+  <title id="foodTitle">Foody Bot</title>
+  <desc id="foodDesc">Animated culinary avatar with rotating ring, steaming hat, blinking eyes and rotating utensils.</desc>
+  <defs>
+    <radialGradient id="foodyFace" cx="0.5" cy="0.5" r="0.55">
+      <stop offset="0%" stop-color="#FDE68A" />
+      <stop offset="55%" stop-color="#FACC15" />
+      <stop offset="100%" stop-color="#B45309" />
+    </radialGradient>
+    <linearGradient id="foodyRing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FEF3C7" />
+      <stop offset="50%" stop-color="#FBBF24" />
+      <stop offset="100%" stop-color="#B45309" />
+    </linearGradient>
+    <filter id="foodyGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b" />
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 1  0 0 0 0 0.85  0 0 0 0 0.2  0 0 0 0.55 0" result="c" />
+      <feBlend in="SourceGraphic" in2="c" mode="screen" />
+    </filter>
+    <filter id="foodyShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#B45309" flood-opacity="0.55" />
+    </filter>
+    <pattern id="foodyDots" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="1" fill="#FDE68A" />
+      <circle cx="12" cy="12" r="1" fill="#FCD34D" />
+    </pattern>
+    <style><![CDATA[
+  .fd-ring { stroke-dasharray: 12 16; }
+  .fd-eye { animation: blink 6.5s ease-in-out infinite; }
+      .fd-mouth { animation: fd-mouth 4s ease-in-out infinite; }
+      .fd-hat { animation: fd-hat 6s ease-in-out infinite; transform-origin:120px 60px; }
+      .fd-steam path { animation: fd-steam 5s ease-in-out infinite; }
+      .fd-steam path:nth-child(2) { animation-delay:1.2s; }
+      .fd-utl { animation: fd-utl 8s linear infinite; transform-origin:120px 180px; }
+      .fd-halo { animation: fd-halo 6s ease-in-out infinite; }
+  /* fd-spin & fd-hue removed: ring static */
+  @keyframes blink { 0%,6%,94%,100% { clip-path:inset(0% 0% 0% 0%);} 3%,4% { clip-path:inset(45% 0% 45% 0%);} }
+      @keyframes fd-mouth { 0%,100% { transform:scale(1);} 50% { transform:scale(1.06);} }
+      @keyframes fd-hat { 0%,100% { transform:translateY(0);} 50% { transform:translateY(-10px);} }
+      @keyframes fd-steam { 0%,100% { opacity:0; transform:translateY(6px);} 50% { opacity:0.9; transform:translateY(-10px);} }
+      @keyframes fd-utl { to { transform:rotate(360deg);} }
+      @keyframes fd-halo { 0%,100% { opacity:.25; transform:scale(1);} 50% { opacity:.4; transform:scale(1.07);} }
+    ]]></style>
+  </defs>
+  <!-- Outer ring removed -->
+  <circle cx="120" cy="120" r="100" fill="#FBBF24" opacity="0.2" class="fd-halo" />
+  <circle cx="120" cy="120" r="92" fill="url(#foodyFace)" filter="url(#foodyShadow)" />
+  <circle cx="120" cy="120" r="92" fill="url(#foodyDots)" opacity="0.08" />
+  <!-- Hat -->
+  <g class="fd-hat" fill="#FFFBEB">
+    <rect x="80" y="50" width="80" height="34" rx="17" />
+    <circle cx="92" cy="50" r="12" />
+    <circle cx="148" cy="50" r="12" />
+  </g>
+  <!-- Steam -->
+  <g class="fd-steam" stroke="#FFF7ED" stroke-width="3" stroke-linecap="round" fill="none">
+    <path d="M96 32 C92 26 96 20 100 14" />
+    <path d="M144 32 C140 26 144 20 148 14" />
+  </g>
+  <!-- Eyes -->
+  <g class="fd-eye"><circle cx="92" cy="112" r="14" fill="#FFF" /><circle cx="92" cy="112" r="6" fill="#92400E" /></g>
+    <g class="fd-eye r"><circle cx="148" cy="112" r="14" fill="#FFF" /><circle cx="148" cy="112" r="6" fill="#92400E" /></g>
+  <!-- Mouth -->
+  <path class="fd-mouth" d="M84 162 Q120 188 156 162" stroke="#FEF3C7" stroke-width="8" stroke-linecap="round" fill="none" />
+  <!-- Utensils rotating group -->
+  <g class="fd-utl">
+    <g fill="#FDE68A" stroke="#FCD34D" stroke-width="2">
+      <rect x="54" y="168" width="12" height="44" rx="4" />
+      <circle cx="60" cy="164" r="6" />
+    </g>
+    <g fill="#FDE68A" stroke="#FCD34D" stroke-width="2">
+      <rect x="174" y="168" width="12" height="44" rx="4" />
+      <circle cx="180" cy="164" r="6" />
+    </g>
+  </g>
+  <rect x="70" y="194" width="100" height="14" rx="7" fill="#FACC15" opacity="0.35" />
+</svg>

@@ -1,0 +1,21 @@
+{
+  "name": "LaZoneIA",
+  "short_name": "LaZoneIA",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "32x32",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/favicon-large.svg",
+      "sizes": "192x192 256x256 512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#3b82f6",
+  "background_color": "#1e293b",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+}

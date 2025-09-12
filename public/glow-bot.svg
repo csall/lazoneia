@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-labelledby="gtitle gdesc" role="img">
+  <title id="gtitle">Glow Bot</title>
+  <desc id="gdesc">Stylish animated avatar with rotating ring, sparkling hearts, flowing hair and glamorous blink.</desc>
+  <defs>
+    <radialGradient id="glowFace" cx="0.5" cy="0.5" r="0.55">
+      <stop offset="0%" stop-color="#FDA4AF" />
+      <stop offset="55%" stop-color="#F472B6" />
+      <stop offset="100%" stop-color="#9D174D" />
+    </radialGradient>
+    <linearGradient id="glowRing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FBCFE8" />
+      <stop offset="50%" stop-color="#EC4899" />
+      <stop offset="100%" stop-color="#BE185D" />
+    </linearGradient>
+    <filter id="glowOuter" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b" />
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 1  0 0 0 0 0.5  0 0 0 0 0.8  0 0 0 0.55 0" result="c" />
+      <feBlend in="SourceGraphic" in2="c" mode="screen" />
+    </filter>
+    <filter id="glowShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#9D174D" flood-opacity="0.55" />
+    </filter>
+    <pattern id="glowDots" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="1" fill="#FBCFE8" />
+      <circle cx="12" cy="12" r="1" fill="#F9A8D4" />
+    </pattern>
+    <style><![CDATA[
+  .gl-ring { stroke-dasharray: 14 18; }
+  .gl-eye { animation: blink 6.5s ease-in-out infinite; }
+      .gl-mouth { animation: gl-smile 4.4s ease-in-out infinite; }
+      .gl-heart { animation: gl-heart 5.2s ease-in-out infinite; transform-origin:center; }
+      .gl-heart:nth-child(2) { animation-delay:1.8s; }
+      .gl-hair { animation: gl-flow 8s ease-in-out infinite; transform-origin:120px 60px; }
+      .gl-spark { animation: gl-spark 6s ease-in-out infinite; }
+      .gl-spark:nth-child(2) { animation-delay:1s; }
+      .gl-spark:nth-child(3) { animation-delay:2s; }
+      .gl-spark:nth-child(4) { animation-delay:3s; }
+      .gl-spark:nth-child(5) { animation-delay:4s; }
+      .gl-neck { animation: gl-pulse 6s ease-in-out infinite; transform-origin:120px 195px; }
+      .gl-halo { animation: gl-halo 6s ease-in-out infinite; }
+  /* gl-spin & gl-hue removed: ring static */
+  @keyframes blink { 0%,6%,94%,100% { clip-path:inset(0% 0% 0% 0%);} 3%,4% { clip-path:inset(45% 0% 45% 0%);} }
+      @keyframes gl-smile { 0%,100% { transform: scale(1);} 50% { transform: scale(1.07);} }
+      @keyframes gl-heart { 0%,100% { transform: translateY(0) scale(1);} 50% { transform: translateY(-12px) scale(1.15);} }
+      @keyframes gl-flow { 0%,100% { transform: skewX(0deg);} 50% { transform: skewX(4deg);} }
+      @keyframes gl-spark { 0%,100% { opacity:0; transform:translateY(0);} 50% { opacity:1; transform:translateY(-8px);} }
+      @keyframes gl-pulse { 0%,100% { transform:scale(1);} 50% { transform:scale(1.15);} }
+      @keyframes gl-halo { 0%,100% { opacity:.25; transform:scale(1);} 50% { opacity:.45; transform:scale(1.08);} }
+    ]]></style>
+  </defs>
+  <!-- Outer ring removed -->
+  <circle cx="120" cy="120" r="100" fill="#EC4899" opacity="0.18" class="gl-halo" />
+  <circle cx="120" cy="120" r="92" fill="url(#glowFace)" filter="url(#glowShadow)" />
+  <circle cx="120" cy="120" r="92" fill="url(#glowDots)" opacity="0.1" />
+  <!-- Hair -->
+  <path class="gl-hair" d="M60 70C40 40 50 30 70 40C90 10 120 20 120 20C120 20 150 10 170 40C190 30 200 40 180 70" fill="#F472B6" />
+  <!-- Eyes -->
+  <g class="gl-eye">
+    <circle cx="90" cy="110" r="14" fill="#FFF" />
+    <circle cx="90" cy="110" r="6" fill="#BE185D" />
+  </g>
+  <g class="gl-eye right">
+    <circle cx="150" cy="110" r="14" fill="#FFF" />
+    <circle cx="150" cy="110" r="6" fill="#BE185D" />
+  </g>
+  <!-- Upper eye arcs / lashes -->
+  <path d="M75 105 C82 90 98 90 105 105" stroke="#FFF" stroke-width="5" stroke-linecap="round" />
+  <path d="M135 105 C142 90 158 90 165 105" stroke="#FFF" stroke-width="5" stroke-linecap="round" />
+  <!-- Mouth / lipstick -->
+  <path class="gl-mouth" d="M80 160 Q120 188 160 160" stroke="#FFF" stroke-width="6" stroke-linecap="round" fill="none" />
+  <path d="M80 160 Q120 180 160 160" fill="#BE185D" opacity="0.6" />
+  <!-- Hearts -->
+  <g fill="#EC4899">
+    <path class="gl-heart" d="M60 176 C60 166 70 166 75 171 C80 166 90 166 90 176 C90 186 75 196 75 196 C75 196 60 186 60 176 Z" />
+    <path class="gl-heart" d="M150 176 C150 166 160 166 165 171 C170 166 180 166 180 176 C180 186 165 196 165 196 C165 196 150 186 150 176 Z" />
+  </g>
+  <!-- Necklace -->
+  <g class="gl-neck">
+    <path d="M110 186 C110 180 115 180 120 186 C125 180 130 180 130 186 C130 192 120 202 120 202 C120 202 110 192 110 186 Z" fill="#FBCFE8" />
+    <path d="M120 202 L120 210" stroke="#F9A8D4" stroke-width="2" />
+  </g>
+  <!-- Sparkles -->
+  <g fill="#FFF" opacity="0.9">
+    <circle class="gl-spark" cx="60" cy="60" r="5" />
+    <circle class="gl-spark" cx="182" cy="60" r="5" />
+    <circle class="gl-spark" cx="80" cy="40" r="3" />
+    <circle class="gl-spark" cx="160" cy="40" r="3" />
+    <circle class="gl-spark" cx="40" cy="100" r="4" />
+    <circle class="gl-spark" cx="200" cy="100" r="4" />
+  </g>
+  <rect x="70" y="194" width="100" height="14" rx="7" fill="#EC4899" opacity="0.35" />
+</svg>

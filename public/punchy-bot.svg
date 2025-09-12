@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-labelledby="title desc" role="img">
+  <title id="title">Punchy Bot</title>
+  <desc id="desc">Energetic animated avatar with rotating ring, blinking wink, punctuation bursts and bouncing mic.</desc>
+  <defs>
+    <radialGradient id="punchyFace" cx="0.5" cy="0.5" r="0.55">
+      <stop offset="0%" stop-color="#C084FC" />
+      <stop offset="55%" stop-color="#9333EA" />
+      <stop offset="100%" stop-color="#5B21B6" />
+    </radialGradient>
+    <linearGradient id="punchyRing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F0ABFC" />
+      <stop offset="40%" stop-color="#A855F7" />
+      <stop offset="100%" stop-color="#7E22CE" />
+    </linearGradient>
+    <filter id="punchyGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b" />
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 1  0 0 0 0 0.7  0 0 0 0 1  0 0 0 0.55 0" result="c" />
+      <feBlend in="SourceGraphic" in2="c" mode="screen" />
+    </filter>
+    <filter id="punchyInnerShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#4C1D95" flood-opacity="0.55" />
+    </filter>
+    <pattern id="punchyDots" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#E9D5FF" />
+      <circle cx="10" cy="10" r="1" fill="#C4B5FD" />
+    </pattern>
+    <style><![CDATA[
+  .p-ring { stroke-dasharray: 10 16; }
+  .p-eye { animation: blink 6.5s ease-in-out infinite; transform-origin:center; }
+      .p-mouth { animation: pr-talk 3.4s ease-in-out infinite; transform-origin: 120px 150px; }
+      .p-burst { animation: pr-bob 4.2s ease-in-out infinite; }
+      .p-burst:nth-child(2) { animation-delay:1.2s; }
+      .p-mic { animation: pr-bounce 5s ease-in-out infinite; transform-origin: 120px 180px; }
+      .p-bow { animation: pr-pulse 5.5s ease-in-out infinite; transform-origin:120px 128px; }
+      .p-halo { animation: pr-halo 5s ease-in-out infinite; }
+  /* pr-spin & pr-hue removed: ring static */
+  @keyframes blink { 0%,6%,94%,100% { clip-path:inset(0% 0% 0% 0%);} 3%,4% { clip-path:inset(45% 0% 45% 0%);} }
+      @keyframes pr-talk { 0%,100% { transform: scale(1);} 50% { transform: scale(1.08);} }
+      @keyframes pr-bob { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-10px);} }
+      @keyframes pr-bounce { 0%,100% { transform: translateY(0);} 35% { transform: translateY(-14px);} 70% { transform: translateY(-6px);} }
+      @keyframes pr-pulse { 0%,100% { transform: scale(1);} 50% { transform: scale(1.12);} }
+      @keyframes pr-halo { 0%,100% { opacity:.25; transform:scale(1);} 50% { opacity:.45; transform:scale(1.08);} }
+    ]]></style>
+  </defs>
+  <!-- Outer ring removed -->
+  <circle cx="120" cy="120" r="100" fill="#7C3AED" opacity="0.18" class="p-halo" />
+  <!-- Face -->
+  <circle cx="120" cy="120" r="92" fill="url(#punchyFace)" filter="url(#punchyInnerShadow)" />
+  <!-- Pattern overlay -->
+  <circle cx="120" cy="120" r="92" fill="url(#punchyDots)" opacity="0.12" />
+  <!-- Eyes unified blink -->
+  <g class="p-eye">
+    <circle cx="84" cy="108" r="17" fill="#FFF" />
+    <circle cx="84" cy="108" r="7" fill="#4C1D95" />
+  </g>
+  <g class="p-eye">
+    <circle cx="156" cy="108" r="17" fill="#FFF" />
+    <circle cx="156" cy="108" r="7" fill="#4C1D95" />
+  </g>
+  <!-- Brows -->
+  <path d="M62 80 C78 72 94 72 106 80" stroke="#E9D5FF" stroke-width="8" stroke-linecap="round" />
+  <path d="M134 80 C150 72 166 72 178 80" stroke="#E9D5FF" stroke-width="8" stroke-linecap="round" />
+  <!-- Mouth -->
+  <path class="p-mouth" d="M78 160 Q120 188 162 160" stroke="#E9D5FF" stroke-width="8" stroke-linecap="round" fill="none" />
+  <!-- Bow tie -->
+  <g class="p-bow">
+    <path d="M96 133 L120 140 L144 133 L120 126 Z" fill="#A855F7" />
+    <circle cx="120" cy="133" r="7" fill="#7E22CE" />
+  </g>
+  <!-- Microphone -->
+  <g class="p-mic">
+    <rect x="113" y="156" width="14" height="36" rx="7" fill="#6D28D9" />
+    <circle cx="120" cy="200" r="16" fill="#7E22CE" />
+    <circle cx="120" cy="200" r="10" fill="#A855F7" opacity="0.55" />
+  </g>
+  <!-- Punctuation bursts -->
+  <g font-family="Inter, Arial" font-weight="700" fill="#F0ABFC" font-size="20">
+    <text class="p-burst" x="184" y="70">!</text>
+    <text class="p-burst" x="48" y="70">?</text>
+  </g>
+  <!-- Bottom base plate subtle -->
+  <rect x="70" y="192" width="100" height="14" rx="7" fill="#A855F7" opacity="0.35" />
+</svg>

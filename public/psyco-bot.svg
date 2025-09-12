@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-labelledby="pctitle pcdesc" role="img">
+  <title id="pctitle">Psyco Bot</title>
+  <desc id="pcdesc">Soothing mind avatar with rotating ring, pulsing thought bubbles and gentle blink.</desc>
+  <defs>
+    <radialGradient id="psycoFace" cx="0.5" cy="0.5" r="0.55">
+      <stop offset="0%" stop-color="#93C5FD" />
+      <stop offset="55%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#1D4ED8" />
+    </radialGradient>
+    <linearGradient id="psycoRing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#DBEAFE" />
+      <stop offset="50%" stop-color="#2563EB" />
+      <stop offset="100%" stop-color="#1E3A8A" />
+    </linearGradient>
+    <filter id="psycoGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b" />
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 0.55  0 0 0 0 0.75  0 0 0 0 1  0 0 0 0.55 0" result="c" />
+      <feBlend in="SourceGraphic" in2="c" mode="screen" />
+    </filter>
+    <filter id="psycoShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#1E3A8A" flood-opacity="0.55" />
+    </filter>
+    <pattern id="psycoDots" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="1" fill="#DBEAFE" />
+      <circle cx="12" cy="12" r="1" fill="#93C5FD" />
+    </pattern>
+    <style><![CDATA[
+  .pc-ring { stroke-dasharray: 12 18; }
+  .pc-eye { animation: blink 6.5s ease-in-out infinite; }
+      .pc-mouth { animation: pc-mouth 5s ease-in-out infinite; }
+      .pc-bubble { animation: pc-bob 6s ease-in-out infinite; }
+      .pc-bubble.small { animation-duration:4.5s; animation-delay:1.2s; }
+      .pc-bubble.tiny { animation-duration:3.8s; animation-delay:2s; }
+      .pc-halo { animation: pc-halo 6s ease-in-out infinite; }
+  /* pc-spin & pc-hue removed: ring static */
+  @keyframes blink { 0%,6%,94%,100% { clip-path:inset(0% 0% 0% 0%);} 3%,4% { clip-path:inset(45% 0% 45% 0%);} }
+      @keyframes pc-mouth { 0%,100% { transform:scale(1);} 50% { transform:scale(1.05);} }
+      @keyframes pc-bob { 0%,100% { transform:translateY(0);} 50% { transform:translateY(-14px);} }
+      @keyframes pc-halo { 0%,100% { opacity:.22; transform:scale(1);} 50% { opacity:.4; transform:scale(1.08);} }
+    ]]></style>
+  </defs>
+  <!-- Outer ring removed -->
+  <circle cx="120" cy="120" r="100" fill="#2563EB" opacity="0.18" class="pc-halo" />
+  <circle cx="120" cy="120" r="92" fill="url(#psycoFace)" filter="url(#psycoShadow)" />
+  <circle cx="120" cy="120" r="92" fill="url(#psycoDots)" opacity="0.08" />
+  <!-- Eyes -->
+  <g class="pc-eye"><circle cx="92" cy="110" r="14" fill="#FFF" /><circle cx="92" cy="110" r="6" fill="#1E3A8A" /></g>
+    <g class="pc-eye r"><circle cx="148" cy="110" r="14" fill="#FFF" /><circle cx="148" cy="110" r="6" fill="#1E3A8A" /></g>
+  <!-- Mouth -->
+  <path class="pc-mouth" d="M86 160 Q120 184 154 160" stroke="#DBEAFE" stroke-width="8" stroke-linecap="round" fill="none" />
+  <!-- Thought bubbles -->
+  <g fill="#BFDBFE" opacity="0.95">
+    <circle class="pc-bubble" cx="184" cy="54" r="18" />
+    <circle class="pc-bubble small" cx="204" cy="32" r="11" />
+    <circle class="pc-bubble tiny" cx="162" cy="74" r="9" />
+  </g>
+  <rect x="70" y="194" width="100" height="14" rx="7" fill="#3B82F6" opacity="0.35" />
+</svg>

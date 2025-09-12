@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-labelledby="agTitle agDesc" role="img">
+  <title id="agTitle">Agents Hub</title>
+  <desc id="agDesc">Unified animated hub avatar showing all agents orbiting with color cycling and connection pulses.</desc>
+  <defs>
+    <radialGradient id="hubFace" cx="0.5" cy="0.5" r="0.55">
+      <stop offset="0%" stop-color="#F9A8D4" />
+      <stop offset="55%" stop-color="#A78BFA" />
+      <stop offset="100%" stop-color="#4C1D95" />
+    </radialGradient>
+    <linearGradient id="hubRing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F472B6" />
+      <stop offset="40%" stop-color="#0EA5E9" />
+      <stop offset="70%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#FBBF24" />
+    </linearGradient>
+    <filter id="hubGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="b" />
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 1  0 0 0 0 0.6  0 0 0 0 1  0 0 0 0.55 0" result="c" />
+      <feBlend in="SourceGraphic" in2="c" mode="screen" />
+    </filter>
+    <filter id="hubShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#4C1D95" flood-opacity="0.55" />
+    </filter>
+    <pattern id="hubDots" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="1" fill="#F5D0FE" />
+      <circle cx="12" cy="12" r="1" fill="#E9D5FF" />
+    </pattern>
+    <style><![CDATA[
+  .hub-ring { stroke-dasharray: 16 22; }
+      .hub-halo { animation: hub-halo 7s ease-in-out infinite; }
+      .hub-face { animation: hub-pulse 5.5s ease-in-out infinite; }
+      .hub-eye { animation: hub-blink 7s ease-in-out infinite; }
+      .hub-eye.r { animation-delay:1.8s; }
+      .hub-mouth { animation: hub-talk 5s ease-in-out infinite; }
+      .hub-orbit { animation: hub-orbit 16s linear infinite; transform-origin:120px 120px; }
+      .hub-orbit.fast { animation-duration:12s; }
+      .hub-orbit.slow { animation-duration:20s; }
+      .hub-conn line { animation: hub-conn 6s ease-in-out infinite; }
+      .hub-conn line:nth-child(2) { animation-delay:1.5s; }
+      .hub-conn line:nth-child(3) { animation-delay:3s; }
+      .hub-conn line:nth-child(4) { animation-delay:4.5s; }
+      .hub-conn line:nth-child(5) { animation-delay:2.2s; }
+      .hub-center { animation: hub-center 10s linear infinite; transform-origin:120px 120px; }
+      .hub-text { animation: hub-text 14s linear infinite; }
+      .hub-outer { animation: hub-outer 60s linear infinite, hub-color 18s linear infinite; }
+  /* hub-spin & hub-hue removed: ring static */
+      @keyframes hub-pulse { 0%,100% { transform:scale(1);} 50% { transform:scale(1.03);} }
+      @keyframes hub-halo { 0%,100% { opacity:.22; transform:scale(1);} 50% { opacity:.42; transform:scale(1.07);} }
+      @keyframes hub-blink { 0%,6%,94%,100% { transform:scaleY(1);} 3%,4% { transform:scaleY(.12);} }
+      @keyframes hub-talk { 0%,100% { transform:scale(1);} 50% { transform:scale(1.05);} }
+      @keyframes hub-orbit { to { transform:rotate(360deg);} }
+      @keyframes hub-conn { 0%,100% { stroke-opacity:.25;} 50% { stroke-opacity:.85;} }
+      @keyframes hub-center { to { transform:rotate(360deg);} }
+      @keyframes hub-text { to { filter:hue-rotate(360deg);} }
+      @keyframes hub-outer { to { transform:rotate(-360deg);} }
+      @keyframes hub-color { 0% { stroke:#F472B6;} 25% { stroke:#0EA5E9;} 50% { stroke:#10B981;} 75% { stroke:#FBBF24;} 100% { stroke:#F472B6;} }
+    ]]></style>
+  </defs>
+  <!-- Rotating multi-color ring -->
+  <g filter="url(#hubGlow)">
+    <circle cx="120" cy="120" r="112" fill="none" stroke="url(#hubRing)" stroke-width="10" class="hub-ring" stroke-linecap="round" />
+  </g>
+  <!-- Halo -->
+  <circle cx="120" cy="120" r="102" fill="#C084FC" opacity="0.18" class="hub-halo" />
+  <!-- Face core -->
+  <circle cx="120" cy="120" r="94" fill="url(#hubFace)" filter="url(#hubShadow)" class="hub-face" />
+  <circle cx="120" cy="120" r="94" fill="url(#hubDots)" opacity="0.08" />
+  <!-- Eyes -->
+  <g class="hub-eye"><circle cx="92" cy="112" r="16" fill="#FFF" /><circle cx="92" cy="112" r="7" fill="#4C1D95" /></g>
+  <g class="hub-eye r"><circle cx="148" cy="112" r="16" fill="#FFF" /><circle cx="148" cy="112" r="7" fill="#4C1D95" /></g>
+  <!-- Mouth -->
+  <path class="hub-mouth" d="M90 164 Q120 188 150 164" stroke="#F5D0FE" stroke-width="8" stroke-linecap="round" fill="none" />
+  <!-- Center rotating glyph -->
+  <g class="hub-center">
+    <path d="M120 120 L108 140 H132 Z" fill="#F472B6" opacity="0.9" />
+    <circle cx="120" cy="120" r="10" fill="#0EA5E9" opacity="0.5" />
+  </g>
+  <!-- Connection lines -->
+  <g class="hub-conn" stroke="#F472B6" stroke-width="3" stroke-linecap="round">
+    <line x1="120" y1="28" x2="120" y2="80" />
+    <line x1="200" y1="120" x2="160" y2="120" />
+    <line x1="120" y1="212" x2="120" y2="170" />
+    <line x1="40" y1="120" x2="80" y2="120" />
+    <line x1="180" y1="180" x2="150" y2="150" />
+  </g>
+  <!-- Orbits (groups with small colored nodes) -->
+  <g class="hub-orbit">
+    <circle cx="120" cy="32" r="12" fill="#F472B6" />
+  </g>
+  <g class="hub-orbit fast">
+    <circle cx="204" cy="120" r="12" fill="#A78BFA" />
+  </g>
+  <g class="hub-orbit slow">
+    <circle cx="120" cy="208" r="12" fill="#0EA5E9" />
+  </g>
+  <g class="hub-orbit" style="animation-duration:18s">
+    <circle cx="36" cy="120" r="12" fill="#14B8A6" />
+  </g>
+  <g class="hub-orbit" style="animation-duration:22s">
+    <circle cx="176" cy="176" r="12" fill="#FBBF24" />
+  </g>
+  <g class="hub-orbit" style="animation-duration:26s">
+    <circle cx="60" cy="184" r="12" fill="#10B981" />
+  </g>
+  <!-- Bottom label -->
+  <text x="120" y="224" text-anchor="middle" font-family="Inter, Arial" font-size="15" font-weight="700" fill="#F5D0FE" class="hub-text">AGENTS</text>
+  <!-- Outer dashed ring -->
+  <circle cx="120" cy="120" r="118" stroke-width="2" stroke="#F472B6" fill="none" stroke-dasharray="10 10" class="hub-outer" />
+</svg>

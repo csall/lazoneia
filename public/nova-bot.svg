@@ -1,0 +1,30 @@
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Face background with gradient -->
+  <circle cx="120" cy="120" r="100" fill="url(#novaGradient)"/>
+
+  <!-- Eyes - futuristic -->
+  <rect x="85" y="90" width="20" height="10" rx="2" fill="white"/>
+  <rect x="135" y="90" width="20" height="10" rx="2" fill="white"/>
+  <circle cx="95" cy="95" r="3" fill="#6a0dad"/>
+  <circle cx="145" cy="95" r="3" fill="#6a0dad"/>
+
+  <!-- Smile - sleek design -->
+  <path d="M90 140C110 160 130 160 150 140" stroke="white" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Headgear with glowing accents -->
+  <path d="M60 60C40 40 50 20 80 40C100 10 140 10 160 40C190 20 200 40 180 60" fill="#ff00ff"/>
+
+  <!-- Decorative elements -->
+  <circle cx="50" cy="120" r="8" fill="#ff00ff"/>
+  <circle cx="190" cy="120" r="8" fill="#ff00ff"/>
+  <circle cx="60" cy="60" r="5" fill="white" opacity="0.8" />
+  <circle cx="180" cy="60" r="5" fill="white" opacity="0.8" />
+
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="novaGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6a0dad" /> <!-- Violet -->
+      <stop offset="100%" stop-color="#ff00ff" /> <!-- Magenta -->
+    </linearGradient>
+  </defs>
+</svg>

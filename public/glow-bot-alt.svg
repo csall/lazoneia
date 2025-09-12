@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Glow Alt Bot - Inspired by original Glow style, enhanced neon + layered aura -->
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Core gradients -->
+    <radialGradient id="faceCore" cx="0.5" cy="0.45" r="0.55">
+      <stop offset="0%" stop-color="#fce7f3" />
+      <stop offset="55%" stop-color="#f472b6" />
+      <stop offset="100%" stop-color="#9d174d" />
+    </radialGradient>
+    <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f0abfc" />
+      <stop offset="40%" stop-color="#e879f9" />
+      <stop offset="75%" stop-color="#c026d3" />
+      <stop offset="100%" stop-color="#7e22ce" />
+    </linearGradient>
+    <linearGradient id="hairGrad" x1="40" y1="40" x2="200" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fb7185" />
+      <stop offset="45%" stop-color="#f472b6" />
+      <stop offset="100%" stop-color="#d946ef" />
+    </linearGradient>
+    <radialGradient id="eyeIris" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#fff"/>
+      <stop offset="55%" stop-color="#f9a8d4"/>
+      <stop offset="100%" stop-color="#db2777"/>
+    </radialGradient>
+    <filter id="outerGlow" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="14" result="blur" />
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 1  0 0 0 0 0.3  0 0 0 0 0.6  0 0 0 0.5 0" result="glow" />
+      <feBlend in="SourceGraphic" in2="glow" mode="screen" />
+    </filter>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 1  0 0 0 0 0.55  0 0 0 0 0.85  0 0 0 0.35 0"/>
+    </filter>
+    <pattern id="dotted" width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="rotate(18)">
+      <circle cx="2" cy="2" r="1.4" fill="#fbcfe8" opacity="0.5" />
+      <circle cx="10" cy="10" r="1.2" fill="#fbcfe8" opacity="0.35" />
+    </pattern>
+    <linearGradient id="lipGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f472b6" />
+      <stop offset="55%" stop-color="#db2777" />
+      <stop offset="100%" stop-color="#9d174d" />
+    </linearGradient>
+  </defs>
+
+  <!-- Outer aura ring & subtle patterned halo -->
+  <circle cx="120" cy="120" r="118" fill="url(#dotted)" opacity="0.25" />
+  <circle cx="120" cy="120" r="110" stroke="url(#ringGrad)" stroke-width="4" opacity="0.65" />
+  <circle cx="120" cy="120" r="104" stroke="url(#ringGrad)" stroke-dasharray="6 10" stroke-width="2" opacity="0.35" />
+
+  <!-- Core face -->
+  <circle cx="120" cy="120" r="100" fill="url(#faceCore)" filter="url(#softGlow)" />
+
+  <!-- Stylized flowing hair / abstract corona -->
+  <path d="M62 74C44 46 54 32 74 42C92 14 120 24 120 24C120 24 146 14 168 42C188 32 198 44 180 74C196 82 204 98 200 118C196 138 182 156 162 168C150 176 136 182 120 182C104 182 90 176 78 168C58 154 44 136 40 116C36 96 44 80 62 74Z" fill="url(#hairGrad)" opacity="0.9" filter="url(#outerGlow)" />
+
+  <!-- Eyes base arcs -->
+  <path d="M74 101C74 101 80 88 92 88C104 88 110 101 110 101" stroke="white" stroke-width="5" stroke-linecap="round" />
+  <path d="M130 101C130 101 136 88 148 88C160 88 166 101 166 101" stroke="white" stroke-width="5" stroke-linecap="round" />
+
+  <!-- Eye whites + iris -->
+  <g>
+    <circle cx="92" cy="108" r="13" fill="#fff" />
+    <circle cx="92" cy="108" r="7" fill="url(#eyeIris)" />
+    <circle cx="92" cy="106" r="3" fill="#fff" />
+  </g>
+  <g>
+    <circle cx="148" cy="108" r="13" fill="#fff" />
+    <circle cx="148" cy="108" r="7" fill="url(#eyeIris)" />
+    <circle cx="148" cy="106" r="3" fill="#fff" />
+  </g>
+
+  <!-- Lashes (minimal, sharper) -->
+  <g stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.9">
+    <line x1="82" y1="90" x2="76" y2="82" />
+    <line x1="92" y1="90" x2="92" y2="80" />
+    <line x1="102" y1="90" x2="108" y2="82" />
+    <line x1="138" y1="90" x2="132" y2="82" />
+    <line x1="148" y1="90" x2="148" y2="80" />
+    <line x1="158" y1="90" x2="164" y2="82" />
+  </g>
+
+  <!-- Cheek soft blush -->
+  <circle cx="78" cy="126" r="14" fill="#fb7185" opacity="0.22" />
+  <circle cx="162" cy="126" r="14" fill="#fb7185" opacity="0.22" />
+
+  <!-- Stylized smile + lip fill -->
+  <path d="M82 148C104 172 136 172 158 148" stroke="white" stroke-width="5" stroke-linecap="round" />
+  <path d="M82 148C104 168 136 168 158 148C156 156 150 164 140 168C128 172 112 172 100 168C90 164 84 156 82 148Z" fill="url(#lipGrad)" opacity="0.9" />
+
+  <!-- Earrings (geometric crystals) -->
+  <g filter="url(#softGlow)">
+    <path d="M52 122 l-6 14 10 10 10 -10 -6 -14z" fill="#f9a8d4" stroke="#fbcfe8" stroke-width="2" />
+    <path d="M188 122 l-6 14 10 10 10 -10 -6 -14z" fill="#f9a8d4" stroke="#fbcfe8" stroke-width="2" />
+  </g>
+
+  <!-- Accent floating hearts -->
+  <path d="M60 184C60 174 70 173 75 178C80 173 90 174 90 184C90 195 75 206 75 206C75 206 60 196 60 184Z" fill="#ec4899" opacity="0.9" />
+  <path d="M150 184C150 174 160 173 165 178C170 173 180 174 180 184C180 195 165 206 165 206C165 206 150 196 150 184Z" fill="#ec4899" opacity="0.9" />
+
+  <!-- Necklace gem + chain -->
+  <path d="M110 190C110 184 116 184 120 188C124 184 130 184 130 190C130 196 120 206 120 206C120 206 110 196 110 190Z" fill="#fbcfe8" />
+  <circle cx="120" cy="206" r="3" fill="#f9a8d4" />
+  <path d="M95 176C102 186 138 186 145 176" stroke="#fbcfe8" stroke-width="3" stroke-linecap="round" opacity="0.65" />
+
+  <!-- Sparkle particles -->
+  <g fill="#ffffff" opacity="0.85">
+    <circle cx="54" cy="58" r="4" />
+    <circle cx="186" cy="56" r="4" />
+    <circle cx="76" cy="40" r="3" />
+    <circle cx="164" cy="42" r="3" />
+    <circle cx="42" cy="104" r="3" />
+    <circle cx="198" cy="104" r="3" />
+  </g>
+
+  <!-- Subtle inner highlight overlay -->
+  <ellipse cx="120" cy="112" rx="78" ry="70" fill="#fff" opacity="0.08" />
+</svg>
