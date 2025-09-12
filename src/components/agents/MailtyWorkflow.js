@@ -6,6 +6,7 @@ import Header from "./AgentAudioWorkflow/Header";
 import agents from "@/config/agents";
 
 export default function MailtyWorkflow(){
+  // ...existing code...
   // Récupère la config Mailty dynamiquement
   const mailtyConfig = agents.find(a => a.name === "Mailty");
   const { theme } = useTheme();
@@ -151,7 +152,6 @@ export default function MailtyWorkflow(){
         fixed={false}
       />
       <main className="pt-8 px-4 pb-12 max-w-7xl mx-auto font-sans">
-        <h1 className="sr-only">Mailty Gmail Assistant</h1>
         {/* Global keyboard hints / accessibility helper */}
         <div className="sr-only" aria-live="polite">Utilise Tab pour naviguer, Entrée pour ouvrir un email, Échap pour revenir à la liste sur mobile.</div>
       {!connected && (
@@ -223,7 +223,7 @@ export default function MailtyWorkflow(){
                 {emails.map(m=> {
                   const isUnread = m.labelIds?.includes('UNREAD');
                   const date = m.internalDate ? new Date(parseInt(m.internalDate,10)) : null;
-                  const rel = date ? (()=>{
+                  const rel = date ? (function(){
                     const diff = Date.now()-date.getTime();
                     const mns = Math.floor(diff/60000);
                     if(mns<60) return mns<=1? '1m' : mns+'m';
@@ -241,7 +241,7 @@ export default function MailtyWorkflow(){
                     aria-label={`Email de ${m.fromName||m.fromEmail} sujet ${m.subject||'Sans objet'} ${isUnread? 'non lu':''}`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-semibold uppercase bg-gradient-to-br from-violet-500/30 to-fuchsia-500/30 dark:from-violet-500/25 dark:to-fuchsia-500/25 ${isUnread? 'ring-2 ring-fuchsia-400/50 dark:ring-fuchsia-500/40' : ''}`}>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-semibold uppercase bg-gradient-to-br from-violet-500/30 to-fuchsia-500/30 dark:from-violet-500/25 dark:to-fuchsia-500/25 ${isUnread? 'ring-2 ring-fuchsia-400/50 dark:ring-fuchsia-500/40' : ''}`}> 
                         {(m.fromName||m.fromEmail||'?').slice(0,2)}
                       </div>
                       <div className="flex-1 min-w-0 flex flex-col gap-0.5">
@@ -264,10 +264,11 @@ export default function MailtyWorkflow(){
             </div>
             {/* DETAIL */}
             <div className={`rounded-2xl border bg-white/80 dark:bg-white/5 backdrop-blur-xl flex flex-col overflow-hidden lg:col-span-2 shadow-sm dark:shadow-[0_0_0_1px_rgba(255,255,255,0.06)] ${detail? 'block' : 'block lg:block'} ${!detail? 'hidden lg:flex' : ''}`}>
-              <div className="px-5 py-3 border-b dark:border-white/10 flex items-center justify-between bg-gradient-to-r from-violet-50/60 to-fuchsia-50/40 dark:from-violet-950/40 dark:to-fuchsia-900/30">
+              {/* Header détail : bouton retour toujours visible sur mobile */}
+              <div className="sticky top-0 z-20 px-5 py-3 border-b dark:border-white/10 flex items-center justify-between bg-gradient-to-r from-violet-50/60 to-fuchsia-50/40 dark:from-violet-950/40 dark:to-fuchsia-900/30">
                 <div className="flex items-center gap-3">
                   {detail && (
-                    <button onClick={backToList} className="lg:hidden inline-flex items-center gap-1 text-violet-600 dark:text-violet-300 text-[11px] font-medium px-2 py-1 rounded-md border border-violet-300 dark:border-violet-500/40 bg-white/70 dark:bg-white/10 active:scale-95" aria-label="Retour à la liste">
+                    <button onClick={backToList} className="inline-flex items-center gap-1 text-violet-600 dark:text-violet-300 text-[11px] font-medium px-2 py-1 rounded-md border border-violet-300 dark:border-violet-500/40 bg-white/70 dark:bg-white/10 active:scale-95" aria-label="Retour à la liste">
                       <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                       Inbox
                     </button>
@@ -297,8 +298,9 @@ export default function MailtyWorkflow(){
                       <span className="px-1.5 py-0.5 rounded bg-gray-200/60 dark:bg-white/10 text-gray-700 dark:text-gray-300">thread {detail.threadId?.slice(0,8)}</span>
                     </div>
                   </div>
-                  <div className="rounded-lg border border-violet-200 dark:border-violet-500/20 bg-white/70 dark:bg-violet-900/40 p-4 text-[13px] leading-relaxed whitespace-pre-wrap shadow-inner max-h-72 overflow-y-auto custom-scroll sm:max-h-80 text-gray-800 dark:text-fuchsia-100">
-                    {detail.body || detail.snippet}
+                  <div className="rounded-lg border border-violet-200 dark:border-violet-500/20 bg-white/70 dark:bg-violet-900/40 p-4 text-[13px] leading-relaxed shadow-inner max-h-72 overflow-y-auto custom-scroll sm:max-h-80 text-gray-800 dark:text-fuchsia-100">
+                    {/* Affiche le HTML du message, attention XSS : le backend doit nettoyer le HTML */}
+                    <div dangerouslySetInnerHTML={{__html: detail.body || detail.snippet || ''}} />
                   </div>
                   {aiReply && (
                     <div ref={aiReplyBlockRef} className="rounded-lg border border-fuchsia-300/40 dark:border-fuchsia-500/30 bg-gradient-to-br from-fuchsia-50/80 to-violet-50/70 dark:from-fuchsia-900/20 dark:to-violet-900/10 p-4 text-[12px] space-y-3">
@@ -351,13 +353,16 @@ export default function MailtyWorkflow(){
                 <span className="text-gray-500 dark:text-gray-400">{detail? (detail.body?.length || detail.snippet?.length || 0) + ' caractères' : 'Aucun message sélectionné'}</span>
                 {detail && <button onClick={()=>generateReply(false)} disabled={aiLoading} className="text-violet-600 dark:text-violet-300 hover:underline text-[11px] disabled:opacity-40">Régénérer IA</button>}
               </div>
-              {/* Sticky mobile action bar for sending quickly */}
+              {/* Sticky mobile action bar for sending quickly + archive */}
               {detail && (
-                <div className="lg:hidden sticky bottom-3 left-0 right-0 mx-3 mb-2">
-                  <div className="rounded-full shadow-lg shadow-violet-500/10 border border-violet-300/50 dark:border-violet-500/30 backdrop-blur-md bg-gradient-to-r from-white/85 to-white/70 dark:from-violet-900/60 dark:to-fuchsia-900/50 flex items-center gap-2 px-3 py-2">
-                    <button onClick={sendEmail} disabled={sending||!draft.trim()} className="h-9 px-5 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white text-sm font-medium shadow hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed transition">{sending? 'Envoi...' : 'Envoyer'}</button>
-                    <button onClick={()=>generateReply(false)} disabled={aiLoading} className="h-9 px-4 rounded-full text-[11px] font-medium bg-fuchsia-600/15 text-fuchsia-700 dark:text-fuchsia-300 border border-fuchsia-400/30 hover:bg-fuchsia-600/25 disabled:opacity-40">{aiLoading? '...' : 'IA'}</button>
-                    <button onClick={()=>setDraft("")} disabled={!draft} className="h-9 px-3 rounded-full text-[11px] font-medium border border-violet-300 dark:border-violet-500/30 text-violet-700 dark:text-violet-200 hover:bg-violet-50 dark:hover:bg-white/10 disabled:opacity-30">Reset</button>
+                <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 px-2 pb-2 pointer-events-none">
+                  <div className="pointer-events-auto rounded-full shadow-lg shadow-violet-500/10 border border-violet-300/50 dark:border-violet-500/30 backdrop-blur-md bg-gradient-to-r from-white/85 to-white/70 dark:from-violet-900/60 dark:to-fuchsia-900/50 flex items-center gap-2 px-2 py-2">
+                    <button onClick={sendEmail} disabled={sending||!draft.trim()} className="h-10 px-5 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white text-base font-medium shadow hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed transition">{sending? 'Envoi...' : 'Envoyer'}</button>
+                    <button onClick={()=>generateReply(false)} disabled={aiLoading} className="h-10 px-4 rounded-full text-[13px] font-medium bg-fuchsia-600/15 text-fuchsia-700 dark:text-fuchsia-300 border border-fuchsia-400/30 hover:bg-fuchsia-600/25 disabled:opacity-40">{aiLoading? '...' : 'IA'}</button>
+                    <button onClick={()=>setDraft("")} disabled={!draft} className="h-10 px-3 rounded-full text-[13px] font-medium border border-violet-300 dark:border-violet-500/30 text-violet-700 dark:text-violet-200 hover:bg-violet-50 dark:hover:bg-white/10 disabled:opacity-30">Reset</button>
+                    <button onClick={()=>{/* TODO: archiver/supprimer */}} className="h-10 w-10 rounded-full flex items-center justify-center text-rose-600 border border-rose-200 dark:border-rose-400/30 bg-rose-50/60 dark:bg-rose-900/20 hover:bg-rose-100/80 dark:hover:bg-rose-900/40" aria-label="Archiver ou supprimer">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m2 0v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6h16z"/></svg>
+                    </button>
                   </div>
                 </div>
               )}
@@ -366,6 +371,7 @@ export default function MailtyWorkflow(){
         </div>
       )}
       {error && <div className="mt-6 text-sm text-rose-600 dark:text-rose-400" aria-live="assertive">{error}</div>}
+      {/* ...existing code... */}
       </main>
     </>
   );
