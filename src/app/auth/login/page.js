@@ -48,7 +48,6 @@ function LoginInner() {
           </>
         )}
       </div>
-      <p className="text-xs text-center text-white/60">Connexion par email désactivée. Utilisez un provider externe.</p>
     </div>
   );
 }

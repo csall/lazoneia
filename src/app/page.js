@@ -55,6 +55,9 @@ const AgentCard = ({
     ? "text-gray-600 group-hover:text-gray-800"
     : "text-gray-300 group-hover:text-white";
 
+  // Pour forcer le bouton Postoto à être grisé si non connecté
+  const isPostoto = name && name.toLowerCase() === "postoto";
+
   // Per-agent background: light uses direct gradient class, dark keeps layered radial for depth
   const cardBackground = isLight
     ? "transparent"
@@ -382,14 +385,13 @@ const AgentCard = ({
                     href={disabled ? "#" : link}
                     className={`w-8 h-8 rounded-full transition-all duration-300 flex items-center justify-center text-white text-[10px] backdrop-blur-sm border border-white/10
                       ${
-                        disabled
-                          ? "bg-gray-500 cursor-not-allowed opacity-50 pointer-events-none"
+                        (isPostoto && !postotoConnected) || disabled
+                          ? "bg-gray-400 cursor-not-allowed opacity-60 pointer-events-none grayscale"
                           : `bg-gradient-to-r ${style.button}`
-                      }
-                      ${postotoDisabled ? "grayscale" : ""}`}
+                      }`}
                     aria-label={`Ouvrir ${name}`}
                     title={
-                      postotoDisabled
+                      (isPostoto && !postotoConnected)
                         ? "Connecte Instagram dans Postoto pour activer"
                         : undefined
                     }

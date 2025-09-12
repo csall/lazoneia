@@ -1,21 +1,21 @@
-// Unique Mailty palette (cyan/lime, distinct from all others)
+// Mailty : palette violette distinctive
 const mailtyDark = {
-	bg: "bg-gradient-to-br from-violet-700 to-fuchsia-600",
-	border: "border-fuchsia-400/80",
-	glow: "from-fuchsia-400 to-violet-400",
-	button: "from-fuchsia-500 to-violet-500 hover:from-fuchsia-400 hover:to-violet-400",
-	hover: "group-hover:text-fuchsia-100",
-	accent: "bg-fuchsia-400",
-	mesh: "from-fuchsia-400/40 via-violet-500/30 to-fuchsia-400/40"
+	bg: "bg-gradient-to-br from-violet-900/60 to-fuchsia-900/60",
+	border: "border-violet-500/30",
+	glow: "from-violet-500 to-fuchsia-600",
+	button: "from-violet-500 to-fuchsia-600 hover:from-violet-600 hover:to-fuchsia-700",
+	hover: "group-hover:text-violet-200",
+	accent: "bg-violet-500",
+	mesh: "from-violet-500/40 via-fuchsia-600/30 to-violet-500/40"
 };
 const mailtyLight = {
-	bg: "bg-gradient-to-br from-violet-400 to-fuchsia-300",
-	border: "border-violet-400/60",
+	bg: "bg-gradient-to-br from-violet-300 to-fuchsia-400",
+	border: "border-violet-400/50",
 	glow: "from-violet-500 to-fuchsia-400",
 	button: "from-violet-500 to-fuchsia-400 hover:from-violet-600 hover:to-fuchsia-500",
-	hover: "group-hover:text-fuchsia-700",
+	hover: "group-hover:text-violet-800",
 	accent: "bg-violet-500",
-	mesh: "from-violet-400/40 via-fuchsia-300/30 to-violet-400/40"
+	mesh: "from-violet-300/40 via-fuchsia-400/30 to-violet-300/40"
 };
 // Centralized card style palettes for agents (light & dark)
 // Usage: import { getCardStyle } from '@/styles/cardStyles';
@@ -54,6 +54,5 @@ export const cardStylesLight = {
 
 export function getCardStyle(theme, key) {
 	const source = theme === 'light' ? cardStylesLight : cardStylesDark;
-		if (key === 'violet') return source['mailty'];
 		return source[key] || cardStylesDark['globo'];
 }
