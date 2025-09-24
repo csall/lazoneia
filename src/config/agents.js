@@ -65,7 +65,7 @@ const agents = [
       { value: "conseil", label: "Conseil" },
       { value: "écoute", label: "Écoute" }
     ],
-  colors: {
+    colors: {
       gradientFrom: "from-blue-900",
       gradientTo: "to-sky-800",
       textColor: "text-white",
@@ -82,8 +82,8 @@ const agents = [
     },
     endpoint: "https://cheikh06000.app.n8n.cloud/webhook/psyco",
     placeholder: "Écrivez ou enregistrez vos préoccupations ou questions...",
-  sendButtonLabel: "Obtenir des conseils",
-  type: "conversationnel"
+    sendButtonLabel: "Obtenir des conseils",
+    type: "conversationnel"
   },
   {
     name: "Talko",
@@ -93,7 +93,7 @@ const agents = [
     link: "/agent/talko",
     tagline: "Expert communication",
     category: "communication",
-  hidden: true,
+    hidden: true,
     branding: {
       name: "Talko",
       gradient: "from-purple-900 to-magenta-800",
@@ -107,7 +107,7 @@ const agents = [
       { value: "info", label: "Info" },
       { value: "discussion", label: "Discussion" }
     ],
-  colors: {
+    colors: {
       gradientFrom: "from-pink-900",
       gradientTo: "to-rose-800",
       textColor: "text-white",
@@ -124,8 +124,8 @@ const agents = [
     },
     endpoint: "https://cheikh06000.app.n8n.cloud/webhook/talko",
     placeholder: "Écrivez ou enregistrez vos questions...",
-  sendButtonLabel: "Discuter",
-  type: "conversationnel"
+    sendButtonLabel: "Discuter",
+    type: "conversationnel"
   },
   {
     name: "Scribo",
@@ -167,8 +167,8 @@ const agents = [
     },
     endpoint: "https://cheikh06000.app.n8n.cloud/webhook/scribo",
     placeholder: "Écrivez ou enregistrez une idée à développer...",
-  sendButtonLabel: "Améliorer",
-  type: "transactionnel"
+    sendButtonLabel: "Améliorer",
+    type: "transactionnel"
   },
   {
     name: "Postoto",
@@ -178,6 +178,7 @@ const agents = [
     link: "/agent/postoto",
     tagline: "Posts synchronisés",
     category: "automation",
+    hidden: true,
     branding: {
       name: "Postoto",
       gradient: "from-fuchsia-900 to-purple-900",
@@ -252,8 +253,8 @@ const agents = [
     },
     endpoint: "https://cheikh06000.app.n8n.cloud/webhook/reply",
     placeholder: "Collez ou enregistrez le message auquel vous voulez répondre...",
-  sendButtonLabel: "Répondre",
-  type: "transactionnel"
+    sendButtonLabel: "Répondre",
+    type: "transactionnel"
   },
   {
     name: "Globo",
@@ -293,8 +294,8 @@ const agents = [
     },
     endpoint: "https://cheikh06000.app.n8n.cloud/webhook/globo",
     placeholder: "Écrivez ou enregistrez vos questions sur vos voyages...",
-  sendButtonLabel: "Obtenir des conseils",
-  type: "conversationnel"
+    sendButtonLabel: "Obtenir des conseils",
+    type: "conversationnel"
   },
   {
     name: "Fitzy",
@@ -334,8 +335,8 @@ const agents = [
     },
     endpoint: "https://cheikh06000.app.n8n.cloud/webhook/fitzy",
     placeholder: "Écrivez ou enregistrez vos objectifs ou questions...",
-  sendButtonLabel: "Obtenir des conseils",
-  type: "conversationnel"
+    sendButtonLabel: "Obtenir des conseils",
+    type: "conversationnel"
   },
   {
     name: "Lingo",
@@ -374,8 +375,8 @@ const agents = [
     },
     endpoint: "https://cheikh06000.app.n8n.cloud/webhook/lingo",
     placeholder: "Entrez votre texte à traduire...",
-  sendButtonLabel: "Traduire",
-  type: "transactionnel"
+    sendButtonLabel: "Traduire",
+    type: "transactionnel"
   },
   {
     name: "Glow",
@@ -441,19 +442,19 @@ const agents = [
       { value: "synthese", label: "Synthèse" }
     ],
     colors: {
-  gradientFrom: "from-cyan-900",
-  gradientTo: "to-lime-700",
-  textColor: "text-black",
-  buttonGradientFrom: "from-cyan-500",
-  buttonGradientTo: "to-lime-400",
-  buttonHoverFrom: "hover:from-cyan-600",
-  buttonHoverTo: "hover:to-lime-500",
-  borderColor: "border-cyan-400/60",
-  placeholderColor: "placeholder-lime-300",
-  responseBg: "bg-cyan-900/30",
-  responseBorder: "border-lime-700/30",
-  ringColor: "ring-lime-400",
-  shadowColor: "shadow-lime-400/40"
+      gradientFrom: "from-cyan-900",
+      gradientTo: "to-lime-700",
+      textColor: "text-black",
+      buttonGradientFrom: "from-cyan-500",
+      buttonGradientTo: "to-lime-400",
+      buttonHoverFrom: "hover:from-cyan-600",
+      buttonHoverTo: "hover:to-lime-500",
+      borderColor: "border-cyan-400/60",
+      placeholderColor: "placeholder-lime-300",
+      responseBg: "bg-cyan-900/30",
+      responseBorder: "border-lime-700/30",
+      ringColor: "ring-lime-400",
+      shadowColor: "shadow-lime-400/40"
     },
     endpoint: "",
     placeholder: "Rechercher ou sélectionner un email...",
