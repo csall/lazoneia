@@ -98,14 +98,30 @@ export default function MailtyMessage() {
                 )}
                 {connected && (
                     <div className="rounded-2xl border bg-white/80 dark:bg-white/5 backdrop-blur-xl flex flex-col overflow-hidden shadow-sm dark:shadow-[0_0_0_1px_rgba(255,255,255,0.06)]">
-                        <div className="px-4 py-2 border-b dark:border-white/10 flex items-center justify-between">
-                            <button
-                                onClick={() => router.push('/mailty/inbox')}
-                                className="inline-flex items-center gap-1 text-violet-600 dark:text-fuchsia-300 text-xs font-medium px-3 py-1 rounded-md border border-violet-300 dark:border-fuchsia-500/40 bg-white/70 dark:bg-white/10 hover:bg-violet-50 dark:hover:bg-fuchsia-900/20 transition shadow-sm"
-                            >
-                                <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
-                                Retour à la liste
-                            </button>
+                        <div className="px-4 py-2 border-b dark:border-white/10 flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => router.push('/mailty/inbox')}
+                                    className="inline-flex items-center gap-1 text-violet-600 dark:text-fuchsia-300 text-xs font-medium px-3 py-1 rounded-md border border-violet-300 dark:border-fuchsia-500/40 bg-white/70 dark:bg-white/10 hover:bg-violet-50 dark:hover:bg-fuchsia-900/20 transition shadow-sm"
+                                >
+                                    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+                                    Retour à la liste
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        handleReply();
+                                        document.getElementById('reply')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                        setTimeout(() => {
+                                            document.getElementById('reply')?.focus();
+                                        }, 500);
+                                    }}
+                                    className="inline-flex items-center gap-1 text-violet-700 dark:text-fuchsia-200 text-xs font-medium px-3 py-1 rounded-md border border-violet-200 dark:border-fuchsia-700/40 bg-violet-50 dark:bg-fuchsia-900/20 hover:bg-violet-100 dark:hover:bg-fuchsia-800/40 transition shadow-sm"
+                                >
+                                    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14m7-7H5" /></svg>
+                                    Proposer une réponse
+                                </button>
+                            </div>
                             {loading && <span className="text-[10px] text-violet-500 dark:text-violet-300 animate-pulse">chargement...</span>}
                         </div>
                         <div className="flex-1 overflow-y-auto p-5 space-y-6 custom-scroll overscroll-contain scroll-smooth max-h-[calc(100vh-260px)]">
