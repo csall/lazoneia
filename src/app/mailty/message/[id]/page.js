@@ -16,6 +16,57 @@ export default function MailtyMessage() {
     const [detail, setDetail] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    // Ajout pour la réponse
+    const [reply, setReply] = useState("");
+    const [sending, setSending] = useState(false);
+    const [actionMsg, setActionMsg] = useState("");
+
+    async function handleScribo() {
+        if (!reply.trim()) return;
+        setActionMsg("Reformulation en cours...");
+        try {
+            // On inclut bien le texte à reformuler dans le body
+            const res = await fetch('/api/mailty/ai-scribo', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: reply })
+            });
+            const data = await res.json();
+            setReply(data.scribo || reply);
+            setActionMsg("Reformulation proposée.");
+        } catch {
+            setActionMsg("Erreur lors de la reformulation.");
+        }
+    }
+
+    async function handleReply() {
+        setActionMsg("Génération de réponse...");
+        try {
+            const res = await fetch('/api/mailty/ai-reply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ subject: detail?.subject, body: detail?.body }) });
+            const data = await res.json();
+            setReply(data.reply || reply);
+            setActionMsg("Suggestion insérée.");
+        } catch {
+            setActionMsg("Erreur lors de la suggestion.");
+        }
+    }
+
+    async function handleSend() {
+        setSending(true);
+        setActionMsg("");
+        try {
+            const res = await fetch('/api/mailty/send', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ threadId: detail?.threadId, to: detail?.fromEmail, body: reply }) });
+            if (res.ok) {
+                setReply("");
+                setActionMsg("Réponse envoyée !");
+            } else {
+                setActionMsg("Erreur lors de l'envoi.");
+            }
+        } catch {
+            setActionMsg("Erreur lors de l'envoi.");
+        }
+        setSending(false);
+    }
 
     useEffect(() => {
         if (!connected || !id) return;
@@ -76,6 +127,45 @@ export default function MailtyMessage() {
                                     </div>
                                     <div className="rounded-lg border border-violet-200 dark:border-violet-500/20 bg-white/70 dark:bg-violet-900/40 p-4 text-[13px] leading-relaxed shadow-inner max-h-72 overflow-y-auto custom-scroll sm:max-h-80 text-gray-800 dark:text-fuchsia-100">
                                         <div dangerouslySetInnerHTML={{ __html: detail.body || detail.snippet || '' }} />
+                                    </div>
+                                    {/* Champ de réponse */}
+                                    <div className="mt-8">
+                                        <label htmlFor="reply" className="block text-xs font-semibold text-violet-700 dark:text-fuchsia-200 mb-1">Répondre à ce message</label>
+                                        <div className="flex flex-col gap-2">
+                                            <textarea
+                                                id="reply"
+                                                className="w-full min-h-[80px] rounded-md border border-violet-200 dark:border-fuchsia-700/40 bg-white/80 dark:bg-violet-950/60 p-2 text-sm text-gray-900 dark:text-fuchsia-100 focus:outline-none focus:ring-2 focus:ring-violet-400 dark:focus:ring-fuchsia-600 transition"
+                                                placeholder="Écris ta réponse ici..."
+                                                value={reply}
+                                                onChange={e => setReply(e.target.value)}
+                                            />
+                                            <div className="flex gap-2 mt-1">
+                                                <button
+                                                    type="button"
+                                                    className={`px-3 py-1 rounded text-xs font-medium border transition ${!reply.trim() ? 'bg-gray-200 text-gray-400 border-gray-200 cursor-not-allowed' : 'bg-violet-100 dark:bg-fuchsia-900/40 text-violet-700 dark:text-fuchsia-200 border-violet-200 dark:border-fuchsia-700/40 hover:bg-violet-200 dark:hover:bg-fuchsia-800/60'}`}
+                                                    onClick={handleScribo}
+                                                    disabled={!reply.trim()}
+                                                >
+                                                    Reformuler avec Scribo
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="px-3 py-1 rounded bg-violet-50 dark:bg-fuchsia-800/40 text-violet-700 dark:text-fuchsia-200 text-xs font-medium border border-violet-200 dark:border-fuchsia-700/40 hover:bg-violet-100 dark:hover:bg-fuchsia-700/60 transition"
+                                                    onClick={handleReply}
+                                                >
+                                                    Proposer une réponse avec Reply
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="ml-auto px-4 py-1 rounded bg-violet-600 text-white text-xs font-semibold hover:bg-violet-700 transition"
+                                                    onClick={handleSend}
+                                                    disabled={!reply.trim() || sending}
+                                                >
+                                                    {sending ? 'Envoi...' : 'Envoyer'}
+                                                </button>
+                                            </div>
+                                            {actionMsg && <div className="text-xs text-violet-700 dark:text-fuchsia-200 mt-1">{actionMsg}</div>}
+                                        </div>
                                     </div>
                                 </>
                             )}
