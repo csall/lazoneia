@@ -8,6 +8,24 @@ import { getServerSession } from "next-auth";
 
 // Construction dynamique des providers OAuth selon variables d'env présentes
 function buildProviders() {
+  const providers = [];
+  
+  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+    providers.push(GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          scope: [
+            'https://www.googleapis.com/auth/gmail.compose',
+            
+          ].join(' ')
+        }
+      },
+      allowDangerousEmailAccountLinking: true  
+    }));
+  }
+  
   if (process.env.INSTAGRAM_CLIENT_ID && process.env.INSTAGRAM_CLIENT_SECRET) {
     providers.push(InstagramProvider({
       clientId: process.env.INSTAGRAM_CLIENT_ID,
@@ -17,24 +35,6 @@ function buildProviders() {
           scope: 'user_profile,user_media'
         }
       }
-    }));
-  }
-  const providers = [];
-  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-    providers.push(GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      authorization: {
-        params: {
-          scope: [
-            'openid','email','profile',
-            'https://www.googleapis.com/auth/gmail.readonly',
-            'https://www.googleapis.com/auth/gmail.modify',
-            'https://www.googleapis.com/auth/gmail.send'
-          ].join(' ')
-        }
-      },
-      allowDangerousEmailAccountLinking: true  
     }));
   }
   if (process.env.FACEBOOK_CLIENT_ID && process.env.FACEBOOK_CLIENT_SECRET) {
