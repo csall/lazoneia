@@ -54,73 +54,123 @@ export default function MailtyInbox() {
                 clearHistory={() => { }}
                 fixed={false}
             />
-            <main className="pt-8 px-4 pb-12 max-w-3xl mx-auto font-sans">
+            <main className="pt-6 px-3 sm:px-4 lg:px-6 pb-6 max-w-[1600px] mx-auto font-sans">
                 {!connected && (
-                    <div className="relative p-8 rounded-2xl border-2 border-violet-400/40 dark:border-fuchsia-500/30 bg-gradient-to-br from-white/80 via-violet-50/80 to-fuchsia-50/80 dark:from-violet-900/60 dark:via-fuchsia-900/40 dark:to-violet-950/60 backdrop-blur-xl flex flex-col items-center gap-6 max-w-xl mx-auto shadow-xl animate-[pulseGlow_2.5s_ease-in-out_infinite] overflow-hidden">
-                        <p className="relative z-10 text-base text-center font-semibold text-violet-700 dark:text-fuchsia-100 drop-shadow-sm">Connecte ton compte Google pour consulter et répondre à tes emails.</p>
+                    <div className="relative p-8 rounded-2xl border-2 border-blue-300 dark:border-blue-600/40 bg-gradient-to-br from-white via-blue-50/60 to-blue-100/40 dark:from-slate-800/90 dark:via-slate-900/80 dark:to-slate-950/90 backdrop-blur-xl flex flex-col items-center gap-6 max-w-2xl mx-auto shadow-xl overflow-hidden">
+                        <p className="relative z-10 text-base text-center font-semibold text-blue-900 dark:text-blue-200 drop-shadow-sm">Connecte ton compte Google pour consulter et répondre à tes emails.</p>
                         <button
                             onClick={() => signIn("google")}
-                            className="relative z-10 h-12 px-7 rounded-xl bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-500 text-white font-bold shadow-lg hover:scale-105 hover:shadow-fuchsia-500/40 transition-all duration-200 flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-fuchsia-400/60"
+                            className="relative z-10 h-12 px-8 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-600 dark:to-blue-700 text-white font-bold shadow-lg hover:scale-105 hover:shadow-blue-500/40 transition-all duration-200 flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-blue-400/60"
                         >
                             <span className="text-base font-semibold tracking-wide drop-shadow">Se connecter avec Google</span>
                         </button>
                     </div>
                 )}
                 {connected && (
-                    <div className="flex flex-col gap-4 mt-2">
-                        <div className="rounded-xl border bg-white/80 dark:bg-white/10 backdrop-blur-md px-4 py-4 flex flex-col md:flex-row gap-3 md:items-center md:justify-between shadow-sm dark:shadow-[0_0_0_1px_rgba(255,255,255,0.05)]">
-                            <div className="flex items-center gap-3 flex-1">
-                                <div className="relative flex-1 max-w-md">
-                                    <input
-                                        value={search}
-                                        onChange={e => setSearch(e.target.value)}
-                                        placeholder="Rechercher (expéditeur, sujet, label:unread, after:2025/09/01) ..."
-                                        className="w-full rounded-lg pl-10 pr-3 py-2 text-sm bg-white/70 dark:bg-white/10 border border-violet-200 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-violet-400/50 placeholder-gray-400 dark:placeholder-white/40 shadow-inner"
-                                        aria-label="Rechercher dans les emails"
-                                    />
-                                    <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-violet-500 dark:text-violet-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.35-4.35" /></svg>
-                                </div>
-                                <button
-                                    onClick={() => setUnreadOnly(u => !u)}
-                                    className={`text-xs h-8 px-3 rounded-md font-medium border transition flex items-center gap-1 ${unreadOnly ? 'bg-violet-600 text-white border-violet-500 shadow' : 'bg-white/60 dark:bg-white/10 border-violet-200 dark:border-white/10 text-violet-700 dark:text-violet-200 hover:bg-white dark:hover:bg-white/15'}`}
-                                    aria-pressed={unreadOnly}
-                                >
-                                    <span className="w-2 h-2 rounded-full bg-violet-500 animate-pulse" /> Non lus
+                    <div className="flex gap-4">
+                        {/* Sidebar compacte style Gmail */}
+                        <div className="hidden lg:flex flex-col gap-3 w-52 flex-shrink-0">
+                            <button className="flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:shadow-lg transition">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                                </svg>
+                                Nouveau
+                            </button>
+                            <div className="flex flex-col gap-1">
+                                <button className="flex items-center gap-3 px-4 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium hover:bg-blue-100 dark:hover:bg-blue-900/50 transition">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                    </svg>
+                                    <span>Boîte de réception</span>
+                                </button>
+                                <button className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                    </svg>
+                                    <span>Suivis</span>
+                                </button>
+                                <button className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span>Reportés</span>
+                                </button>
+                                <button className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                    </svg>
+                                    <span>Envoyés</span>
+                                </button>
+                                <button className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                    </svg>
+                                    <span>Brouillons</span>
                                 </button>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <span className="text-[11px] font-medium text-gray-600 dark:text-gray-300 tracking-wide uppercase">{emails.length} messages</span>
-                                <button
-                                    onClick={() => fetchEmails(search + (unreadOnly ? (search ? " " : "") + "label:unread" : ""))}
-                                    disabled={refreshing}
-                                    className="h-8 px-3 rounded-md text-xs font-semibold bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow hover:brightness-110 disabled:opacity-50"
-                                    aria-label="Rafraîchir la liste"
-                                >{refreshing ? '...' : 'Rafraîchir'}</button>
-                            </div>
                         </div>
-                        <div className="rounded-2xl border bg-white/80 dark:bg-white/5 backdrop-blur-xl flex flex-col overflow-hidden shadow-sm dark:shadow-[0_0_0_1px_rgba(255,255,255,0.06)]">
-                            <div className="px-4 py-2 border-b dark:border-white/10 flex items-center justify-between">
-                                <h2 className="text-xs font-semibold tracking-wide text-violet-700 dark:text-violet-200 uppercase">Inbox</h2>
-                                {loading && <span className="text-[10px] text-violet-500 dark:text-violet-300 animate-pulse">chargement...</span>}
+
+                        {/* Zone principale */}
+                        <div className="flex-1 flex flex-col gap-3">
+                            {/* Barre de recherche compacte */}
+                            <div className="flex items-center gap-2 bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 px-3 py-2 shadow-sm">
+                                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="11" cy="11" r="7" strokeWidth="2" />
+                                    <path d="m21 21-4.35-4.35" strokeWidth="2" strokeLinecap="round" />
+                                </svg>
+                                <input
+                                    value={search}
+                                    onChange={e => setSearch(e.target.value)}
+                                    placeholder="Rechercher dans la boîte de réception"
+                                    className="flex-1 bg-transparent border-0 text-sm text-gray-900 dark:text-white focus:outline-none placeholder-gray-400 dark:placeholder-gray-500"
+                                />
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => setUnreadOnly(u => !u)}
+                                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition ${unreadOnly ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800'}`}
+                                    >
+                                        Non lus
+                                    </button>
+                                    <button
+                                        onClick={() => fetchEmails(search + (unreadOnly ? (search ? " " : "") + "label:unread" : ""))}
+                                        disabled={refreshing}
+                                        className="p-1.5 rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition disabled:opacity-50"
+                                        title="Actualiser"
+                                    >
+                                        <svg className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
-                            <div className="flex-1 overflow-y-auto text-sm divide-y dark:divide-white/5 custom-scroll overscroll-contain scroll-smooth max-h-[calc(100vh-270px)] lg:max-h-none">
+
+                            {/* Liste des emails style Gmail */}
+                            <div className="rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 flex flex-col overflow-hidden shadow-sm h-[calc(100vh-220px)]">
+                                <div className="px-4 py-2 border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800/50 flex items-center justify-between flex-shrink-0">
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{emails.length} conversations</span>
+                                    </div>
+                                    {loading && <span className="text-xs text-blue-600 dark:text-blue-400 animate-pulse font-medium">chargement...</span>}
+                                </div>
+                            <div className="flex-1 overflow-y-auto text-sm divide-y divide-gray-200 dark:divide-slate-700 custom-scrollbar"
+                            >
                                 {loading && (
-                                    <div className="p-4 space-y-3 animate-pulse">
+                                    <div className="p-5 space-y-4 animate-pulse">
                                         {Array.from({ length: 6 }).map((_, i) => (
                                             <div key={i} className="space-y-2">
-                                                <div className="flex gap-2">
-                                                    <div className="h-3 w-10 rounded bg-violet-200/60 dark:bg-violet-500/20" />
-                                                    <div className="h-3 flex-1 rounded bg-violet-200/50 dark:bg-violet-500/20" />
+                                                <div className="flex gap-3">
+                                                    <div className="h-4 w-12 rounded bg-gray-200 dark:bg-slate-700" />
+                                                    <div className="h-4 flex-1 rounded bg-gray-200 dark:bg-slate-700" />
                                                 </div>
-                                                <div className="h-2 w-3/4 rounded bg-violet-200/40 dark:bg-violet-500/10" />
+                                                <div className="h-3 w-3/4 rounded bg-gray-200 dark:bg-slate-700" />
                                             </div>
                                         ))}
                                     </div>)}
                                 {!loading && emails.length === 0 && (
-                                    <div className="p-6 text-center text-xs text-gray-500 dark:text-gray-400">
+                                    <div className="p-10 text-center text-sm text-gray-500 dark:text-gray-400">
                                         Aucun email.
-                                        <div className="mt-2">
-                                            <button onClick={() => fetchEmails(search)} className="px-3 py-1.5 text-[11px] rounded-md border border-violet-300 dark:border-violet-500/40 bg-white/70 dark:bg-white/10 hover:bg-violet-50 dark:hover:bg-white/20">Réessayer</button>
+                                        <div className="mt-4">
+                                            <button onClick={() => fetchEmails(search)} className="px-4 py-2 text-sm rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 transition shadow-sm font-medium">Réessayer</button>
                                         </div></div>
                                 )}
                                 {emails.map(m => {
@@ -129,44 +179,73 @@ export default function MailtyInbox() {
                                     const rel = date ? (function () {
                                         const diff = Date.now() - date.getTime();
                                         const mns = Math.floor(diff / 60000);
-                                        if (mns < 60) return mns <= 1 ? '1m' : mns + 'm';
+                                        if (mns < 60) return mns <= 1 ? 'maintenant' : mns + ' min';
                                         const hrs = Math.floor(mns / 60);
                                         if (hrs < 24) return hrs + 'h';
-                                        const days = Math.floor(hrs / 24); if (days < 7) return days + 'j';
-                                        return date.toLocaleDateString();
+                                        const days = Math.floor(hrs / 24); 
+                                        if (days < 7) return days + 'j';
+                                        if (days < 365) return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+                                        return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
                                     })() : '';
                                     return (
-                                        <button
+                                        <div
                                             key={m.id}
+                                            className={`group w-full px-3 py-2.5 flex items-center gap-3 transition relative border-l-4 ${isUnread ? 'border-blue-500 bg-blue-50/40 dark:bg-blue-900/10' : 'border-transparent hover:bg-gray-50 dark:hover:bg-slate-800/30'} cursor-pointer`}
                                             onClick={() => router.push(`/mailty/message/${m.id}`)}
-                                            className={`group w-full text-left px-4 py-3 flex flex-col gap-1 transition relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-violet-400/50 focus:z-10 ${isUnread ? 'font-semibold' : ''}`}
-                                            aria-label={`Email de ${m.fromName || m.fromEmail} sujet ${m.subject || 'Sans objet'} ${isUnread ? 'non lu' : ''}`}
                                         >
-                                            <div className="flex items-center gap-3">
-                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-semibold uppercase bg-gradient-to-br from-violet-500/30 to-fuchsia-500/30 dark:from-violet-500/25 dark:to-fuchsia-500/25 ${isUnread ? 'ring-2 ring-fuchsia-400/50 dark:ring-fuchsia-500/40' : ''}`}>
-                                                    {(m.fromName || m.fromEmail || '?').slice(0, 2)}
-                                                </div>
-                                                <div className="flex-1 min-w-0 flex flex-col gap-0.5">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className={`truncate flex-1 text-[13px] ${isUnread ? 'text-violet-900 dark:text-fuchsia-100' : 'text-gray-700 dark:text-gray-100'} group-hover:text-violet-700 dark:group-hover:text-fuchsia-200`}>{m.subject || '(Sans objet)'}</span>
-                                                        {isUnread && <span className="px-1.5 py-0.5 rounded-full bg-fuchsia-600 text-white text-[9px] tracking-wide">NEW</span>}
-                                                        {rel && <span className="text-[10px] text-gray-400 dark:text-gray-500 tabular-nums">{rel}</span>}
-                                                    </div>
-                                                    <p className="text-[11px] line-clamp-2 text-gray-500 dark:text-fuchsia-200/90 leading-snug">{m.snippet}</p>
-                                                </div>
+                                            {/* Actions à gauche (visibles au hover) */}
+                                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                                                <button 
+                                                    className="p-1 rounded hover:bg-gray-200 dark:hover:bg-slate-700"
+                                                    onClick={(e) => { e.stopPropagation(); }}
+                                                    title="Sélectionner"
+                                                >
+                                                    <svg className="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                </button>
+                                                <button 
+                                                    className="p-1 rounded hover:bg-gray-200 dark:hover:bg-slate-700"
+                                                    onClick={(e) => { e.stopPropagation(); }}
+                                                    title="Suivre"
+                                                >
+                                                    <svg className="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                                    </svg>
+                                                </button>
                                             </div>
-                                            <span className="absolute inset-y-0 left-0 w-0.5 bg-gradient-to-b from-violet-500 to-fuchsia-500 opacity-0 group-hover:opacity-70 transition" />
-                                        </button>
+
+                                            {/* Expéditeur */}
+                                            <div className={`w-36 truncate text-sm flex-shrink-0 ${isUnread ? 'font-bold text-gray-900 dark:text-white' : 'font-normal text-gray-700 dark:text-gray-300'}`}>
+                                                {m.fromName || m.fromEmail?.split('@')[0] || 'Inconnu'}
+                                            </div>
+
+                                            {/* Sujet et aperçu */}
+                                            <div className="flex-1 min-w-0 flex items-baseline gap-2">
+                                                <span className={`text-sm truncate ${isUnread ? 'font-semibold text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'}`}>
+                                                    {m.subject || '(Sans objet)'}
+                                                </span>
+                                                <span className="text-xs text-gray-500 dark:text-gray-400 truncate flex-1">
+                                                    - {m.snippet}
+                                                </span>
+                                            </div>
+
+                                            {/* Date */}
+                                            <div className="text-xs text-gray-600 dark:text-gray-400 tabular-nums whitespace-nowrap flex-shrink-0 w-16 text-right">
+                                                {rel}
+                                            </div>
+                                        </div>
                                     );
                                 })}
                             </div>
-                            <div className="px-4 py-2 border-t dark:border-white/10 flex items-center justify-between text-[10px] text-gray-500 dark:text-gray-400 bg-white/60 dark:bg-white/5">
-                                <span className="uppercase tracking-wider">{emails.length} items</span>
+                            <div className="px-5 py-3 border-t border-gray-200 dark:border-slate-700 flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-slate-800/50 flex-shrink-0">
+                                <span className="font-medium">{emails.length} messages</span>
                             </div>
+                        </div>
                         </div>
                     </div>
                 )}
-                {error && <div className="mt-6 text-sm text-rose-600 dark:text-rose-400" aria-live="assertive">{error}</div>}
+                {error && <div className="mt-6 p-4 rounded-xl border-2 border-red-200 dark:border-red-800/50 bg-red-50 dark:bg-red-900/20 text-sm text-red-800 dark:text-red-400 font-medium" role="alert" aria-live="assertive">{error}</div>}
             </main>
         </>
     );
