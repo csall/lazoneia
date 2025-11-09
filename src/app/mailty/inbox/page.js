@@ -15,6 +15,13 @@ export default function MailtyInbox() {
     const [search, setSearch] = useState("");
     const [unreadOnly, setUnreadOnly] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [showComposeModal, setShowComposeModal] = useState(false);
+    const [isModalMinimized, setIsModalMinimized] = useState(false);
+    const [composeTo, setComposeTo] = useState("");
+    const [composeSubject, setComposeSubject] = useState("");
+    const [composeBody, setComposeBody] = useState("");
+    const [sending, setSending] = useState(false);
+    const [composeMsg, setComposeMsg] = useState("");
     const router = useRouter();
 
     const fetchEmails = useCallback(async (q) => {
@@ -44,6 +51,40 @@ export default function MailtyInbox() {
         return () => clearTimeout(timeout);
     }, [search, unreadOnly, connected, fetchEmails]);
 
+    const handleSendNewEmail = async () => {
+        if (!composeTo.trim() || !composeSubject.trim() || !composeBody.trim()) {
+            setComposeMsg("❌ Tous les champs sont requis");
+            return;
+        }
+        setSending(true);
+        setComposeMsg("");
+        try {
+            const r = await fetch('/api/mailty/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    to: composeTo.trim(),
+                    subject: composeSubject.trim(),
+                    body: composeBody.trim()
+                })
+            });
+            if (!r.ok) throw new Error("Erreur d'envoi");
+            setComposeMsg("✅ Email envoyé avec succès !");
+            setTimeout(() => {
+                setShowComposeModal(false);
+                setComposeTo("");
+                setComposeSubject("");
+                setComposeBody("");
+                setComposeMsg("");
+                fetchEmails(search + (unreadOnly ? (search ? " " : "") + "label:unread" : ""));
+            }, 2000);
+        } catch (e) {
+            setComposeMsg("❌ " + e.message);
+        } finally {
+            setSending(false);
+        }
+    };
+
     return (
         <>
             <Header
@@ -70,7 +111,10 @@ export default function MailtyInbox() {
                     <div className="flex gap-4">
                         {/* Sidebar compacte style Gmail */}
                         <div className="hidden lg:flex flex-col gap-3 w-52 flex-shrink-0">
-                            <button className="flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:shadow-lg transition">
+                            <button 
+                                onClick={() => setShowComposeModal(true)}
+                                className="flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:shadow-lg transition"
+                            >
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
                                 </svg>
@@ -112,6 +156,19 @@ export default function MailtyInbox() {
 
                         {/* Zone principale */}
                         <div className="flex-1 flex flex-col gap-3">
+                            {/* Bouton Nouveau pour mobile */}
+                            <div className="lg:hidden">
+                                <button 
+                                    onClick={() => setShowComposeModal(true)}
+                                    className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:shadow-lg transition"
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    Nouveau message
+                                </button>
+                            </div>
+                            
                             {/* Barre de recherche compacte */}
                             <div className="flex items-center gap-2 bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 px-3 py-2 shadow-sm">
                                 <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,6 +304,123 @@ export default function MailtyInbox() {
                 )}
                 {error && <div className="mt-6 p-4 rounded-xl border-2 border-red-200 dark:border-red-800/50 bg-red-50 dark:bg-red-900/20 text-sm text-red-800 dark:text-red-400 font-medium" role="alert" aria-live="assertive">{error}</div>}
             </main>
+
+            {/* Modale de composition style Gmail */}
+            {showComposeModal && (
+                <div className={`fixed ${isModalMinimized ? 'bottom-4 right-4' : 'bottom-4 right-4'} z-50 ${isModalMinimized ? 'w-60' : 'w-[800px] max-h-[85vh]'} shadow-2xl rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 transition-all duration-200 flex flex-col`}>
+                    {/* En-tête de la modale */}
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800/50 rounded-t-lg flex-shrink-0">
+                        <h3 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                            {isModalMinimized ? 'Nouveau message' : 'Nouveau message'}
+                        </h3>
+                        <div className="flex items-center gap-1">
+                            <button
+                                onClick={() => setIsModalMinimized(!isModalMinimized)}
+                                className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-slate-700 transition"
+                                title={isModalMinimized ? "Agrandir" : "Réduire"}
+                            >
+                                <svg className="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    {isModalMinimized ? (
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
+                                    ) : (
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                    )}
+                                </svg>
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setShowComposeModal(false);
+                                    setComposeTo("");
+                                    setComposeSubject("");
+                                    setComposeBody("");
+                                    setComposeMsg("");
+                                }}
+                                className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-slate-700 transition"
+                                title="Fermer"
+                            >
+                                <svg className="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Contenu de la modale */}
+                    {!isModalMinimized && (
+                        <div className="p-6 space-y-4 overflow-y-auto flex-1">
+                            {/* Destinataire */}
+                            <div className="flex items-center gap-2">
+                                <span className="text-gray-600 dark:text-gray-400 font-medium text-sm min-w-[60px]">À:</span>
+                                <input
+                                    type="email"
+                                    value={composeTo}
+                                    onChange={e => setComposeTo(e.target.value)}
+                                    placeholder="destinataire@exemple.com"
+                                    className="flex-1 bg-transparent border-0 border-b border-gray-300 dark:border-slate-600 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-600 placeholder-gray-400 dark:placeholder-gray-500 py-1"
+                                />
+                            </div>
+
+                            {/* Sujet */}
+                            <div className="flex items-center gap-2">
+                                <span className="text-gray-600 dark:text-gray-400 font-medium text-sm min-w-[60px]">Objet:</span>
+                                <input
+                                    type="text"
+                                    value={composeSubject}
+                                    onChange={e => setComposeSubject(e.target.value)}
+                                    placeholder="Objet de l'email"
+                                    className="flex-1 bg-transparent border-0 border-b border-gray-300 dark:border-slate-600 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-600 placeholder-gray-400 dark:placeholder-gray-500 py-1"
+                                />
+                            </div>
+
+                            {/* Zone de texte */}
+                            <textarea
+                                className="w-full min-h-[300px] rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 p-4 text-base text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent transition resize-none"
+                                placeholder="Écrivez votre message ici..."
+                                value={composeBody}
+                                onChange={e => setComposeBody(e.target.value)}
+                            />
+
+                            {/* Boutons d'action */}
+                            <div className="flex items-center justify-between pt-2">
+                                <div className="flex items-center gap-2">
+                                    {/* Boutons supplémentaires peuvent être ajoutés ici */}
+                                </div>
+                                
+                                <button
+                                    type="button"
+                                    className="px-6 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                    onClick={handleSendNewEmail}
+                                    disabled={!composeTo.trim() || !composeSubject.trim() || !composeBody.trim() || sending}
+                                >
+                                    {sending ? (
+                                        <>
+                                            <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            Envoi...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                            </svg>
+                                            Envoyer
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+
+                            {/* Message de statut */}
+                            {composeMsg && (
+                                <div className={`text-xs font-medium px-3 py-2 rounded-md ${composeMsg.includes('❌') ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400' : 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400'}`}>
+                                    {composeMsg}
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            )}
         </>
     );
 }
