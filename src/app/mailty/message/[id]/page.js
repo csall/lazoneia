@@ -304,9 +304,9 @@ export default function MailtyMessage() {
 
             {/* Modale de réponse style Gmail */}
             {showReplyModal && (
-                <div className={`fixed ${isModalMinimized ? 'bottom-4 right-4' : 'bottom-4 right-4'} z-50 ${isModalMinimized ? 'w-60' : 'w-[600px]'} shadow-2xl rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 transition-all duration-200`}>
+                <div className={`fixed ${isModalMinimized ? 'bottom-4 right-4' : 'bottom-4 right-4'} z-50 ${isModalMinimized ? 'w-60' : 'w-[800px] max-h-[85vh]'} shadow-2xl rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 transition-all duration-200 flex flex-col`}>
                     {/* En-tête de la modale */}
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800/50 rounded-t-lg">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800/50 rounded-t-lg flex-shrink-0">
                         <h3 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
                             {isModalMinimized ? 'Nouvelle réponse' : `Re: ${detail?.subject || '(Sans objet)'}`}
                         </h3>
@@ -338,22 +338,22 @@ export default function MailtyMessage() {
 
                     {/* Contenu de la modale */}
                     {!isModalMinimized && (
-                        <div className="p-4 space-y-3">
+                        <div className="p-6 space-y-4 overflow-y-auto flex-1">
                             {/* Destinataire */}
                             <div className="flex items-center gap-2 text-sm">
-                                <span className="text-gray-600 dark:text-gray-400 font-medium">À:</span>
+                                <span className="text-gray-600 dark:text-gray-400 font-medium min-w-[60px]">À:</span>
                                 <span className="text-gray-900 dark:text-white">{detail?.fromEmail || ''}</span>
                             </div>
 
                             {/* Sujet */}
                             <div className="flex items-center gap-2 text-sm">
-                                <span className="text-gray-600 dark:text-gray-400 font-medium">Objet:</span>
+                                <span className="text-gray-600 dark:text-gray-400 font-medium min-w-[60px]">Objet:</span>
                                 <span className="text-gray-900 dark:text-white">Re: {detail?.subject || '(Sans objet)'}</span>
                             </div>
 
                             {/* Zone de texte */}
                             <textarea
-                                className="w-full min-h-[200px] rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 p-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent transition resize-none"
+                                className="w-full min-h-[300px] rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 p-4 text-base text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent transition resize-none"
                                 placeholder="Tapez votre réponse ici..."
                                 value={reply}
                                 onChange={e => setReply(e.target.value)}
@@ -365,12 +365,12 @@ export default function MailtyMessage() {
                                 <div className="flex items-center gap-2">
                                     <button
                                         type="button"
-                                        className="px-3 py-1.5 text-xs rounded-md font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition border border-gray-300 dark:border-slate-600"
+                                        className="px-4 py-2 text-sm rounded-md font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition border border-gray-300 dark:border-slate-600"
                                         onClick={handleReply}
                                         title="Suggérer une réponse avec Reply (IA)"
                                     >
-                                        <span className="flex items-center gap-1.5">
-                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <span className="flex items-center gap-2">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                                             </svg>
                                             Reply
@@ -378,13 +378,13 @@ export default function MailtyMessage() {
                                     </button>
                                     <button
                                         type="button"
-                                        className={`px-3 py-1.5 text-xs rounded-md font-medium transition border border-gray-300 dark:border-slate-600 ${!reply.trim() ? 'opacity-50 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800'}`}
+                                        className={`px-4 py-2 text-sm rounded-md font-medium transition border border-gray-300 dark:border-slate-600 ${!reply.trim() ? 'opacity-50 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800'}`}
                                         onClick={handleScribo}
                                         disabled={!reply.trim()}
                                         title="Reformuler avec Scribo (IA)"
                                     >
-                                        <span className="flex items-center gap-1.5">
-                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <span className="flex items-center gap-2">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                             Scribo
@@ -394,7 +394,7 @@ export default function MailtyMessage() {
                                 
                                 <button
                                     type="button"
-                                    className="px-5 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                    className="px-6 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                     onClick={handleSend}
                                     disabled={!reply.trim() || sending}
                                 >
