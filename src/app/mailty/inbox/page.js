@@ -22,34 +22,68 @@ export default function MailtyInbox() {
     const [composeBody, setComposeBody] = useState("");
     const [sending, setSending] = useState(false);
     const [composeMsg, setComposeMsg] = useState("");
+    const [activeFolder, setActiveFolder] = useState('inbox'); // inbox, starred, snoozed, sent, drafts
     const router = useRouter();
 
-    const fetchEmails = useCallback(async (q) => {
+    const fetchEmails = useCallback(async (q, isDraftsFolder = false) => {
         if (!connected) return;
         setLoading(true);
         setRefreshing(true);
         setError("");
         try {
-            const params = new URLSearchParams();
-            if (q && q.trim()) params.set('q', q.trim());
-            const url = `/api/mailty/list${params.toString() ? `?${params.toString()}` : ""}`;
-            const r = await fetch(url);
-            if (!r.ok) throw new Error("Erreur chargement emails");
-            const data = await r.json();
-            setEmails(data.messages || []);
+            let url, data;
+            
+            if (isDraftsFolder) {
+                // Utiliser l'API spéciale pour les brouillons
+                url = '/api/mailty/list-drafts';
+                const r = await fetch(url);
+                if (!r.ok) throw new Error("Erreur chargement brouillons");
+                data = await r.json();
+                setEmails(data.drafts || []);
+            } else {
+                // Utiliser l'API normale pour les autres dossiers
+                const params = new URLSearchParams();
+                if (q && q.trim()) params.set('q', q.trim());
+                url = `/api/mailty/list${params.toString() ? `?${params.toString()}` : ""}`;
+                const r = await fetch(url);
+                if (!r.ok) throw new Error("Erreur chargement emails");
+                data = await r.json();
+                setEmails(data.messages || []);
+            }
         } catch (e) { setError(e.message); }
         finally { setLoading(false); setRefreshing(false); }
     }, [connected]);
 
-    useEffect(() => { if (connected) fetchEmails(""); }, [connected, fetchEmails]);
+    useEffect(() => { if (connected) fetchEmails("", false); }, [connected, fetchEmails]);
 
     useEffect(() => {
         if (!connected) return;
         const timeout = setTimeout(() => {
-            fetchEmails(search + (unreadOnly ? (search ? " " : "") + "label:unread" : ""));
+            let query = search;
+            
+            // Ajouter les filtres selon le dossier actif
+            if (activeFolder === 'starred') {
+                query += (query ? ' ' : '') + 'label:starred';
+                if (unreadOnly) query += (query ? ' ' : '') + 'label:unread';
+                fetchEmails(query, false);
+            } else if (activeFolder === 'sent') {
+                query += (query ? ' ' : '') + 'label:sent';
+                if (unreadOnly) query += (query ? ' ' : '') + 'label:unread';
+                fetchEmails(query, false);
+            } else if (activeFolder === 'drafts') {
+                // Pour les brouillons, utiliser l'API spéciale
+                fetchEmails('', true);
+            } else if (activeFolder === 'inbox') {
+                query += (query ? ' ' : '') + 'label:inbox';
+                if (unreadOnly) query += (query ? ' ' : '') + 'label:unread';
+                fetchEmails(query, false);
+            } else {
+                if (unreadOnly) query += (query ? ' ' : '') + 'label:unread';
+                fetchEmails(query, false);
+            }
         }, 420);
         return () => clearTimeout(timeout);
-    }, [search, unreadOnly, connected, fetchEmails]);
+    }, [search, unreadOnly, activeFolder, connected, fetchEmails]);
 
     const handleSendNewEmail = async () => {
         if (!composeTo.trim() || !composeSubject.trim() || !composeBody.trim()) {
@@ -82,6 +116,118 @@ export default function MailtyInbox() {
             setComposeMsg("❌ " + e.message);
         } finally {
             setSending(false);
+        }
+    };
+
+    const handleSaveDraft = async () => {
+        if (!composeTo.trim() || !composeSubject.trim()) {
+            setComposeMsg("❌ Le destinataire et le sujet sont requis");
+            return;
+        }
+        setSending(true);
+        setComposeMsg("💾 Sauvegarde du brouillon...");
+        
+        try {
+            const r = await fetch('/api/mailty/drafts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    to: composeTo.trim(),
+                    subject: composeSubject.trim(),
+                    body: composeBody.trim()
+                })
+            });
+            if (!r.ok) throw new Error("Erreur de sauvegarde");
+            setComposeMsg("✅ Brouillon sauvegardé !");
+            setTimeout(() => {
+                setShowComposeModal(false);
+                setComposeTo("");
+                setComposeSubject("");
+                setComposeBody("");
+                setComposeMsg("");
+                // Rafraîchir si on est dans les brouillons
+                if (activeFolder === 'drafts') {
+                    fetchEmails('', true);
+                }
+            }, 2000);
+        } catch (e) {
+            setComposeMsg("❌ " + e.message);
+        } finally {
+            setSending(false);
+        }
+    };
+
+    const handleToggleStar = async (e, messageId, isStarred) => {
+        e.stopPropagation();
+        try {
+            await fetch('/api/mailty/modify-labels', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messageId,
+                    addLabelIds: isStarred ? [] : ['STARRED'],
+                    removeLabelIds: isStarred ? ['STARRED'] : []
+                })
+            });
+            // Rafraîchir la liste
+            let query = search;
+            if (activeFolder === 'starred') {
+                query += (query ? ' ' : '') + 'label:starred';
+                if (unreadOnly) query += (query ? ' ' : '') + 'label:unread';
+                fetchEmails(query, false);
+            } else if (activeFolder === 'sent') {
+                query += (query ? ' ' : '') + 'label:sent';
+                if (unreadOnly) query += (query ? ' ' : '') + 'label:unread';
+                fetchEmails(query, false);
+            } else if (activeFolder === 'drafts') {
+                fetchEmails('', true);
+            } else if (activeFolder === 'inbox') {
+                query += (query ? ' ' : '') + 'label:inbox';
+                if (unreadOnly) query += (query ? ' ' : '') + 'label:unread';
+                fetchEmails(query, false);
+            } else {
+                if (unreadOnly) query += (query ? ' ' : '') + 'label:unread';
+                fetchEmails(query, false);
+            }
+        } catch (e) {
+            console.error('Erreur lors du marquage', e);
+        }
+    };
+
+    const handleToggleRead = async (e, messageId, isUnread) => {
+        e.stopPropagation();
+        try {
+            await fetch('/api/mailty/modify-labels', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messageId,
+                    addLabelIds: isUnread ? [] : ['UNREAD'],
+                    removeLabelIds: isUnread ? ['UNREAD'] : []
+                })
+            });
+            // Rafraîchir la liste
+            let query = search;
+            if (activeFolder === 'starred') {
+                query += (query ? ' ' : '') + 'label:starred';
+                if (unreadOnly) query += (query ? ' ' : '') + 'label:unread';
+                fetchEmails(query, false);
+            } else if (activeFolder === 'sent') {
+                query += (query ? ' ' : '') + 'label:sent';
+                if (unreadOnly) query += (query ? ' ' : '') + 'label:unread';
+                fetchEmails(query, false);
+            } else if (activeFolder === 'drafts') {
+                fetchEmails('', true);
+            } else if (activeFolder === 'inbox') {
+                query += (query ? ' ' : '') + 'label:inbox';
+                if (unreadOnly) query += (query ? ' ' : '') + 'label:unread';
+                fetchEmails(query, false);
+            } else {
+                if (unreadOnly) query += (query ? ' ' : '') + 'label:unread';
+                fetchEmails(query, false);
+            }
+        } catch (e) {
+            console.error('Erreur lors du marquage', e);
         }
     };
 
@@ -121,31 +267,46 @@ export default function MailtyInbox() {
                                 Nouveau
                             </button>
                             <div className="flex flex-col gap-1">
-                                <button className="flex items-center gap-3 px-4 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium hover:bg-blue-100 dark:hover:bg-blue-900/50 transition">
+                                <button 
+                                    onClick={() => setActiveFolder('inbox')}
+                                    className={`flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition ${activeFolder === 'inbox' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800'}`}
+                                >
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                                     </svg>
                                     <span>Boîte de réception</span>
                                 </button>
-                                <button className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+                                <button 
+                                    onClick={() => setActiveFolder('starred')}
+                                    className={`flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition ${activeFolder === 'starred' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800'}`}
+                                >
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                                     </svg>
                                     <span>Suivis</span>
                                 </button>
-                                <button className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+                                <button 
+                                    onClick={() => setActiveFolder('snoozed')}
+                                    className={`flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition ${activeFolder === 'snoozed' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800'}`}
+                                >
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                     <span>Reportés</span>
                                 </button>
-                                <button className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+                                <button 
+                                    onClick={() => setActiveFolder('sent')}
+                                    className={`flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition ${activeFolder === 'sent' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800'}`}
+                                >
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                                     </svg>
                                     <span>Envoyés</span>
                                 </button>
-                                <button className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+                                <button 
+                                    onClick={() => setActiveFolder('drafts')}
+                                    className={`flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition ${activeFolder === 'drafts' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800'}`}
+                                >
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                     </svg>
@@ -205,7 +366,13 @@ export default function MailtyInbox() {
                             <div className="rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 flex flex-col overflow-hidden shadow-sm h-[calc(100vh-220px)]">
                                 <div className="px-4 py-2 border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800/50 flex items-center justify-between flex-shrink-0">
                                     <div className="flex items-center gap-3">
-                                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{emails.length} conversations</span>
+                                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            {activeFolder === 'inbox' && `${emails.length} conversations`}
+                                            {activeFolder === 'starred' && `${emails.length} suivis`}
+                                            {activeFolder === 'snoozed' && `${emails.length} reportés`}
+                                            {activeFolder === 'sent' && `${emails.length} envoyés`}
+                                            {activeFolder === 'drafts' && `${emails.length} brouillons`}
+                                        </span>
                                     </div>
                                     {loading && <span className="text-xs text-blue-600 dark:text-blue-400 animate-pulse font-medium">chargement...</span>}
                                 </div>
@@ -244,29 +411,41 @@ export default function MailtyInbox() {
                                         if (days < 365) return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
                                         return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
                                     })() : '';
+                                    const isDraft = m.labelIds?.includes('DRAFT');
                                     return (
                                         <div
                                             key={m.id}
                                             className={`group w-full px-3 py-2.5 flex items-center gap-3 transition relative border-l-4 ${isUnread ? 'border-blue-500 bg-blue-50/40 dark:bg-blue-900/10' : 'border-transparent hover:bg-gray-50 dark:hover:bg-slate-800/30'} cursor-pointer`}
-                                            onClick={() => router.push(`/mailty/message/${m.id}`)}
+                                            onClick={() => {
+                                                // Si c'est un brouillon, aller vers la page de brouillon
+                                                if (isDraft) {
+                                                    router.push(`/mailty/draft/${m.id}`);
+                                                } else {
+                                                    router.push(`/mailty/message/${m.id}`);
+                                                }
+                                            }}
                                         >
                                             {/* Actions à gauche (visibles au hover) */}
                                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
                                                 <button 
                                                     className="p-1 rounded hover:bg-gray-200 dark:hover:bg-slate-700"
-                                                    onClick={(e) => { e.stopPropagation(); }}
-                                                    title="Sélectionner"
+                                                    onClick={(e) => handleToggleRead(e, m.id, isUnread)}
+                                                    title={isUnread ? "Marquer comme lu" : "Marquer comme non lu"}
                                                 >
                                                     <svg className="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                                                        {isUnread ? (
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76" />
+                                                        ) : (
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                        )}
                                                     </svg>
                                                 </button>
                                                 <button 
                                                     className="p-1 rounded hover:bg-gray-200 dark:hover:bg-slate-700"
-                                                    onClick={(e) => { e.stopPropagation(); }}
-                                                    title="Suivre"
+                                                    onClick={(e) => handleToggleStar(e, m.id, m.labelIds?.includes('STARRED'))}
+                                                    title={m.labelIds?.includes('STARRED') ? "Retirer l'étoile" : "Ajouter une étoile"}
                                                 >
-                                                    <svg className="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <svg className={`w-4 h-4 ${m.labelIds?.includes('STARRED') ? 'text-yellow-500 fill-yellow-500' : 'text-gray-600 dark:text-gray-400'}`} fill={m.labelIds?.includes('STARRED') ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                                                     </svg>
                                                 </button>
@@ -274,7 +453,16 @@ export default function MailtyInbox() {
 
                                             {/* Expéditeur */}
                                             <div className={`w-36 truncate text-sm flex-shrink-0 ${isUnread ? 'font-bold text-gray-900 dark:text-white' : 'font-normal text-gray-700 dark:text-gray-300'}`}>
-                                                {m.fromName || m.fromEmail?.split('@')[0] || 'Inconnu'}
+                                                {isDraft ? (
+                                                    <span className="flex items-center gap-1.5">
+                                                        <svg className="w-3.5 h-3.5 text-red-500 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                        </svg>
+                                                        <span className="text-red-600 dark:text-red-400 font-medium">Brouillon</span>
+                                                    </span>
+                                                ) : (
+                                                    m.fromName || m.fromEmail?.split('@')[0] || 'Inconnu'
+                                                )}
                                             </div>
 
                                             {/* Sujet et aperçu */}
@@ -383,7 +571,17 @@ export default function MailtyInbox() {
                             {/* Boutons d'action */}
                             <div className="flex items-center justify-between pt-2">
                                 <div className="flex items-center gap-2">
-                                    {/* Boutons supplémentaires peuvent être ajoutés ici */}
+                                    <button
+                                        type="button"
+                                        className="px-4 py-2 rounded-lg border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                        onClick={handleSaveDraft}
+                                        disabled={!composeTo.trim() || !composeSubject.trim() || sending}
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                                        </svg>
+                                        Brouillon
+                                    </button>
                                 </div>
                                 
                                 <button
